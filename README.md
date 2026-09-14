@@ -41,6 +41,14 @@ instalação no Windows/Mac. Resumo: rode `build_windows.bat` (Windows) ou
 abrir como qualquer programa instalado — escolher o modelo, preencher os
 campos e clicar em **Gerar proposta**.
 
+O app mostra um **preview do slide ao lado do formulário**, que atualiza
+em tempo real conforme você digita (inclusive a logo do cliente, quando
+escolhida). Use os botões **◀ Anterior / Próxima ▶** para navegar entre
+os slides que têm campos editáveis. É uma prévia aproximada (fundo real
+do template + texto na posição/cor certas), não o render final pixel a
+pixel — o resultado exato, com a tipografia e o encaixe definitivos, é
+sempre o PDF gerado.
+
 Para rodar a interface direto do código (sem gerar o executável), com as
 dependências instaladas:
 ```bash

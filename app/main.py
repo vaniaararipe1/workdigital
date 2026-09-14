@@ -21,6 +21,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import gerar_proposta as gp  # noqa: E402
+from preview import SlidePreview  # noqa: E402
 
 # --------------------------------------------------------------------------- #
 # Identidade visual Work Digital
@@ -59,8 +60,8 @@ class App(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title("Work Digital — Gerador de Propostas")
-        self.geometry("760x760")
-        self.minsize(680, 560)
+        self.geometry("1180x780")
+        self.minsize(980, 600)
         self.configure(bg=PRETO)
         self._set_icon()
 
@@ -71,9 +72,18 @@ class App(tk.Tk):
 
         self._montar_estilo()
         self._montar_header()
+
+        corpo = tk.Frame(self, bg=PRETO)
+        corpo.pack(fill="both", expand=True)
+        self.coluna_esquerda = tk.Frame(corpo, bg=PRETO)
+        self.coluna_esquerda.pack(side="left", fill="both", expand=True)
+        self.coluna_direita = tk.Frame(corpo, bg=PRETO, width=480)
+        self.coluna_direita.pack(side="right", fill="y", padx=(0, 20), pady=16)
+
         self._montar_seletor_tipo()
         self._montar_area_formulario()
         self._montar_rodape()
+        self._montar_preview()
 
         self._aviso_libreoffice()
         self._montar_formulario("simples")
@@ -180,7 +190,7 @@ class App(tk.Tk):
             font=FONTE_AJUDA,
             anchor="w",
             justify="left",
-            wraplength=720,
+            wraplength=1100,
         )
 
     def _aviso_libreoffice(self) -> None:
@@ -195,7 +205,7 @@ class App(tk.Tk):
             self.label_aviso.pack(fill="x", padx=0, pady=(0, 4))
 
     def _montar_seletor_tipo(self) -> None:
-        frame = tk.Frame(self, bg=PRETO)
+        frame = tk.Frame(self.coluna_esquerda, bg=PRETO)
         frame.pack(fill="x", padx=20, pady=(16, 6))
 
         tk.Label(
@@ -220,7 +230,7 @@ class App(tk.Tk):
         ).pack(side="left", padx=6)
 
     def _montar_area_formulario(self) -> None:
-        container = tk.Frame(self, bg=PRETO)
+        container = tk.Frame(self.coluna_esquerda, bg=PRETO)
         container.pack(fill="both", expand=True, padx=20, pady=6)
 
         canvas = tk.Canvas(container, bg=PRETO, highlightthickness=0)
@@ -230,7 +240,7 @@ class App(tk.Tk):
         self.form_frame.bind(
             "<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
         )
-        canvas.create_window((0, 0), window=self.form_frame, anchor="nw", width=700)
+        canvas.create_window((0, 0), window=self.form_frame, anchor="nw", width=640)
         canvas.configure(yscrollcommand=scrollbar.set)
 
         canvas.pack(side="left", fill="both", expand=True)
@@ -248,7 +258,7 @@ class App(tk.Tk):
         )
 
     def _montar_rodape(self) -> None:
-        rodape = tk.Frame(self, bg=PRETO)
+        rodape = tk.Frame(self.coluna_esquerda, bg=PRETO)
         rodape.pack(fill="x", padx=20, pady=14)
 
         linha_pasta = tk.Frame(rodape, bg=PRETO)
@@ -277,7 +287,7 @@ class App(tk.Tk):
             bg=PRETO,
             fg=CINZA_CLARO,
             font=FONTE_TEXTO,
-            wraplength=700,
+            wraplength=620,
             justify="left",
         )
         self.status_label.pack(fill="x", pady=(0, 8))
@@ -311,6 +321,14 @@ class App(tk.Tk):
         )
         self.botao_pdf.pack(side="left")
 
+    def _montar_preview(self) -> None:
+        self.preview = SlidePreview(self.coluna_direita)
+        self.preview.pack(anchor="n")
+
+    def _atualizar_preview(self, *_args) -> None:
+        if hasattr(self, "preview"):
+            self.preview.definir_valores(self._coletar_dados())
+
     def _escolher_pasta(self) -> None:
         pasta = filedialog.askdirectory(initialdir=self.pasta_saida.get())
         if pasta:
@@ -329,6 +347,7 @@ class App(tk.Tk):
         self.status_var.set("")
 
         schema = gp.carregar_schema(tipo)
+        self.preview.carregar(ROOT / schema["template"], schema)
 
         linha_data = tk.Frame(self.form_frame, bg=PRETO)
         linha_data.pack(fill="x", pady=(4, 14))
@@ -343,6 +362,8 @@ class App(tk.Tk):
 
         for campo in schema["campos"]:
             self._montar_campo(campo)
+
+        self._atualizar_preview()
 
     def _montar_campo(self, campo: dict) -> None:
         bloco = tk.Frame(self.form_frame, bg=PRETO)
@@ -369,10 +390,12 @@ class App(tk.Tk):
             )
             if isinstance(padrao, str):
                 entry.insert(0, padrao)
+            entry.bind("<KeyRelease>", self._atualizar_preview)
             entry.pack(fill="x", ipady=6, pady=(4, 0))
             self.widgets_campos[campo["chave"]] = (campo, entry)
         elif tipo_campo == "image":
             var = tk.StringVar(value="")
+            var.trace_add("write", self._atualizar_preview)
             linha = tk.Frame(bloco, bg=PRETO)
             linha.pack(fill="x", pady=(4, 0))
 
@@ -416,6 +439,7 @@ class App(tk.Tk):
             )
             if isinstance(padrao, list):
                 text.insert("1.0", "\n".join(padrao))
+            text.bind("<KeyRelease>", self._atualizar_preview)
             text.pack(fill="x", pady=(4, 0))
             self.widgets_campos[campo["chave"]] = (campo, text)
 
