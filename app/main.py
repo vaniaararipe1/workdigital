@@ -36,12 +36,15 @@ CINZA_CLARO = "#B8B8C4"
 VERDE = "#04CD8F"
 VERMELHO = "#FF5A5A"
 
-FONTE_TITULO = ("Segoe UI", 20, "bold")
-FONTE_LABEL = ("Segoe UI", 13, "bold")
-FONTE_TEXTO = ("Segoe UI", 13)
-FONTE_AJUDA = ("Segoe UI", 11)
+FONTE_TITULO_FAM = "Space Grotesk Medium"
+FONTE_CORPO_FAM = "Nunito"
 
-LARGURA_COLUNA_ESQUERDA = 560
+FONTE_TITULO = (FONTE_TITULO_FAM, 16, "bold")
+FONTE_LABEL = (FONTE_CORPO_FAM, 11, "bold")
+FONTE_TEXTO = (FONTE_CORPO_FAM, 11)
+FONTE_AJUDA = (FONTE_CORPO_FAM, 9)
+
+LARGURA_COLUNA_ESQUERDA = 620
 
 
 def abrir_no_sistema(caminho: Path) -> None:
@@ -63,7 +66,7 @@ class CampoArredondado(tk.Frame):
     (desenhado em Canvas), para simular bordas arredondadas no formulario —
     Tk nao tem essa opcao nativamente nos widgets de entrada de texto."""
 
-    def __init__(self, master, bg_campo: str, altura: int, raio: int = 14):
+    def __init__(self, master, bg_campo: str, altura: int, raio: int = 10):
         super().__init__(master, bg=PRETO)
         self.bg_campo = bg_campo
         self.raio = raio
@@ -73,7 +76,7 @@ class CampoArredondado(tk.Frame):
         self._janela = None
         self._pad_x = 14
 
-    def hospedar(self, widget: tk.Widget, pad_x: int = 14, pad_y: int = 10) -> None:
+    def hospedar(self, widget: tk.Widget, pad_x: int = 12, pad_y: int = 6) -> None:
         self._pad_x = pad_x
         self._janela = self.canvas.create_window(pad_x, pad_y, anchor="nw", window=widget)
         self._redesenhar()
@@ -95,8 +98,15 @@ class App(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title("Work Digital — Gerador de Propostas")
-        self.geometry("1560x900")
         self.minsize(1180, 680)
+        self.geometry("1360x820")  # tamanho garantido, caso maximizar nao funcione no WM
+        try:
+            self.state("zoomed")  # abre maximizado (Windows/Linux com a maioria dos WMs)
+        except tk.TclError:
+            try:
+                self.attributes("-zoomed", True)
+            except tk.TclError:
+                pass
         self.configure(bg=PRETO)
         self._set_icon()
 
@@ -165,7 +175,7 @@ class App(tk.Tk):
             "Roxo.TRadiobutton",
             background=PRETO,
             foreground=BRANCO,
-            font=("Segoe UI", 14, "bold"),
+            font=(FONTE_CORPO_FAM, 12, "bold"),
         )
         style.map(
             "Roxo.TRadiobutton",
@@ -175,8 +185,8 @@ class App(tk.Tk):
             "Gerar.TButton",
             background=ROXO,
             foreground=BRANCO,
-            font=("Segoe UI", 15, "bold"),
-            padding=14,
+            font=(FONTE_CORPO_FAM, 13, "bold"),
+            padding=10,
             borderwidth=0,
         )
         style.map("Gerar.TButton", background=[("active", ROXO_ESCURO)])
@@ -184,8 +194,8 @@ class App(tk.Tk):
             "Secundario.TButton",
             background=CINZA_MEDIO,
             foreground=BRANCO,
-            font=("Segoe UI", 12, "bold"),
-            padding=10,
+            font=(FONTE_CORPO_FAM, 10, "bold"),
+            padding=8,
             borderwidth=0,
         )
         style.map("Secundario.TButton", background=[("active", "#3A3A46")])
@@ -204,19 +214,19 @@ class App(tk.Tk):
             banner_path = ROOT / "assets" / "logo_banner.png"
             self._banner_img = tk.PhotoImage(file=str(banner_path))
             tk.Label(header, image=self._banner_img, bg=ROXO).pack(
-                side="left", padx=24, pady=16
+                side="left", padx=20, pady=10
             )
         except Exception:
             tk.Label(
                 header, text="work digital", bg=ROXO, fg=BRANCO, font=FONTE_TITULO
-            ).pack(side="left", padx=24, pady=16)
+            ).pack(side="left", padx=20, pady=10)
         tk.Label(
             header,
             text="Gerador de Propostas Comerciais",
             bg=ROXO,
             fg=BRANCO,
             font=FONTE_TITULO,
-        ).pack(side="left", padx=(0, 24))
+        ).pack(side="left", padx=(0, 20))
 
         self.label_aviso = tk.Label(
             self,
@@ -242,11 +252,11 @@ class App(tk.Tk):
 
     def _montar_seletor_tipo(self) -> None:
         frame = tk.Frame(self.coluna_esquerda, bg=PRETO)
-        frame.pack(fill="x", padx=24, pady=(20, 8))
+        frame.pack(fill="x", padx=24, pady=(12, 6))
 
         tk.Label(
             frame, text="Modelo da proposta:", bg=PRETO, fg=BRANCO, font=FONTE_LABEL
-        ).pack(side="left", padx=(0, 14))
+        ).pack(side="left", padx=(0, 12))
 
         ttk.Radiobutton(
             frame,
@@ -255,7 +265,7 @@ class App(tk.Tk):
             variable=self.tipo_var,
             style="Roxo.TRadiobutton",
             command=lambda: self._montar_formulario("simples"),
-        ).pack(side="left", padx=8)
+        ).pack(side="left", padx=6)
         ttk.Radiobutton(
             frame,
             text="Completa",
@@ -263,11 +273,11 @@ class App(tk.Tk):
             variable=self.tipo_var,
             style="Roxo.TRadiobutton",
             command=lambda: self._montar_formulario("completa"),
-        ).pack(side="left", padx=8)
+        ).pack(side="left", padx=6)
 
     def _montar_area_formulario(self) -> None:
         container = tk.Frame(self.coluna_esquerda, bg=PRETO)
-        container.pack(fill="both", expand=True, padx=24, pady=8)
+        container.pack(fill="both", expand=True, padx=24, pady=4)
 
         canvas = tk.Canvas(container, bg=PRETO, highlightthickness=0)
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
@@ -299,10 +309,10 @@ class App(tk.Tk):
 
     def _montar_rodape(self) -> None:
         rodape = tk.Frame(self.coluna_esquerda, bg=PRETO)
-        rodape.pack(fill="x", padx=24, pady=16)
+        rodape.pack(fill="x", padx=24, pady=10)
 
         linha_pasta = tk.Frame(rodape, bg=PRETO)
-        linha_pasta.pack(fill="x", pady=(0, 12))
+        linha_pasta.pack(fill="x", pady=(0, 8))
         tk.Label(
             linha_pasta, text="Salvar em:", bg=PRETO, fg=CINZA_CLARO, font=FONTE_AJUDA
         ).pack(side="left")
@@ -319,7 +329,7 @@ class App(tk.Tk):
             text="Alterar pasta…",
             style="Secundario.TButton",
             command=self._escolher_pasta,
-        ).pack(anchor="w", pady=(0, 12))
+        ).pack(anchor="w", pady=(0, 8))
 
         self.status_var = tk.StringVar(value="")
         self.status_label = tk.Label(
@@ -331,7 +341,7 @@ class App(tk.Tk):
             wraplength=LARGURA_COLUNA_ESQUERDA - 48,
             justify="left",
         )
-        self.status_label.pack(fill="x", pady=(0, 10))
+        self.status_label.pack(fill="x", pady=(0, 6))
 
         linha_botoes = tk.Frame(rodape, bg=PRETO)
         linha_botoes.pack(fill="x")
@@ -342,7 +352,7 @@ class App(tk.Tk):
             style="Gerar.TButton",
             command=self._gerar,
         )
-        self.botao_gerar.pack(fill="x", pady=(0, 8))
+        self.botao_gerar.pack(fill="x", pady=(0, 6))
 
         linha_secundaria = tk.Frame(rodape, bg=PRETO)
         linha_secundaria.pack(fill="x")
@@ -394,14 +404,14 @@ class App(tk.Tk):
         self.preview.carregar(ROOT / schema["template"], schema)
 
         linha_data = tk.Frame(self.form_frame, bg=PRETO)
-        linha_data.pack(fill="x", pady=(4, 16))
+        linha_data.pack(fill="x", pady=(2, 8))
         tk.Label(
             linha_data, text="Data da proposta", bg=PRETO, fg=BRANCO, font=FONTE_LABEL
         ).pack(anchor="w")
         import datetime
 
-        data_container = CampoArredondado(linha_data, bg_campo=CINZA_MEDIO, altura=46)
-        data_container.pack(anchor="w", pady=(6, 0))
+        data_container = CampoArredondado(linha_data, bg_campo=CINZA_MEDIO, altura=36)
+        data_container.pack(anchor="w", pady=(4, 0))
         self.data_entry = tk.Entry(
             data_container.canvas,
             width=16,
@@ -423,7 +433,7 @@ class App(tk.Tk):
 
     def _montar_campo(self, campo: dict) -> None:
         bloco = tk.Frame(self.form_frame, bg=PRETO)
-        bloco.pack(fill="x", pady=10)
+        bloco.pack(fill="x", pady=6)
 
         titulo = campo["descricao"]
         if campo.get("obrigatorio"):
@@ -443,9 +453,9 @@ class App(tk.Tk):
                     bg=PRETO,
                     fg=CINZA_CLARO,
                     font=FONTE_AJUDA,
-                ).pack(anchor="w", pady=(2, 0))
-            container = CampoArredondado(bloco, bg_campo=CINZA_MEDIO, altura=46)
-            container.pack(fill="x", pady=(6, 0))
+                ).pack(anchor="w", pady=(1, 0))
+            container = CampoArredondado(bloco, bg_campo=CINZA_MEDIO, altura=36)
+            container.pack(fill="x", pady=(4, 0))
             entry = tk.Entry(
                 container.canvas,
                 bg=CINZA_MEDIO,
@@ -465,7 +475,7 @@ class App(tk.Tk):
             var = tk.StringVar(value="")
             var.trace_add("write", self._atualizar_preview)
             linha = tk.Frame(bloco, bg=PRETO)
-            linha.pack(fill="x", pady=(6, 0))
+            linha.pack(fill="x", pady=(4, 0))
 
             def escolher(v=var):
                 caminho = filedialog.askopenfilename(
@@ -494,12 +504,12 @@ class App(tk.Tk):
             dica = "Uma linha por item. Comece cada item com \"- \" se fizer sentido."
             tk.Label(
                 bloco, text=dica, bg=PRETO, fg=CINZA_CLARO, font=FONTE_AJUDA
-            ).pack(anchor="w", pady=(2, 0))
-            container = CampoArredondado(bloco, bg_campo=CINZA_MEDIO, altura=140)
-            container.pack(fill="x", pady=(6, 0))
+            ).pack(anchor="w", pady=(1, 0))
+            container = CampoArredondado(bloco, bg_campo=CINZA_MEDIO, altura=160)
+            container.pack(fill="x", pady=(4, 0))
             text = tk.Text(
                 container.canvas,
-                height=5,
+                height=7,
                 bg=CINZA_MEDIO,
                 fg=BRANCO,
                 insertbackground=BRANCO,
@@ -512,7 +522,7 @@ class App(tk.Tk):
             if isinstance(padrao, list):
                 text.insert("1.0", "\n".join(padrao))
             text.bind("<KeyRelease>", self._atualizar_preview)
-            container.hospedar(text, pad_y=12)
+            container.hospedar(text, pad_y=10)
             self.widgets_campos[campo["chave"]] = (campo, text)
 
     # ----------------------------------------------------------------- #
@@ -582,6 +592,7 @@ class App(tk.Tk):
 
 
 def main() -> None:
+    gp.instalar_fontes()  # garante Nunito/Space Grotesk Medium disponiveis para o Tk
     App().mainloop()
 
 

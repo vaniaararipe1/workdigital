@@ -73,11 +73,26 @@
     },
     {
       "chave": "estrutura_projeto",
-      "descricao": "Estrutura do projeto / nome das páginas",
+      "descricao": "Estrutura do projeto / nome das páginas (uma linha por página, se quiser)",
       "slide": 17,
       "shape_id": 151,
-      "tipo_campo": "single",
+      "tipo_campo": "multiline",
+      "blank_between": false,
       "obrigatorio": true
+    },
+    {
+      "chave": "link_wireframe",
+      "descricao": "Veja aqui uma prévia do wireframe do seu projeto",
+      "slide": 17,
+      "tipo_campo": "botao",
+      "left": 506675,
+      "top": 1300000,
+      "width": 3000000,
+      "height": 380000,
+      "texto_botao": "Veja aqui o wireframe do seu projeto",
+      "tamanho_fonte_botao": 10,
+      "margem_botao": 45720,
+      "obrigatorio": false
     },
     {
       "chave": "modulos_inclusos",
@@ -87,18 +102,6 @@
       "tipo_campo": "multiline",
       "blank_between": true,
       "obrigatorio": true
-    },
-    {
-      "chave": "link_wireframe",
-      "descricao": "Veja aqui uma prévia do wireframe do seu projeto",
-      "slide": 18,
-      "tipo_campo": "botao",
-      "left": 506675,
-      "top": 1900000,
-      "width": 3599700,
-      "height": 550000,
-      "texto_botao": "Veja aqui o wireframe do seu projeto",
-      "obrigatorio": false
     },
     {
       "chave": "modulos_nao_inclusos",

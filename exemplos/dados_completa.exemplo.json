@@ -7,7 +7,8 @@
   "paginas": "Até 10 páginas",
   "cms": "WordPress",
   "prazo_entrega": "70 dias*",
-  "estrutura_projeto": "Home, Sobre, Produtos, Serviços, Blog, Contato",
+  "estrutura_projeto": ["Home", "Sobre", "Produtos", "Serviços", "Blog", "Contato"],
+  "link_wireframe": "figma.com/proto/exemplo-wireframe",
   "modulos_inclusos": [
     "- Desenvolvimento: Front e back-end, HTML/CSS, via WordPress;",
     "- Novas telas para layout (UX e UI);",

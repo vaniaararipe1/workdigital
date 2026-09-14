@@ -21,6 +21,7 @@ CINZA_CLARO = "#B8B8C4"
 ROXO = "#6025E1"
 COR_PADRAO = "#222222"
 EMU_POR_PT = 12700
+FONTE_CORPO = "Nunito"
 
 
 def pontos_arredondados(x1, y1, x2, y2, r):
@@ -43,8 +44,8 @@ class SlidePreview(tk.Frame):
             text="Preview do slide",
             bg=PRETO,
             fg="#FFFFFF",
-            font=("Segoe UI", 13, "bold"),
-        ).pack(anchor="w", pady=(0, 8))
+            font=("Space Grotesk Medium", 12, "bold"),
+        ).pack(anchor="w", pady=(0, 6))
 
         self.moldura = tk.Frame(self, bg="#3A3A46", padx=3, pady=3)
         self.moldura.pack(fill="both", expand=True)
@@ -53,8 +54,8 @@ class SlidePreview(tk.Frame):
         self.canvas.bind("<Configure>", self._on_resize)
 
         nav = tk.Frame(self, bg=PRETO)
-        nav.pack(fill="x", pady=(10, 0))
-        fonte_nav = ("Segoe UI", 11, "bold")
+        nav.pack(fill="x", pady=(8, 0))
+        fonte_nav = (FONTE_CORPO, 10, "bold")
         self.botao_anterior = tk.Button(
             nav,
             text="◀ Anterior",
@@ -70,7 +71,7 @@ class SlidePreview(tk.Frame):
         )
         self.botao_anterior.pack(side="left")
         self.label_pagina = tk.Label(
-            nav, text="", bg=PRETO, fg=CINZA_CLARO, font=("Segoe UI", 11)
+            nav, text="", bg=PRETO, fg=CINZA_CLARO, font=(FONTE_CORPO, 10)
         )
         self.label_pagina.pack(side="left", expand=True)
         self.botao_proxima = tk.Button(
@@ -182,20 +183,22 @@ class SlidePreview(tk.Frame):
         return None
 
     @staticmethod
-    def _estilo(shape) -> tuple[float, bool, str]:
-        tamanho_pt, negrito, cor = 11.0, False, COR_PADRAO
+    def _estilo(shape) -> tuple[float, bool, str, str]:
+        tamanho_pt, negrito, cor, familia = 11.0, False, COR_PADRAO, FONTE_CORPO
         p = shape.text_frame.paragraphs[0]
         run = p.runs[0] if p.runs else None
         if run is not None:
             if run.font.size is not None:
                 tamanho_pt = run.font.size.pt
             negrito = bool(run.font.bold)
+            if run.font.name:
+                familia = run.font.name
             try:
                 if run.font.color and run.font.color.type is not None and int(run.font.color.type) == 1:
                     cor = "#" + str(run.font.color.rgb)
             except Exception:
                 pass
-        return tamanho_pt, negrito, cor
+        return tamanho_pt, negrito, cor, familia
 
     def _valor_formatado(self, campo: dict, shape) -> str:
         chave = campo["chave"]
@@ -265,12 +268,12 @@ class SlidePreview(tk.Frame):
             texto = self._valor_formatado(campo, shape) if campo else shape.text_frame.text
             if not texto.strip():
                 continue
-            tamanho_pt, negrito, cor = self._estilo(shape)
+            tamanho_pt, negrito, cor, familia = self._estilo(shape)
             x = self._ox + shape.left * self._escala
             y = self._oy + shape.top * self._escala
             largura = max(10, shape.width * self._escala)
             tamanho_px = max(7, round(tamanho_pt * EMU_POR_PT * self._escala))
-            fonte = ("Segoe UI", tamanho_px, "bold" if negrito else "normal")
+            fonte = (familia, tamanho_px, "bold" if negrito else "normal")
             self.canvas.create_text(
                 x, y, text=texto, anchor="nw", width=largura,
                 font=fonte, fill=cor, justify="left",
@@ -312,7 +315,7 @@ class SlidePreview(tk.Frame):
             top + max_h / 2,
             text="Logo do cliente\n(opcional)",
             fill="#AAAAAA",
-            font=("Segoe UI", 9),
+            font=(FONTE_CORPO, 9),
             justify="center",
         )
 
@@ -331,13 +334,13 @@ class SlidePreview(tk.Frame):
         self.canvas.create_polygon(
             pontos, smooth=True, fill=cor_fundo, outline=cor_fundo
         )
-        tamanho_px = max(8, round(altura * 0.32))
+        tamanho_pt = campo.get("tamanho_fonte_botao", 13)
+        tamanho_px = max(7, round(tamanho_pt * EMU_POR_PT * self._escala))
         self.canvas.create_text(
             left + largura / 2,
             top + altura / 2,
             text=texto if texto else "Botão do wireframe (opcional)",
             fill=cor_texto,
-            font=("Segoe UI", tamanho_px, "bold"),
+            font=(FONTE_CORPO, tamanho_px, "bold"),
             justify="center",
-            width=largura - 10,
         )

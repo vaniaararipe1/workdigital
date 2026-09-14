@@ -116,6 +116,20 @@ def _instalar_fontes_windows() -> None:
     finally:
         chave.Close()
 
+    # Registra a fonte no GDI da sessao atual e avisa os apps abertos, para
+    # ficar disponivel *imediatamente* (sem precisar reiniciar o Windows) —
+    # inclusive para este mesmo processo, que ainda vai criar a janela do Tk.
+    try:
+        import ctypes
+
+        for f in FONTS_DIR.glob("*.ttf"):
+            ctypes.windll.gdi32.AddFontResourceW(str(destino / f.name))
+        HWND_BROADCAST = 0xFFFF
+        WM_FONTCHANGE = 0x001D
+        ctypes.windll.user32.SendMessageW(HWND_BROADCAST, WM_FONTCHANGE, 0, 0)
+    except Exception:
+        pass
+
 
 # --------------------------------------------------------------------------- #
 # Manipulacao de texto preservando formatacao original
@@ -182,7 +196,7 @@ def _paragraph_templates(paragraphs, skip_first: bool = False):
         (p for p in candidatos if not p.text.strip() and p is not conteudo),
         None,
     )
-    return conteudo._p, branco._p
+    return conteudo._p, (branco._p if branco is not None else None)
 
 
 def _set_multiline(shape, linhas: list[str], blank_between: bool, skip_first: bool) -> None:
@@ -273,20 +287,29 @@ def adicionar_botao_link(slide, campo: dict, url: str) -> None:
         pass
 
     tf = shape.text_frame
-    tf.word_wrap = True
+    tf.word_wrap = False
     tf.vertical_anchor = MSO_ANCHOR.MIDDLE
-    tf.margin_left = tf.margin_right = Emu(91440)
+    margem = campo.get("margem_botao", 45720)
+    tf.margin_left = tf.margin_right = Emu(margem)
     tf.margin_top = tf.margin_bottom = Emu(0)
 
     p = tf.paragraphs[0]
     p.alignment = PP_ALIGN.CENTER
     run = p.add_run()
     run.text = campo.get("texto_botao", "Veja aqui o wireframe do seu projeto")
-    run.font.size = Pt(13)
+    run.font.size = Pt(campo.get("tamanho_fonte_botao", 13))
     run.font.bold = True
     run.font.name = "Nunito"
     run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
     run.hyperlink.address = url
+
+
+def _como_lista_de_linhas(valor) -> list[str]:
+    """Aceita tanto uma lista de linhas quanto uma string unica (nesse caso
+    vira uma lista de 1 item) — nunca itera caractere por caractere."""
+    if isinstance(valor, str):
+        return [valor] if valor.strip() else []
+    return list(valor)
 
 
 APLICADORES = {
@@ -295,10 +318,10 @@ APLICADORES = {
         shape, str(valor), manter_runs=campo.get("manter_runs", 1)
     ),
     "multiline": lambda shape, valor, campo: set_multiline(
-        shape, list(valor), blank_between=campo.get("blank_between", True)
+        shape, _como_lista_de_linhas(valor), blank_between=campo.get("blank_between", True)
     ),
     "multiline_com_titulo": lambda shape, valor, campo: set_multiline_com_titulo(
-        shape, list(valor), blank_between=campo.get("blank_between", True)
+        shape, _como_lista_de_linhas(valor), blank_between=campo.get("blank_between", True)
     ),
 }
 
