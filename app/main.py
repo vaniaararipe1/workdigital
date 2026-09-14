@@ -20,8 +20,47 @@ ROOT = APP_DIR.parent if not getattr(sys, "_MEIPASS", None) else Path(sys._MEIPA
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-import gerar_proposta as gp  # noqa: E402
-from preview import SlidePreview, pontos_arredondados  # noqa: E402
+
+def _registrar_erro_fatal() -> Path:
+    """Salva o traceback atual num arquivo de log e devolve o caminho.
+    Usado tanto para erro ao importar modulos quanto ao rodar o app —
+    o programa nunca deve falhar em silencio."""
+    import traceback
+
+    nome = "erro do Gerador de Propostas.log"
+    log_path = Path.home() / "Documents" / nome
+    try:
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        log_path.write_text(traceback.format_exc(), encoding="utf-8")
+    except Exception:
+        log_path = Path(nome)
+        try:
+            log_path.write_text(traceback.format_exc(), encoding="utf-8")
+        except Exception:
+            pass
+    return log_path
+
+
+def _mostrar_erro_fatal(log_path: Path) -> None:
+    try:
+        import tkinter.messagebox as mb
+
+        mb.showerror(
+            "Erro ao abrir o Gerador de Propostas",
+            "Ocorreu um erro inesperado ao abrir o programa.\n\n"
+            f"Os detalhes foram salvos em:\n{log_path}\n\n"
+            "Envie esse arquivo para que o erro possa ser corrigido.",
+        )
+    except Exception:
+        pass
+
+
+try:
+    import gerar_proposta as gp  # noqa: E402
+    from preview import SlidePreview, pontos_arredondados  # noqa: E402
+except Exception:
+    _mostrar_erro_fatal(_registrar_erro_fatal())
+    raise
 
 # --------------------------------------------------------------------------- #
 # Identidade visual Work Digital
@@ -591,24 +630,6 @@ class App(tk.Tk):
             abrir_no_sistema(self.ultimo_resultado.pdf_path)
 
 
-def _registrar_erro_fatal(erro: BaseException) -> Path:
-    import traceback
-
-    log_path = Path.home() / "Documents" / "erro do Gerador de Propostas.log"
-    try:
-        log_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(log_path, "w", encoding="utf-8") as f:
-            f.write(traceback.format_exc())
-    except Exception:
-        log_path = Path("erro do Gerador de Propostas.log")
-        try:
-            with open(log_path, "w", encoding="utf-8") as f:
-                f.write(traceback.format_exc())
-        except Exception:
-            pass
-    return log_path
-
-
 def main() -> None:
     try:
         try:
@@ -616,19 +637,8 @@ def main() -> None:
         except Exception:
             pass  # nunca deve impedir o programa de abrir
         App().mainloop()
-    except Exception as e:  # pragma: no cover - ultimo recurso, nao deve falhar em silencio
-        log_path = _registrar_erro_fatal(e)
-        try:
-            import tkinter.messagebox as mb
-
-            mb.showerror(
-                "Erro ao abrir o Gerador de Propostas",
-                f"Ocorreu um erro inesperado ao abrir o programa.\n\n"
-                f"Os detalhes foram salvos em:\n{log_path}\n\n"
-                "Envie esse arquivo para que o erro possa ser corrigido.",
-            )
-        except Exception:
-            pass
+    except Exception:  # pragma: no cover - ultimo recurso, nao deve falhar em silencio
+        _mostrar_erro_fatal(_registrar_erro_fatal())
         raise
 
 
