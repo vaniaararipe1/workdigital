@@ -37,6 +37,12 @@ preservando 100% da formatação.
    Pergunte também a **data da proposta** (`data`, formato `dd-mm-yyyy`;
    se o usuário não informar, usa a data de hoje).
 
+   Ambos os modelos têm um campo `logo_cliente` (opcional): caminho de um
+   arquivo PNG/JPG com a logo do cliente, inserida automaticamente no
+   espaço em branco da página de apresentação (acima dos dados do
+   cliente). Se o usuário não tiver ou não quiser, deixe de fora — a
+   página fica exatamente como no template original.
+
 3. **Monte um JSON de dados** em um arquivo temporário (ex:
    `/tmp/dados_proposta.json`) com as respostas do usuário.
 

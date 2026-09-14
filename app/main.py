@@ -371,6 +371,34 @@ class App(tk.Tk):
                 entry.insert(0, padrao)
             entry.pack(fill="x", ipady=6, pady=(4, 0))
             self.widgets_campos[campo["chave"]] = (campo, entry)
+        elif tipo_campo == "image":
+            var = tk.StringVar(value="")
+            linha = tk.Frame(bloco, bg=PRETO)
+            linha.pack(fill="x", pady=(4, 0))
+
+            def escolher(v=var):
+                caminho = filedialog.askopenfilename(
+                    title="Escolher logo do cliente",
+                    filetypes=[("Imagens", "*.png *.jpg *.jpeg")],
+                )
+                if caminho:
+                    v.set(caminho)
+
+            ttk.Button(
+                linha,
+                text="Escolher logo…",
+                style="Secundario.TButton",
+                command=escolher,
+            ).pack(side="left")
+            tk.Label(
+                linha,
+                textvariable=var,
+                bg=PRETO,
+                fg=CINZA_CLARO,
+                font=FONTE_AJUDA,
+                anchor="w",
+            ).pack(side="left", padx=8, fill="x", expand=True)
+            self.widgets_campos[campo["chave"]] = (campo, var)
         else:  # multiline / multiline_com_titulo
             dica = "Uma linha por item. Comece cada item com \"- \" se fizer sentido."
             tk.Label(

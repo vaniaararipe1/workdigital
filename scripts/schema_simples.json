@@ -4,6 +4,17 @@
   "template": "templates/proposta_simples.pptx",
   "campos": [
     {
+      "chave": "logo_cliente",
+      "descricao": "Logo do cliente (opcional, PNG ou JPG)",
+      "slide": 2,
+      "tipo_campo": "image",
+      "left": 5007885,
+      "top": 300000,
+      "max_width": 3995400,
+      "max_height": 1600000,
+      "obrigatorio": false
+    },
+    {
       "chave": "cliente",
       "descricao": "Nome do cliente (A/C)",
       "slide": 2,

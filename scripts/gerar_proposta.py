@@ -223,6 +223,27 @@ def set_multiline_com_titulo(shape, linhas: list[str], blank_between: bool = Tru
     _set_multiline(shape, linhas, blank_between, skip_first=True)
 
 
+def adicionar_imagem(slide, caminho: str, campo: dict) -> None:
+    """Insere a logo do cliente em uma caixa (left/top/max_width/max_height,
+    em EMU) definida no schema, mantendo a proporcao original da imagem e
+    sem aumentar logos pequenas (evita pixelizacao)."""
+    caminho_imagem = Path(caminho)
+    if not caminho_imagem.is_file():
+        raise DadosInvalidos(f"Arquivo de imagem nao encontrado: {caminho}")
+
+    max_largura = campo["max_width"]
+    max_altura = campo["max_height"]
+
+    figura = slide.shapes.add_picture(str(caminho_imagem), campo["left"], campo["top"])
+    escala = min(max_largura / figura.width, max_altura / figura.height, 1.0)
+    nova_largura = int(figura.width * escala)
+    nova_altura = int(figura.height * escala)
+    figura.width = nova_largura
+    figura.height = nova_altura
+    figura.left = campo["left"] + (max_largura - nova_largura) // 2
+    figura.top = campo["top"] + (max_altura - nova_altura) // 2
+
+
 APLICADORES = {
     "single": lambda shape, valor, campo: set_single(shape, str(valor)),
     "suffix": lambda shape, valor, campo: set_suffix(
@@ -281,7 +302,11 @@ def preencher_template(schema: dict, dados: dict) -> Presentation:
     prs = Presentation(template_path)
     for campo in schema["campos"]:
         chave = campo["chave"]
-        if chave not in dados:
+        if chave not in dados or not dados[chave]:
+            continue
+        if campo["tipo_campo"] == "image":
+            slide = prs.slides[campo["slide"] - 1]
+            adicionar_imagem(slide, dados[chave], campo)
             continue
         shape = _find_shape(prs, campo["slide"], campo["shape_id"])
         aplicar = APLICADORES[campo["tipo_campo"]]

@@ -134,6 +134,7 @@ Existem 4 tipos de campo:
 | `suffix`                 | Mantém um rótulo em negrito e substitui só o texto depois dele (ex: "**Importante:** ...") |
 | `multiline`              | Lista de linhas/bullets (ex: escopo, módulos inclusos)               |
 | `multiline_com_titulo`   | Como `multiline`, mas preserva um título fixo no primeiro parágrafo (ex: "Observações:") |
+| `image`                  | Insere uma imagem (ex: logo do cliente) numa caixa `left`/`top`/`max_width`/`max_height` (EMU) definida no próprio campo do schema — sem `shape_id`, porque não substitui um shape existente. A imagem é redimensionada mantendo a proporção e nunca é ampliada além do tamanho original. |
 
 Para adicionar um novo campo:
 
