@@ -591,9 +591,45 @@ class App(tk.Tk):
             abrir_no_sistema(self.ultimo_resultado.pdf_path)
 
 
+def _registrar_erro_fatal(erro: BaseException) -> Path:
+    import traceback
+
+    log_path = Path.home() / "Documents" / "erro do Gerador de Propostas.log"
+    try:
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(log_path, "w", encoding="utf-8") as f:
+            f.write(traceback.format_exc())
+    except Exception:
+        log_path = Path("erro do Gerador de Propostas.log")
+        try:
+            with open(log_path, "w", encoding="utf-8") as f:
+                f.write(traceback.format_exc())
+        except Exception:
+            pass
+    return log_path
+
+
 def main() -> None:
-    gp.instalar_fontes()  # garante Nunito/Space Grotesk Medium disponiveis para o Tk
-    App().mainloop()
+    try:
+        try:
+            gp.instalar_fontes()  # garante Nunito/Space Grotesk Medium disponiveis para o Tk
+        except Exception:
+            pass  # nunca deve impedir o programa de abrir
+        App().mainloop()
+    except Exception as e:  # pragma: no cover - ultimo recurso, nao deve falhar em silencio
+        log_path = _registrar_erro_fatal(e)
+        try:
+            import tkinter.messagebox as mb
+
+            mb.showerror(
+                "Erro ao abrir o Gerador de Propostas",
+                f"Ocorreu um erro inesperado ao abrir o programa.\n\n"
+                f"Os detalhes foram salvos em:\n{log_path}\n\n"
+                "Envie esse arquivo para que o erro possa ser corrigido.",
+            )
+        except Exception:
+            pass
+        raise
 
 
 if __name__ == "__main__":

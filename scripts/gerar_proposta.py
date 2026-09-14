@@ -116,17 +116,17 @@ def _instalar_fontes_windows() -> None:
     finally:
         chave.Close()
 
-    # Registra a fonte no GDI da sessao atual e avisa os apps abertos, para
-    # ficar disponivel *imediatamente* (sem precisar reiniciar o Windows) —
-    # inclusive para este mesmo processo, que ainda vai criar a janela do Tk.
+    # Registra a fonte no GDI da sessao atual, para ficar disponivel
+    # *imediatamente* neste mesmo processo (que ainda vai criar a janela do
+    # Tk), sem precisar reiniciar o Windows. NAO usa SendMessage(HWND_BROADCAST,
+    # WM_FONTCHANGE) aqui: aquilo bloqueia esperando TODAS as janelas do
+    # sistema responderem e pode travar a abertura do programa se algum
+    # outro app estiver sem resposta — nao vale o risco so por essa notificacao.
     try:
         import ctypes
 
         for f in FONTS_DIR.glob("*.ttf"):
             ctypes.windll.gdi32.AddFontResourceW(str(destino / f.name))
-        HWND_BROADCAST = 0xFFFF
-        WM_FONTCHANGE = 0x001D
-        ctypes.windll.user32.SendMessageW(HWND_BROADCAST, WM_FONTCHANGE, 0, 0)
     except Exception:
         pass
 
