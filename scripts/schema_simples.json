@@ -1,0 +1,85 @@
+{
+  "tipo": "simples",
+  "rotulo": "simples",
+  "template": "templates/proposta_simples.pptx",
+  "campos": [
+    {
+      "chave": "cliente",
+      "descricao": "Nome do cliente (A/C)",
+      "slide": 2,
+      "shape_id": 64,
+      "tipo_campo": "single",
+      "obrigatorio": true
+    },
+    {
+      "chave": "empresa",
+      "descricao": "Nome da empresa do cliente",
+      "slide": 2,
+      "shape_id": 65,
+      "tipo_campo": "single",
+      "obrigatorio": true
+    },
+    {
+      "chave": "objetivo",
+      "descricao": "Objetivo da proposta (resumo curto)",
+      "slide": 2,
+      "shape_id": 66,
+      "tipo_campo": "single",
+      "obrigatorio": true
+    },
+    {
+      "chave": "validade",
+      "descricao": "Validade da proposta (ex: 15 dias)",
+      "slide": 2,
+      "shape_id": 67,
+      "tipo_campo": "single",
+      "obrigatorio": false,
+      "padrao": "15 dias"
+    },
+    {
+      "chave": "escopo",
+      "descricao": "Itens do escopo do projeto (lista de linhas, iniciar cada item com '- ')",
+      "slide": 3,
+      "shape_id": 73,
+      "tipo_campo": "multiline",
+      "blank_between": true,
+      "obrigatorio": true
+    },
+    {
+      "chave": "prazo",
+      "descricao": "Prazo de execução (ex: 3 dias úteis)",
+      "slide": 3,
+      "shape_id": 77,
+      "tipo_campo": "single",
+      "obrigatorio": true
+    },
+    {
+      "chave": "valor",
+      "descricao": "Valor do orçamento (ex: R$ 680,00)",
+      "slide": 3,
+      "shape_id": 80,
+      "tipo_campo": "single",
+      "obrigatorio": true
+    },
+    {
+      "chave": "forma_pagamento",
+      "descricao": "Forma de pagamento (texto após o rótulo em negrito 'Forma de pagamento:')",
+      "slide": 3,
+      "shape_id": 81,
+      "tipo_campo": "suffix",
+      "manter_runs": 1,
+      "obrigatorio": false,
+      "padrao": " à vista, via boleto bancário, até a finalização da execução do trabalho."
+    },
+    {
+      "chave": "observacao_importante",
+      "descricao": "Texto após o rótulo em negrito 'Importante:'",
+      "slide": 3,
+      "shape_id": 83,
+      "tipo_campo": "suffix",
+      "manter_runs": 1,
+      "obrigatorio": false,
+      "padrao": "a produção do conteúdo é de responsabilidade do cliente."
+    }
+  ]
+}

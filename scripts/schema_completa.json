@@ -1,0 +1,121 @@
+{
+  "tipo": "completa",
+  "rotulo": "completa",
+  "template": "templates/proposta_completa.pptx",
+  "campos": [
+    {
+      "chave": "cliente",
+      "descricao": "Nome do cliente",
+      "slide": 16,
+      "shape_id": 130,
+      "tipo_campo": "single",
+      "obrigatorio": true
+    },
+    {
+      "chave": "empresa",
+      "descricao": "Nome da empresa do cliente",
+      "slide": 16,
+      "shape_id": 131,
+      "tipo_campo": "single",
+      "obrigatorio": true
+    },
+    {
+      "chave": "objetivo",
+      "descricao": "Resumo do projeto/objetivo da proposta",
+      "slide": 16,
+      "shape_id": 132,
+      "tipo_campo": "single",
+      "obrigatorio": true
+    },
+    {
+      "chave": "validade",
+      "descricao": "Validade da proposta (ex: 15 dias)",
+      "slide": 16,
+      "shape_id": 133,
+      "tipo_campo": "single",
+      "obrigatorio": false,
+      "padrao": "15 dias"
+    },
+    {
+      "chave": "paginas",
+      "descricao": "Total de páginas e/ou seções (ex: Até 10 páginas)",
+      "slide": 17,
+      "shape_id": 148,
+      "tipo_campo": "single",
+      "obrigatorio": true
+    },
+    {
+      "chave": "cms",
+      "descricao": "CMS utilizado (ex: WordPress)",
+      "slide": 17,
+      "shape_id": 149,
+      "tipo_campo": "single",
+      "obrigatorio": true
+    },
+    {
+      "chave": "prazo_entrega",
+      "descricao": "Prazo de entrega (ex: 70 dias*)",
+      "slide": 17,
+      "shape_id": 150,
+      "tipo_campo": "single",
+      "obrigatorio": true
+    },
+    {
+      "chave": "estrutura_projeto",
+      "descricao": "Estrutura do projeto / nome das páginas",
+      "slide": 17,
+      "shape_id": 151,
+      "tipo_campo": "single",
+      "obrigatorio": true
+    },
+    {
+      "chave": "modulos_inclusos",
+      "descricao": "Módulos e funções inclusos no projeto (lista de linhas, iniciar cada item com '- ')",
+      "slide": 18,
+      "shape_id": 157,
+      "tipo_campo": "multiline",
+      "blank_between": true,
+      "obrigatorio": true
+    },
+    {
+      "chave": "modulos_nao_inclusos",
+      "descricao": "Módulos e funções NÃO inclusos no projeto (lista de linhas, iniciar cada item com '- ')",
+      "slide": 19,
+      "shape_id": 167,
+      "tipo_campo": "multiline",
+      "blank_between": true,
+      "obrigatorio": false,
+      "padrao": [
+        "- Produção e cadastro de conteúdo;",
+        "- Contratação/manutenção de hospedagem e domínio - indicamos a melhor hospedagem para o projeto;",
+        "- Desenvolvimento de sistema interno ou terceiros (CRM) e/ou intranet;",
+        "- Sistema de ticket para suporte, da empresa ou cliente;",
+        "- Páginas adicionais não exibidas nesta proposta;",
+        "- Módulos não descritos na proposta."
+      ]
+    },
+    {
+      "chave": "investimento",
+      "descricao": "Detalhamento do investimento/valores do projeto (lista de linhas, iniciar cada item com '- ')",
+      "slide": 20,
+      "shape_id": 177,
+      "tipo_campo": "multiline",
+      "blank_between": true,
+      "obrigatorio": true
+    },
+    {
+      "chave": "observacoes",
+      "descricao": "Observações finais (lista de linhas). O primeiro item é o título 'Observações:' e não deve ser incluído.",
+      "slide": 20,
+      "shape_id": 182,
+      "tipo_campo": "multiline_com_titulo",
+      "blank_between": true,
+      "obrigatorio": false,
+      "padrao": [
+        "Para iniciar o projeto precisamos do detalhamento completo de todas as páginas;",
+        "O prazo para conclusão é de 70 dias, com entregas periódicas, contando a partir da data combinada (estando com o contrato assinado e pagamentos previamente alinhados com nosso financeiro);",
+        "O valor total do projeto pode ser dividido em parcelas (boleto bancário ou PIX) diluídas no decorrer dos 70 dias, lembrando que o projeto só será entregue após o pagamento de 100% do valor combinado."
+      ]
+    }
+  ]
+}

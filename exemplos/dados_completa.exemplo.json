@@ -1,0 +1,38 @@
+{
+  "cliente": "Alfaq Comércio de Peças LTDA",
+  "empresa": "Alfaq",
+  "objetivo": "Criação de site institucional completo",
+  "validade": "15 dias",
+  "paginas": "Até 10 páginas",
+  "cms": "WordPress",
+  "prazo_entrega": "70 dias*",
+  "estrutura_projeto": "Home, Sobre, Produtos, Serviços, Blog, Contato",
+  "modulos_inclusos": [
+    "- Desenvolvimento: Front e back-end, HTML/CSS, via WordPress;",
+    "- Novas telas para layout (UX e UI);",
+    "- Blog externo (template: Épico) para postagem de artigos/notícias, integrado ao site;",
+    "- Painel de controle (WordPress) para edição de todo conteúdo dinâmico (não incluso a modificação estrutural);",
+    "- Integração com WhatsApp Business, RD Station, chat online externo e outras ferramentas (a consultar);",
+    "- Melhores práticas para aplicação de SEO e alta performance;",
+    "- Integração com Google Analytics, Google Tag Manager e Google Search Console;"
+  ],
+  "modulos_nao_inclusos": [
+    "- Produção e cadastro de conteúdo;",
+    "- Contratação/manutenção de hospedagem e domínio - indicamos a melhor hospedagem para o projeto;",
+    "- Desenvolvimento de sistema interno ou terceiros (CRM) e/ou intranet;",
+    "- Sistema de ticket para suporte, da empresa ou cliente;",
+    "- Páginas adicionais não exibidas nesta proposta;",
+    "- Módulos não descritos na proposta."
+  ],
+  "investimento": [
+    "- Valor total do projeto: R$ 18.500,00;",
+    "- Entrada de 30% na assinatura do contrato;",
+    "- Restante dividido em até 3 parcelas, alinhadas às entregas do cronograma."
+  ],
+  "observacoes": [
+    "Para iniciar o projeto precisamos do detalhamento completo de todas as páginas;",
+    "O prazo para conclusão é de 70 dias, com entregas periódicas, contando a partir da data combinada (estando com o contrato assinado e pagamentos previamente alinhados com nosso financeiro);",
+    "O valor total do projeto pode ser dividido em parcelas (boleto bancário ou PIX) diluídas no decorrer dos 70 dias, lembrando que o projeto só será entregue após o pagamento de 100% do valor combinado."
+  ],
+  "data": "14-09-2026"
+}

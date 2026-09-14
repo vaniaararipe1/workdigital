@@ -1,0 +1,15 @@
+{
+  "cliente": "Alfaq Comércio de Peças LTDA",
+  "empresa": "Alfaq",
+  "objetivo": "Criação de menu pop-up e edição de conteúdo do site",
+  "validade": "15 dias",
+  "escopo": [
+    "- Criação via HTML/CSS de 1 menu pop-up, de acordo com layout, com cadastro de categorias existentes em sistema WordPress.",
+    "- Edição de conteúdo em 13 produtos previamente cadastrados. Website alfaq.com.br"
+  ],
+  "prazo": "3 dias úteis",
+  "valor": "R$ 680,00",
+  "forma_pagamento": " à vista, via boleto bancário, até a finalização da execução do trabalho.",
+  "observacao_importante": "a produção do conteúdo é de responsabilidade do cliente.",
+  "data": "14-09-2026"
+}

@@ -1,0 +1,5 @@
+propostas/*.pptx
+propostas/*.pdf
+!propostas/.gitkeep
+__pycache__/
+*.pyc
