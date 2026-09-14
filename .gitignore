@@ -3,3 +3,7 @@ propostas/*.pdf
 !propostas/.gitkeep
 __pycache__/
 *.pyc
+
+# Artefatos de build do PyInstaller (gerados por build_windows.bat / build_macos.sh / build_linux.sh)
+build/
+dist/

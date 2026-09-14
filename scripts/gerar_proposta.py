@@ -28,7 +28,16 @@ from pathlib import Path
 from pptx import Presentation
 from pptx.oxml.ns import qn
 
-ROOT = Path(__file__).resolve().parent.parent
+def _root_dir() -> Path:
+    """Raiz de dados do projeto: pasta do repo em modo normal, ou a pasta
+    temporaria de extracao quando empacotado com PyInstaller (--onefile)."""
+    meipass = getattr(sys, "_MEIPASS", None)
+    if meipass:
+        return Path(meipass)
+    return Path(__file__).resolve().parent.parent
+
+
+ROOT = _root_dir()
 FONTS_DIR = ROOT / "fonts"
 MAX_BYTES = 5 * 1024 * 1024  # 5 MB
 
@@ -37,6 +46,14 @@ TIPOS = {
     "completa": ROOT / "scripts" / "schema_completa.json",
 }
 
+FROZEN = bool(getattr(sys, "_MEIPASS", None))
+# App instalado (executavel): salva em Documentos, uma pasta estavel e
+# visivel para o usuario. Rodando a partir do repositorio (dev/CLI): mantem
+# a pasta propostas/ do proprio projeto, como ja documentado no README.
+PASTA_SAIDA_PADRAO = (
+    Path.home() / "Documents" / "Propostas Work Digital" if FROZEN else ROOT / "propostas"
+)
+
 
 # --------------------------------------------------------------------------- #
 # Fontes
@@ -44,8 +61,20 @@ TIPOS = {
 def instalar_fontes() -> None:
     """Instala as fontes do template (Nunito / Space Grotesk Medium) no
     sistema, para que a conversao para PDF renderize com a tipografia
-    correta em vez de uma fonte substituta."""
-    destino = Path.home() / ".fonts"
+    correta em vez de uma fonte substituta. Best-effort e multiplataforma:
+    nunca deve interromper a geracao da proposta se falhar."""
+    try:
+        if sys.platform.startswith("win"):
+            _instalar_fontes_windows()
+        elif sys.platform == "darwin":
+            _instalar_fontes_simples(Path.home() / "Library" / "Fonts", cache=False)
+        else:
+            _instalar_fontes_simples(Path.home() / ".fonts", cache=True)
+    except Exception:
+        pass
+
+
+def _instalar_fontes_simples(destino: Path, cache: bool) -> None:
     destino.mkdir(parents=True, exist_ok=True)
     mudou = False
     for f in FONTS_DIR.glob("*.ttf"):
@@ -53,12 +82,35 @@ def instalar_fontes() -> None:
         if not alvo.exists():
             shutil.copy(f, alvo)
             mudou = True
-    if mudou:
+    if mudou and cache:
         subprocess.run(
             ["fc-cache", "-f", str(destino)],
             check=False,
             capture_output=True,
         )
+
+
+def _instalar_fontes_windows() -> None:
+    import winreg  # disponivel apenas no Windows
+
+    destino = Path.home() / "AppData" / "Local" / "Microsoft" / "Windows" / "Fonts"
+    destino.mkdir(parents=True, exist_ok=True)
+    chave = winreg.OpenKey(
+        winreg.HKEY_CURRENT_USER,
+        r"Software\Microsoft\Windows NT\CurrentVersion\Fonts",
+        0,
+        winreg.KEY_SET_VALUE,
+    )
+    try:
+        for f in FONTS_DIR.glob("*.ttf"):
+            alvo = destino / f.name
+            if not alvo.exists():
+                shutil.copy(f, alvo)
+            winreg.SetValueEx(
+                chave, f"{f.stem} (TrueType)", 0, winreg.REG_SZ, str(alvo)
+            )
+    finally:
+        chave.Close()
 
 
 # --------------------------------------------------------------------------- #
@@ -188,9 +240,17 @@ APLICADORES = {
 # --------------------------------------------------------------------------- #
 # Geracao
 # --------------------------------------------------------------------------- #
+class DadosInvalidos(Exception):
+    """Dados faltando ou invalidos para gerar a proposta."""
+
+
+class LibreOfficeNaoEncontrado(Exception):
+    """LibreOffice (soffice) nao foi encontrado no computador."""
+
+
 def carregar_schema(tipo: str) -> dict:
     if tipo not in TIPOS:
-        raise SystemExit(f"Tipo invalido '{tipo}'. Use: {', '.join(TIPOS)}")
+        raise DadosInvalidos(f"Tipo invalido '{tipo}'. Use: {', '.join(TIPOS)}")
     with open(TIPOS[tipo], encoding="utf-8") as f:
         return json.load(f)
 
@@ -206,13 +266,13 @@ def validar_dados(schema: dict, dados: dict) -> dict:
             if "padrao" in campo:
                 completos[chave] = campo["padrao"]
             elif campo.get("obrigatorio"):
-                faltando.append(chave)
+                faltando.append(campo.get("descricao", chave))
     if faltando:
-        raise SystemExit(
-            "Faltam campos obrigatorios em 'dados': " + ", ".join(faltando)
+        raise DadosInvalidos(
+            "Faltam campos obrigatorios: " + ", ".join(faltando)
         )
     if "cliente" not in completos or not completos["cliente"]:
-        raise SystemExit("O campo 'cliente' e obrigatorio (usado tambem no nome do arquivo).")
+        raise DadosInvalidos("O campo 'cliente' e obrigatorio (usado tambem no nome do arquivo).")
     return completos
 
 
@@ -238,11 +298,40 @@ def nome_base(cliente: str, rotulo: str, data: str | None) -> str:
     return f"{cliente_limpo} Modelo de proposta comercial {rotulo} ({data})"
 
 
+def localizar_soffice() -> str | None:
+    """Procura o executavel do LibreOffice no PATH e em locais tipicos de
+    instalacao no Windows/Mac/Linux."""
+    encontrado = shutil.which("soffice") or shutil.which("soffice.exe")
+    if encontrado:
+        return encontrado
+    candidatos: list[str] = []
+    if sys.platform.startswith("win"):
+        candidatos = [
+            r"C:\Program Files\LibreOffice\program\soffice.exe",
+            r"C:\Program Files (x86)\LibreOffice\program\soffice.exe",
+        ]
+    elif sys.platform == "darwin":
+        candidatos = ["/Applications/LibreOffice.app/Contents/MacOS/soffice"]
+    else:
+        candidatos = ["/usr/bin/soffice", "/usr/lib/libreoffice/program/soffice"]
+    for candidato in candidatos:
+        if Path(candidato).exists():
+            return candidato
+    return None
+
+
 def exportar_pdf(pptx_path: Path, saida_dir: Path) -> Path:
+    soffice = localizar_soffice()
+    if not soffice:
+        raise LibreOfficeNaoEncontrado(
+            "LibreOffice nao foi encontrado neste computador. Instale gratuitamente "
+            "em https://www.libreoffice.org/download para gerar o PDF automaticamente "
+            "(o PPTX ja foi gerado normalmente)."
+        )
     instalar_fontes()
     with tempfile.TemporaryDirectory(prefix="lo_profile_") as perfil:
         cmd = [
-            "soffice",
+            soffice,
             "--headless",
             "--norestore",
             f"-env:UserInstallation=file://{perfil}",
@@ -262,7 +351,14 @@ def exportar_pdf(pptx_path: Path, saida_dir: Path) -> Path:
     return pdf_path
 
 
-def gerar(tipo: str, dados: dict, saida_dir: Path) -> tuple[Path, Path]:
+class ResultadoGeracao:
+    def __init__(self, pptx_path: Path, pdf_path: Path | None, aviso: str | None):
+        self.pptx_path = pptx_path
+        self.pdf_path = pdf_path
+        self.aviso = aviso
+
+
+def gerar(tipo: str, dados: dict, saida_dir: Path) -> ResultadoGeracao:
     schema = carregar_schema(tipo)
     dados_completos = validar_dados(schema, dados)
     prs = preencher_template(schema, dados_completos)
@@ -272,9 +368,16 @@ def gerar(tipo: str, dados: dict, saida_dir: Path) -> tuple[Path, Path]:
     pptx_path = saida_dir / f"{base}.pptx"
     prs.save(pptx_path)
 
-    pdf_path = exportar_pdf(pptx_path, saida_dir)
+    pdf_path: Path | None = None
+    aviso: str | None = None
+    try:
+        pdf_path = exportar_pdf(pptx_path, saida_dir)
+    except (LibreOfficeNaoEncontrado, RuntimeError) as e:
+        aviso = str(e)
 
     for caminho in (pptx_path, pdf_path):
+        if caminho is None:
+            continue
         tamanho = caminho.stat().st_size
         if tamanho > MAX_BYTES:
             print(
@@ -283,7 +386,7 @@ def gerar(tipo: str, dados: dict, saida_dir: Path) -> tuple[Path, Path]:
                 file=sys.stderr,
             )
 
-    return pptx_path, pdf_path
+    return ResultadoGeracao(pptx_path, pdf_path, aviso)
 
 
 def main() -> None:
@@ -291,18 +394,32 @@ def main() -> None:
     parser.add_argument("--tipo", required=True, choices=list(TIPOS))
     parser.add_argument("--dados", required=True, help="Caminho para o JSON com os dados do cliente")
     parser.add_argument(
-        "--saida", default=str(ROOT / "propostas"), help="Diretorio de saida (padrao: propostas/)"
+        "--saida",
+        default=str(PASTA_SAIDA_PADRAO),
+        help=f"Diretorio de saida (padrao: {PASTA_SAIDA_PADRAO})",
     )
     args = parser.parse_args()
 
     with open(args.dados, encoding="utf-8") as f:
         dados = json.load(f)
 
-    pptx_path, pdf_path = gerar(args.tipo, dados, Path(args.saida))
+    try:
+        resultado = gerar(args.tipo, dados, Path(args.saida))
+    except DadosInvalidos as e:
+        raise SystemExit(f"Erro: {e}")
 
     print("Proposta gerada com sucesso:")
-    print(f"  PPTX: {pptx_path} ({pptx_path.stat().st_size / 1024:.0f} KB)")
-    print(f"  PDF:  {pdf_path} ({pdf_path.stat().st_size / 1024:.0f} KB)")
+    print(
+        f"  PPTX: {resultado.pptx_path} "
+        f"({resultado.pptx_path.stat().st_size / 1024:.0f} KB)"
+    )
+    if resultado.pdf_path:
+        print(
+            f"  PDF:  {resultado.pdf_path} "
+            f"({resultado.pdf_path.stat().st_size / 1024:.0f} KB)"
+        )
+    if resultado.aviso:
+        print(f"  [AVISO] {resultado.aviso}", file=sys.stderr)
 
 
 if __name__ == "__main__":
