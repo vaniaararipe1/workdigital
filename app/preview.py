@@ -3,6 +3,9 @@ Painel de preview do slide - renderiza (de forma aproximada) o fundo e os
 textos do slide da proposta, atualizando em tempo real conforme o
 formulario e' preenchido. Nao e' o render final (isso sai do LibreOffice
 na hora de gerar); e' so um retrato rapido para orientar o preenchimento.
+
+O canvas ocupa todo o espaco disponivel no painel (responsivo), sempre
+mantendo a proporcao 16:9 real do slide.
 """
 from __future__ import annotations
 
@@ -20,9 +23,17 @@ COR_PADRAO = "#222222"
 EMU_POR_PT = 12700
 
 
+def pontos_arredondados(x1, y1, x2, y2, r):
+    r = max(0, min(r, (x2 - x1) / 2, (y2 - y1) / 2))
+    return [
+        x1 + r, y1, x2 - r, y1, x2, y1, x2, y1 + r,
+        x2, y2 - r, x2, y2, x2 - r, y2, x1 + r, y2,
+        x1, y2, x1, y2 - r, x1, y1 + r, x1, y1,
+    ]
+
+
 class SlidePreview(tk.Frame):
-    LARGURA = 440
-    ALTURA = 248
+    ASPECTO = 9144000 / 5143500  # proporcao real do slide (~16:9)
 
     def __init__(self, master, **kw):
         super().__init__(master, bg=PRETO, **kw)
@@ -32,22 +43,18 @@ class SlidePreview(tk.Frame):
             text="Preview do slide",
             bg=PRETO,
             fg="#FFFFFF",
-            font=("Segoe UI", 10, "bold"),
-        ).pack(anchor="w", pady=(0, 6))
+            font=("Segoe UI", 13, "bold"),
+        ).pack(anchor="w", pady=(0, 8))
 
-        moldura = tk.Frame(self, bg="#3A3A46", padx=2, pady=2)
-        moldura.pack()
-        self.canvas = tk.Canvas(
-            moldura,
-            width=self.LARGURA,
-            height=self.ALTURA,
-            bg="white",
-            highlightthickness=0,
-        )
-        self.canvas.pack()
+        self.moldura = tk.Frame(self, bg="#3A3A46", padx=3, pady=3)
+        self.moldura.pack(fill="both", expand=True)
+        self.canvas = tk.Canvas(self.moldura, bg="white", highlightthickness=0)
+        self.canvas.pack(fill="both", expand=True)
+        self.canvas.bind("<Configure>", self._on_resize)
 
         nav = tk.Frame(self, bg=PRETO)
-        nav.pack(fill="x", pady=(8, 0))
+        nav.pack(fill="x", pady=(10, 0))
+        fonte_nav = ("Segoe UI", 11, "bold")
         self.botao_anterior = tk.Button(
             nav,
             text="◀ Anterior",
@@ -55,12 +62,15 @@ class SlidePreview(tk.Frame):
             bg="#2A2A33",
             fg="white",
             relief="flat",
+            font=fonte_nav,
+            padx=12,
+            pady=6,
             activebackground="#3A3A46",
             activeforeground="white",
         )
         self.botao_anterior.pack(side="left")
         self.label_pagina = tk.Label(
-            nav, text="", bg=PRETO, fg=CINZA_CLARO, font=("Segoe UI", 8)
+            nav, text="", bg=PRETO, fg=CINZA_CLARO, font=("Segoe UI", 11)
         )
         self.label_pagina.pack(side="left", expand=True)
         self.botao_proxima = tk.Button(
@@ -70,6 +80,9 @@ class SlidePreview(tk.Frame):
             bg="#2A2A33",
             fg="white",
             relief="flat",
+            font=fonte_nav,
+            padx=12,
+            pady=6,
             activebackground="#3A3A46",
             activeforeground="white",
         )
@@ -80,15 +93,19 @@ class SlidePreview(tk.Frame):
         self.paginas: list[int] = []
         self.pagina_atual = 0
         self.valores: dict = {}
-        self._fundo_cache: dict[int, ImageTk.PhotoImage | None] = {}
+        self._fundo_raw: dict[int, Image.Image | None] = {}
         self._imagens_vivas: list[ImageTk.PhotoImage] = []
         self._escala = 1.0
+        self.largura = 480
+        self.altura = int(self.largura / self.ASPECTO)
+        self._ox = 0
+        self._oy = 0
 
     # ------------------------------------------------------------------ #
     def carregar(self, template_path: Path, schema: dict) -> None:
         self.prs = Presentation(str(template_path))
         self.schema = schema
-        self._escala = self.LARGURA / self.prs.slide_width
+        self._escala = self.largura / self.prs.slide_width
 
         mapa_por_slide: dict[int, dict[int, dict]] = {}
         paginas: list[int] = []
@@ -96,7 +113,7 @@ class SlidePreview(tk.Frame):
             slide_num = campo["slide"]
             if slide_num not in paginas:
                 paginas.append(slide_num)
-            if campo["tipo_campo"] != "image":
+            if campo["tipo_campo"] not in ("image", "botao"):
                 mapa_por_slide.setdefault(slide_num, {})[campo["shape_id"]] = campo
         paginas.sort()
 
@@ -104,7 +121,7 @@ class SlidePreview(tk.Frame):
         self.paginas = paginas
         self.pagina_atual = 0
         self.valores = {}
-        self._fundo_cache = {
+        self._fundo_raw = {
             (n - 1): self._extrair_fundo(self.prs.slides[n - 1]) for n in paginas
         }
         self._atualizar_navegacao()
@@ -127,6 +144,23 @@ class SlidePreview(tk.Frame):
             self._desenhar()
 
     # ------------------------------------------------------------------ #
+    def _on_resize(self, event) -> None:
+        w, h = event.width, event.height
+        if w < 20 or h < 20:
+            return
+        if w / h > self.ASPECTO:
+            nova_altura = h
+            nova_largura = int(h * self.ASPECTO)
+        else:
+            nova_largura = w
+            nova_altura = int(w / self.ASPECTO)
+        if abs(nova_largura - self.largura) < 2 and abs(nova_altura - self.altura) < 2:
+            return
+        self.largura, self.altura = max(nova_largura, 10), max(nova_altura, 10)
+        if self.prs:
+            self._escala = self.largura / self.prs.slide_width
+        self._desenhar()
+
     def _atualizar_navegacao(self) -> None:
         total = len(self.paginas)
         pos = self.pagina_atual + 1
@@ -137,14 +171,12 @@ class SlidePreview(tk.Frame):
             state="normal" if self.pagina_atual < total - 1 else "disabled"
         )
 
-    def _extrair_fundo(self, slide) -> ImageTk.PhotoImage | None:
+    def _extrair_fundo(self, slide) -> Image.Image | None:
         for shape in slide.shapes:
             if shape.shape_type == 13:  # PICTURE
                 try:
                     blob = shape.image.blob
-                    img = Image.open(io.BytesIO(blob)).convert("RGB")
-                    img = img.resize((self.LARGURA, self.ALTURA), Image.LANCZOS)
-                    return ImageTk.PhotoImage(img)
+                    return Image.open(io.BytesIO(blob)).convert("RGB")
                 except Exception:
                     return None
         return None
@@ -199,18 +231,31 @@ class SlidePreview(tk.Frame):
         if not self.prs or not self.paginas:
             return
 
+        canvas_w = self.canvas.winfo_width()
+        canvas_h = self.canvas.winfo_height()
+        self._ox = max(0, (canvas_w - self.largura) // 2)
+        self._oy = max(0, (canvas_h - self.altura) // 2)
+        if canvas_w > 2 and canvas_h > 2:
+            self.canvas.create_rectangle(
+                0, 0, canvas_w, canvas_h, fill="#1C1C22", outline=""
+            )
+
         slide_num = self.paginas[self.pagina_atual]
         idx = slide_num - 1
         slide = self.prs.slides[idx]
         mapa = self._mapa_por_slide.get(slide_num, {})
 
-        fundo = self._fundo_cache.get(idx)
-        if fundo is not None:
-            self.canvas.create_image(0, 0, image=fundo, anchor="nw")
+        fundo_raw = self._fundo_raw.get(idx)
+        if fundo_raw is not None:
+            fundo = ImageTk.PhotoImage(
+                fundo_raw.resize((self.largura, self.altura), Image.LANCZOS)
+            )
+            self.canvas.create_image(self._ox, self._oy, image=fundo, anchor="nw")
             self._imagens_vivas.append(fundo)
         else:
             self.canvas.create_rectangle(
-                0, 0, self.LARGURA, self.ALTURA, fill="white", outline=""
+                self._ox, self._oy, self._ox + self.largura, self._oy + self.altura,
+                fill="white", outline="",
             )
 
         for shape in slide.shapes:
@@ -221,10 +266,10 @@ class SlidePreview(tk.Frame):
             if not texto.strip():
                 continue
             tamanho_pt, negrito, cor = self._estilo(shape)
-            x = shape.left * self._escala
-            y = shape.top * self._escala
+            x = self._ox + shape.left * self._escala
+            y = self._oy + shape.top * self._escala
             largura = max(10, shape.width * self._escala)
-            tamanho_px = max(6, round(tamanho_pt * EMU_POR_PT * self._escala))
+            tamanho_px = max(7, round(tamanho_pt * EMU_POR_PT * self._escala))
             fonte = ("Segoe UI", tamanho_px, "bold" if negrito else "normal")
             self.canvas.create_text(
                 x, y, text=texto, anchor="nw", width=largura,
@@ -232,12 +277,16 @@ class SlidePreview(tk.Frame):
             )
 
         for campo in self.schema["campos"]:
-            if campo["tipo_campo"] == "image" and campo["slide"] == slide_num:
+            if campo["slide"] != slide_num:
+                continue
+            if campo["tipo_campo"] == "image":
                 self._desenhar_logo(campo)
+            elif campo["tipo_campo"] == "botao":
+                self._desenhar_botao(campo)
 
     def _desenhar_logo(self, campo: dict) -> None:
-        left = campo["left"] * self._escala
-        top = campo["top"] * self._escala
+        left = self._ox + campo["left"] * self._escala
+        top = self._oy + campo["top"] * self._escala
         max_w = campo["max_width"] * self._escala
         max_h = campo["max_height"] * self._escala
         caminho = self.valores.get(campo["chave"])
@@ -263,6 +312,32 @@ class SlidePreview(tk.Frame):
             top + max_h / 2,
             text="Logo do cliente\n(opcional)",
             fill="#AAAAAA",
-            font=("Segoe UI", 8),
+            font=("Segoe UI", 9),
             justify="center",
+        )
+
+    def _desenhar_botao(self, campo: dict) -> None:
+        left = self._ox + campo["left"] * self._escala
+        top = self._oy + campo["top"] * self._escala
+        largura = campo["width"] * self._escala
+        altura = campo["height"] * self._escala
+        url = self.valores.get(campo["chave"])
+        texto = campo.get("texto_botao", "")
+
+        preenchido = bool(url)
+        cor_fundo = ROXO if preenchido else "#E8E4F7"
+        cor_texto = "white" if preenchido else "#8A7FBF"
+        pontos = pontos_arredondados(left, top, left + largura, top + altura, altura / 3)
+        self.canvas.create_polygon(
+            pontos, smooth=True, fill=cor_fundo, outline=cor_fundo
+        )
+        tamanho_px = max(8, round(altura * 0.32))
+        self.canvas.create_text(
+            left + largura / 2,
+            top + altura / 2,
+            text=texto if texto else "Botão do wireframe (opcional)",
+            fill=cor_texto,
+            font=("Segoe UI", tamanho_px, "bold"),
+            justify="center",
+            width=largura - 10,
         )

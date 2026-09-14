@@ -143,6 +143,7 @@ Existem 4 tipos de campo:
 | `multiline`              | Lista de linhas/bullets (ex: escopo, módulos inclusos)               |
 | `multiline_com_titulo`   | Como `multiline`, mas preserva um título fixo no primeiro parágrafo (ex: "Observações:") |
 | `image`                  | Insere uma imagem (ex: logo do cliente) numa caixa `left`/`top`/`max_width`/`max_height` (EMU) definida no próprio campo do schema — sem `shape_id`, porque não substitui um shape existente. A imagem é redimensionada mantendo a proporção e nunca é ampliada além do tamanho original. |
+| `botao`                  | Insere um botão roxo com hyperlink (ex: link do wireframe/prévia) numa caixa `left`/`top`/`width`/`height` (EMU), com o texto fixo definido em `texto_botao`. O valor do campo é a URL; se vazio, nenhum botão é adicionado. |
 
 Para adicionar um novo campo:
 

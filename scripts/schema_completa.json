@@ -89,6 +89,18 @@
       "obrigatorio": true
     },
     {
+      "chave": "link_wireframe",
+      "descricao": "Veja aqui uma prévia do wireframe do seu projeto",
+      "slide": 18,
+      "tipo_campo": "botao",
+      "left": 506675,
+      "top": 1900000,
+      "width": 3599700,
+      "height": 550000,
+      "texto_botao": "Veja aqui o wireframe do seu projeto",
+      "obrigatorio": false
+    },
+    {
       "chave": "modulos_nao_inclusos",
       "descricao": "Módulos e funções NÃO inclusos no projeto (lista de linhas, iniciar cada item com '- ')",
       "slide": 19,

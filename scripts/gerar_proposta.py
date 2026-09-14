@@ -26,7 +26,11 @@ import tempfile
 from pathlib import Path
 
 from pptx import Presentation
+from pptx.dml.color import RGBColor
+from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.oxml.ns import qn
+from pptx.util import Emu, Pt
 
 def _root_dir() -> Path:
     """Raiz de dados do projeto: pasta do repo em modo normal, ou a pasta
@@ -244,6 +248,47 @@ def adicionar_imagem(slide, caminho: str, campo: dict) -> None:
     figura.top = campo["top"] + (max_altura - nova_altura) // 2
 
 
+def adicionar_botao_link(slide, campo: dict, url: str) -> None:
+    """Insere um botao roxo de destaque, com hyperlink, no slide — usado
+    para o link do wireframe/previa do projeto."""
+    if not url.strip():
+        return
+    if not url.lower().startswith(("http://", "https://")):
+        url = "https://" + url.strip()
+
+    shape = slide.shapes.add_shape(
+        MSO_SHAPE.ROUNDED_RECTANGLE,
+        campo["left"],
+        campo["top"],
+        campo["width"],
+        campo["height"],
+    )
+    shape.shadow.inherit = False
+    shape.fill.solid()
+    shape.fill.fore_color.rgb = RGBColor(0x60, 0x25, 0xE1)
+    shape.line.fill.background()
+    try:
+        shape.adjustments[0] = 0.5
+    except (IndexError, AttributeError):
+        pass
+
+    tf = shape.text_frame
+    tf.word_wrap = True
+    tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    tf.margin_left = tf.margin_right = Emu(91440)
+    tf.margin_top = tf.margin_bottom = Emu(0)
+
+    p = tf.paragraphs[0]
+    p.alignment = PP_ALIGN.CENTER
+    run = p.add_run()
+    run.text = campo.get("texto_botao", "Veja aqui o wireframe do seu projeto")
+    run.font.size = Pt(13)
+    run.font.bold = True
+    run.font.name = "Nunito"
+    run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+    run.hyperlink.address = url
+
+
 APLICADORES = {
     "single": lambda shape, valor, campo: set_single(shape, str(valor)),
     "suffix": lambda shape, valor, campo: set_suffix(
@@ -307,6 +352,10 @@ def preencher_template(schema: dict, dados: dict) -> Presentation:
         if campo["tipo_campo"] == "image":
             slide = prs.slides[campo["slide"] - 1]
             adicionar_imagem(slide, dados[chave], campo)
+            continue
+        if campo["tipo_campo"] == "botao":
+            slide = prs.slides[campo["slide"] - 1]
+            adicionar_botao_link(slide, campo, dados[chave])
             continue
         shape = _find_shape(prs, campo["slide"], campo["shape_id"])
         aplicar = APLICADORES[campo["tipo_campo"]]
