@@ -21,7 +21,28 @@ CINZA_CLARO = "#B8B8C4"
 ROXO = "#6025E1"
 COR_PADRAO = "#222222"
 EMU_POR_PT = 12700
-FONTE_CORPO = "Nunito"
+FONTE_CORPO_PADRAO = "Nunito"
+FONTE_ALTERNATIVA = "Arial"
+GAP_MINIMO_PX = 4
+
+
+def resolver_familia(nome: str, alternativa: str = FONTE_ALTERNATIVA, _cache: dict = {}) -> str:
+    """Devolve `nome` se essa familia de fonte estiver de fato disponivel
+    para o Tk neste computador; senao devolve `alternativa`. Sem isso, se
+    a fonte da marca nao estiver instalada/reconhecida (ex: em alguns
+    Windows), o Tk substitui por uma fonte generica que costuma ser mais
+    larga — o texto quebra linha em lugares diferentes do esperado e
+    passa por cima do proximo campo."""
+    if nome not in _cache:
+        try:
+            import tkinter.font as tkfont
+            _cache[nome] = nome in tkfont.families()
+        except Exception:
+            _cache[nome] = False
+    return nome if _cache[nome] else alternativa
+
+
+FONTE_CORPO = FONTE_CORPO_PADRAO  # resolvida de verdade em SlidePreview.__init__
 
 
 def pontos_arredondados(x1, y1, x2, y2, r):
@@ -39,12 +60,16 @@ class SlidePreview(tk.Frame):
     def __init__(self, master, **kw):
         super().__init__(master, bg=PRETO, **kw)
 
+        global FONTE_CORPO
+        FONTE_CORPO = resolver_familia(FONTE_CORPO_PADRAO)
+        fonte_titulo = (resolver_familia("Space Grotesk Medium", FONTE_CORPO), 12, "bold")
+
         tk.Label(
             self,
             text="Preview do slide",
             bg=PRETO,
             fg="#FFFFFF",
-            font=("Space Grotesk Medium", 12, "bold"),
+            font=fonte_titulo,
         ).pack(anchor="w", pady=(0, 6))
 
         self.moldura = tk.Frame(self, bg="#3A3A46", padx=3, pady=3)
@@ -192,7 +217,7 @@ class SlidePreview(tk.Frame):
                 tamanho_pt = run.font.size.pt
             negrito = bool(run.font.bold)
             if run.font.name:
-                familia = run.font.name
+                familia = resolver_familia(run.font.name)
             try:
                 if run.font.color and run.font.color.type is not None and int(run.font.color.type) == 1:
                     cor = "#" + str(run.font.color.rgb)
@@ -261,9 +286,19 @@ class SlidePreview(tk.Frame):
                 fill="white", outline="",
             )
 
-        for shape in slide.shapes:
-            if not shape.has_text_frame or not shape.text_frame.text.strip():
-                continue
+        caixas_ocupadas: list[tuple[float, float, float, float]] = []
+
+        # O XML do template nao lista os shapes na ordem visual (ex: os 4
+        # rotulos de um grupo vem todos antes dos 4 valores correspondentes).
+        # Por isso, para a prevencao de sobreposicao fazer sentido, os shapes
+        # sao ordenados pela posicao vertical original antes de desenhar —
+        # "o que vem antes" passa a significar "o que fica mais acima".
+        shapes_com_texto = [
+            s for s in slide.shapes if s.has_text_frame and s.text_frame.text.strip()
+        ]
+        shapes_com_texto.sort(key=lambda s: (s.top, s.left))
+
+        for shape in shapes_com_texto:
             campo = mapa.get(shape.shape_id)
             texto = self._valor_formatado(campo, shape) if campo else shape.text_frame.text
             if not texto.strip():
@@ -274,10 +309,23 @@ class SlidePreview(tk.Frame):
             largura = max(10, shape.width * self._escala)
             tamanho_px = max(7, round(tamanho_pt * EMU_POR_PT * self._escala))
             fonte = (familia, tamanho_px, "bold" if negrito else "normal")
-            self.canvas.create_text(
+
+            # Se o texto (com a fonte realmente disponivel) ficar mais alto
+            # do que a posicao original do template previa, o campo seguinte
+            # da mesma coluna e' empurrado para baixo — nunca fica um por
+            # cima do outro, seja qual for a fonte usada nesta maquina.
+            for (ox1, oy1, ox2, oy2) in caixas_ocupadas:
+                sobrepoe_x = not (x + largura <= ox1 or x >= ox2)
+                if sobrepoe_x and y < oy2 + GAP_MINIMO_PX:
+                    y = oy2 + GAP_MINIMO_PX
+
+            item_id = self.canvas.create_text(
                 x, y, text=texto, anchor="nw", width=largura,
                 font=fonte, fill=cor, justify="left",
             )
+            bbox = self.canvas.bbox(item_id)
+            if bbox:
+                caixas_ocupadas.append(bbox)
 
         for campo in self.schema["campos"]:
             if campo["slide"] != slide_num:

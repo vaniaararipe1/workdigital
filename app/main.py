@@ -86,6 +86,20 @@ FONTE_AJUDA = (FONTE_CORPO_FAM, 9)
 LARGURA_COLUNA_ESQUERDA = 620
 
 
+def _resolver_familia(nome: str, alternativa: str = "Arial") -> str:
+    """Devolve `nome` so' se essa fonte estiver de fato disponivel para o
+    Tk neste computador; senao cai para uma alternativa conhecida. Sem
+    isso, se Nunito/Space Grotesk Medium nao forem reconhecidas (ex: em
+    alguns Windows), o Tk substitui por uma fonte generica mais larga —
+    o texto quebra linha e desalinha a tela inteira."""
+    try:
+        import tkinter.font as tkfont
+
+        return nome if nome in tkfont.families() else alternativa
+    except Exception:
+        return alternativa
+
+
 def abrir_no_sistema(caminho: Path) -> None:
     try:
         if sys.platform.startswith("win"):
@@ -136,6 +150,15 @@ class CampoArredondado(tk.Frame):
 class App(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
+
+        global FONTE_TITULO_FAM, FONTE_CORPO_FAM, FONTE_TITULO, FONTE_LABEL, FONTE_TEXTO, FONTE_AJUDA
+        FONTE_CORPO_FAM = _resolver_familia("Nunito")
+        FONTE_TITULO_FAM = _resolver_familia("Space Grotesk Medium", FONTE_CORPO_FAM)
+        FONTE_TITULO = (FONTE_TITULO_FAM, 16, "bold")
+        FONTE_LABEL = (FONTE_CORPO_FAM, 11, "bold")
+        FONTE_TEXTO = (FONTE_CORPO_FAM, 11)
+        FONTE_AJUDA = (FONTE_CORPO_FAM, 9)
+
         self.title("Work Digital — Gerador de Propostas")
         self.minsize(1180, 680)
         self.geometry("1360x820")  # tamanho garantido, caso maximizar nao funcione no WM
