@@ -21,28 +21,23 @@ CINZA_CLARO = "#B8B8C4"
 ROXO = "#6025E1"
 COR_PADRAO = "#222222"
 EMU_POR_PT = 12700
-FONTE_CORPO_PADRAO = "Nunito"
-FONTE_ALTERNATIVA = "Arial"
 GAP_MINIMO_PX = 4
 
-
-def resolver_familia(nome: str, alternativa: str = FONTE_ALTERNATIVA, _cache: dict = {}) -> str:
-    """Devolve `nome` se essa familia de fonte estiver de fato disponivel
-    para o Tk neste computador; senao devolve `alternativa`. Sem isso, se
-    a fonte da marca nao estiver instalada/reconhecida (ex: em alguns
-    Windows), o Tk substitui por uma fonte generica que costuma ser mais
-    larga — o texto quebra linha em lugares diferentes do esperado e
-    passa por cima do proximo campo."""
-    if nome not in _cache:
-        try:
-            import tkinter.font as tkfont
-            _cache[nome] = nome in tkfont.families()
-        except Exception:
-            _cache[nome] = False
-    return nome if _cache[nome] else alternativa
+# A tela do programa (formulario + preview) usa a fonte nativa do Windows
+# ("Segoe UI" existe em qualquer Windows 7+, sem precisar instalar nada).
+# Carregar Nunito/Space Grotesk Medium dinamicamente dentro do Tk se
+# mostrou instavel em alguns Windows (o Tk "encontra" a fonte mas as
+# vezes nao renderiza com a metrica certa, quebrando linha em lugares
+# diferentes do esperado e sobrepondo campos). O documento final gerado
+# (PPTX/PDF) continua usando a fonte real da Work Digital normalmente —
+# isso e' feito pelo LibreOffice, um caminho totalmente separado e ja
+# validado, sem essa instabilidade.
+FONTE_CORPO = "Segoe UI"
 
 
-FONTE_CORPO = FONTE_CORPO_PADRAO  # resolvida de verdade em SlidePreview.__init__
+def resolver_familia(nome: str, alternativa: str = FONTE_CORPO) -> str:
+    """Mantido por compatibilidade — sempre devolve a fonte padrao da UI."""
+    return alternativa
 
 
 def pontos_arredondados(x1, y1, x2, y2, r):
@@ -60,9 +55,7 @@ class SlidePreview(tk.Frame):
     def __init__(self, master, **kw):
         super().__init__(master, bg=PRETO, **kw)
 
-        global FONTE_CORPO
-        FONTE_CORPO = resolver_familia(FONTE_CORPO_PADRAO)
-        fonte_titulo = (resolver_familia("Space Grotesk Medium", FONTE_CORPO), 12, "bold")
+        fonte_titulo = (FONTE_CORPO, 12, "bold")
 
         tk.Label(
             self,
@@ -323,6 +316,11 @@ class SlidePreview(tk.Frame):
                 x, y, text=texto, anchor="nw", width=largura,
                 font=fonte, fill=cor, justify="left",
             )
+            # Forca o Tk a terminar de calcular a metrica do texto (quantas
+            # linhas, altura real) antes de medir a caixa — sem isso, em
+            # alguns ambientes o bbox() pode voltar desatualizado e a
+            # prevencao de sobreposicao abaixo nao teria efeito.
+            self.canvas.update_idletasks()
             bbox = self.canvas.bbox(item_id)
             if bbox:
                 caixas_ocupadas.append(bbox)
