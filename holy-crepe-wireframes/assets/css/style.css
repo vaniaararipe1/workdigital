@@ -1,0 +1,434 @@
+/* ==========================================================================
+   Holy Crepe — Wireframes de baixa fidelidade
+   Folha de estilo base compartilhada por todas as páginas.
+   Escala de cinza, sem cores de marca, sem imagens reais.
+   ========================================================================== */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Courier New", Courier, monospace;
+  background: #ffffff;
+  color: #222222;
+  line-height: 1.45;
+  font-size: 14px;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: inherit; text-decoration: none; }
+
+ul { list-style: none; margin: 0; padding: 0; }
+
+h1, h2, h3, p { margin: 0; }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* --------------------------------------------------------------------
+   Anotações de wireframe (CTA / LINK / rótulos de seção)
+   -------------------------------------------------------------------- */
+
+.wf-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: .5px;
+  padding: 1px 5px;
+  border: 1px solid #666;
+  border-radius: 2px;
+  color: #444;
+  background: #f0f0f0;
+  vertical-align: middle;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+.section-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  margin: 0 0 12px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #ddd;
+}
+
+.wf-note {
+  font-size: 11px;
+  color: #888;
+  font-style: italic;
+  padding: 6px 24px;
+  background: #fafafa;
+  border-bottom: 1px dashed #ccc;
+}
+
+/* --------------------------------------------------------------------
+   Estrutura de seção
+   -------------------------------------------------------------------- */
+
+.section {
+  padding: 32px 0;
+  border-bottom: 1px dashed #bbb;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+.section-subtitle {
+  font-size: 13px;
+  color: #555;
+  margin: 0 0 16px;
+}
+
+/* --------------------------------------------------------------------
+   Blocos genéricos / linhas de texto (placeholder de conteúdo)
+   -------------------------------------------------------------------- */
+
+.wf-box {
+  border: 1px solid #999;
+  background: #f4f4f4;
+  padding: 16px;
+}
+
+.text-block { display: flex; flex-direction: column; gap: 8px; }
+
+.text-line {
+  height: 9px;
+  background: #ddd;
+  border: 1px solid #ccc;
+}
+.text-line.w-100 { width: 100%; }
+.text-line.w-80 { width: 80%; }
+.text-line.w-60 { width: 60%; }
+.text-line.w-40 { width: 40%; }
+
+/* --------------------------------------------------------------------
+   Placeholder de imagem/vídeo (caixa com X e rótulo "IMG")
+   -------------------------------------------------------------------- */
+
+.img-placeholder {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #999;
+  background: #eaeaea;
+  color: #777;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-align: center;
+  min-height: 120px;
+  overflow: hidden;
+}
+.img-placeholder::before,
+.img-placeholder::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.img-placeholder::before {
+  background: linear-gradient(to bottom right, transparent calc(50% - 1px), #bbb, transparent calc(50% + 1px));
+}
+.img-placeholder::after {
+  background: linear-gradient(to top right, transparent calc(50% - 1px), #bbb, transparent calc(50% + 1px));
+}
+.img-placeholder span {
+  position: relative;
+  z-index: 1;
+  background: #eaeaea;
+  padding: 2px 8px;
+  font-size: 11px;
+}
+.img-placeholder.small { min-height: 48px; }
+.img-placeholder.large { min-height: 220px; }
+
+.img-placeholder.video::before,
+.img-placeholder.video::after { display: none; }
+.img-placeholder.video .play-icon {
+  position: relative;
+  z-index: 1;
+  width: 0; height: 0;
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
+  border-left: 22px solid #777;
+  margin-bottom: 6px;
+}
+
+/* --------------------------------------------------------------------
+   Botões / CTAs
+   -------------------------------------------------------------------- */
+
+.btn {
+  display: inline-block;
+  border: 1px solid #222;
+  background: #e6e6e6;
+  color: #222;
+  padding: 10px 20px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.btn-lg { padding: 18px 40px; font-size: 16px; }
+.btn-outline { background: transparent; }
+
+/* --------------------------------------------------------------------
+   Grids
+   -------------------------------------------------------------------- */
+
+.grid { display: grid; gap: 20px; }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* --------------------------------------------------------------------
+   Carrossel (wireframe: setas + slide + miniaturas)
+   -------------------------------------------------------------------- */
+
+.carousel-main { display: flex; gap: 12px; align-items: stretch; }
+.carousel-arrow {
+  flex: 0 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #999;
+  background: #f0f0f0;
+  font-weight: bold;
+}
+.carousel-slide { flex: 1; min-height: 200px; }
+.carousel-thumbs { display: flex; gap: 8px; margin-top: 10px; }
+.carousel-thumbs .img-placeholder { flex: 1; min-height: 48px; font-size: 10px; }
+.carousel-thumbs .img-placeholder.current { border: 2px solid #222; }
+
+/* --------------------------------------------------------------------
+   Cabeçalho — Banner topo (promoção + CTA de reserva)
+   -------------------------------------------------------------------- */
+
+.wf-topbar {
+  background: #dcdcdc;
+  border-bottom: 2px solid #222;
+  padding: 18px 0;
+}
+.topbar-inner {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1.1fr;
+  gap: 20px;
+  align-items: center;
+}
+.topbar-promo .wf-tag-label {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: bold;
+  background: #222;
+  color: #fff;
+  padding: 2px 8px;
+  margin-bottom: 6px;
+}
+.topbar-promo h1 { font-size: 17px; text-transform: uppercase; margin: 4px 0 6px; }
+.topbar-cta p { margin: 4px 0; font-size: 11px; }
+.topbar-cta .btn { margin-bottom: 8px; width: 100%; text-align: center; }
+
+/* --------------------------------------------------------------------
+   Navegação
+   -------------------------------------------------------------------- */
+
+.wf-nav { background: #fff; border-bottom: 1px solid #222; position: relative; }
+.nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 10px 24px; gap: 16px; }
+.nav-logo { width: 90px; flex: 0 0 auto; }
+
+.hamburger {
+  display: none;
+  border: 1px solid #222;
+  background: #eee;
+  font-size: 18px;
+  line-height: 1;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.nav-menu { display: flex; gap: 2px; flex-wrap: wrap; justify-content: flex-end; }
+.nav-menu > li { position: relative; }
+.nav-menu > li > a {
+  display: block;
+  padding: 10px 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: bold;
+  border: 1px solid transparent;
+}
+.nav-menu > li > a:hover,
+.nav-menu > li.current > a { border: 1px solid #222; background: #f0f0f0; }
+.nav-menu .has-submenu > a::after { content: " \25BE"; }
+
+.submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 190px;
+  background: #fff;
+  border: 1px solid #222;
+  z-index: 10;
+}
+.nav-menu .has-submenu:hover .submenu,
+.nav-menu .has-submenu.is-open .submenu { display: block; }
+.submenu li a { display: block; padding: 9px 12px; font-size: 11px; border-bottom: 1px solid #eee; }
+
+/* --------------------------------------------------------------------
+   Faixa de curso (antes do footer)
+   -------------------------------------------------------------------- */
+
+.course-banner {
+  background: #d8d8d8;
+  border-top: 2px solid #222;
+  border-bottom: 2px solid #222;
+  padding: 22px 0;
+}
+.course-banner .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.course-banner .course-copy { flex: 1 1 320px; }
+.course-banner .course-copy .section-label { border: none; padding: 0; margin-bottom: 4px; }
+
+/* --------------------------------------------------------------------
+   Rodapé
+   -------------------------------------------------------------------- */
+
+.wf-footer { background: #222; color: #eee; padding: 26px 0; }
+.footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px; }
+.footer-social { display: flex; gap: 10px; }
+.icon-placeholder {
+  width: 36px; height: 36px;
+  border: 1px solid #999;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: #ccc; background: #333;
+  flex: 0 0 auto;
+}
+.footer-contact p { margin: 4px 0; font-size: 11px; }
+
+/* --------------------------------------------------------------------
+   Formulários
+   -------------------------------------------------------------------- */
+
+.wf-form { display: flex; flex-direction: column; gap: 14px; max-width: 560px; }
+.wf-field label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: #666;
+  margin-bottom: 4px;
+}
+.wf-field input,
+.wf-field select,
+.wf-field textarea {
+  width: 100%;
+  border: 1px solid #999;
+  background: #fafafa;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #333;
+}
+.wf-field textarea { resize: vertical; }
+
+/* --------------------------------------------------------------------
+   Tabelas (cardápio doce)
+   -------------------------------------------------------------------- */
+
+.wf-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.wf-table th, .wf-table td { border: 1px solid #999; padding: 8px; text-align: left; }
+.wf-table th { background: #eee; text-transform: uppercase; font-size: 10px; }
+
+/* --------------------------------------------------------------------
+   Coluna de cardápio (Pinheiros / Vila Olímpia)
+   -------------------------------------------------------------------- */
+
+.menu-column { border: 1px solid #999; padding: 18px; }
+.menu-column h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #222;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+.menu-item { border-bottom: 1px dashed #ccc; padding: 8px 0; display: flex; justify-content: space-between; gap: 8px; }
+.menu-item .name { font-weight: bold; }
+.menu-item .price { white-space: nowrap; font-weight: bold; }
+.menu-item .desc { display: block; font-size: 10px; color: #666; font-weight: normal; }
+
+/* --------------------------------------------------------------------
+   Abas / toggle (Cursos: Online / Presencial)
+   -------------------------------------------------------------------- */
+
+.wf-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.wf-tab {
+  border: 1px solid #222;
+  padding: 8px 20px;
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: bold;
+  background: #eee;
+}
+.wf-tab.active { background: #222; color: #fff; }
+
+/* --------------------------------------------------------------------
+   Listas com ícone (bullets do curso, regras)
+   -------------------------------------------------------------------- */
+
+.icon-list { display: flex; flex-direction: column; gap: 10px; }
+.icon-list li { display: flex; gap: 10px; align-items: flex-start; }
+.icon-placeholder.square { border-radius: 4px; flex: 0 0 26px; width: 26px; height: 26px; }
+
+.rule-list { display: flex; flex-direction: column; gap: 8px; }
+.rule-list li { border: 1px solid #ccc; background: #fafafa; padding: 10px 12px; font-size: 12px; }
+.rule-list li strong { display: block; font-size: 11px; text-transform: uppercase; color: #444; margin-bottom: 2px; }
+
+/* --------------------------------------------------------------------
+   Responsivo
+   -------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .topbar-inner { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+
+  /* Menu colapsa em hambúrguer: itens somem, botão hambúrguer aparece
+     e o menu vira uma lista vertical em overlay abaixo da barra. */
+  .hamburger { display: block; }
+  .nav-menu {
+    display: none;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #222;
+    border-top: none;
+    z-index: 20;
+  }
+  .nav-menu.is-open { display: flex; }
+  .nav-menu > li > a { border-bottom: 1px solid #eee; }
+  .submenu { position: static; border: none; border-top: 1px dashed #ccc; }
+  .nav-menu .has-submenu > a::after { float: right; }
+
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+  .course-banner .container { flex-direction: column; align-items: flex-start; }
+}
