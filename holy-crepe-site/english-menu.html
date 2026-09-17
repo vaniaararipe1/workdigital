@@ -1,10 +1,10 @@
-<!-- Rota: /nossaslojas -->
+<!-- Rota: /english-menu -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nossas Lojas · Holy Crepe</title>
+  <title>English Menu · Holy Crepe</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
@@ -27,7 +27,7 @@
       <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menu" aria-expanded="false">&#9776;</button>
       <ul class="nav-menu" id="navMenu">
       <li><a href="index.html">Home</a></li>
-      <li class="current"><a href="nossaslojas.html">Nossas Lojas</a></li>
+      <li><a href="nossaslojas.html">Nossas Lojas</a></li>
       <li class="has-submenu"><a href="rodizio.html">Rodízio</a>
         <ul class="submenu">
           <li><a href="aniversariantes.html">Aniversariantes</a></li>
@@ -36,7 +36,7 @@
         <ul class="submenu">
           <li><a href="#ifood">iFood (link externo)</a></li>
         </ul></li>
-      <li class="has-submenu"><a href="cardapio.html">Cardápio</a>
+      <li class="has-submenu current"><a href="cardapio.html">Cardápio</a>
         <ul class="submenu">
           <li><a href="english-menu.html">English Menu</a></li>
         </ul></li>
@@ -56,35 +56,79 @@
   <section class="hero hero-page">
     <div class="container">
       <div class="breadcrumb">Holy Crepe</div>
-      <div class="eyebrow">Nossas Lojas</div>
-      <h1>Pinheiros e Vila Olímpia</h1>
-      <p class="lead">Duas unidades para você viver a experiência Holy Crepe em São Paulo.</p>
+      <div class="eyebrow">Cardápio · English Menu</div>
+      <h1>English Menu</h1>
+      <p class="lead">Pinheiros and Vila Olímpia units.</p>
     </div>
   </section>
   <section class="section">
-    <div class="container" style="display:flex; flex-direction:column; gap:32px;">
-      <div class="store-card" style="">
-        <div class="ph wide"><span>IMG · Foto da loja Pinheiros</span></div>
-        <div class="store-body">
-          <h3>Unidade Pinheiros</h3>
-          <ul>
-            <li><b>Endereço:</b> [Rua Exemplo, 000 — Bairro]</li>
-            <li><b>WhatsApp:</b> (11) 0000-0000</li>
-            <li><b>Horário:</b> Seg–Sex 12h–23h · Sáb–Dom 12h–00h</li>
-          </ul>
-          <a href="#mapa-pinheiros" class="btn btn-wine">Como Chegar</a>
+    <div class="container">
+      <div class="grid grid-2">
+        <div class="card" style="text-align:left;">
+          <h3 style="font-size:20px; border-bottom:2px solid var(--gold); padding-bottom:10px; margin-bottom:16px;">Pinheiros</h3>
+
+          <p class="eyebrow" style="margin-top:0;">Savory Crepes</p>
+          <table class="menu-table">
+            <tr><td>Savory Crepe 1 <br><span style="font-size:12px; color:var(--ink-soft);">[ingredients]</span></td><td class="price">R$ 00.00</td></tr>
+            <tr><td>Savory Crepe 2 <br><span style="font-size:12px; color:var(--ink-soft);">[ingredients]</span></td><td class="price">R$ 00.00</td></tr>
+            <tr><td>Savory Crepe 3 <br><span style="font-size:12px; color:var(--ink-soft);">[ingredients]</span></td><td class="price">R$ 00.00</td></tr>
+          </table>
+
+          <p class="eyebrow" style="margin-top:20px;">Build Your Own</p>
+          <table class="menu-table"><tr><td>Protein + Fillings (fixed price)</td><td class="price">R$ 00.00</td></tr></table>
+
+          <p class="eyebrow" style="margin-top:20px;">Extras / Add-ons</p>
+          <table class="menu-table">
+            <tr><td>Extra 1</td><td class="price">+ R$ 0.00</td></tr>
+            <tr><td>Extra 2</td><td class="price">+ R$ 0.00</td></tr>
+          </table>
+
+          <p class="eyebrow" style="margin-top:20px;">Sweet Crepes</p>
+          <table class="menu-table">
+            <tr><th>Item</th><th>Medium</th><th>Regular</th></tr>
+            <tr><td>Sweet Crepe 1</td><td class="price">R$ 00.00</td><td class="price">R$ 00.00</td></tr>
+            <tr><td>Sweet Crepe 2</td><td class="price">R$ 00.00</td><td class="price">R$ 00.00</td></tr>
+            <tr><td>Sweet Crepe 3</td><td class="price">R$ 00.00</td><td class="price">R$ 00.00</td></tr>
+          </table>
+
+          <p class="eyebrow" style="margin-top:20px;">Extra Toppings</p>
+          <table class="menu-table">
+            <tr><td>Topping 1</td><td class="price">+ R$ 0.00</td></tr>
+            <tr><td>Topping 2</td><td class="price">+ R$ 0.00</td></tr>
+          </table>
         </div>
-      </div>
-      <div class="store-card" style="direction: row-reverse;">
-        <div class="ph wide"><span>IMG · Foto da loja Vila Olímpia</span></div>
-        <div class="store-body">
-          <h3>Unidade Vila Olímpia</h3>
-          <ul>
-            <li><b>Endereço:</b> [Rua Exemplo, 000 — Bairro]</li>
-            <li><b>WhatsApp:</b> (11) 0000-0000</li>
-            <li><b>Horário:</b> Seg–Sex 12h–23h · Sáb–Dom 12h–00h</li>
-          </ul>
-          <a href="#mapa-vila olímpia" class="btn btn-wine">Como Chegar</a>
+        <div class="card" style="text-align:left;">
+          <h3 style="font-size:20px; border-bottom:2px solid var(--gold); padding-bottom:10px; margin-bottom:16px;">Vila Olímpia</h3>
+
+          <p class="eyebrow" style="margin-top:0;">Savory Crepes</p>
+          <table class="menu-table">
+            <tr><td>Savory Crepe 1 <br><span style="font-size:12px; color:var(--ink-soft);">[ingredients]</span></td><td class="price">R$ 00.00</td></tr>
+            <tr><td>Savory Crepe 2 <br><span style="font-size:12px; color:var(--ink-soft);">[ingredients]</span></td><td class="price">R$ 00.00</td></tr>
+            <tr><td>Savory Crepe 3 <br><span style="font-size:12px; color:var(--ink-soft);">[ingredients]</span></td><td class="price">R$ 00.00</td></tr>
+          </table>
+
+          <p class="eyebrow" style="margin-top:20px;">Build Your Own</p>
+          <table class="menu-table"><tr><td>Protein + Fillings (fixed price)</td><td class="price">R$ 00.00</td></tr></table>
+
+          <p class="eyebrow" style="margin-top:20px;">Extras / Add-ons</p>
+          <table class="menu-table">
+            <tr><td>Extra 1</td><td class="price">+ R$ 0.00</td></tr>
+            <tr><td>Extra 2</td><td class="price">+ R$ 0.00</td></tr>
+          </table>
+
+          <p class="eyebrow" style="margin-top:20px;">Sweet Crepes</p>
+          <table class="menu-table">
+            <tr><th>Item</th><th>Medium</th><th>Regular</th></tr>
+            <tr><td>Sweet Crepe 1</td><td class="price">R$ 00.00</td><td class="price">R$ 00.00</td></tr>
+            <tr><td>Sweet Crepe 2</td><td class="price">R$ 00.00</td><td class="price">R$ 00.00</td></tr>
+            <tr><td>Sweet Crepe 3</td><td class="price">R$ 00.00</td><td class="price">R$ 00.00</td></tr>
+          </table>
+
+          <p class="eyebrow" style="margin-top:20px;">Extra Toppings</p>
+          <table class="menu-table">
+            <tr><td>Topping 1</td><td class="price">+ R$ 0.00</td></tr>
+            <tr><td>Topping 2</td><td class="price">+ R$ 0.00</td></tr>
+          </table>
         </div>
       </div>
     </div>
