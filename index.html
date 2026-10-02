@@ -169,6 +169,71 @@ button{font:inherit}
  .payoff-copy span{color:var(--ink);background:none}
  .canvas-wrap{display:none}
 }
+
+/* Auros fidelity refinement — light field, glyph particles, translucent kinetic color */
+.hero-sticky{
+  --light-x:14%;
+  --light-y:72%;
+  background:
+    radial-gradient(78vw 68vw at 18% -4%,rgba(96,37,225,.34),transparent 66%),
+    radial-gradient(54vw 48vw at 88% 12%,rgba(192,2,82,.14),transparent 70%),
+    radial-gradient(58vw 52vw at 8% 88%,rgba(4,205,143,.22),transparent 68%),
+    linear-gradient(150deg,#19142b 0%,#121316 40%,#101416 72%,#0a1111 100%);
+}
+.hero-sticky::before{
+  background:
+    radial-gradient(120% 140% at 54% 44%,transparent 0%,rgba(0,0,0,.03) 46%,rgba(0,0,0,.22) 100%);
+}
+.hero-sticky::after{
+  content:"";
+  position:absolute;
+  inset:-12%;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(31vw 25vw at var(--light-x) var(--light-y),rgba(4,205,143,.34) 0%,rgba(4,205,143,.14) 34%,transparent 72%),
+    radial-gradient(38vw 30vw at calc(var(--light-x) + 10%) calc(var(--light-y) - 57%),rgba(96,37,225,.27) 0%,rgba(96,37,225,.10) 38%,transparent 73%),
+    radial-gradient(28vw 22vw at 79% 18%,rgba(192,2,82,.15) 0%,rgba(192,2,82,.06) 38%,transparent 76%),
+    radial-gradient(20vw 16vw at 38% 52%,rgba(255,255,255,.055),transparent 72%);
+  filter:blur(34px) saturate(1.22);
+  mix-blend-mode:screen;
+  opacity:.98;
+  transform:scale(1.06);
+  animation:ambientLightBreath 8s ease-in-out infinite alternate;
+}
+@keyframes ambientLightBreath{
+  0%{opacity:.82;transform:scale(1.03)}
+  100%{opacity:1;transform:scale(1.10)}
+}
+.noise{opacity:.018}
+.statement-line:last-child{color:inherit}
+.statement-line:first-child>span{
+  color:rgba(246,246,248,.90);
+  text-shadow:0 0 26px rgba(96,37,225,.08);
+}
+.statement-line:last-child>span{
+  background:
+    linear-gradient(100deg,
+      rgba(246,246,248,.94) 0%,
+      rgba(96,37,225,.88) 28%,
+      rgba(192,2,82,.58) 52%,
+      rgba(4,205,143,.78) 76%,
+      rgba(246,246,248,.76) 100%);
+  background-size:190% 100%;
+  background-position:0% 50%;
+  background-clip:text;
+  -webkit-background-clip:text;
+  color:transparent;
+  -webkit-text-fill-color:transparent;
+  opacity:.94;
+  filter:drop-shadow(0 0 22px rgba(96,37,225,.18));
+  animation:digitalGradientDrift 7s ease-in-out infinite alternate;
+}
+@keyframes digitalGradientDrift{
+  0%{background-position:0% 50%;opacity:.84}
+  100%{background-position:100% 50%;opacity:.98}
+}
+
 </style>
 </head>
 <body>
@@ -280,169 +345,238 @@ button{font:inherit}
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
+const canvas=document.getElementById('particleCanvas');
+const canvasWrap=canvas?.parentElement;
+const hero=document.querySelector('.hero-sticky');
 const section=document.querySelector('.hero-scroll');
-const intro=document.getElementById('intro');
-const statement=document.getElementById('statement');
-const payoff=document.getElementById('payoff');
-const kineticLines=[...document.querySelectorAll('.statement-line > span')];
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
-const map=(p,a,b)=>clamp((p-a)/(b-a));
-const ease=t=>1-Math.pow(1-t,3);
-
-const canvas=document.getElementById('particleCanvas');
-let renderer,scene,camera,cloud,material,clock;
 const mouse={x:0,y:0,targetX:0,targetY:0};
 
-const gl=canvas && !reduced && (canvas.getContext('webgl2',{alpha:true,antialias:true}) || canvas.getContext('webgl',{alpha:true,antialias:true}));
-if(gl){
-  renderer=new THREE.WebGLRenderer({canvas,context:gl,antialias:true,alpha:true,powerPreference:'high-performance'});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));
-  renderer.setClearColor(0x000000,0);
-  scene=new THREE.Scene();
-  camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,100);
-  camera.position.z=17.8;
+if(canvas && canvasWrap && !reduced){
+  const gl=canvas.getContext('webgl2',{alpha:true,antialias:true,premultipliedAlpha:false})
+    || canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false});
 
-  const count=innerWidth<760?9000:18000;
-  const positions=new Float32Array(count*3);
-  const seeds=new Float32Array(count);
-  const sizes=new Float32Array(count);
+  if(gl){
+    const renderer=new THREE.WebGLRenderer({
+      canvas,
+      context:gl,
+      alpha:true,
+      antialias:true,
+      premultipliedAlpha:false,
+      powerPreference:'high-performance'
+    });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth<760?1.35:1.75));
+    renderer.setClearColor(0x000000,0);
 
-  for(let i=0;i<count;i++){
-    const i3=i*3;
-    const u=Math.random();
-    const v=Math.random();
-    const theta=2*Math.PI*u;
-    const phi=Math.acos(2*v-1);
-    const shell=.76+Math.pow(Math.random(),.35)*.34;
-    const ripple=.24*Math.sin(theta*2.8)+.18*Math.cos(phi*3.9);
-    const r=(4.8+ripple)*shell;
-    positions[i3]=r*Math.sin(phi)*Math.cos(theta)*1.34;
-    positions[i3+1]=r*Math.cos(phi)*.88;
-    positions[i3+2]=r*Math.sin(phi)*Math.sin(theta)*1.02;
-    seeds[i]=Math.random();
-    sizes[i]=.44+Math.random()*1.34;
-  }
+    const scene=new THREE.Scene();
+    const camera=new THREE.PerspectiveCamera(38,1,.1,100);
+    camera.position.z=15.8;
 
-  const geometry=new THREE.BufferGeometry();
-  geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));
-  geometry.setAttribute('aSeed',new THREE.BufferAttribute(seeds,1));
-  geometry.setAttribute('aSize',new THREE.BufferAttribute(sizes,1));
+    // Glyph atlas: actual tiny characters instead of round dots.
+    const glyphs='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>+*#%/=';
+    const cols=8, rows=6, cell=64;
+    const atlasCanvas=document.createElement('canvas');
+    atlasCanvas.width=cols*cell;
+    atlasCanvas.height=rows*cell;
+    const ctx=atlasCanvas.getContext('2d');
+    ctx.clearRect(0,0,atlasCanvas.width,atlasCanvas.height);
+    ctx.fillStyle='#fff';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.font='700 38px "Courier New", monospace';
+    [...glyphs].slice(0,cols*rows).forEach((ch,i)=>{
+      const x=(i%cols+.5)*cell;
+      const y=(Math.floor(i/cols)+.5)*cell;
+      ctx.fillText(ch,x,y+1);
+    });
+    const atlas=new THREE.CanvasTexture(atlasCanvas);
+    atlas.flipY=false;
+    atlas.minFilter=THREE.LinearFilter;
+    atlas.magFilter=THREE.LinearFilter;
+    atlas.generateMipmaps=false;
+    atlas.needsUpdate=true;
 
-  material=new THREE.ShaderMaterial({
-    transparent:true,
-    depthWrite:false,
-    blending:THREE.AdditiveBlending,
-    uniforms:{
-      uTime:{value:0},
-      uScroll:{value:0},
-      uMouseX:{value:0},
-      uMouseY:{value:0},
-      uColorA:{value:new THREE.Color('#6025E1')},
-      uColorB:{value:new THREE.Color('#04CD8F')},
-      uColorC:{value:new THREE.Color('#F6F6F8')},
-      uColorD:{value:new THREE.Color('#C00252')}
-    },
-    vertexShader:`
-      attribute float aSeed;
-      attribute float aSize;
-      uniform float uTime;
-      uniform float uScroll;
-      uniform float uMouseX;
-      uniform float uMouseY;
-      varying float vFront;
-      varying float vBlend;
-      varying float vAccent;
-      void main(){
-        vec3 pos=position;
-        float t=uTime*.42;
-        float w1=sin(pos.y*1.55+t*1.6+aSeed*6.2831)*.085;
-        float w2=cos(pos.x*1.15-t*1.15+aSeed*4.2)*.07;
-        float w3=sin((pos.x+pos.z)*.82+t*.9)*.055;
-        pos.x += w1 + w3 + uMouseX*.20;
-        pos.y += w2 + uMouseY*.15;
-        pos.z += w1*.55 - w2*.25;
-        float breathe=1.0 + sin(t*.72+aSeed*2.0)*.008;
-        pos *= breathe;
-        pos.x *= 1.0 + uScroll*.035;
-        pos.z *= 1.0 + uScroll*.06;
-        vec4 mv=modelViewMatrix*vec4(pos,1.0);
-        gl_Position=projectionMatrix*mv;
-        gl_PointSize=aSize*(24.0/-mv.z);
-        vFront=smoothstep(-5.2,5.2,pos.z);
-        vBlend=smoothstep(-5.4,5.4,pos.x);
-        vAccent=smoothstep(-3.2,4.2,pos.y);
-      }
-    `,
-    fragmentShader:`
-      uniform vec3 uColorA;
-      uniform vec3 uColorB;
-      uniform vec3 uColorC;
-      uniform vec3 uColorD;
-      varying float vFront;
-      varying float vBlend;
-      varying float vAccent;
-      void main(){
-        vec2 uv=gl_PointCoord-.5;
-        float d=length(uv);
-        float alpha=smoothstep(.50,.08,d);
-        vec3 color=mix(uColorA,uColorB,vBlend*.82);
-        color=mix(color,uColorC,vFront*.42);
-        color=mix(color,uColorD,(1.0-vAccent)*.18);
-        gl_FragColor=vec4(color,alpha*.92);
-      }
-    `
-  });
+    const count=innerWidth<760?11500:26000;
+    const positions=new Float32Array(count*3);
+    const seeds=new Float32Array(count);
+    const sizes=new Float32Array(count);
 
-  cloud=new THREE.Points(geometry,material);
-  cloud.rotation.x=-.08;
-  scene.add(cloud);
-  clock=new THREE.Clock();
+    for(let i=0;i<count;i++){
+      const i3=i*3;
+      const theta=Math.random()*Math.PI*2;
+      const cosPhi=2*Math.random()-1;
+      const phi=Math.acos(cosPhi);
+      const shell=(Math.random()<.88)
+        ? .84+Math.random()*.18
+        : .48+Math.pow(Math.random(),.55)*.46;
 
-  const resize=()=>{
-    renderer.setSize(innerWidth,innerHeight,false);
-    renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));
-    camera.aspect=innerWidth/innerHeight;
-    camera.updateProjectionMatrix();
-  };
-  resize();
-  addEventListener('resize',resize,{passive:true});
+      const lowFreq=
+        1
+        + .075*Math.sin(theta*3.0+phi*1.4)
+        + .055*Math.cos(phi*4.0-theta*.7)
+        + .035*Math.sin(theta*6.0);
 
-  addEventListener('pointermove',(e)=>{
-    mouse.targetX=(e.clientX/innerWidth)*2-1;
-    mouse.targetY=-((e.clientY/innerHeight)*2-1);
-  },{passive:true});
+      const r=4.65*shell*lowFreq;
+      let x=r*Math.sin(phi)*Math.cos(theta)*1.42;
+      let y=r*Math.cos(phi)*.91;
+      let z=r*Math.sin(phi)*Math.sin(theta)*1.04;
 
-  const draw=()=>{
-    const elapsed=clock.getElapsedTime();
-    const rect=section.getBoundingClientRect();
-    const max=Math.max(1,section.offsetHeight-innerHeight);
-    const p=clamp(-rect.top/max);
-    mouse.x += (mouse.targetX-mouse.x)*.05;
-    mouse.y += (mouse.targetY-mouse.y)*.05;
-    material.uniforms.uTime.value=reduced?0:elapsed;
-    material.uniforms.uScroll.value=p;
-    material.uniforms.uMouseX.value=mouse.x;
-    material.uniforms.uMouseY.value=mouse.y;
+      // Asymmetry / indentation makes the mass read like the original organic data orb.
+      const leftBulge=Math.exp(-((y+1.15)*(y+1.15)*.15+(z-.3)*(z-.3)*.11));
+      const centerDimple=Math.exp(-(y*y*.22+z*z*.16));
+      x += -.48*leftBulge + .18*Math.sin(y*.82);
+      z += .22*Math.sin(x*.42) - .20*centerDimple;
 
-    if(!reduced){
-      cloud.rotation.y=elapsed*.10+p*.48+mouse.x*.10;
-      cloud.rotation.x=-.08+Math.sin(elapsed*.25)*.035+p*.03+mouse.y*.07;
-      cloud.position.x=Math.sin(elapsed*.18)*.08+mouse.x*.18;
-      cloud.position.y=Math.cos(elapsed*.15)*.05+mouse.y*.14+(p<.65?0:-.12*(p-.65));
-      const kineticPush=0;
-      const kineticRelease=0;
-      const s=1;
-      cloud.scale.setScalar(s);
-      cloud.position.z=0;
+      positions[i3]=x;
+      positions[i3+1]=y;
+      positions[i3+2]=z;
+      seeds[i]=Math.random();
+      sizes[i]=.62+Math.random()*1.26;
     }
 
-    renderer.render(scene,camera);
-    if(!reduced) requestAnimationFrame(draw);
-  };
-  draw();
-}
+    const geometry=new THREE.BufferGeometry();
+    geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));
+    geometry.setAttribute('aSeed',new THREE.BufferAttribute(seeds,1));
+    geometry.setAttribute('aSize',new THREE.BufferAttribute(sizes,1));
 
+    const material=new THREE.ShaderMaterial({
+      transparent:true,
+      depthWrite:false,
+      depthTest:true,
+      blending:THREE.AdditiveBlending,
+      uniforms:{
+        uTime:{value:0},
+        uMouseX:{value:0},
+        uMouseY:{value:0},
+        uAtlas:{value:atlas},
+        uPurple:{value:new THREE.Color('#6025E1')},
+        uGreen:{value:new THREE.Color('#04CD8F')},
+        uWine:{value:new THREE.Color('#C00252')},
+        uWhite:{value:new THREE.Color('#F6F6F8')}
+      },
+      vertexShader:`
+        attribute float aSeed;
+        attribute float aSize;
+        uniform float uTime;
+        uniform float uMouseX;
+        uniform float uMouseY;
+        varying float vSeed;
+        varying float vFront;
+        varying float vBlend;
+        varying float vGlow;
+        varying float vEdge;
+
+        void main(){
+          vec3 pos=position;
+          float t=uTime;
+
+          // Slow organic deformation; large wavelength keeps the object cohesive.
+          pos.x += sin(pos.y*.72+t*.34+aSeed*6.2831)*.12;
+          pos.y += cos(pos.z*.64-t*.28+aSeed*3.2)*.09;
+          pos.z += sin((pos.x+pos.y)*.46+t*.24)*.11;
+
+          pos.x += uMouseX*.16;
+          pos.y += uMouseY*.11;
+
+          vec4 mv=modelViewMatrix*vec4(pos,1.0);
+          gl_Position=projectionMatrix*mv;
+          gl_PointSize=aSize*(70.0/-mv.z);
+
+          vSeed=aSeed;
+          vFront=smoothstep(-5.1,5.0,pos.z);
+          vBlend=smoothstep(-6.2,5.8,pos.x);
+
+          // Bright lower-left light, matching the visual focus of the original orb.
+          vec2 d=vec2((pos.x+3.6)*.72,(pos.y+1.25)*1.05);
+          vGlow=exp(-dot(d,d)*.18)*smoothstep(-3.7,4.6,pos.z);
+
+          float rr=length(vec3(pos.x/6.8,pos.y/4.4,pos.z/4.8));
+          vEdge=smoothstep(.55,1.06,rr);
+        }
+      `,
+      fragmentShader:`
+        uniform sampler2D uAtlas;
+        uniform vec3 uPurple;
+        uniform vec3 uGreen;
+        uniform vec3 uWine;
+        uniform vec3 uWhite;
+        varying float vSeed;
+        varying float vFront;
+        varying float vBlend;
+        varying float vGlow;
+        varying float vEdge;
+
+        void main(){
+          float total=48.0;
+          float idx=floor(vSeed*(total-.001));
+          float col=mod(idx,8.0);
+          float row=floor(idx/8.0);
+          vec2 cellUv=(vec2(col,5.0-row)+gl_PointCoord)/vec2(8.0,6.0);
+          float glyph=texture2D(uAtlas,cellUv).a;
+          if(glyph<.075) discard;
+
+          vec3 base=mix(uPurple,uGreen,clamp(vBlend*.82+.10,0.0,1.0));
+          base=mix(base,uWhite,clamp(vFront*.30+vGlow*.88,0.0,1.0));
+          base=mix(base,uWine,(1.0-vFront)*vEdge*.10);
+
+          float alpha=glyph*(.24+.44*vFront+.42*vGlow);
+          gl_FragColor=vec4(base,alpha*.92);
+        }
+      `
+    });
+
+    const cloud=new THREE.Points(geometry,material);
+    cloud.rotation.x=-.055;
+    cloud.rotation.z=-.025;
+    scene.add(cloud);
+
+    const clock=new THREE.Clock();
+
+    function resize(){
+      const r=canvasWrap.getBoundingClientRect();
+      const w=Math.max(1,r.width);
+      const h=Math.max(1,r.height);
+      renderer.setSize(w,h,false);
+      renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<760?1.35:1.75));
+      camera.aspect=w/h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    addEventListener('resize',resize,{passive:true});
+
+    addEventListener('pointermove',(e)=>{
+      mouse.targetX=(e.clientX/innerWidth)*2-1;
+      mouse.targetY=-((e.clientY/innerHeight)*2-1);
+
+      // Let the background light breathe with the same pointer parallax.
+      const lightX=14+mouse.targetX*3.0;
+      const lightY=72-mouse.targetY*2.3;
+      hero?.style.setProperty('--light-x',lightX+'%');
+      hero?.style.setProperty('--light-y',lightY+'%');
+    },{passive:true});
+
+    function draw(){
+      const elapsed=clock.getElapsedTime();
+      mouse.x+=(mouse.targetX-mouse.x)*.045;
+      mouse.y+=(mouse.targetY-mouse.y)*.045;
+
+      material.uniforms.uTime.value=elapsed;
+      material.uniforms.uMouseX.value=mouse.x;
+      material.uniforms.uMouseY.value=mouse.y;
+
+      cloud.rotation.y=elapsed*.075+mouse.x*.085;
+      cloud.rotation.x=-.055+Math.sin(elapsed*.23)*.025+mouse.y*.055;
+      cloud.position.x=mouse.x*.14;
+      cloud.position.y=mouse.y*.10;
+      cloud.scale.setScalar(innerWidth<760?.94:1.06);
+
+      renderer.render(scene,camera);
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+}
 </script>
 </body>
 </html>
