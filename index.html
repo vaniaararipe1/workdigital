@@ -232,6 +232,10 @@ button{font:inherit}
 .native-particles{position:absolute;inset:0;height:100%}
 .particle-art canvas{display:block;width:100%;height:100%}
 @media(max-width:760px){.canvas-wrap{height:170vh}}
+
+/* Two lines retain the existing font size and use more of the section width. */
+.payoff{padding-inline:clamp(12px,1.5vw,24px)}
+.payoff .shell,.payoff-block{width:100%;max-width:none}
 </style>
 </head>
 <body>
@@ -292,7 +296,7 @@ button{font:inherit}
       <section class="stage payoff" id="payoff">
         <div class="shell">
           <div class="payoff-block">
-            <p class="payoff-copy"><span>O site da sua empresa</span><span>precisa ser um gerador</span><span>de novos negócios</span></p>
+            <p class="payoff-copy"><span>O site da sua empresa precisa ser</span><span>um gerador de novos negócios</span></p>
           </div>
         </div>
       </section>
@@ -595,10 +599,13 @@ document.querySelectorAll('[data-wd-explore-url]').forEach(link=>{
  const hero=document.querySelector('.hero-sticky'),cta=document.querySelector('.hero-cta'),wrap=document.querySelector('.canvas-wrap');
  function place(){
   const mobile=innerWidth<=760,gap=mobile?8:12;
-  const top=cta.getBoundingClientRect().bottom-hero.getBoundingClientRect().top+gap;
   const height=innerHeight*1.7;
+  // Overlap only the transparent canvas margins with the adjacent sections.
+  // Preserve the canvas dimensions, particle scale and simulation unchanged.
+  const trim=height*(mobile?.20:.12);
+  const top=cta.getBoundingClientRect().bottom-hero.getBoundingClientRect().top+gap-trim;
   wrap.style.top=`${top}px`;wrap.style.height=`${height}px`;
-  document.querySelector('.intro').style.minHeight=`${top+height+(mobile?10:12)}px`;
+  document.querySelector('.intro').style.minHeight=`${top+height-trim+(mobile?10:12)}px`;
  }
 
  new ResizeObserver(place).observe(document.querySelector('.intro-block'));
