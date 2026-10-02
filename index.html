@@ -173,12 +173,12 @@ button{font:inherit}
 .light-field{position:absolute;inset:0;z-index:0;pointer-events:none}
 .light-field-inner{position:sticky;top:0;height:100svh;overflow:hidden;background:#121316}
 .light-field-inner::before{content:"";position:absolute;inset:-20%;background:
- radial-gradient(ellipse at 24% 42%,rgba(96,37,225,.66),transparent 44%),
- radial-gradient(ellipse at 78% 60%,rgba(192,2,82,.32),transparent 40%),
- radial-gradient(ellipse at 60% 84%,rgba(4,205,143,.23),transparent 34%),
- radial-gradient(ellipse at 42% 68%,rgba(150,72,253,.27),transparent 45%);
+ radial-gradient(ellipse at 24% 42%,rgba(96,37,225,.92),transparent 44%),
+ radial-gradient(ellipse at 78% 60%,rgba(192,2,82,.58),transparent 40%),
+ radial-gradient(ellipse at 60% 84%,rgba(4,205,143,.32),transparent 34%),
+ radial-gradient(ellipse at 42% 68%,rgba(150,72,253,.48),transparent 45%);
  filter:blur(42px);animation:lightFieldDrift 22s ease-in-out infinite alternate;will-change:transform}
-.light-field-inner::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 24%,rgba(18,19,22,.5),transparent 63%)}
+.light-field-inner::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 24%,rgba(18,19,22,.26),transparent 63%)}
 @keyframes lightFieldDrift{from{transform:translate3d(-4%,-3%,0) scale(1)}to{transform:translate3d(5%,4%,0) scale(1.10)}}
 .noise{opacity:.018}
 .statement-line:last-child{color:inherit}
@@ -221,8 +221,8 @@ button{font:inherit}
 .particle-art .native-particles canvas{filter:none}
 .particle-art.has-native-particles>canvas,.particle-art.has-native-particles>img{visibility:hidden}
 @media(max-width:760px){.intro-desc{max-width:95%;font-size:17px}.intro-desc>span{display:contents;white-space:normal}}
-.canvas-wrap{overflow:hidden}
-.native-particles{position:absolute;left:0;right:0;top:-28vw;height:117vw}
+.canvas-wrap{overflow:visible}
+.native-particles{position:absolute;left:0;right:0;top:-20vw;height:117vw}
 </style>
 </head>
 <body>
@@ -295,7 +295,7 @@ button{font:inherit}
 // Anchor the particle viewport below the portfolio CTA, including after font loading.
 (()=>{
  const hero=document.querySelector('.hero-sticky'),cta=document.querySelector('.hero-cta'),wrap=document.querySelector('.canvas-wrap');
- function place(){const gap=innerWidth<=760?24:32;wrap.style.top=`${cta.getBoundingClientRect().bottom-hero.getBoundingClientRect().top+gap}px`;}
+ function place(){const gap=innerWidth<=760?24:32;const top=cta.getBoundingClientRect().bottom-hero.getBoundingClientRect().top+gap;wrap.style.top=`${top}px`;document.querySelector('.intro').style.minHeight=`${Math.max(innerHeight*(innerWidth<=760?1.45:1.6),top+Math.max(wrap.clientHeight,innerWidth*.97)+64)}px`;}
  new ResizeObserver(place).observe(document.querySelector('.intro-block'));
  addEventListener('resize',place,{passive:true});
  document.fonts.ready.then(place);place();
@@ -379,7 +379,7 @@ button{font:inherit}
   const dt=last?Math.min((stamp-last)/1000,.05):0;last=stamp;if(!reduced.matches)time+=dt;
   mx+=(tx-mx)*.07;my+=(ty-my)*.07;
   ctx.clearRect(0,0,width,height);
-  const radius=Math.min(width*.255,height*.33),cx=width*.49,cy=radius*1.15;
+  const radius=Math.min(width*.255,height*.33),cx=width*.49,cy=radius*1.35;
   const cycle=time<1?0:Math.floor((time-1)/6.5),progress=time<1?time:Math.min(1,((time-1)%6.5)/6);
   const path=[7,2,8,3,6,1,9,4][cycle%8]*Math.PI/5;
   const ease=progress<.5?2*progress*progress:1-Math.pow(-2*progress+2,2)/2;
