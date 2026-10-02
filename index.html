@@ -602,10 +602,11 @@ document.querySelectorAll('[data-wd-explore-url]').forEach(link=>{
   const height=innerHeight*1.7;
   // Overlap only the transparent canvas margins with the adjacent sections.
   // Preserve the canvas dimensions, particle scale and simulation unchanged.
-  const trim=height*(mobile?.20:.12);
-  const top=cta.getBoundingClientRect().bottom-hero.getBoundingClientRect().top+gap-trim;
+  const trimTop=height*(mobile?.33:.23);
+  const trimBottom=height*(mobile?.35:.25);
+  const top=cta.getBoundingClientRect().bottom-hero.getBoundingClientRect().top+gap-trimTop;
   wrap.style.top=`${top}px`;wrap.style.height=`${height}px`;
-  document.querySelector('.intro').style.minHeight=`${top+height-trim+(mobile?10:12)}px`;
+  document.querySelector('.intro').style.minHeight=`${top+height-trimBottom+(mobile?10:12)}px`;
  }
 
  new ResizeObserver(place).observe(document.querySelector('.intro-block'));
