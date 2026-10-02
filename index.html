@@ -217,7 +217,7 @@ button{font:inherit}
 @media(prefers-reduced-motion:reduce){.particle-art img{animation:none}.particle-art{transform:none}}
 .intro-desc{max-width:1000px;font-size:clamp(16px,1.4vw,22px)}
 .intro-desc>span{display:block;white-space:nowrap}
-.native-particles{position:absolute;inset:0}
+.native-particles{position:absolute;left:0;right:0;top:calc((100% - 117vw)/2);height:117vw}
 .particle-art .native-particles canvas{filter:none}
 .particle-art.has-native-particles>canvas,.particle-art.has-native-particles>img{visibility:hidden}
 @media(max-width:760px){.intro-desc{max-width:95%;font-size:17px}.intro-desc>span{display:contents;white-space:normal}}
@@ -868,7 +868,7 @@ ${e.tab}if ( ${h} ) {
   if(!await navigator.gpu.requestAdapter())return;
   const host=document.createElement('div');host.className='native-particles';art.append(host);
   experience=new Gse(host);await experience.init();
-  const resize=()=>experience.resize(art.clientWidth,art.clientHeight);
+  const resize=()=>experience.resize(host.clientWidth,host.clientHeight);
   resize();addEventListener('resize',resize,{passive:true});
   const firstUpdate=experience.update;
   experience.update=()=>{try{firstUpdate();if(!art.classList.contains('has-native-particles')){art.classList.add('has-native-particles');art.dispatchEvent(new Event('nativeparticlesready'));}}catch(error){experience.render(false);host.remove();art.classList.remove('has-native-particles');art.dispatchEvent(new Event('nativeparticlesfailed'));}};
