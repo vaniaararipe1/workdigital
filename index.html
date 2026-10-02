@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">\n<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">\n<meta http-equiv="Pragma" content="no-cache">\n<meta http-equiv="Expires" content="0">
 <title>Work Digital — Criação de Sites Profissionais</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,7 +63,7 @@ button{font:inherit}
   linear-gradient(135deg,#16171B 0%,#121316 46%,#0E0F12 100%)}
 .hero-sticky::before{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(120% 140% at 52% 46%, transparent 0%, rgba(0,0,0,.04) 50%, rgba(0,0,0,.18) 100%)}
 .noise{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.028;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")}
-.canvas-wrap{position:absolute;inset:0;z-index:2;pointer-events:none}
+.canvas-wrap{position:absolute;inset:0;z-index:6;pointer-events:none}
 #particleCanvas{width:100%;height:100%;display:block}
 
 .stage{position:absolute;inset:0;z-index:5;padding:clamp(98px,13vh,150px) clamp(24px,6vw,88px);will-change:transform,opacity,filter}
@@ -71,7 +71,7 @@ button{font:inherit}
 
 .intro{opacity:1}
 .intro .shell{display:flex;align-items:center;justify-content:center;text-align:center}
-.intro-block{max-width:680px;position:relative;z-index:6}
+.intro-block{max-width:680px;position:relative;z-index:7}
 .intro-title{margin:0;font-size:clamp(54px,6.6vw,96px);line-height:1;letter-spacing:-.04em;font-weight:500;text-transform:none}
 .intro-title span{display:block}
 .intro-desc{margin:28px auto 0;max-width:600px;font-size:16px;line-height:1.4;color:#bbc7c6}
@@ -80,17 +80,18 @@ button{font:inherit}
 .hero-cta:hover{background-position:100% 50%;color:#111}
 .hero-cta:hover span{transform:translate(3px,-3px)}
 
-.statement{opacity:0}
-.statement .shell{display:grid;place-items:center;text-align:center}
-.statement-main{margin:0;font-size:clamp(82px,15.2vw,220px);line-height:1;letter-spacing:-.046em;font-weight:500;text-transform:none;width:min(100%,1440px);max-width:100%;white-space:normal}
-.statement-line{display:block;overflow:hidden;padding:.08em .04em .12em;margin:-.08em -.04em -.12em}
-.statement-line > span{display:block;transform:translate3d(0,115%,0);will-change:transform}
+.statement{opacity:0;z-index:4}
+.statement .shell{display:flex;align-items:center;justify-content:center;text-align:center;max-width:none}
+.statement-main{margin:0;width:100%;font-size:clamp(78px,14.2vw,210px);line-height:1;letter-spacing:-.046em;font-weight:500;text-transform:none}
+.statement-line{display:flex;justify-content:center;overflow:visible;padding:.12em .06em}
+.statement-line .char{display:inline-block;opacity:0;transform:translate3d(0,1.08em,0) rotateX(18deg);transform-origin:50% 100%;will-change:transform,opacity}
+.statement-line:last-child{color:var(--green)}
 .statement-line:last-child{color:var(--green)}
 
 .payoff{opacity:0}
-.payoff .shell{display:flex;align-items:end;justify-content:flex-start}
-.payoff-block{max-width:620px;padding-bottom:clamp(78px,10vh,124px)}
-.payoff-copy{margin:0;font-size:clamp(32px,3.2vw,48px);line-height:1;letter-spacing:-.04em;font-weight:500;color:#fff;text-wrap:balance}
+.payoff .shell{display:flex;align-items:center;justify-content:center;text-align:center}
+.payoff-block{max-width:760px;padding:0}
+.payoff-copy{margin:0;font-size:clamp(30px,3.25vw,48px);line-height:1;letter-spacing:-.04em;font-weight:500;color:#fff}
 .payoff-copy span{display:block}
 
 .after{min-height:70vh;background:#f1eef9}
@@ -110,10 +111,10 @@ button{font:inherit}
   .intro-block{max-width:100%;padding-bottom:92px}
   .intro-title{font-size:clamp(48px,13vw,68px)}
   .intro-desc{max-width:95%;font-size:16px}
-  .statement-main{font-size:clamp(68px,20vw,112px);line-height:1}
+  .statement-main{font-size:clamp(66px,19vw,108px);line-height:1}
   .payoff .shell{align-items:end}
   .payoff-block{max-width:88%;padding-bottom:46px}
-  .payoff-copy{font-size:clamp(28px,8vw,36px)}
+  .payoff-copy{font-size:clamp(28px,8vw,36px);line-height:1}
 }
 @media(prefers-reduced-motion:reduce){
   .hero-scroll{height:auto}
@@ -195,7 +196,19 @@ const section=document.querySelector('.hero-scroll');
 const intro=document.getElementById('intro');
 const statement=document.getElementById('statement');
 const payoff=document.getElementById('payoff');
-const lineSpans=[...document.querySelectorAll('.statement-line > span')];
+const kineticLines=[...document.querySelectorAll('.statement-line > span')];
+kineticLines.forEach(line=>{
+  const text=line.textContent;
+  const frag=document.createDocumentFragment();
+  [...text].forEach(ch=>{
+    const s=document.createElement('span');
+    s.className='char';
+    s.innerHTML=ch===' ' ? '&nbsp;' : ch;
+    frag.appendChild(s);
+  });
+  line.replaceChildren(frag);
+});
+const kineticChars=[...document.querySelectorAll('.statement-line .char')];
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
 const map=(p,a,b)=>clamp((p-a)/(b-a));
@@ -340,8 +353,11 @@ if(canvas && window.WebGLRenderingContext){
       cloud.rotation.x=-.08+Math.sin(elapsed*.25)*.035+p*.03+mouse.y*.07;
       cloud.position.x=Math.sin(elapsed*.18)*.08+mouse.x*.18;
       cloud.position.y=Math.cos(elapsed*.15)*.05+mouse.y*.14+(p<.65?0:-.12*(p-.65));
-      const s=1+.08*ease(map(p,.08,.46))-.14*ease(map(p,.62,.88));
+      const kineticPush=.34*ease(map(p,.24,.48));
+      const kineticRelease=.30*ease(map(p,.58,.82));
+      const s=1+.08*ease(map(p,.08,.28))+kineticPush-kineticRelease;
       cloud.scale.setScalar(s);
+      cloud.position.z=.55*ease(map(p,.25,.50))-.45*ease(map(p,.60,.82));
     }
 
     renderer.render(scene,camera);
@@ -363,17 +379,19 @@ function updateCopy(){
   intro.style.transform='translateY('+(-7*introOut)+'vh)';
   intro.style.filter='blur('+(7*introOut)+'px)';
 
-  const sIn=ease(map(p,.24,.43));
-  const sOut=ease(map(p,.68,.82));
+  const sIn=ease(map(p,.23,.43));
+  const sOut=ease(map(p,.66,.80));
   statement.style.opacity=String(sIn*(1-sOut));
-  statement.style.transform='translateY('+(8*(1-sIn)-5*sOut)+'vh)';
-  lineSpans.forEach((el,i)=>{
-    const r=ease(map(p,.27+i*.06,.45+i*.055));
-    const y=115-(115*r);
-    el.style.transform='translate3d(0,'+y+'%,0)';
+  statement.style.transform='scale('+(0.88+0.12*sIn+0.035*sOut)+') translateY('+(6*(1-sIn)-3*sOut)+'vh)';
+
+  kineticChars.forEach((el,i)=>{
+    const start=.245+(i%20)*.0065+Math.floor(i/20)*.035;
+    const r=ease(map(p,start,start+.14));
+    el.style.opacity=String(r);
+    el.style.transform='translate3d(0,'+(1.08*(1-r))+'em,0) rotateX('+(18*(1-r))+'deg)';
   });
 
-  const payIn=ease(map(p,.70,.90));
+  const payIn=ease(map(p,.72,.90));
   payoff.style.opacity=String(payIn);
   payoff.style.transform='translateY('+(16*(1-payIn))+'vh)';
 }
