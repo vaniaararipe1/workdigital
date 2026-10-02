@@ -295,7 +295,8 @@ button{font:inherit}
 .wd-explore-section{
  --wd-explore-bg:#121316;--wd-explore-ink:#f7f6fb;
  --wd-explore-copy:#c8c4d3;--wd-explore-accent:#6025e1;
- --wd-explore-surface:rgba(96,37,225,.18);
+ --wd-explore-surface:rgba(96,37,225,.5);
+ --wd-explore-panel:rgba(29,14,54,.5);
  --wd-explore-font:"Space Grotesk",Arial,sans-serif;
  --wd-explore-gap:56px;--wd-explore-panel-padding:48px;--wd-explore-card-padding:32px 22px;
  --wd-explore-ease:cubic-bezier(.22,1,.36,1);
@@ -309,13 +310,17 @@ button{font:inherit}
  background:radial-gradient(ellipse at 80% 25%,rgba(96,37,225,.38),transparent 58%),
  radial-gradient(ellipse at 94% 90%,rgba(192,2,82,.2),transparent 60%),#191326;
 }
-.wd-explore-heading{margin:0 0 36px;padding:0 22px;
+.wd-explore-heading{margin:0 0 31px;padding:0 22px;
  font-size:20px;line-height:1.4;letter-spacing:.2em;font-weight:500;
- text-transform:uppercase;max-width:500px}
-.wd-explore-list{grid-column:1;min-width:0}
+ text-transform:uppercase;max-width:500px;color:#d8c4ff}
+@supports ((background-clip:text) or (-webkit-background-clip:text)){
+ .wd-explore-heading{background:linear-gradient(90deg,#cbb6ff 0%,#efe7ff 26.25%,#fffdfa 47.57%,#f5c3d8 88.96%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+}
+.wd-explore-subtitle{margin:0 0 64px;padding:0 22px;font-size:clamp(42px,4.34vw,64px);line-height:1;font-weight:500;letter-spacing:-.041em}
+.wd-explore-list{grid-column:1;min-width:0;padding:40px 20px;border-radius:12px;background:var(--wd-explore-panel)}
 .wd-explore-card{display:block;padding:var(--wd-explore-card-padding);border-radius:8px;
  color:inherit;text-decoration:none;transition:background .6s var(--wd-explore-ease)}
-.wd-explore-card:hover,.wd-explore-card:focus-visible{background:var(--wd-explore-surface)}
+.wd-explore-card.is-active,.wd-explore-card:hover,.wd-explore-card:focus-visible{background:var(--wd-explore-surface)}
 .wd-explore-card:focus-visible,.wd-explore-cta:focus-visible{
  outline:2px solid #bda4ff;outline-offset:5px}
 .wd-explore-card-title{display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
@@ -324,7 +329,7 @@ button{font:inherit}
 .wd-explore-arrow{display:grid;place-items:center;flex:0 0 40px;
  width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,.05);
  font:28px/1 Arial,sans-serif;transition:background .6s var(--wd-explore-ease)}
-.wd-explore-card:hover .wd-explore-arrow{background:rgba(96,37,225,.35)}
+.wd-explore-card.is-active .wd-explore-arrow,.wd-explore-card:hover .wd-explore-arrow,.wd-explore-card:focus-visible .wd-explore-arrow{background:rgba(96,37,225,.35)}
 .wd-explore-card p{margin:28px 0 0;font-size:clamp(18px,1.46vw,21px);
  line-height:1.3;font-weight:400;color:var(--wd-explore-copy)}
 .wd-explore-image{position:absolute;left:calc(50% + 28px);right:48px;top:200px;
@@ -354,11 +359,13 @@ button{font:inherit}
 @media(max-width:991px){
  .wd-explore-section{padding:64px 24px}
  .wd-explore-layout{display:flex;flex-direction:column;padding:32px 24px;gap:32px}
- .wd-explore-heading{padding:0;font-size:16px;margin-bottom:32px}
- .wd-explore-card{padding:0 0 32px;margin-bottom:32px;border-radius:0;
+ .wd-explore-list{padding:28px 20px}
+ .wd-explore-heading{padding:0;font-size:16px;margin-bottom:24px}
+ .wd-explore-subtitle{padding:0;font-size:42px;margin-bottom:40px}
+ .wd-explore-card{padding:16px 12px 32px;margin-bottom:32px;border-radius:8px;
  border-bottom:1px solid rgba(189,164,255,.2)}
  .wd-explore-card:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
- .wd-explore-card:hover,.wd-explore-card:focus-visible{background:transparent}
+ .wd-explore-card.is-active,.wd-explore-card:hover,.wd-explore-card:focus-visible{background:var(--wd-explore-surface)}
  .wd-explore-image{position:relative;left:auto;right:auto;top:auto;width:100%;
  opacity:1;clip-path:none;margin-bottom:28px;pointer-events:auto}
  .wd-explore-image img{transform:none}
@@ -371,6 +378,8 @@ button{font:inherit}
 @media(max-width:479px){
  .wd-explore-section{padding:48px 16px}
  .wd-explore-layout{padding:28px 20px}
+ .wd-explore-list{padding:24px 12px}
+ .wd-explore-subtitle{font-size:36px}
  .wd-explore-card h3,.wd-explore-card:first-child h3{font-size:30px}
  .wd-explore-arrow{flex-basis:36px;width:36px;height:36px}
 }
@@ -383,7 +392,8 @@ button{font:inherit}
  <div class="wd-explore-layout">
   <div class="wd-explore-list">
    <h2 class="wd-explore-heading" id="wd-explore-heading">Aceite o desafio do novo</h2>
-   <a class="wd-explore-card" href="#criacao-de-sites" data-wd-explore-url="https://workdigital.art.br/criacao-de-site/">
+   <h2 class="wd-explore-subtitle">Soluções Work</h2>
+   <a class="wd-explore-card is-active" href="#criacao-de-sites" data-wd-explore-url="https://workdigital.art.br/criacao-de-site/">
     <span class="wd-explore-image"><img src="https://picsum.photos/800/500?random=1" alt="Imagem provisória para Criação de Sites" loading="lazy" width="800" height="500"></span>
     <div class="wd-explore-card-title"><h3>Criação de Sites</h3><span class="wd-explore-arrow" aria-hidden="true">↗</span></div>
     <p>Sites profissionais, personalizados, otimizados, de fácil gerenciamento, tornando o seu negócio visível para milhares de clientes e valorizando sua marca.</p>
