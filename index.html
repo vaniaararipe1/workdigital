@@ -649,6 +649,12 @@ document.querySelectorAll('[data-wd-explore-url]').forEach(link=>{
  .wd-transformacao-cta{transition:none}
  .wd-statement-line,.wd-transformacao-line{--wd-line-from:#efe7ff!important;--wd-line-to:#f5c3d8!important}
 }
+
+/* Give the two-line statement the available width. */
+#wd-statement{padding-inline:clamp(12px,1.5vw,24px)}
+.wd-statement-inner{max-width:1440px}
+.wd-statement-title{max-width:none}
+.wd-statement-line{white-space:nowrap}
 </style>
 <section id="wd-statement" class="wd-statement-section" aria-labelledby="wd-statement-title">
  <div class="wd-statement-inner">
@@ -697,10 +703,12 @@ document.querySelectorAll('[data-wd-explore-url]').forEach(link=>{
  const color=(a,b,p)=>`rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*p)).join(',')})`;
  let queued=false;
  function split(el,text){
+  const twoLines=el.id==='wd-statement-title';
+  if(twoLines)el.style.fontSize='';
   const css=getComputedStyle(el),width=el.clientWidth;
   if(!measurement||width<=0)return;
   measurement.font=`${css.fontWeight} ${css.fontSize} ${css.fontFamily}`;
-  const spacing=parseFloat(css.letterSpacing)||0;
+  let spacing=parseFloat(css.letterSpacing)||0;
   const measure=text=>measurement.measureText(text).width+spacing*Math.max(0,text.length-1);
   const lines=[];let line='';
   for(const word of text.split(/\s+/)){
@@ -708,6 +716,22 @@ document.querySelectorAll('[data-wd-explore-url]').forEach(link=>{
    if(line&&measure(candidate)>width){lines.push(line);line=word;}else line=candidate;
   }
   if(line)lines.push(line);
+  if(twoLines){
+   const words=text.split(/\s+/);let best=null;
+   for(let cut=1;cut<words.length;cut++){
+    const pair=[words.slice(0,cut).join(' '),words.slice(cut).join(' ')];
+    const longest=Math.max(...pair.map(measure));
+    if(!best||longest<best.longest)best={pair,longest};
+   }
+   const factor=Math.min(1,(width-2)/best.longest);
+   if(factor<1){
+    el.style.fontSize=`${parseFloat(css.fontSize)*factor}px`;
+    const fitted=getComputedStyle(el);
+    measurement.font=`${fitted.fontWeight} ${fitted.fontSize} ${fitted.fontFamily}`;
+    spacing=parseFloat(fitted.letterSpacing)||0;
+   }
+   lines.splice(0,lines.length,...best.pair);
+  }
   // Balance the same number of responsive lines without changing the copy.
   const words=text.split(/\s+/),count=lines.length;
   const target=measure(text)/count;
