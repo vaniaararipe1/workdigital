@@ -22,3 +22,14 @@ cada bloco, coloque:
 
 Use textos provisórios ("Nome do case 1" / "Descrição do case 1", e assim por diante), que vou
 substituir pelos cases reais.
+
+**CSS (seguir o padrão das seções anteriores)**
+- Fundo: `background: transparent` na seção. O gradiente do site continua contínuo, sem fundo preto e sem faixas ou emendas com a seção anterior.
+- "WORKS" com o mesmo gradiente de texto usado em "ACEITE O DESAFIO DO NOVO"; "CASES" com o mesmo estilo que "STATS" tem na referência.
+- Títulos dos cases na mesma fonte dos títulos dos cards de "Aceite o desafio do novo"; descrições em **Nunito**, no mesmo tamanho dos descritivos desses cards.
+- Imagem com proporção fixa (ex.: `aspect-ratio: 16 / 10; object-fit: cover;`), para os blocos ficarem com a mesma altura.
+- Reproduza o hover e a animação de entrada dos blocos da referência, se houver, e desligue as animações com `prefers-reduced-motion`.
+- Responsivo: mesma grade da referência no desktop, 2 colunas no tablet e 1 no celular, sem rolagem horizontal.
+- Classes com o prefixo `wd-works-` e `id="wd-works"` na seção, para não conflitar com o resto do código.
+
+Devolva só o código desta nova seção (HTML + CSS + JS, se precisar), pronto para colar abaixo de `#wd-explore`.
