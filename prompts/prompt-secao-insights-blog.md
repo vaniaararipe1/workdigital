@@ -3,9 +3,8 @@
 Referência: seção **INSIGHTS** da home de https://www.auros.global/ (e a frase que vem antes dela).
 Anexe um print da frase + da seção INSIGHTS da Auros.
 
-Antes de colar, troque `[URL DO SITE ATUAL DA WORK DIGITAL]` pelo endereço do site atual. Se o
-ChatGPT não conseguir abrir o site, preencha a tabela do item 3 com os artigos (título, resumo,
-data, imagem e link).
+Se o ChatGPT não conseguir abrir o site atual (https://workdigital.art.br/), preencha a tabela do
+item 3 com os artigos (título, resumo, data, imagem e link).
 
 ## PROMPT (copie daqui para baixo)
 
@@ -30,16 +29,16 @@ cliente NÃO procura por você?", se a referência também for animada.
 | **INSIGHTS** | **BLOG** |
 | Título da seção | **Insights e perspectivas** |
 | Texto descritivo (se houver) | Explore ideias, tendências do digital e o que aprendemos criando sites, blogs e landing pages. |
-| Botão/link para todos os artigos (se houver) | **VER TODOS OS ARTIGOS** (link para o blog da Work) |
+| Botão/link para todos os artigos (se houver) | **VER TODOS OS ARTIGOS** (link para o blog em https://workdigital.art.br/) |
 
 - "BLOG" no mesmo estilo de "INSIGHTS"; "Insights e perspectivas" com o mesmo gradiente de texto
   usado nos títulos das seções anteriores, se o título da referência tiver gradiente.
 
 **3. Artigos**
-Use os artigos que aparecem hoje na home do site atual da Work Digital:
-[URL DO SITE ATUAL DA WORK DIGITAL]
+Use os artigos que aparecem hoje na home do site atual da Work Digital, na área do blog
+("Visite o blog"): https://workdigital.art.br/
 
-Pegue a **mesma quantidade de artigos que a referência mostra**, os mais recentes, com título,
+Abra o site, copie os dados reais de cada artigo (não invente títulos nem resumos) e pegue a **mesma quantidade de artigos que a referência mostra**, os mais recentes, com título,
 imagem de capa, data, categoria (se houver) e link para o artigo original. Se não conseguir
 acessar o site, use a tabela abaixo:
 
