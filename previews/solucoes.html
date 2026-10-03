@@ -1,0 +1,400 @@
+<title>Work Digital — Soluções</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Nunito:wght@400;600&display=swap">
+<style>
+/* Layout: OFF+BRAND-style services page — fixed glossy orb + giant "SOLUÇÕES + WORK" behind, two-column card board on top (open service left, sticky; other services right), bottom-right menu button. Single dark look by choice. */
+:root{
+  --bg:#141019; --card:rgba(34,30,40,.94); --card-hover:rgba(44,38,54,.96); --line:rgba(255,255,255,.10);
+  --fg:#EFEAF6; --muted:#BDB4CC; --accent:#C4A8FF; --pink:#FF8FCB;
+  --display:"Space Grotesk","Helvetica Neue",Arial,sans-serif;
+  --body:"Nunito",system-ui,sans-serif;
+  --pad:clamp(16px,3.4vw,48px);
+  --ease:cubic-bezier(.22,1,.36,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* Fixed background: orb + giant words */
+.bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;left:-10vw;top:calc(12vh + 5.5vw);width:min(78vw,1100px);aspect-ratio:1;border-radius:50%;
+  background:
+    radial-gradient(circle at 62% 30%, rgba(255,255,255,.95) 0%, rgba(255,255,255,0) 22%),
+    radial-gradient(circle at 30% 60%, #ff5fa2 0%, rgba(255,95,162,0) 45%),
+    radial-gradient(circle at 70% 70%, #7c5cff 0%, rgba(124,92,255,0) 50%),
+    radial-gradient(circle at 45% 45%, #ffb3d9 0%, #c86bff 45%, #5b2fd6 75%, #2a1170 100%);
+  filter:saturate(1.15);
+  animation:drift 18s ease-in-out infinite alternate}
+.orb::after{content:"";position:absolute;inset:-6%;border-radius:50%;background:radial-gradient(circle,rgba(200,140,255,.35),transparent 65%);filter:blur(40px)}
+.fluid{position:absolute;inset:0;width:100%;height:100%;display:block}
+.gl .orb{visibility:hidden;animation:none}
+.gl .words{visibility:hidden}
+.orb2{position:absolute;right:-18vw;bottom:-30vh;width:60vw;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle at 40% 40%,rgba(255,143,203,.55),rgba(124,92,255,.25) 45%,transparent 70%);filter:blur(30px);animation:drift2 22s ease-in-out infinite alternate}
+@keyframes drift{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(6vw,4vh) rotate(25deg)}100%{transform:translate(-3vw,8vh) rotate(-15deg)}}
+@keyframes drift2{to{transform:translate(-8vw,-6vh)}}
+.words{position:absolute;inset:0;font:300 clamp(80px,15vw,250px)/.86 var(--display);letter-spacing:-.04em;text-transform:uppercase}
+.words .w1{position:absolute;left:3.5vw;top:12vh;color:#d9d3e4}
+.words .w2{position:absolute;right:4vw;top:calc(12vh + .9em);color:#d9d3e4}
+.words .plus{position:absolute;left:44vw;top:calc(12vh + 1em);width:.62em;height:.62em;font-size:clamp(80px,15vw,250px)}
+.words .plus::before,.words .plus::after{content:"";position:absolute;background:#d9d3e4;left:50%;top:50%;transform:translate(-50%,-50%)}
+.words .plus::before{width:100%;height:.12em}.words .plus::after{width:.12em;height:100%}
+
+/* Header */
+.hd{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:22px var(--pad) 34px;background:linear-gradient(180deg,rgba(20,16,25,.92) 0%,rgba(20,16,25,.6) 60%,rgba(20,16,25,0) 100%)}
+.logo{font:500 clamp(20px,1.8vw,26px)/1 var(--display);letter-spacing:-.01em;text-transform:uppercase}
+.hd nav{display:flex;align-items:center;gap:28px;font:500 13.5px var(--display);text-transform:uppercase}
+.hd nav a.lnk{display:inline-flex;gap:6px;align-items:center;transition:opacity .2s}
+.hd nav a.lnk:hover{opacity:.7}
+.cta{display:inline-flex;align-items:center;gap:12px;padding:14px 22px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(20,16,25,.55);backdrop-filter:blur(8px);font:500 13.5px var(--display);text-transform:uppercase;transition:background .3s,border-color .3s}
+.cta:hover{background:rgba(196,168,255,.18);border-color:var(--accent)}
+.cta span{transition:transform .4s var(--ease)}.cta:hover span{transform:translateX(4px)}
+
+/* Board */
+main{position:relative;z-index:1}
+.intro-space{height:52vh}
+.board{position:relative;max-width:1640px;margin:0 auto 18vh;padding:0 clamp(16px,4.5vw,96px)}
+.stage{position:relative;transition:height .7s var(--ease)}
+.svc{position:absolute;border-radius:8px;background:var(--card);backdrop-filter:blur(10px);overflow:hidden;
+  transition:left .7s var(--ease),top .7s var(--ease),width .7s var(--ease),height .7s var(--ease),background .3s}
+.svc:not(.is-open){cursor:pointer}
+.svc:not(.is-open):hover{background:var(--card-hover)}
+.svc .head{position:relative;display:flex;justify-content:space-between;align-items:flex-start;padding:clamp(22px,2.4vw,40px);padding-bottom:0}
+.svc .titles{position:relative;flex:1;min-width:0}
+.svc .big{display:block;font:400 clamp(26px,2.7vw,46px)/1 var(--display);text-transform:uppercase;letter-spacing:-.01em;transition:opacity .3s,transform .5s var(--ease)}
+.svc .teaser{display:block;margin-top:14px;font-size:clamp(15px,1.1vw,18px);color:var(--muted);max-width:40ch;transition:opacity .3s}
+.svc .small{position:absolute;left:0;top:4px;font:400 clamp(16px,1.4vw,22px) var(--display);text-transform:uppercase;color:var(--muted);opacity:0;transform:translateY(8px);transition:opacity .3s,transform .5s var(--ease)}
+.svc.is-open .big,.svc.is-open .teaser{opacity:0;transform:translateY(-8px);pointer-events:none;position:absolute;left:0;right:0;top:0}
+.svc.is-open .small{position:relative;top:0;display:block}
+.svc.is-open .small{opacity:1;transform:none;transition-delay:.25s}
+.svc .icon{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:50%;transition:transform .6s var(--ease),background .2s}
+.svc .icon svg{width:20px;height:20px;stroke:var(--fg);stroke-width:1.6}
+.svc:not(.is-open):hover .icon{transform:rotate(90deg)}
+.svc.is-open .icon{transform:rotate(45deg)}
+.svc.is-open .icon:hover{background:rgba(255,255,255,.08)}
+.svc .content{padding:26px clamp(22px,2.4vw,40px) clamp(24px,2.6vw,44px);opacity:0;transform:translateY(14px);transition:opacity .25s,transform .5s var(--ease)}
+.svc.is-open .content{opacity:1;transform:none;transition:opacity .45s .35s,transform .6s .3s var(--ease)}
+.svc .content h3{font:400 clamp(24px,2.3vw,40px)/1.08 var(--display);text-transform:uppercase;letter-spacing:-.01em;margin:0 0 12px}
+.svc .content p{font-size:clamp(16px,1.3vw,21px);line-height:1.6;opacity:.9;margin:0 0 32px;max-width:60ch}
+.see{display:inline-flex;align-items:center;gap:10px;margin-top:6px;padding:12px 18px;border-radius:999px;background:#f2eef8;color:#141019;font:600 12px var(--display);letter-spacing:.06em;text-transform:uppercase;transition:transform .4s var(--ease)}
+.see:hover{transform:scale(1.04)}
+
+/* Menu button (bottom-right) */
+.menu-btn{position:fixed;right:var(--pad);bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:30;width:48px;height:48px;border-radius:8px;background:#1d1824;border:1px solid var(--line);display:grid;place-items:center}
+.menu-btn i{display:block;width:20px;height:1.6px;background:var(--fg);box-shadow:0 -6px 0 var(--fg),0 6px 0 var(--fg)}
+.menu{position:fixed;right:var(--pad);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:30;width:220px;padding:16px;border-radius:8px;background:#f2eef8;color:#141019;font:500 13px var(--display);text-transform:uppercase;transform-origin:bottom right;transform:scale(.92);opacity:0;visibility:hidden;transition:transform .35s var(--ease),opacity .25s,visibility .25s}
+.menu.on{transform:none;opacity:1;visibility:visible}
+.menu a{display:flex;justify-content:space-between;padding:7px 2px;border-bottom:1px solid rgba(20,16,25,.1)}
+.menu a:last-child{border:0}
+.wa{position:fixed;right:var(--pad);bottom:calc(86px + env(safe-area-inset-bottom,0px));z-index:29;width:48px;height:48px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 10px 30px -8px rgba(37,211,102,.6);transition:opacity .2s}
+.wa svg{width:24px;height:24px;fill:#fff}
+.menu.on ~ .wa{opacity:0;pointer-events:none}
+
+/* Footer */
+footer{position:relative;z-index:1;background:linear-gradient(180deg,rgba(20,16,25,0),var(--bg) 18%);padding:14vh var(--pad) 28px}
+.f-big{font:300 clamp(56px,11vw,180px)/.9 var(--display);letter-spacing:-.04em;text-transform:uppercase;margin:0}
+.f-big span{background:linear-gradient(90deg,#fff 0%,#EDE4FF 45%,#F7C9EC 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.f-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:32px;margin-top:56px;padding-top:28px;border-top:1px solid var(--line)}
+.f-grid h5{font:500 11px var(--display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.f-grid p{margin:0;color:var(--muted);max-width:36ch;font-size:16px}
+.f-grid .help{font:500 20px var(--display);color:var(--fg);margin:0 0 16px}
+.f-grid ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;font:500 14px var(--display);text-transform:uppercase}
+.legal{margin-top:40px;color:var(--muted);font-size:13px}
+
+@media (max-width:900px){
+  .hd nav a.lnk{display:none}
+  .cta{padding:11px 16px;font-size:12px}
+  .intro-space{height:44vh}
+  .words .w1{top:14vh}.words .w2{top:calc(14vh + 1em)}.words .plus{left:6vw;top:calc(14vh + 1.05em)}
+  .f-grid{grid-template-columns:1fr}
+  .orb{width:120vw;left:-30vw}
+}
+@media (prefers-reduced-motion:reduce){.orb,.orb2{animation:none}*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="bgfx" aria-hidden="true">
+  <div class="orb2"></div><div class="orb" id="orbRef"></div><canvas class="fluid" id="fluid"></canvas>
+  <div class="words"><span class="w1">Soluções</span><span class="plus"></span><span class="w2">Work</span></div>
+</div>
+
+<header class="hd">
+  <a class="logo" href="#top">Work Digital.</a>
+  <nav aria-label="Principal">
+    <a class="lnk" href="#top">Works ↗</a>
+    <a class="lnk" href="#top">Blog ↗</a>
+    <a class="cta" href="#contato">Solicitar proposta <span aria-hidden="true">→</span></a>
+  </nav>
+</header>
+
+<main id="top">
+  <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Soluções Work Digital</h1>
+  <div class="intro-space"></div>
+  <section class="board" aria-label="Serviços"><div class="stage" id="stage"></div></section>
+</main>
+
+<footer id="contato">
+  <p class="f-big">Vamos <span>conversar?</span></p>
+  <div class="f-grid">
+    <div><h5>Work Digital</h5><p>Criação de sites e lojas virtuais de alta performance e focados em conversão.</p></div>
+    <div><p class="help">Como podemos te ajudar?</p><a class="cta" href="#contato">Entre em contato <span aria-hidden="true">→</span></a></div>
+    <div><h5>Redes</h5><ul><li><a href="https://www.linkedin.com/">LinkedIn ↗</a></li><li><a href="https://www.instagram.com/">Instagram ↗</a></li><li><a href="https://www.facebook.com/">Facebook ↗</a></li></ul></div>
+  </div>
+  <div class="legal">Work Digital © <span id="yr">2026</span> | Todos os direitos reservados · Prévia: textos de exemplo</div>
+</footer>
+
+<nav class="menu" id="menu" aria-label="Menu">
+  <a href="#top">Home <span>→</span></a><a href="#top">Soluções <span>→</span></a><a href="#top">Works <span>→</span></a><a href="#top">Blog <span>→</span></a><a href="#contato">Contato <span>→</span></a>
+</nav>
+<a class="wa" href="https://wa.me/" aria-label="Falar no WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3 .78.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.25-.12-1.47-.72-1.7-.8-.23-.09-.4-.13-.56.12-.17.25-.64.8-.79.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.38.1-.5.12-.11.25-.29.38-.44.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48a.92.92 0 0 0-.66.31c-.23.25-.87.85-.87 2.07s.89 2.4 1.01 2.57c.12.16 1.75 2.67 4.24 3.74.59.26 1.05.41 1.41.52.6.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29z"/></svg></a>
+<button class="menu-btn" id="menuBtn" aria-label="Abrir menu" aria-expanded="false"><i></i></button>
+
+<script>
+const SERVICES = [
+  { id:'sites', name:'Criação de Sites', teaser:'Sites profissionais, rápidos e fáceis de atualizar.', blocks:[
+    ['Sites sob medida para o seu negócio','Sites profissionais, personalizados, otimizados e de fácil gerenciamento, tornando o seu negócio visível para milhares de clientes e valorizando sua marca.'],
+    ['Pensados para aparecer no Google','Estrutura, velocidade e conteúdo preparados para buscas desde o primeiro dia, para que o cliente encontre você antes do concorrente.'] ]},
+  { id:'blogs', name:'Criação de Blogs', teaser:'Conteúdo que constrói audiência e autoridade.', blocks:[
+    ['Marketing de conteúdo de verdade','Criação de blogs profissionais para sua marca acessar todo o poder do marketing de conteúdo. Construa sua audiência na web e seja autoridade em sua área de atuação.'],
+    ['Fácil de publicar, fácil de ler','Um painel simples para a sua equipe publicar artigos, com leitura confortável no celular e páginas que convidam o leitor a seguir para o seu site.'] ]},
+  { id:'landing', name:'Landing Pages', teaser:'Páginas que convertem visitantes em clientes.', blocks:[
+    ['Conquiste no primeiro clique','Atrair não é o suficiente. É preciso conquistar seu visitante no momento em que ele chega à sua página de vendas. Criamos landing pages que convertem e alavancam seus resultados.'],
+    ['Prontas para campanhas','Integração com formulários, WhatsApp e ferramentas de anúncios, para medir cada contato e investir onde dá resultado.'] ]},
+  { id:'lojas', name:'Lojas Virtuais', teaser:'E-commerce de alta performance, focado em vender.', blocks:[
+    ['Venda todos os dias, a qualquer hora','Lojas virtuais rápidas e seguras, com catálogo organizado, pagamento facilitado e uma jornada de compra pensada para o cliente chegar até o fim.'],
+    ['Gestão sem complicação','Controle de produtos, estoque e pedidos em um só lugar, com relatórios para entender o que vende mais.'] ]}
+];
+let order = SERVICES.map(s=>s.id);
+const byId = id => SERVICES.find(s=>s.id===id);
+const stage=document.getElementById('stage');
+const plusSvg='<svg viewBox="0 0 24 24" fill="none"><path d="M12 4v16M4 12h16"/></svg>';
+const els={};
+SERVICES.forEach(s=>{
+  const el=document.createElement('article'); el.className='svc'; el.dataset.id=s.id;
+  el.innerHTML=`<div class="head"><div class="titles"><span class="big">${s.name}</span><span class="teaser">${s.teaser}</span><span class="small">${s.name}</span></div>
+    <button class="icon" aria-label="Abrir ${s.name}">${plusSvg}</button></div>
+    <div class="content">${s.blocks.map(([h,p])=>`<h3>${h}</h3><p>${p}</p>`).join('')}<a class="see" href="#top">Ver nossos works <span aria-hidden="true">→</span></a></div>`;
+  el.addEventListener('click',e=>{
+    if(el.classList.contains('is-open')){ if(e.target.closest('.icon')) openService(order[1]); return; }
+    openService(s.id);
+  });
+  stage.appendChild(el); els[s.id]=el;
+});
+function layout(){
+  const W=stage.clientWidth, gap=16, mobile=innerWidth<=900;
+  const itemH=mobile?150:Math.max(170,Math.min(300,innerHeight*.28));
+  const open=els[order[0]];
+  const colW=mobile?W:(W-gap)/2;
+  // measure open height at its target width
+  // measure the open card at its final width with an invisible clone (the real one may be mid-transition)
+  const probe=open.cloneNode(true);
+  Object.assign(probe.style,{position:'absolute',visibility:'hidden',transition:'none',left:'0',top:'0',width:colW+'px',height:'auto'});
+  probe.classList.add('is-open'); stage.appendChild(probe);
+  const natural=probe.offsetHeight; probe.remove();
+  const openH=Math.max(natural, mobile?0:3*itemH+2*gap);
+  order.forEach((id,i)=>{
+    const el=els[id]; el.classList.toggle('is-open',i===0);
+    el.querySelector('.icon').setAttribute('aria-label',i===0?'Fechar e ir para o próximo serviço':'Abrir '+byId(id).name);
+    let x,y,w,h;
+    if(i===0){x=0;y=0;w=colW;h=openH;}
+    else if(mobile){x=0;y=openH+gap+(i-1)*(itemH+gap);w=W;h=itemH;}
+    else{x=colW+gap;y=(i-1)*(itemH+gap);w=colW;h=itemH;}
+    Object.assign(el.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});
+  });
+  stage.style.height=(mobile?openH+gap+(order.length-1)*(itemH+gap)-gap:Math.max(openH,(order.length-1)*(itemH+gap)-gap))+'px';
+}
+function openService(id){
+  if(order[0]===id) return;
+  const prev=order[0], idx=order.indexOf(id);
+  order[idx]=prev; order[0]=id;          // the open card takes the clicked card's place, like the reference
+  layout();
+  if(innerWidth<=900) stage.scrollIntoView({behavior:'smooth',block:'start'});
+}
+layout();
+addEventListener('resize',layout);
+document.fonts && document.fonts.ready.then(layout);
+
+const menu=document.getElementById('menu'), mb=document.getElementById('menuBtn');
+mb.addEventListener('click',()=>{const on=menu.classList.toggle('on'); mb.setAttribute('aria-expanded',on);});
+menu.addEventListener('click',()=>{menu.classList.remove('on');mb.setAttribute('aria-expanded',false);});
+document.getElementById('yr').textContent=new Date().getFullYear();
+
+// Fluid orb (WebGL): real fluid simulation inside a liquid-shaped orb; text drawn in the same pass
+(function(){
+  const cv=document.getElementById('fluid'), ref=document.getElementById('orbRef'), bg=document.querySelector('.bgfx');
+  const gl=cv.getContext('webgl',{premultipliedAlpha:true,antialias:false,alpha:true});
+  if(!gl){cv.remove();return;}
+  const hf=gl.getExtension('OES_texture_half_float'); gl.getExtension('OES_texture_half_float_linear');
+  const ff=gl.getExtension('OES_texture_float'); gl.getExtension('OES_texture_float_linear');
+  const TYPE=hf?hf.HALF_FLOAT_OES:(ff?gl.FLOAT:null);
+  if(!TYPE){cv.remove();return;}
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const NOISE=`
+  vec2 h(vec2 p){p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));return -1.+2.*fract(sin(p)*43758.5453);}
+  float n(vec2 p){vec2 i=floor(p),f=fract(p),u=f*f*(3.-2.*f);
+    return mix(mix(dot(h(i),f),dot(h(i+vec2(1,0)),f-vec2(1,0)),u.x),mix(dot(h(i+vec2(0,1)),f-vec2(0,1)),dot(h(i+vec2(1,1)),f-vec2(1,1)),u.x),u.y);}
+  float fbm(vec2 p){float v=0.,a=.5;mat2 R=mat2(.8,.6,-.6,.8);for(int i=0;i<5;i++){v+=a*n(p);p=R*p*2.02;a*=.5;}return v;}`;
+  const VS='attribute vec2 a;varying vec2 uv;void main(){uv=a*.5+.5;gl_Position=vec4(a,0.,1.);}';
+  const P=(fs)=>{
+    const mk=(t,src)=>{const o=gl.createShader(t);gl.shaderSource(o,src);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))console.warn(gl.getShaderInfoLog(o));return o;};
+    const pr=gl.createProgram();gl.attachShader(pr,mk(gl.VERTEX_SHADER,VS));gl.attachShader(pr,mk(gl.FRAGMENT_SHADER,'precision highp float;varying vec2 uv;'+fs));
+    gl.bindAttribLocation(pr,0,'a');gl.linkProgram(pr);
+    const u={};const cnt=gl.getProgramParameter(pr,gl.ACTIVE_UNIFORMS);
+    for(let i=0;i<cnt;i++){const nm=gl.getActiveUniform(pr,i).name.replace('[0]','');u[nm]=gl.getUniformLocation(pr,nm);}
+    return {pr,u,ok:gl.getProgramParameter(pr,gl.LINK_STATUS)};
+  };
+  // --- simulation programs (domain = square around the orb, uv in [0,1])
+  const pAdvect=P(`uniform sampler2D vel,src;uniform float dt,diss;uniform vec2 tx;
+    void main(){vec2 c=uv-dt*texture2D(vel,uv).xy;gl_FragColor=diss*texture2D(src,c);}`);
+  const BASE=`
+  vec3 basecol(vec2 p,float t){
+    float v=n(p*.55+vec2(t*.05,-t*.04))*.7+n(p*1.1+vec2(-t*.06,t*.05))*.3;
+    vec3 purple=vec3(.42,.22,.88),pink=vec3(1.,.45,.70),lilac=vec3(.84,.74,1.),cream=vec3(1.,.94,.97),magenta=vec3(.92,.20,.55);
+    vec3 col=mix(pink,lilac,smoothstep(-.4,-.1,v));          // mostly light: lilac / cream, like the reference's cream-peach
+    col=mix(col,cream,smoothstep(-.12,.2,v));
+    col=mix(col,vec3(1.,.80,.90),smoothstep(.25,.5,v)*.5);
+    col=mix(col,pink,smoothstep(.1,.7,-p.y*.6+p.x*.15)*.55);
+    col=mix(col,purple,smoothstep(.35,.9,-p.y*.5-p.x*.3)*.35);
+    return col;}`;
+  const pDye=P(NOISE+BASE+`uniform sampler2D vel,dye;uniform float dt,relax,t;
+    void main(){vec2 c=uv-dt*texture2D(vel,uv).xy;vec3 adv=texture2D(dye,c).rgb;
+      gl_FragColor=vec4(mix(adv,basecol((uv-.5)*2.2,t),relax),1.);}`);
+  const pPaint=P(`uniform sampler2D src;uniform vec2 pt;uniform vec3 col;uniform float rad,amt;
+    void main(){vec2 d=uv-pt;float g=exp(-dot(d,d)/rad)*amt;vec4 s=texture2D(src,uv);gl_FragColor=vec4(mix(s.rgb,col,clamp(g,0.,1.)),1.);}`);
+  const pSplat=P(`uniform sampler2D src;uniform vec2 pt;uniform vec4 val;uniform float rad;
+    void main(){vec2 d=uv-pt;gl_FragColor=texture2D(src,uv)+val*exp(-dot(d,d)/rad);}`);
+  const pCurl=P(`uniform sampler2D vel;uniform vec2 tx;
+    void main(){float L=texture2D(vel,uv-vec2(tx.x,0)).y,R=texture2D(vel,uv+vec2(tx.x,0)).y,T=texture2D(vel,uv+vec2(0,tx.y)).x,B=texture2D(vel,uv-vec2(0,tx.y)).x;
+    gl_FragColor=vec4(.5*(R-L-T+B),0,0,1);}`);
+  const pVort=P(`uniform sampler2D vel,curl;uniform vec2 tx;uniform float k,dt;
+    void main(){float L=texture2D(curl,uv-vec2(tx.x,0)).x,R=texture2D(curl,uv+vec2(tx.x,0)).x,T=texture2D(curl,uv+vec2(0,tx.y)).x,B=texture2D(curl,uv-vec2(0,tx.y)).x,C=texture2D(curl,uv).x;
+    vec2 f=.5*vec2(abs(T)-abs(B),abs(R)-abs(L));f/=length(f)+1e-4;f*=k*C;f.y*=-1.;
+    gl_FragColor=vec4(texture2D(vel,uv).xy+f*dt,0,1);}`);
+  const pDiv=P(`uniform sampler2D vel;uniform vec2 tx;
+    void main(){float L=texture2D(vel,uv-vec2(tx.x,0)).x,R=texture2D(vel,uv+vec2(tx.x,0)).x,T=texture2D(vel,uv+vec2(0,tx.y)).y,B=texture2D(vel,uv-vec2(0,tx.y)).y;
+    gl_FragColor=vec4(.5*(R-L+T-B),0,0,1);}`);
+  const pPres=P(`uniform sampler2D pres,div;uniform vec2 tx;
+    void main(){float L=texture2D(pres,uv-vec2(tx.x,0)).x,R=texture2D(pres,uv+vec2(tx.x,0)).x,T=texture2D(pres,uv+vec2(0,tx.y)).x,B=texture2D(pres,uv-vec2(0,tx.y)).x;
+    gl_FragColor=vec4((L+R+B+T-texture2D(div,uv).x)*.25,0,0,1);}`);
+  const pGrad=P(`uniform sampler2D pres,vel;uniform vec2 tx;
+    void main(){float L=texture2D(pres,uv-vec2(tx.x,0)).x,R=texture2D(pres,uv+vec2(tx.x,0)).x,T=texture2D(pres,uv+vec2(0,tx.y)).x,B=texture2D(pres,uv-vec2(0,tx.y)).x;
+    gl_FragColor=vec4(texture2D(vel,uv).xy-.5*vec2(R-L,T-B),0,1);}`);
+  // --- display: liquid shape + sphere shading + text in the same pass
+  const pShow=P(NOISE+`uniform sampler2D dye,tx2;uniform vec2 c,res,m;uniform float r,t,mi,glow;
+    float smin(float a,float b,float k){float hh=clamp(.5+.5*(b-a)/k,0.,1.);return mix(b,a,hh)-k*hh*(1.-hh);}
+    void main(){
+      vec2 fc=gl_FragCoord.xy; vec2 p=(fc-c)/r; p-=.025*vec2(sin(t*.31),cos(t*.27));
+      float d=length(p),ang=atan(p.y,p.x);
+      float sd=d-1.+.06*n(vec2(ang*1.1+t*.22,t*.16))+.03*n(vec2(ang*2.3-t*.3,t*.27+3.));
+      for(int i=0;i<3;i++){float fi=float(i);
+        float an=t*(.11+.04*fi)*(mod(fi,2.)<.5?1.:-1.)+fi*2.1;
+        float pulse=.5+.5*sin(t*(.38+.12*fi)+fi*1.7);pulse=pulse*pulse*(3.-2.*pulse);
+        vec2 bp=vec2(cos(an),sin(an))*(1.02+.10*pulse);sd=smin(sd,length(p-bp)-.07*pulse,.38*pulse+.04);}
+      vec2 mp=(m-c)/r;float near=mi*smoothstep(1.7,.9,length(mp));
+      sd=smin(sd,length(p-mp)-.09*near,.48*near+.001);
+      float px=1.5/r;float a=1.-smoothstep(-px,px,sd);
+      vec3 col=texture2D(dye,clamp(p/2.2+.5,0.,1.)).rgb;
+      vec2 dm=p-mp; col=mix(col,vec3(1.,.97,.99),exp(-dot(dm,dm)*120.)*glow);   // bright core right at the cursor
+      float dd=min(d,.999);float z=sqrt(max(0.,1.-dd*dd));vec3 nrm=normalize(vec3(p,z));
+      float spec=pow(max(dot(nrm,normalize(vec3(.35,.45,.85))),0.),28.);
+      col+=spec*.55;col*=.82+.18*z;
+      float ta=texture2D(tx2,fc/res).a;
+      vec3 neg=vec3(1.)-col; vec3 dark=vec3(neg.r*.25+.04,neg.g*.32,neg.b*.55+.14);
+      vec3 tc=mix(vec3(.85,.83,.89),dark,a);
+      gl_FragColor=vec4(col*a*(1.-ta)+tc*ta,a*(1.-ta)+ta);
+    }`);
+  if(![pAdvect,pDye,pPaint,pSplat,pCurl,pVort,pDiv,pPres,pGrad,pShow].every(x=>x.ok)){cv.remove();return;}
+
+  const quad=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,quad);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
+  function tex(w,h){const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,w,h,0,gl.RGBA,TYPE,null);
+    const fb=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,fb);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,t,0);
+    gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
+    return {t,fb,w,h};}
+  function dbl(w,h){let a=tex(w,h),b=tex(w,h);return {get r(){return a;},get w(){return b;},swap(){const x=a;a=b;b=x;}};}
+  const SIM=128, DYE=256;
+  const vel=dbl(SIM,SIM), pres=dbl(SIM,SIM), div=tex(SIM,SIM), curl=tex(SIM,SIM), dye=dbl(DYE,DYE);
+  if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE){cv.remove();return;}
+  let unit=0;
+  function bind(prog){gl.useProgram(prog.pr);unit=0;}
+  function T(prog,name,t){gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,t.t||t);gl.uniform1i(prog.u[name],unit++);}
+  function draw(target){if(target){gl.bindFramebuffer(gl.FRAMEBUFFER,target.fb);gl.viewport(0,0,target.w,target.h);}
+    else{gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,cv.width,cv.height);}
+    gl.drawArrays(gl.TRIANGLE_STRIP,0,4);}
+  const stx=[1/SIM,1/SIM];
+
+  // text texture
+  const txt=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,txt);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  const tcv=document.createElement('canvas'),tctx=tcv.getContext('2d');
+  let dpr=1,cx=0,cy=0,rad=0;
+  function drawText(){
+    tcv.width=cv.width;tcv.height=cv.height;tctx.clearRect(0,0,tcv.width,tcv.height);tctx.fillStyle='#fff';
+    document.querySelectorAll('.words .w1, .words .w2').forEach(el=>{
+      const cs=getComputedStyle(el),rc=el.getBoundingClientRect(),fsz=parseFloat(cs.fontSize)*dpr;
+      tctx.font=`${cs.fontWeight} ${fsz}px ${cs.fontFamily}`;tctx.textBaseline='alphabetic';
+      if('letterSpacing' in tctx)tctx.letterSpacing=cs.letterSpacing==='normal'?'0px':(parseFloat(cs.letterSpacing)*dpr)+'px';
+      const mt=tctx.measureText(el.textContent.toUpperCase());
+      const asc=mt.fontBoundingBoxAscent||fsz*.8,desc=mt.fontBoundingBoxDescent||fsz*.2;
+      tctx.fillText(el.textContent.toUpperCase(),rc.left*dpr,rc.top*dpr+(rc.height*dpr-(asc+desc))/2+asc);});
+    const pl=document.querySelector('.words .plus');if(pl){const rc=pl.getBoundingClientRect(),fsz=parseFloat(getComputedStyle(pl).fontSize)*dpr,th=.12*fsz;
+      const x=rc.left*dpr,y=rc.top*dpr,w=rc.width*dpr,hh=rc.height*dpr;tctx.fillRect(x,y+hh/2-th/2,w,th);tctx.fillRect(x+w/2-th/2,y,th,hh);}
+    gl.bindTexture(gl.TEXTURE_2D,txt);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,tcv);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);}
+  function size(){dpr=Math.min(devicePixelRatio||1,1.5);cv.width=innerWidth*dpr;cv.height=innerHeight*dpr;
+    const o=ref.getBoundingClientRect();rad=o.width/2*dpr;cx=(o.left+o.width/2)*dpr;cy=cv.height-(o.top+o.height/2)*dpr;drawText();}
+  addEventListener('resize',size);size();document.fonts&&document.fonts.ready.then(size);bg.classList.add('gl');
+
+  // pointer → splats into the fluid (uv of the orb domain)
+  let mx=-1e5,my=-1e5,smx=-1e5,smy=-1e5,vx=0,vy=0,mi=0,tmi=0,last=null,splatN=0,glowT=0,glow=0; const splats=[];
+  const toUV=(x,y)=>[((x*dpr-cx)/rad)/2.2+.5,((cv.height-y*dpr-cy)/rad)/2.2+.5];
+  addEventListener('pointermove',e=>{mx=e.clientX*dpr;my=cv.height-e.clientY*dpr;tmi=1;
+    const u=toUV(e.clientX,e.clientY);if(last){const dx=u[0]-last[0],dy=u[1]-last[1];if(Math.abs(dx)+Math.abs(dy)>0)splats.push([u[0],u[1],dx,dy]);}last=u;},{passive:true});
+  document.addEventListener('pointerleave',()=>{tmi=0;last=null;});
+
+  let prev=performance.now(); const t0=prev;
+  function step(dt,t){ glowT*=.96;
+    // splats
+    while(splats.length){const [x,y,dx,dy]=splats.shift(); const spd=Math.hypot(dx,dy);
+      bind(pSplat);T(pSplat,'src',vel.r);gl.uniform2f(pSplat.u.pt,x,y);gl.uniform4f(pSplat.u.val,dx*55,dy*55,0,0);gl.uniform1f(pSplat.u.rad,.0045);draw(vel.w);vel.swap();
+      const k=(t*.35)%1, pal=[[.93,.10,.45],[.62,.20,.95],[1.,.25,.55],[.45,.18,.85],[.98,.18,.35]];
+      const i0=Math.floor(k*pal.length), i1=(i0+1)%pal.length, fk=k*pal.length-i0, cc=pal[i0].map((v,j)=>v+(pal[i1][j]-v)*fk);
+      bind(pPaint);T(pPaint,'src',dye.r);gl.uniform2f(pPaint.u.pt,x-dx*.6,y-dy*.6);gl.uniform3f(pPaint.u.col,...cc);
+      gl.uniform1f(pPaint.u.rad,.004);gl.uniform1f(pPaint.u.amt,Math.min(.92,spd*95));draw(dye.w);dye.swap();
+      glowT=Math.min(1,glowT+spd*30);}
+    // vorticity (keeps the swirls alive, like paint)
+    bind(pCurl);T(pCurl,'vel',vel.r);gl.uniform2f(pCurl.u.tx,...stx);draw(curl);
+    bind(pVort);T(pVort,'vel',vel.r);T(pVort,'curl',curl);gl.uniform2f(pVort.u.tx,...stx);gl.uniform1f(pVort.u.k,6.);gl.uniform1f(pVort.u.dt,dt);draw(vel.w);vel.swap();
+    // projection
+    bind(pDiv);T(pDiv,'vel',vel.r);gl.uniform2f(pDiv.u.tx,...stx);draw(div);
+    bind(pPres);gl.uniform2f(pPres.u.tx,...stx);
+    for(let i=0;i<20;i++){T(pPres,'pres',pres.r);T(pPres,'div',div);unit=0;draw(pres.w);pres.swap();}
+    bind(pGrad);T(pGrad,'pres',pres.r);T(pGrad,'vel',vel.r);gl.uniform2f(pGrad.u.tx,...stx);draw(vel.w);vel.swap();
+    // advect velocity, then dye (dye relaxes back to the animated base colours)
+    bind(pAdvect);T(pAdvect,'vel',vel.r);T(pAdvect,'src',vel.r);gl.uniform1f(pAdvect.u.dt,dt);gl.uniform1f(pAdvect.u.diss,.985);draw(vel.w);vel.swap();
+    bind(pDye);T(pDye,'vel',vel.r);T(pDye,'dye',dye.r);gl.uniform1f(pDye.u.dt,dt);gl.uniform1f(pDye.u.t,t);gl.uniform1f(pDye.u.relax,.006);draw(dye.w);dye.swap();
+  }
+  function frame(now){
+    const dt=Math.min(.033,(now-prev)/1000)||.016;prev=now;const t=reduce?8.:(now-t0)/1000*.65;
+    if(smx<-9e4){smx=mx;smy=my;}vx+=(mx-smx)*.06;vy+=(my-smy)*.06;vx*=.8;vy*=.8;smx+=vx;smy+=vy;mi+=(tmi-mi)*.04;tmi*=.994;
+    step(dt,t);
+    bind(pShow);T(pShow,'dye',dye.r);T(pShow,'tx2',txt);
+    gl.uniform2f(pShow.u.c,cx,cy);gl.uniform1f(pShow.u.r,rad);gl.uniform1f(pShow.u.t,t);gl.uniform2f(pShow.u.res,cv.width,cv.height);
+    glow+=(glowT-glow)*.15;gl.uniform2f(pShow.u.m,smx,smy);gl.uniform1f(pShow.u.mi,mi);gl.uniform1f(pShow.u.glow,glow*.85);
+    gl.clearColor(0,0,0,0);gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,cv.width,cv.height);gl.clear(gl.COLOR_BUFFER_BIT);draw(null);
+    if(!reduce)requestAnimationFrame(frame);
+  }
+  // warm up the dye so the first frame already shows the colours
+  for(let i=0;i<2;i++){bind(pDye);T(pDye,'vel',vel.r);T(pDye,'dye',dye.r);gl.uniform1f(pDye.u.dt,0);gl.uniform1f(pDye.u.t,0);gl.uniform1f(pDye.u.relax,1.);draw(dye.w);dye.swap();}
+  requestAnimationFrame(frame);
+})();
+
+</script>
