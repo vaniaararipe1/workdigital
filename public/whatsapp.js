@@ -1,11 +1,11 @@
 /* GERAL — WhatsApp global. Edite somente estas variáveis para configurar. */
-const NUMERO_WHATSAPP = 'NUMERO_WHATSAPP';
-const MENSAGEM_INICIAL = 'MENSAGEM_INICIAL';
-const NUMERO_WHATSAPP_SITES = 'NUMERO_WHATSAPP_SITES';
+const NUMERO_WHATSAPP = '5511993916363';
+const MENSAGEM_INICIAL = 'Olá! Gostaria de conversar com a Work Digital sobre meu projeto.';
+const NUMERO_WHATSAPP_SITES = NUMERO_WHATSAPP;
 const MENSAGEM_WHATSAPP_SITES = 'Olá! Quero conversar sobre Criação de Sites.';
-const NUMERO_WHATSAPP_BLOGS = 'NUMERO_WHATSAPP_BLOGS';
+const NUMERO_WHATSAPP_BLOGS = NUMERO_WHATSAPP;
 const MENSAGEM_WHATSAPP_BLOGS = 'Olá! Quero conversar sobre Criação de Blogs.';
-const NUMERO_WHATSAPP_LANDING = 'NUMERO_WHATSAPP_LANDING';
+const NUMERO_WHATSAPP_LANDING = NUMERO_WHATSAPP;
 const MENSAGEM_WHATSAPP_LANDING = 'Olá! Quero conversar sobre Criação de Landing pages.';
 const BOTOES_WHATSAPP = [
  {texto:'Criação de Sites',numero:NUMERO_WHATSAPP_SITES,mensagem:MENSAGEM_WHATSAPP_SITES},
