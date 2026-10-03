@@ -1,60 +1,59 @@
-/* Work Digital — contato expansível. Isolado dos estilos dos outros CTAs. */
+/* Contato: uma única superfície de vidro compartilhada com a navegação. */
 @media(min-width:769px){html.wd-contact-root{scrollbar-gutter:stable}}
+.site-nav{z-index:2;transition:border-color .2s,box-shadow .2s}
+.site-nav::before{transition:opacity .15s}
+.site-header.wd-contact-header-open{z-index:190}
+.site-nav.wd-contact-open{border-color:transparent;box-shadow:none}
+.site-nav.wd-contact-open .dropdown{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.site-nav.wd-contact-open::before{opacity:0;transition:none}
+.wd-contact-stage{position:fixed;inset:0;z-index:1;pointer-events:none;visibility:hidden}
+.wd-contact-stage.is-on{visibility:visible}
+.wd-contact-glass{position:absolute;inset:0;background:rgba(18,19,22,.58);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%)}
+.wd-contact-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.wd-contact-shadow{fill:rgba(0,0,0,.18);filter:url(#wdContactShadow);transform:translateY(18px)}
+.wd-contact-stroke{fill:none;stroke:rgba(255,255,255,.10);stroke-width:1}
+.wd-contact-backdrop{position:fixed;inset:0;z-index:180;background:rgba(10,10,14,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;visibility:hidden;pointer-events:none}
+.wd-contact-backdrop.is-on{visibility:visible;pointer-events:auto}
 .wd-contact,.wd-contact *,.wd-contact *::before,.wd-contact *::after{box-sizing:border-box}
-.wd-contact{display:none;position:fixed;z-index:1000;top:110px;right:50px;width:207px;height:60px;padding:3px;overflow:hidden;border-radius:10px;background:#F5F3FA;color:#17131F;font-family:"Nunito",system-ui,sans-serif;isolation:isolate}
-.wd-contact button,.wd-contact input{color:#17131F;font-family:"Space Grotesk",system-ui,sans-serif;letter-spacing:normal}
+.wd-contact{display:none;position:fixed;z-index:200;overflow:hidden;padding:36px 32px 28px;background:transparent;border:0;box-shadow:none;color:#F7F6FB;font-family:"Nunito",system-ui,sans-serif;isolation:isolate;pointer-events:none;scrollbar-color:#b79bff55 transparent;scrollbar-width:thin}
 .wd-contact[data-open="true"]{display:block}
-.wd-contact-buttons{position:absolute;z-index:4;top:0;right:3px;width:54px;height:60px;padding:3px;display:flex;align-items:stretch}
-.wd-contact-menu{flex:0 0 100%;border:0;background:transparent;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;cursor:pointer;border-radius:8px;padding:0}
-.wd-contact-menu-line{display:block;width:20px;height:2px;background:#17131F;transition:transform .3s,opacity .2s}
-.wd-contact[data-open="true"] .wd-contact-menu-line:first-child{transform:translateY(6px) rotate(45deg)}
-.wd-contact[data-open="true"] .wd-contact-menu-line:nth-child(2){opacity:0}
-.wd-contact[data-open="true"] .wd-contact-menu-line:last-child{transform:translateY(-6px) rotate(-45deg)}
-.wd-contact .wd-contact-cta{position:relative;right:0;flex:0 0 65%;border:0;border-radius:8px;background:#7C5CFF;color:#fff;padding:0 6px;font:500 12px/1.25 "Space Grotesk",system-ui,sans-serif;text-transform:uppercase;letter-spacing:.02em;cursor:pointer;transition:background-color .3s}
-.wd-contact .wd-contact-cta:hover,.wd-contact .wd-contact-cta:focus-visible,.wd-contact-mobile-cta:hover{background:#17131F;color:#fff}
-.wd-contact button:focus-visible,.wd-contact a:focus-visible{outline:2px solid #7C5CFF;outline-offset:-4px}
-.wd-contact-title{position:absolute;top:20px;left:25px;margin:0;max-width:340px;opacity:0;font:400 24px/1.05 "Space Grotesk",system-ui,sans-serif;letter-spacing:-.025em;color:#17131F}
-.wd-contact-body{position:absolute;inset:0;visibility:hidden;pointer-events:none}
-.wd-contact[data-open="true"] .wd-contact-body{visibility:visible;pointer-events:auto}
-.wd-contact-form{position:absolute;top:100px;left:25px;right:25px;margin:0}
-.wd-contact-field{position:relative;opacity:0;margin-bottom:40px}
-.wd-contact .wd-contact-input{display:block;width:100%;min-width:0;height:40px;border:0;border-bottom:1px solid #BDBDBD;border-radius:0;background:transparent;padding:0 0 14px;margin:0;color:#17131F;font:300 24px/1.05 "Nunito",system-ui,sans-serif;box-shadow:none;outline:none;transition:border-color .3s}
-.wd-contact .wd-contact-input::placeholder{color:#9A94A8;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:400;opacity:1;transition:color .3s}
-.wd-contact .wd-contact-input:hover,.wd-contact .wd-contact-input:focus{border-color:#3C3C3C}
-.wd-contact .wd-contact-input:hover::placeholder,.wd-contact .wd-contact-input:focus::placeholder{color:#3C3C3C}
-.wd-contact .wd-contact-input[aria-invalid="true"]{border-color:#E5484D}
-.wd-contact .wd-contact-input[aria-invalid="true"]::placeholder{color:#E5484D}
-.wd-contact-field-error{position:absolute;top:43px;left:0;font:400 12px/1.2 "Nunito",system-ui,sans-serif;color:#C02630}
-.wd-contact-foot{display:flex;justify-content:space-between;align-items:center;gap:20px;opacity:0}
-.wd-contact-privacy{max-width:200px;margin:0;color:#3C3C3C;font:300 12px/1.5 "Nunito",system-ui,sans-serif}
-.wd-contact-privacy a{color:inherit;text-decoration:underline;text-underline-offset:2px}
-.wd-contact .wd-contact-submit{flex:none;width:125px;height:55px;border:1px solid #17131F;border-radius:10px;background:transparent;color:#17131F;font:500 14px/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:.05em;cursor:pointer;transition:background-color .3s,color .3s,border-color .3s}
-.wd-contact .wd-contact-submit:hover,.wd-contact .wd-contact-submit:focus-visible{background:#7C5CFF;color:#fff;border-color:#7C5CFF}
-.wd-contact-submit:disabled{cursor:wait;opacity:.75}
-.wd-contact-spinner{width:24px;height:24px;vertical-align:middle}
-.wd-contact-result{position:absolute;inset:90px 25px 25px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0}
-.wd-contact-result[hidden]{display:none}
-.wd-contact-result-title{margin:0 0 32px;color:#3C3C3C;font:500 32px/1.1 "Space Grotesk",system-ui,sans-serif;letter-spacing:-.96px}
-.wd-contact-result-text{margin:0 0 28px;color:#3C3C3C;font:400 18px/1.5 "Nunito",system-ui,sans-serif}
-.wd-contact-result-note{margin:0 0 20px;color:#3C3C3C;font:400 14px/1.5 "Nunito",system-ui,sans-serif}
-.wd-contact .wd-contact-close{min-width:125px;min-height:55px;padding:14px 24px;border:0;border-radius:10px;background:#17131F;color:#fff;font:500 14px/1 "Space Grotesk",system-ui,sans-serif;cursor:pointer}
+.wd-contact.is-on{pointer-events:auto;overflow-y:auto;overscroll-behavior:contain}
+.wd-contact-anim{opacity:0;transform:translateY(10px)}
+.wd-contact .wd-contact-uptitle.wd-uptitle{display:inline-block;margin:0 0 12px;background:linear-gradient(90deg,#B79BFF 0%,#E58BFF 50%,#FF8FCB 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important;font:600 12px/1.25 "Space Grotesk",system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase}
+.wd-contact-title{margin:0 0 30px;color:#F7F6FB;font:500 30px/1.05 "Space Grotesk",system-ui,sans-serif;letter-spacing:-.03em}
+.wd-contact-form{margin:0}
+.wd-contact-field{position:relative;margin:0 0 26px}
+.wd-contact-field::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,#B79BFF,#E58BFF,#FF8FCB);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.22,1,.36,1);pointer-events:none}
+.wd-contact-field:focus-within::after{transform:scaleX(1)}
+.wd-contact .wd-contact-input{display:block;width:100%;min-width:0;min-height:37px;height:37px;margin:0;padding:0 0 12px;border:0;border-bottom:1px solid rgba(255,255,255,.16);border-radius:0;background:transparent;box-shadow:none;color:#F7F6FB;font:300 20px/1.2 "Nunito",system-ui,sans-serif;letter-spacing:normal;transition:border-color .3s}
+.wd-contact .wd-contact-input::placeholder{color:#A9B0B0;opacity:1;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:400}
+.wd-contact .wd-contact-input:hover{border-color:rgba(255,255,255,.4)}
+.wd-contact .wd-contact-input:focus{outline:none}
+.wd-contact .wd-contact-input:focus-visible{outline:2px solid #bda4ff;outline-offset:4px}
+.wd-contact textarea.wd-contact-input{resize:none;overflow-y:hidden;max-height:85px}
+.wd-contact .wd-contact-input[aria-invalid="true"]{border-color:#FF8FA3}
+.wd-contact .wd-contact-input[aria-invalid="true"]::placeholder{color:#FF8FA3}
+.wd-contact-field:has([aria-invalid="true"])::after{background:#FF8FA3}
+.wd-contact-field-error{position:absolute;top:calc(100% + 4px);left:0;color:#FF8FA3;font:400 12px/1.2 "Nunito",system-ui,sans-serif}
+.wd-contact-foot{display:flex;justify-content:space-between;align-items:center;gap:18px}
+.wd-contact-privacy{flex:1;min-width:0;max-width:210px;margin:0;color:#A9B0B0;font:400 12px/1.5 "Nunito",system-ui,sans-serif}
+.wd-contact-privacy a{color:#F7F6FB;text-decoration:underline;text-underline-offset:2px}
+.wd-contact .nav-cta.wd-cta{display:inline-flex;flex:none;align-items:center;justify-content:center;gap:10px;height:46px;min-height:46px;padding:0 20px;border:0;border-radius:9999px;background:linear-gradient(90deg,#CBFFFC 0%,#EDFFFE 26.25%,#FFFDFA 47.57%,#FAD1FF 88.96%);background-size:180% 100%;background-position:0% 50%;color:#222;font:500 14px/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background-position .55s cubic-bezier(.22,1,.36,1),color .3s ease}
+.wd-contact .nav-cta.wd-cta:hover,.wd-contact .nav-cta.wd-cta:focus-visible{background-position:100% 50%;color:#111}
+.wd-contact .nav-cta span{transition:transform .35s ease}
+.wd-contact .nav-cta:hover span,.wd-contact .nav-cta:focus-visible span{transform:translate(3px,-3px)}
+.wd-contact .wd-contact-submit{width:145px}
+.wd-contact-submit:disabled{opacity:.75;cursor:wait}
+.wd-contact button:focus-visible,.wd-contact a:focus-visible,.wd-contact-mobile-trigger:focus-visible{outline:2px solid #bda4ff;outline-offset:4px}
+.wd-contact-spinner{width:24px;height:24px;color:#222}
+.wd-contact-result{min-height:calc(var(--wd-contact-height,600px) - 64px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0}
+.wd-contact-result[hidden],.wd-contact-form[hidden],.wd-contact-heading[hidden]{display:none}
+.wd-contact-result-title{margin:0 0 24px;color:#F7F6FB;font:500 28px/1.1 "Space Grotesk",system-ui,sans-serif;letter-spacing:-.03em}
+.wd-contact-result-text{margin:0 0 24px;color:#A9B0B0;font:400 16px/1.6 "Nunito",system-ui,sans-serif}
+.wd-contact-result-note{margin:0 0 20px;color:#A9B0B0;font:400 13px/1.5 "Nunito",system-ui,sans-serif}
 .wd-contact-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-@media(min-width:769px) and (max-height:750px){.wd-contact[data-open="true"]{max-height:calc(100dvh - 130px)}.wd-contact[data-open="true"] .wd-contact-body{overflow-y:auto}.wd-contact[data-open="true"] .wd-contact-form{padding-bottom:35px}.wd-contact[data-open="true"] .wd-contact-body{height:100%;min-height:0}}
-@media(max-width:768px){
- .wd-contact{display:none;top:0;right:0;width:100%;height:60px;border-radius:0;padding:0;max-height:none}
- .wd-contact[data-open="true"]{display:block;height:100dvh}
- .wd-contact-buttons{top:20px;right:20px!important;width:54px;height:54px!important;padding:0}
- .wd-contact-menu{flex-basis:100%;width:54px;height:54px}
- .wd-contact .wd-contact-cta{display:none}
- .wd-contact-body{overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
- .wd-contact-title{top:100px;left:20px;right:20px;max-width:none;font-size:28px}
- .wd-contact-form{position:relative;top:auto;left:auto;right:auto;margin:175px 20px 35px}
- .wd-contact-field{margin-bottom:30px}
- .wd-contact .wd-contact-input{height:38px;font-size:16px}
- .wd-contact-field-error{top:39px;font-size:11px}
- .wd-contact-foot{gap:14px;align-items:center}
- .wd-contact-privacy{max-width:200px}
- .wd-contact .wd-contact-submit{width:125px}
- .wd-contact-result{inset:100px 20px 35px}
-}
-@media(prefers-reduced-motion:reduce){.wd-contact *{transition-duration:.01ms!important}.wd-contact-spinner animateTransform{display:none}}
+.wd-contact-cta-label{display:inline-flex;align-items:center;gap:10px;font-style:normal}
+.wd-contact-mobile-trigger{display:none!important}
+@media(max-width:980px){.site-nav.wd-nav-open .wd-contact-mobile-trigger{display:flex!important;align-items:center;justify-content:center;width:100%;min-height:46px;margin-top:12px}.site-nav.wd-contact-open .mobile-toggle i{background:transparent}.site-nav.wd-contact-open .mobile-toggle i::before{top:0;transform:rotate(45deg)}.site-nav.wd-contact-open .mobile-toggle i::after{top:0;transform:rotate(-45deg)}}
+@media(max-width:768px){.wd-contact{padding:28px 20px 24px}.wd-contact-title{font-size:24px;margin-bottom:26px}.wd-contact-field{margin-bottom:22px}.wd-contact .wd-contact-input{font-size:16px;min-height:33px;height:33px}.wd-contact textarea.wd-contact-input{max-height:72px}.wd-contact-foot{gap:12px}.wd-contact .wd-contact-submit{width:125px;padding-inline:14px}.wd-contact-privacy{max-width:210px;font-size:11px}.wd-contact-result-title{font-size:24px}}
+@media(prefers-reduced-motion:reduce){.wd-contact *{transition-duration:.01ms!important}.wd-contact-anim{transform:none}.wd-contact-stage *{transition:none}}

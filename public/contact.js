@@ -1,74 +1,78 @@
-/* Work Digital — painel de contato global.
- * Serviço de e-mail: preencher URL_ENVIO ou window.WD_CONTACT_CONFIG.endpoint.
- * O endpoint deve aceitar POST JSON e responder HTTP 2xx apenas após aceitar o envio.
- * Política: informe a URL oficial antes de ativar o envio.
- */
+/* Contato Work Digital — vidro único com o menu. Envio permanece pendente até configurar o endpoint. */
 (() => {
  'use strict';
- const URL_ENVIO = ''; // Ex.: 'https://seu-servico.com/api/contato'
- const URL_PRIVACIDADE = ''; // URL oficial da Política de Privacidade
- const CONFIG = {endpoint:URL_ENVIO,privacyUrl:URL_PRIVACIDADE,...window.WD_CONTACT_CONFIG};
- if(document.querySelector('.wd-contact'))return;
+ const URL_ENVIO='';
+ const URL_PRIVACIDADE='';
+ const CONFIG={endpoint:URL_ENVIO,privacyUrl:URL_PRIVACIDADE,...window.WD_CONTACT_CONFIG};
+ const PANEL_W=477, R=32, RI=24, FIL=20;
+ const nav=document.querySelector('.site-nav'),header=nav?.closest('.site-header'),ctaMenu=nav?.querySelector('.nav-cta');
+ if(!nav||!header||!ctaMenu||document.querySelector('.wd-contact'))return;
  const source=new URL(document.currentScript?.src||'/contact.js',document.baseURI);
- const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('contact.css?v=20261003-contact-original-menu',source).href;document.head.append(css);
- function loadGSAP(){
-  if(window.gsap)return Promise.resolve(window.gsap);
-  return new Promise(resolve=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js';s.onload=()=>resolve(window.gsap);s.onerror=()=>resolve(null);document.head.append(s)});
- }
- const animationReady=loadGSAP();
+ const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('contact.css?v=20261003-contact-glass',source).href;document.head.append(css);
  const font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&family=Space+Grotesk:wght@400;500;600&display=swap';document.head.append(font);
- const nav=document.querySelector('.site-nav'),oldCTA=nav?.querySelector('.nav-cta'),links=nav?.querySelector('.nav-links');
+ const animationReady=window.gsap?Promise.resolve(window.gsap):new Promise(resolve=>{const script=document.createElement('script');script.src='https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js';script.onload=()=>resolve(window.gsap);script.onerror=()=>resolve(null);document.head.append(script)});
  document.documentElement.classList.add('wd-contact-root');
- const box=document.createElement('section');box.className='wd-contact';box.id='wd-contact';box.dataset.open='false';box.setAttribute('aria-label','Contato Work Digital');
- box.innerHTML=`<div class="wd-contact-buttons"><button class="wd-contact-menu" type="button" aria-label="Fechar contato"><span class="wd-contact-menu-line"></span><span class="wd-contact-menu-line"></span><span class="wd-contact-menu-line"></span></button></div>
- <div class="wd-contact-body" id="wd-contact-body" inert><h2 class="wd-contact-title" id="wd-contact-heading">Vamos trabalhar juntos.</h2><form class="wd-contact-form" novalidate>
- ${[['nome','Nome completo','text','name'],['email','E-mail','email','email'],['empresa','Empresa ou site','text','organization'],['ideia','Qual é a sua ideia? Como podemos ajudar?','text','off'],['origem','Como você conheceu a Work?','text','off']].map(([name,label,type,auto])=>`<div class="wd-contact-field"><label class="wd-contact-sr-only" for="wd-contact-${name}">${label}</label><input class="wd-contact-input" id="wd-contact-${name}" name="${name}" type="${type}" autocomplete="${auto}" placeholder="${label}" ${name==='nome'||name==='email'?'required':''} aria-describedby="wd-contact-${name}-error"><span class="wd-contact-field-error" id="wd-contact-${name}-error" aria-live="polite"></span></div>`).join('')}
- <div class="wd-contact-foot"><p class="wd-contact-privacy">Ao enviar, você concorda que seus dados serão tratados de acordo com a nossa <a class="wd-contact-privacy-link" target="_blank" rel="noopener">Política de Privacidade</a></p><button class="wd-contact-submit" type="submit">Enviar</button></div></form>
- <div class="wd-contact-result" role="status" aria-live="polite" hidden><h2 class="wd-contact-result-title"></h2><p class="wd-contact-result-text"></p><p class="wd-contact-result-note" hidden></p><button class="wd-contact-close" type="button">Fechar</button></div></div>`;
+ const stage=document.createElement('div');stage.className='wd-contact-stage';stage.setAttribute('aria-hidden','true');
+ stage.innerHTML='<svg class="wd-contact-lines" xmlns="http://www.w3.org/2000/svg"><defs><filter id="wdContactShadow" x="-20%" y="-20%" width="140%" height="160%"><feGaussianBlur stdDeviation="27"/></filter></defs><path class="wd-contact-shadow"/></svg><div class="wd-contact-glass"></div><svg class="wd-contact-lines" xmlns="http://www.w3.org/2000/svg"><path class="wd-contact-stroke"/></svg>';
+ header.insertBefore(stage,nav);const glass=stage.querySelector('.wd-contact-glass');
+ const backdrop=document.createElement('div');backdrop.className='wd-contact-backdrop';backdrop.setAttribute('aria-hidden','true');document.body.append(backdrop);
+ const box=document.createElement('section');box.id='wd-contact';box.className='wd-contact';box.dataset.open='false';box.setAttribute('aria-label','Contato Work Digital');
+ box.innerHTML=`<div class="wd-contact-body" id="wd-contact-body" inert><div class="wd-contact-heading"><p class="wd-contact-uptitle wd-uptitle wd-contact-anim">CONTATO</p><h2 class="wd-contact-title wd-contact-anim" id="wd-contact-heading">Vamos trabalhar juntos.</h2></div><form class="wd-contact-form" novalidate>
+ ${[['nome','Nome completo','text','name'],['email','E-mail','email','email'],['empresa','Empresa ou site','text','organization'],['ideia','Qual é a sua ideia?','textarea','off'],['origem','Como você conheceu a Work?','text','off']].map(([name,label,type,auto])=>`<div class="wd-contact-field wd-contact-anim"><label class="wd-contact-sr-only" for="wd-contact-${name}">${label}</label>${type==='textarea'?`<textarea class="wd-contact-input" id="wd-contact-${name}" name="${name}" rows="1" placeholder="${label}" aria-describedby="wd-contact-${name}-error"></textarea>`:`<input class="wd-contact-input" id="wd-contact-${name}" name="${name}" type="${type}" autocomplete="${auto}" placeholder="${label}" ${name==='nome'||name==='email'?'required':''} aria-describedby="wd-contact-${name}-error">`}<span class="wd-contact-field-error" id="wd-contact-${name}-error" aria-live="polite"></span></div>`).join('')}
+ <div class="wd-contact-foot wd-contact-anim"><p class="wd-contact-privacy">Ao enviar, você concorda que seus dados serão tratados de acordo com a nossa <a class="wd-contact-privacy-link" target="_blank" rel="noopener">Política de Privacidade</a></p><button class="wd-contact-submit nav-cta wd-cta" type="submit">ENVIAR <span aria-hidden="true">↗</span></button></div></form>
+ <div class="wd-contact-result" role="status" aria-live="polite" hidden><h2 class="wd-contact-result-title"></h2><p class="wd-contact-result-text"></p><p class="wd-contact-result-note" hidden></p><button class="wd-contact-close nav-cta wd-cta" type="button">FECHAR <span aria-hidden="true">✕</span></button></div></div>`;
  document.body.append(box);
- const cta=oldCTA||box.querySelector('.wd-contact-menu'),menu=box.querySelector('.wd-contact-menu'),body=box.querySelector('.wd-contact-body'),bts=box.querySelector('.wd-contact-buttons'),title=box.querySelector('.wd-contact-title'),form=box.querySelector('form'),fields=[...box.querySelectorAll('.wd-contact-field')],foot=box.querySelector('.wd-contact-foot'),submit=box.querySelector('.wd-contact-submit'),result=box.querySelector('.wd-contact-result');
- const privacy=box.querySelector('.wd-contact-privacy-link');
- if(CONFIG.privacyUrl)privacy.href=CONFIG.privacyUrl;
- else {privacy.removeAttribute('target');privacy.setAttribute('aria-disabled','true');privacy.title='URL da Política de Privacidade pendente de configuração';}
- let mobileCTA;
-
+ const body=box.querySelector('.wd-contact-body'),form=box.querySelector('form'),fields=[...box.querySelectorAll('.wd-contact-field')],foot=box.querySelector('.wd-contact-foot'),submit=box.querySelector('.wd-contact-submit'),result=box.querySelector('.wd-contact-result'),heading=box.querySelector('.wd-contact-heading'),blocks=[...box.querySelectorAll('.wd-contact-anim')];
+ const privacy=box.querySelector('.wd-contact-privacy-link');if(CONFIG.privacyUrl)privacy.href=CONFIG.privacyUrl;else{privacy.removeAttribute('target');privacy.setAttribute('aria-disabled','true');privacy.title='URL oficial da Política de Privacidade pendente de configuração'}
+ const toggle=nav.querySelector('.mobile-toggle'),links=nav.querySelector('.nav-links');
+ const mobileCTA=document.createElement('button');mobileCTA.className='wd-contact-mobile-trigger nav-cta wd-cta';mobileCTA.type='button';mobileCTA.innerHTML='SOLICITAR PROPOSTA <span aria-hidden="true">↗</span>';links?.append(mobileCTA);
  const reduced=matchMedia('(prefers-reduced-motion: reduce)'),mobile=matchMedia('(max-width:768px)');
- let isOpen=false,closing=false,anim=null,gsapAPI=null,opener=cta,scrollY=0,bodyStyle='',inertStates=[],sending=false,requestController=null,session=0;
- animationReady.then(g=>{gsapAPI=g});
- function lockPage(){scrollY=window.scrollY;bodyStyle=document.body.getAttribute('style')||'';document.body.style.position='fixed';document.body.style.top=-scrollY+'px';document.body.style.width='100%';document.body.style.overflow='hidden';inertStates=[...document.body.children].filter(el=>el!==box&&!['SCRIPT','STYLE','LINK'].includes(el.tagName)).map(el=>[el,el.inert]);inertStates.forEach(([el])=>el.inert=true)}
+ const originalMarkup=ctaMenu.innerHTML,originalLabel=ctaMenu.getAttribute('aria-label'),originalWidth=ctaMenu.style.width,toggleControls=toggle?.getAttribute('aria-controls');
+ let isOpen=false,closing=false,anim=null,labelTween=null,gsapAPI=null,opener=ctaMenu,closeControl=ctaMenu,scrollY=0,bodyStyle='',inertStates=[],sending=false,requestController=null,session=0;
+ const s={W:0,H:0};animationReady.then(g=>gsapAPI=g);
+ function shapePath(n,W,H){
+  const x0=n.left,y0=n.top,x1=n.right,y1=n.bottom;
+  if(H<.01)return `M${x0+R},${y0} H${x1-R} A${R},${R} 0 0 1 ${x1},${y0+R} V${y1-R} A${R},${R} 0 0 1 ${x1-R},${y1} H${x0+R} A${R},${R} 0 0 1 ${x0},${y1-R} V${y0+R} A${R},${R} 0 0 1 ${x0+R},${y0} Z`;
+  const rb=R+(RI-R)*Math.min(1,H/60),rl=Math.min(RI,H*.4),f=Math.min(FIL,H*.5),px=x1-W,yb=y1+H;
+  return `M${x0+R},${y0} H${x1-R} A${R},${R} 0 0 1 ${x1},${y0+R} V${yb-rb} A${rb},${rb} 0 0 1 ${x1-rb},${yb} H${px+rl} A${rl},${rl} 0 0 1 ${px},${yb-rl} V${y1+f} A${f},${f} 0 0 0 ${px-f},${y1} H${x0+R} A${R},${R} 0 0 1 ${x0},${y1-R} V${y0+R} A${R},${R} 0 0 1 ${x0+R},${y0} Z`;
+ }
+ function shapePathMobile(n,H){const r0=parseFloat(getComputedStyle(nav).borderTopLeftRadius)||17,r=r0+(RI-r0)*Math.min(1,H/60),yb=n.bottom+H;return `M${n.left+r0},${n.top} H${n.right-r0} A${r0},${r0} 0 0 1 ${n.right},${n.top+r0} V${yb-r} A${r},${r} 0 0 1 ${n.right-r},${yb} H${n.left+r} A${r},${r} 0 0 1 ${n.left},${yb-r} V${n.top+r0} A${r0},${r0} 0 0 1 ${n.left+r0},${n.top} Z`}
+ function targetHeight(){const n=nav.getBoundingClientRect();return Math.max(0,mobile.matches?innerHeight-n.bottom-12:Math.min(600,innerHeight-n.bottom-24))}
+ function panelWidth(){return mobile.matches?nav.getBoundingClientRect().width:Math.min(PANEL_W,nav.getBoundingClientRect().width)}
+ function draw(){const n=nav.getBoundingClientRect(),d=mobile.matches?shapePathMobile(n,s.H):shapePath(n,s.W,s.H);glass.style.clipPath=`path("${d}")`;glass.style.webkitClipPath=`path("${d}")`;stage.querySelectorAll('path').forEach(p=>p.setAttribute('d',d));Object.assign(box.style,{left:(mobile.matches?n.left:n.right-panelWidth())+'px',top:n.bottom+'px',width:panelWidth()+'px',height:s.H+'px'});box.style.setProperty('--wd-contact-height',s.H+'px')}
+ function lockPage(){scrollY=window.scrollY;bodyStyle=document.body.getAttribute('style')||'';document.body.style.position='fixed';document.body.style.top=-scrollY+'px';document.body.style.width='100%';document.body.style.overflow='hidden';const nodes=[...document.body.children].filter(el=>![box,header,backdrop].includes(el)&&!['SCRIPT','STYLE','LINK'].includes(el.tagName));nodes.push(...[...nav.querySelectorAll('a,button')].filter(el=>el!==closeControl));inertStates=nodes.map(el=>[el,el.inert]);inertStates.forEach(([el])=>el.inert=true)}
  function unlockPage(){inertStates.forEach(([el,value])=>el.inert=value);inertStates=[];document.body.setAttribute('style',bodyStyle);window.scrollTo(0,scrollY)}
- function setExpanded(value){[cta,mobileCTA].filter(Boolean).forEach(el=>el.setAttribute('aria-expanded',String(value)));menu.setAttribute('aria-expanded',String(value));menu.setAttribute('aria-label','Fechar contato')}
- function setFinalOpen(){box.style.width=mobile.matches?'100%':'477px';box.style.height=mobile.matches?'100dvh':'671px';bts.style.right=mobile.matches?'20px':'3px';[title,...fields,foot].forEach(el=>el.style.opacity='1')}
- function resetResult(){form.hidden=false;form.style.opacity='1';result.hidden=true;result.style.opacity='0';submit.disabled=false;submit.textContent='Enviar';sending=false}
- async function abrirContato(trigger=cta){
-  if(isOpen||closing)return;isOpen=true;session++;const openSession=session;opener=trigger;anim?.kill();resetResult();nav?.classList.remove('wd-nav-open','wd-contact-nav-open');const toggle=nav?.querySelector('.mobile-toggle');toggle?.setAttribute('aria-expanded','false');toggle?.setAttribute('aria-label','Abrir menu');
-  box.dataset.open='true';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby',title.id);body.inert=false;form.inert=true;cta.tabIndex=-1;setExpanded(true);lockPage();menu.focus({preventScroll:true});
-  const g=gsapAPI||await animationReady;if(!isOpen||session!==openSession)return;
-  const complete=()=>{if(isOpen){form.inert=false;form.elements.nome.focus({preventScroll:true})}};
-  if(!g){setFinalOpen();complete();return}
-  g.set([title,...fields,foot],{opacity:0});
-  if(mobile.matches||reduced.matches){setFinalOpen();anim=g.timeline({onComplete:complete}).fromTo(body,{opacity:0},{opacity:1,duration:reduced.matches?.12:.25});return}
-  anim=g.timeline({defaults:{duration:.5},onComplete:complete});
-  anim.to(box,{width:477}).to(box,{height:671}).to(bts,{height:60},'<').to(title,{opacity:1},'<');
-  // Equivalente a -=1.5, limitado ao início da timeline: não desloca a abertura para tempo negativo.
-  anim.to(fields,{opacity:1,stagger:.18},Math.max(0,anim.duration()-1.5)).to(foot,{opacity:1});
+ function swapLabel(open){labelTween?.kill();if(open){const width=ctaMenu.getBoundingClientRect().width;if(width)ctaMenu.style.width=width+'px';ctaMenu.innerHTML='<i class="wd-contact-cta-label"></i>';const label=ctaMenu.firstElementChild;label.innerHTML=originalMarkup;const replace=()=>label.innerHTML='FECHAR <span aria-hidden="true">✕</span>';if(gsapAPI&&!reduced.matches)labelTween=gsapAPI.timeline().to(label,{opacity:0,y:-4,duration:.15}).add(replace).to(label,{opacity:1,y:0,duration:.15});else replace();ctaMenu.setAttribute('aria-label','Fechar contato')}else{ctaMenu.innerHTML=originalMarkup;ctaMenu.style.width=originalWidth;if(originalLabel===null)ctaMenu.removeAttribute('aria-label');else ctaMenu.setAttribute('aria-label',originalLabel)}}
+ function setExpanded(open){[ctaMenu,mobileCTA].forEach(el=>el.setAttribute('aria-expanded',String(open)));if(closeControl===toggle){toggle.setAttribute('aria-label',open?'Fechar contato':'Abrir menu');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-controls',open?body.id:toggleControls||'wd-nav-links')}}
+ function resetResult(){form.hidden=false;heading.hidden=false;form.style.opacity='1';result.hidden=true;result.style.opacity='0';submit.disabled=false;submit.innerHTML='ENVIAR <span aria-hidden="true">↗</span>';sending=false}
+ function cleanup(){closing=false;box.dataset.open='false';box.classList.remove('is-on');box.removeAttribute('role');box.removeAttribute('aria-modal');box.removeAttribute('aria-labelledby');stage.classList.remove('is-on');nav.classList.remove('wd-contact-open');header.classList.remove('wd-contact-header-open');backdrop.classList.remove('is-on');backdrop.style.opacity='0';body.inert=true;resetResult();swapLabel(false);unlockPage();if(opener?.isConnected){if(opener===mobileCTA){nav.classList.add('wd-nav-open');toggle?.setAttribute('aria-expanded','true');toggle?.setAttribute('aria-label','Fechar menu')}opener.focus({preventScroll:true})}}
+ async function abrirContato(trigger=ctaMenu){
+  if(isOpen||closing)return;isOpen=true;session++;const openSession=session;opener=trigger;resetResult();nav.classList.remove('wd-nav-open');toggle?.setAttribute('aria-expanded','false');
+  nav.querySelectorAll('.nav-item').forEach(item=>{item.classList.remove('wd-dropdown-open','wd-solutions-open');item.classList.add('wd-dropdown-dismissed');item.querySelector('.nav-trigger')?.setAttribute('aria-expanded','false')});
+  closeControl=ctaMenu.getBoundingClientRect().width?ctaMenu:toggle;lockPage();
+  box.dataset.open='true';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby','wd-contact-heading');body.inert=false;form.inert=true;setExpanded(true);closeControl?.focus({preventScroll:true});
+  const n=nav.getBoundingClientRect(),c=ctaMenu.getBoundingClientRect();s.W=mobile.matches?n.width:Math.min(panelWidth(),Math.max(80,n.right-c.left+14));s.H=0;
+  stage.classList.add('is-on');nav.classList.add('wd-contact-open');header.classList.add('wd-contact-header-open');backdrop.classList.add('is-on');draw();
+  const g=gsapAPI||await animationReady;if(!isOpen||session!==openSession)return;swapLabel(true);
+  const complete=()=>{if(!isOpen)return;box.classList.add('is-on');form.inert=false;form.elements.nome.focus({preventScroll:true})};
+  if(!g){s.W=panelWidth();s.H=targetHeight();draw();blocks.forEach(el=>{el.style.opacity='1';el.style.transform='none'});backdrop.style.opacity='1';complete();return}
+  g.set(blocks,{opacity:0,y:10});g.to(backdrop,{opacity:1,duration:reduced.matches?.2:.4});
+  if(reduced.matches){s.W=panelWidth();s.H=targetHeight();draw();box.classList.add('is-on');anim=g.timeline({onComplete:complete}).to(blocks,{opacity:1,y:0,duration:.2});return}
+  anim=g.timeline({onComplete:complete,onReverseComplete:cleanup});
+  if(mobile.matches){anim.to(s,{H:targetHeight(),duration:.6,ease:'power3.inOut',onUpdate:draw}).add(()=>box.classList.add('is-on')).to(blocks,{opacity:1,y:0,stagger:.07,duration:.5,ease:'power2.out'})}
+  else{anim.to(s,{H:56,duration:.4,ease:'power3.out',onUpdate:draw}).to(s,{W:panelWidth(),duration:.5,ease:'power3.inOut',onUpdate:draw}).to(s,{H:targetHeight(),duration:.6,ease:'power3.inOut',onUpdate:draw},'-=.15').add(()=>box.classList.add('is-on'),'-=.4').to(blocks,{opacity:1,y:0,stagger:.07,duration:.5,ease:'power2.out'},'-=.35')}
  }
- function fecharContato(){
-  if(!isOpen)return;closing=true;isOpen=false;session++;requestController?.abort();anim?.kill();body.inert=true;setExpanded(false);
-  const complete=()=>{closing=false;cta.tabIndex=0;box.dataset.open='false';box.removeAttribute('role');box.removeAttribute('aria-modal');box.removeAttribute('aria-labelledby');box.style.removeProperty('width');box.style.removeProperty('height');body.style.opacity='1';bts.style.right='3px';resetResult();unlockPage();if(opener?.isConnected){if(mobile.matches&&opener===mobileCTA){nav?.classList.add('wd-nav-open');nav?.querySelector('.mobile-toggle')?.setAttribute('aria-expanded','true');nav?.querySelector('.mobile-toggle')?.setAttribute('aria-label','Fechar menu')}opener.focus({preventScroll:true})}};
-  if(!gsapAPI){complete();return}
-  if(mobile.matches||reduced.matches){anim=gsapAPI.to(body,{opacity:0,duration:.12,onComplete:complete});return}
-  anim=gsapAPI.timeline({defaults:{duration:.5},onComplete:complete}).to(box,{height:60}).to(title,{opacity:0},'<').to(box,{width:207});
- }
- cta.setAttribute('aria-controls',body.id);cta.setAttribute('aria-haspopup','dialog');cta.setAttribute('aria-expanded','false');
- cta.addEventListener('click',e=>{e.preventDefault();abrirContato(cta)});mobileCTA?.addEventListener('click',()=>abrirContato(mobileCTA));
- menu.addEventListener('click',fecharContato);
- box.querySelector('.wd-contact-close').addEventListener('click',fecharContato);
- document.addEventListener('pointerdown',e=>{if(isOpen&&!box.contains(e.target)&&e.target!==mobileCTA)fecharContato()});
- document.addEventListener('keydown',e=>{if(!isOpen)return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();fecharContato();return}if(e.key==='Tab'){const focusable=[...box.querySelectorAll('button,a[href],input')].filter(el=>el.tabIndex>=0&&!el.disabled&&!el.closest('[inert]')&&el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden');const first=focusable[0],last=focusable.at(-1);if(e.shiftKey&&(document.activeElement===first||!box.contains(document.activeElement))){e.preventDefault();last?.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}}},true);
- // Os CTAs de contato existentes, inclusive no rodapé com shadow DOM, usam o mesmo painel.
- document.addEventListener('click',e=>{const link=e.composedPath().find(el=>el.tagName==='A');if(link&&(/\/contato\/?(?:$|[?#])/.test(link.href)||link.getAttribute('href')==='#contato')){e.preventDefault();abrirContato(link)}});
- mobile.addEventListener('change',()=>{if(isOpen){anim?.kill();setFinalOpen();body.style.opacity='1';form.inert=false;form.elements.nome.focus({preventScroll:true})}});
+ function fecharContato(){if(!isOpen)return;closing=true;isOpen=false;session++;requestController?.abort();labelTween?.kill();body.inert=true;setExpanded(false);if(gsapAPI){gsapAPI.to(backdrop,{opacity:0,duration:reduced.matches?.2:.4});if(reduced.matches){anim?.kill();gsapAPI.to(blocks,{opacity:0,duration:.2,onComplete:cleanup})}else if(anim&&anim.time()>.001)anim.timeScale(1.4).reverse();else if(s.H>0){anim=gsapAPI.timeline({onComplete:cleanup}).to(s,{H:56,duration:.3,ease:'power3.inOut',onUpdate:draw}).to(s,{W:Math.max(80,nav.getBoundingClientRect().right-ctaMenu.getBoundingClientRect().left+14),duration:.35,ease:'power3.inOut',onUpdate:draw}).to(s,{H:0,duration:.25,ease:'power3.inOut',onUpdate:draw})}else cleanup()}else cleanup()}
+ [ctaMenu,mobileCTA].forEach(el=>{el.setAttribute('aria-controls',body.id);el.setAttribute('aria-haspopup','dialog');el.setAttribute('aria-expanded','false');el.addEventListener('click',e=>{e.preventDefault();if(isOpen)fecharContato();else abrirContato(el)})});
+ toggle?.addEventListener('click',e=>{if(isOpen){e.preventDefault();e.stopImmediatePropagation();fecharContato()}},true);
+ backdrop.addEventListener('click',fecharContato);box.querySelector('.wd-contact-close').addEventListener('click',fecharContato);
+ document.addEventListener('pointerdown',e=>{if(isOpen&&!box.contains(e.target)&&!nav.contains(e.target))fecharContato()});
+ document.addEventListener('keydown',e=>{if(!isOpen)return;if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();fecharContato();return}if(e.key==='Tab'){const available=[closeControl,...box.querySelectorAll('button,a[href],input,textarea')].filter(el=>el&&!el.disabled&&!el.closest('[inert]')&&el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden'),first=available[0],last=available.at(-1);if(e.shiftKey&&(document.activeElement===first||!available.includes(document.activeElement))){e.preventDefault();last?.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}}},true);
+ document.addEventListener('click',e=>{const link=e.composedPath().find(el=>el.tagName==='A');if(link&&link!==ctaMenu&&(/\/contato\/?(?:$|[?#])/.test(link.href)||link.getAttribute('href')==='#contato')){e.preventDefault();abrirContato(link)}});
+ function resize(){if(!isOpen&&!closing)return;anim?.kill();if(closing){cleanup();return}const nextControl=ctaMenu.getBoundingClientRect().width?ctaMenu:toggle;if(nextControl!==closeControl){if(!inertStates.some(([el])=>el===closeControl))inertStates.push([closeControl,false]);closeControl.inert=true;closeControl=nextControl;closeControl.inert=false;if(closeControl!==toggle){toggle?.setAttribute('aria-label','Abrir menu');toggle?.setAttribute('aria-controls',toggleControls||'wd-nav-links');toggle?.setAttribute('aria-expanded','false')}setExpanded(true)}s.W=panelWidth();s.H=targetHeight();draw();box.classList.add('is-on');blocks.forEach(el=>{el.style.opacity='1';el.style.transform='none'});form.inert=false;anim=null}
+ window.addEventListener('resize',resize,{passive:true});window.visualViewport?.addEventListener('resize',resize,{passive:true});
+ const observer=new ResizeObserver(()=>{if(isOpen||closing)draw()});observer.observe(nav);
+ const idea=form.elements.ideia;function growIdea(){idea.style.height='auto';const line=parseFloat(getComputedStyle(idea).lineHeight),limit=line*3+13;idea.style.height=Math.min(limit,idea.scrollHeight)+'px';idea.style.overflowY=idea.scrollHeight>limit?'auto':'hidden'}idea.addEventListener('input',growIdea);
  function validate(){let valid=true;for(const name of ['nome','email']){const input=form.elements[name],ok=input.value.trim()!==''&&(name!=='email'||input.validity.valid);input.setAttribute('aria-invalid',String(!ok));box.querySelector('#wd-contact-'+name+'-error').textContent=ok?'':name==='nome'?'Informe seu nome completo.':'Informe um e-mail válido.';if(!ok&&valid){input.focus();valid=false}}return valid}
  ['nome','email'].forEach(name=>form.elements[name].addEventListener('input',()=>{form.elements[name].removeAttribute('aria-invalid');box.querySelector('#wd-contact-'+name+'-error').textContent=''}));
  async function enviarFormulario(dados){
@@ -77,10 +81,9 @@
   try{const response=await fetch(CONFIG.endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(dados),signal:requestController.signal});if(!response.ok)throw new Error('Falha ao enviar formulário');return response}finally{clearTimeout(timer);requestController=null}
  }
  async function showResult(success,error){const thisSession=session;
-  const reveal=()=>{if(!isOpen||thisSession!==session)return;form.hidden=true;result.hidden=false;result.querySelector('.wd-contact-result-title').textContent=success?'Obrigado pelo contato!':'Não foi possível enviar';result.querySelector('.wd-contact-result-text').textContent=success?'Recebemos sua mensagem e nossa equipe já está analisando. Em breve entraremos em contato.':'Não foi possível enviar sua mensagem agora. Tente novamente mais tarde.';const note=result.querySelector('.wd-contact-result-note');note.hidden=!error?.configuration;note.textContent=error?.configuration?error.message:'';if(gsapAPI&&!reduced.matches)gsapAPI.to(result,{opacity:1,duration:.3});else result.style.opacity='1';result.querySelector('button').focus({preventScroll:true})};
+  const reveal=()=>{if(!isOpen||thisSession!==session)return;form.hidden=true;heading.hidden=true;result.hidden=false;result.querySelector('.wd-contact-result-title').textContent=success?'Obrigado pelo contato!':'Não foi possível enviar';result.querySelector('.wd-contact-result-text').textContent=success?'Recebemos sua mensagem e nossa equipe já está analisando. Em breve entraremos em contato.':'Não foi possível enviar sua mensagem agora. Tente novamente mais tarde.';const note=result.querySelector('.wd-contact-result-note');note.hidden=!error?.configuration;note.textContent=error?.configuration?error.message:'';if(gsapAPI&&!reduced.matches)gsapAPI.to(result,{opacity:1,duration:.3});else result.style.opacity='1';result.querySelector('button').focus({preventScroll:true})};
   if(gsapAPI&&!reduced.matches)gsapAPI.to(form,{opacity:0,duration:.25,onComplete:reveal});else reveal();
  }
- form.addEventListener('submit',async e=>{e.preventDefault();if(sending||!validate())return;sending=true;submit.disabled=true;submit.setAttribute('aria-label','Enviando mensagem');form.setAttribute('aria-busy','true');submit.innerHTML='<svg class="wd-contact-spinner" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/><path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" stroke-width="2"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur=".75s" repeatCount="indefinite"/></path></svg>';const thisSession=session;try{await enviarFormulario(Object.fromEntries(new FormData(form)));if(isOpen&&session===thisSession){form.reset();showResult(true)}}catch(error){if(isOpen&&session===thisSession)showResult(false,error)}finally{sending=false;form.removeAttribute('aria-busy');submit.removeAttribute('aria-label')}});
- // API pública opcional para integração de outras páginas/CTAs.
+ form.addEventListener('submit',async e=>{e.preventDefault();if(sending||!validate())return;sending=true;submit.disabled=true;submit.setAttribute('aria-label','Enviando mensagem');form.setAttribute('aria-busy','true');submit.innerHTML='<svg class="wd-contact-spinner" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/><path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" stroke-width="2"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur=".75s" repeatCount="indefinite"/></path></svg>';const thisSession=session;try{await enviarFormulario(Object.fromEntries(new FormData(form)));if(isOpen&&session===thisSession){form.reset();growIdea();showResult(true)}}catch(error){if(isOpen&&session===thisSession)showResult(false,error)}finally{sending=false;form.removeAttribute('aria-busy');submit.removeAttribute('aria-label')}});
  window.WorkDigitalContact={abrirContato,fecharContato,enviarFormulario};
 })();

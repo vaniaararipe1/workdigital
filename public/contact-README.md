@@ -15,3 +15,5 @@ O envio não é simulado. Sem endpoint, aparece o estado de erro com a pendênci
 Menu original preservado: SOLICITAR PROPOSTA abre o painel de contato 477×671; telas baixas permitem rolar o conteúdo dentro do painel. Mobile até 768px: painel 100dvh, com rolagem interna quando necessário.
 
 API opcional: `WorkDigitalContact.abrirContato(trigger)`, `.fecharContato()`, `.enviarFormulario(dados)`.
+
+Atualização visual: contact.css desenha vidro único por clip-path e SVG; contact.js anima a aba ligada ao menu. CTA SOLICITAR PROPOSTA vira FECHAR enquanto aberto. No celular, o CTA está dentro do menu e o botão do menu fecha o contato. URL de envio e política ainda configuráveis no topo.
