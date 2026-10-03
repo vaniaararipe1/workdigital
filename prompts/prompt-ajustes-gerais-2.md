@@ -41,12 +41,24 @@ cada parte, organizado pelos mesmos títulos.
 1. **Imagem dentro de um retângulo:** coloque cada imagem dentro de um retângulo com o mesmo
    estilo dos boxes (mesmo fundo, borda, `border-radius` e espaçamento interno), para combinar com
    eles.
-2. **Imagem cortada:** a imagem não pode cortar a altura. Defina o espaço da imagem com
-   **proporção fixa de 9:11 (`aspect-ratio: 9 / 11`)**, ocupando toda a altura do retângulo dos
-   3 boxes, com `width: 100%; height: 100%; object-fit: cover;`. As imagens serão exportadas em
-   **900 × 1100 px** (ou 1800 × 2200 px para telas retina), na mesma proporção, para encaixar sem
-   cortes. Me diga qual é o tamanho final em px que o espaço da imagem ocupa no desktop (1440px),
-   para eu conferir.
+2. **Imagem cortada:** as imagens já estão em **900 × 1100 px (proporção 9:11)** e mesmo assim
+   aparecem cortadas. Isso acontece porque o espaço da imagem não tem a proporção 9:11: ele estica
+   para a altura dos boxes e a largura da coluna, e o `object-fit: cover` corta o que sobra.
+   - Primeiro, me diga a largura e a altura reais (em px, no desktop 1440px) do espaço da imagem,
+     **descontando padding e borda do retângulo**, e explique o que está causando o corte (proporção
+     do container, `transform: scale` no hover, `padding`, `overflow: hidden` de um elemento pai etc.).
+   - Corrija fazendo o espaço da imagem ter **exatamente a proporção 9:11**, com a **largura
+     calculada a partir da altura** dos boxes, para a imagem encaixar inteira:
+     ```css
+     .wd-explore-grid{ display:grid; grid-template-columns: 1fr auto; align-items: stretch; }
+     .wd-explore-media{ height:100%; aspect-ratio: 9 / 11; width:auto; box-sizing:border-box; }
+     .wd-explore-media img{ display:block; width:100%; height:100%; object-fit: cover; }
+     ```
+     (ajuste os nomes das classes para os que já existem no código). O retângulo em volta da imagem
+     fica **fora** desse espaço (padding no elemento pai), para não alterar a proporção.
+   - Se houver `transform: scale()` na imagem no hover, retire ou deixe no máximo `1.02`.
+   - No tablet e no celular, a imagem vai para baixo dos boxes com `width:100%; height:auto;
+     aspect-ratio: 9 / 11`.
 3. **Partículas duplicadas:** existem duas camadas de partículas no fundo (uma animada e outra
    parada). **Remova a camada estática** e mantenha só a animada.
 
