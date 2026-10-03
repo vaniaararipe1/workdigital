@@ -160,10 +160,10 @@ body .payoff{padding-bottom:40px}
 @media(max-width:991px){:root{--wd-display-size:clamp(44px,7.2vw,76px)}}
 @media(max-width:600px){:root{--wd-display-size:clamp(36px,9.4vw,56px)}.intro .intro-title span{white-space:normal}}
 /* SOLUÇÕES WORK — transição apenas da opacidade; foco equivalente ao hover. */
-#wd-explore .wd-explore-card{position:relative;isolation:isolate;transition:box-shadow .45s cubic-bezier(.22,1,.36,1)}
-#wd-explore .wd-explore-card::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;background:linear-gradient(135deg,rgba(124,92,255,.38) 0%,rgba(183,155,255,.22) 45%,rgba(255,143,203,.20) 100%);opacity:0;transition:opacity .45s cubic-bezier(.22,1,.36,1);pointer-events:none}
+#wd-explore .wd-explore-card{position:relative;isolation:isolate;transition:color .7s cubic-bezier(.4,0,.2,1)}
+#wd-explore .wd-explore-card::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;background:linear-gradient(135deg,rgba(124,92,255,.38) 0%,rgba(183,155,255,.22) 45%,rgba(255,143,203,.20) 100%);opacity:0;box-shadow:0 0 0 1px rgba(214,198,255,.35),0 20px 60px -20px rgba(124,92,255,.55);transition:opacity .7s cubic-bezier(.4,0,.2,1);pointer-events:none}
 #wd-explore .wd-explore-card:hover::before,#wd-explore .wd-explore-card:focus-visible::before,#wd-explore .wd-explore-card.is-active::before{opacity:1}
-#wd-explore .wd-explore-card:hover,#wd-explore .wd-explore-card:focus-visible{box-shadow:0 0 0 1px rgba(214,198,255,.35),0 20px 60px -20px rgba(124,92,255,.55)}
+
 @media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-card,#wd-explore .wd-explore-card::before{transition:none}}
 
 /* CTAs completamente arredondados. */
@@ -182,8 +182,6 @@ body .payoff{padding-bottom:40px}
 @media(max-width:991px){#wd-explore .wd-explore-header>.wd-explore-cta{margin-right:0;max-width:100%}}
 
 /* Setas seguem a paleta do hover dos CTAs. */
-#wd-explore .wd-explore-card:hover .wd-explore-arrow,
-#wd-explore .wd-explore-card:focus-visible .wd-explore-arrow,
 #wd-blog .wd-blog-link:hover .wd-blog-arrow,
 #wd-blog .wd-blog-link:focus-visible .wd-blog-arrow{
  background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:0% 0%;color:#24123e;
@@ -192,3 +190,10 @@ body .payoff{padding-bottom:40px}
 /* A coluna da mídia usa sua largura real para alinhar com o cabeçalho. */
 #wd-explore .wd-explore-layout .wd-explore-body{grid-template-columns:minmax(0,1fr) auto}
 @media(max-width:1199px){#wd-explore .wd-explore-layout .wd-explore-body{grid-template-columns:minmax(0,1fr)}}
+
+/* Hover dos boxes: fundo, luz e seta entram e saem sem troca brusca. */
+#wd-explore .wd-explore-arrow{position:relative;isolation:isolate;transition:color .7s cubic-bezier(.4,0,.2,1)}
+#wd-explore .wd-explore-arrow::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:0% 0%;opacity:0;transition:opacity .7s cubic-bezier(.4,0,.2,1)}
+#wd-explore .wd-explore-card:hover .wd-explore-arrow,#wd-explore .wd-explore-card:focus-visible .wd-explore-arrow{color:#24123e}
+#wd-explore .wd-explore-card:hover .wd-explore-arrow::before,#wd-explore .wd-explore-card:focus-visible .wd-explore-arrow::before{opacity:1}
+@media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-arrow,#wd-explore .wd-explore-arrow::before{transition:none}}
