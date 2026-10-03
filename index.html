@@ -49,7 +49,7 @@ button{font:inherit}
 .dropdown a:hover .drop-arrow{transform:translateX(3px);color:var(--green)}
 .lang{display:flex;align-items:center;gap:6px;color:#9da5a4;font-size:11px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
 .lang strong{color:#fff;font-weight:650}
-.nav-cta{height:46px;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:0 20px;border-radius:6px;background:linear-gradient(90deg,#CBFFFC 0%,#EDFFFE 26.25%,#FFFDFA 47.57%,#FAD1FF 88.96%);background-size:180% 100%;background-position:0% 50%;color:#222;text-decoration:none;font:400 14px/1.43 Arial,system-ui,sans-serif;text-transform:uppercase;white-space:nowrap;border:0;transition:background-position .55s cubic-bezier(.22,1,.36,1),color .3s ease}
+.nav-cta{height:46px;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:0 20px;border-radius:6px;background:linear-gradient(90deg,#CBFFFC 0%,#EDFFFE 26.25%,#FFFDFA 47.57%,#FAD1FF 88.96%);background-size:180% 100%;background-position:0% 50%;color:#222;text-decoration:none;font-size:14px;line-height:1;text-transform:uppercase;white-space:nowrap;border:0;transition:background-position .55s cubic-bezier(.22,1,.36,1),color .3s ease}
 .nav-cta span{transition:transform .35s ease}
 .nav-cta:hover{background-position:100% 50%;color:#111}
 .nav-cta:hover span{transform:translate(3px,-3px)}
@@ -78,7 +78,7 @@ button{font:inherit}
 .intro-title{margin:0;font-size:clamp(54px,6.6vw,96px);line-height:1;letter-spacing:-.04em;font-weight:500;text-transform:none}
 .intro-title span{display:block}
 .intro-desc{margin:28px auto 0;max-width:600px;font-size:16px;line-height:1.4;color:#bbc7c6}
-.hero-cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:28px;height:52px;padding:0 22px;border-radius:6px;background:linear-gradient(90deg,#CBFFFC 0%,#EDFFFE 26.25%,#FFFDFA 47.57%,#FAD1FF 88.96%);background-size:180% 100%;background-position:0% 50%;color:#222;font:400 14px/1.43 Arial,system-ui,sans-serif;text-transform:uppercase;border:0;transition:background-position .55s cubic-bezier(.22,1,.36,1),color .3s ease}
+.hero-cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:28px;height:52px;padding:0 22px;border-radius:6px;background:linear-gradient(90deg,#CBFFFC 0%,#EDFFFE 26.25%,#FFFDFA 47.57%,#FAD1FF 88.96%);background-size:180% 100%;background-position:0% 50%;color:#222;font-size:14px;line-height:1;text-transform:uppercase;border:0;transition:background-position .55s cubic-bezier(.22,1,.36,1),color .3s ease}
 .hero-cta span{transition:transform .35s ease}
 .hero-cta:hover{background-position:100% 50%;color:#111}
 .hero-cta:hover span{transform:translate(3px,-3px)}
@@ -384,7 +384,7 @@ body{isolation:isolate}
  display:grid;place-items:center;color:#b8abc9;font-size:14px;letter-spacing:.02em}
 .wd-explore-cta{display:flex;align-items:center;justify-content:center;gap:16px;
  width:max-content;max-width:100%;margin-left:auto;min-height:52px;padding:14px 20px;
- border-radius:6px;text-decoration:none;color:#fff;font:400 14px/1.4 var(--wd-explore-font);white-space:nowrap;
+ border-radius:6px;text-decoration:none;color:#fff;font-size:14px;line-height:1;white-space:nowrap;
  border:0;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);
  background-size:280% 100%;background-position:100% 0%;
  transition:background-position 600ms ease,color 200ms ease}
@@ -650,7 +650,7 @@ document.querySelectorAll('[data-wd-explore-url]').forEach(link=>{
 }
 .wd-transformacao-title{margin:0;text-wrap:balance}
 .wd-transformacao-description{margin:48px 0 0;font-family:"Nunito",system-ui,sans-serif;font-size:clamp(16px,1.27vw,18px);line-height:1.6;font-weight:400;color:#c8c4d3}
-.wd-transformacao-cta{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:16px;width:max-content;max-width:calc(100% - 40px);min-height:52px;margin:48px 0 0 40px;padding:14px 20px;border:0;border-radius:6px;text-decoration:none;color:#fff;font:400 14px/1.4 "Space Grotesk",Arial,sans-serif;white-space:nowrap;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0%;transition:background-position 600ms ease,color 200ms ease}
+.wd-transformacao-cta{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:16px;width:max-content;max-width:calc(100% - 40px);min-height:52px;margin:48px 0 0 40px;padding:14px 20px;border:0;border-radius:6px;text-decoration:none;color:#fff;font-size:14px;line-height:1;white-space:nowrap;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0%;transition:background-position 600ms ease,color 200ms ease}
 .wd-transformacao-cta:hover,.wd-transformacao-cta:focus-visible{background-position:0% 0%;color:#24123e}
 .wd-transformacao-cta:focus-visible{outline:2px solid #bda4ff;outline-offset:5px}
 .wd-transformacao-cta-icon{width:14px;height:14px;flex:0 0 14px;color:inherit}
@@ -690,7 +690,7 @@ document.querySelectorAll('[data-wd-explore-url]').forEach(link=>{
 .wd-transformacao-eyebrow{margin:0;font-size:20px;font-weight:500;line-height:1.4;letter-spacing:.2em;text-transform:uppercase}
 .wd-transformacao-title{margin:0;color:#fff;text-wrap:nowrap;white-space:nowrap}
 .wd-transformacao-description{margin:40px 0 0;max-width:540px;color:#fff;font-family:"Nunito",system-ui,sans-serif;font-size:18px;line-height:1.5;font-weight:400}
-.wd-transformacao-cta{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:16px;width:max-content;max-width:100%;min-height:54px;margin:40px 0 0;padding:14px 20px;border:0;border-radius:4px;text-decoration:none;color:#fff;font:400 14px/1.4 "Space Grotesk",Arial,sans-serif;white-space:nowrap;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0%;transition:background-position 600ms ease,color 200ms ease}
+.wd-transformacao-cta{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:16px;width:max-content;max-width:100%;min-height:54px;margin:40px 0 0;padding:14px 20px;border:0;border-radius:4px;text-decoration:none;color:#fff;font-size:14px;line-height:1;white-space:nowrap;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0%;transition:background-position 600ms ease,color 200ms ease}
 .wd-transformacao-cta:hover,.wd-transformacao-cta:focus-visible{background-position:0% 0%;color:#24123e}
 .wd-transformacao-cta:focus-visible{outline:2px solid #bda4ff;outline-offset:5px}
 .wd-transformacao-cta-icon{width:14px;height:14px;flex:0 0 14px;color:inherit}
