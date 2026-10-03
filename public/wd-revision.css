@@ -173,9 +173,9 @@ body .payoff{padding-bottom:40px}
 
 /* Retângulos com cantos mais arredondados. */
 :root{--wd-panel-radius:32px;--wd-inner-radius:24px;--wd-media-radius:20px}
-.site-nav,#wd-explore .wd-explore-layout,.wd-works-card,.wd-tr-card,.wd-trust-panel,.wd-blog-link,.wd-blog-item{border-radius:var(--wd-panel-radius)}
-#wd-explore .wd-explore-list,#wd-explore .wd-explore-photo,#wd-explore .wd-explore-card,.wd-trust-card{border-radius:var(--wd-inner-radius)}
-#wd-explore .wd-explore-media,.wd-works-media,.wd-blog-image{border-radius:var(--wd-media-radius)}
+.site-nav,#wd-explore .wd-explore-layout,.wd-works-card,.wd-tr-card,.wd-trust-panel,.wd-blog-link,.wd-blog-item{border-radius:var(--wd-panel-radius)!important}
+#wd-explore .wd-explore-list,#wd-explore .wd-explore-photo,#wd-explore .wd-explore-card,.wd-trust-card{border-radius:var(--wd-inner-radius)!important}
+#wd-explore .wd-explore-media,.wd-works-media,.wd-blog-image{border-radius:var(--wd-media-radius)!important}
 
 /* CTA alinhado à borda da imagem, descontando a moldura de 20px. */
 #wd-explore .wd-explore-header>.wd-explore-cta{margin-right:20px;max-width:calc(100% - 20px)}
@@ -188,3 +188,7 @@ body .payoff{padding-bottom:40px}
 #wd-blog .wd-blog-link:focus-visible .wd-blog-arrow{
  background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:0% 0%;color:#24123e;
 }
+
+/* A coluna da mídia usa sua largura real para alinhar com o cabeçalho. */
+#wd-explore .wd-explore-layout .wd-explore-body{grid-template-columns:minmax(0,1fr) auto}
+@media(max-width:1199px){#wd-explore .wd-explore-layout .wd-explore-body{grid-template-columns:minmax(0,1fr)}}
