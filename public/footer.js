@@ -28,7 +28,7 @@
     .wd-footer-description{max-width:430px;margin:28px 0 0;color:#e1d7ee;font:400 18px/1.6 "Nunito",system-ui,sans-serif;text-wrap:pretty}
     .wd-footer-contact{display:flex;flex-direction:column;align-items:flex-end;gap:24px;min-width:0}
     .wd-footer-title{margin:0;font-size:38px;font-weight:400;line-height:1.3;letter-spacing:-.025em;text-align:right;text-wrap:balance}
-    .wd-footer-cta{display:flex;align-items:center;justify-content:center;gap:20px;min-height:54px;max-width:100%;padding:18px 20px;border-radius:6px;color:#fff;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0;text-decoration:none;font-size:14px;font-weight:400;line-height:1;letter-spacing:.1em;transition:background-position 600ms ease,color 200ms ease}
+    .wd-footer-cta{display:flex;align-items:center;justify-content:center;gap:20px;min-height:54px;max-width:100%;padding:18px 20px;border-radius:6px;color:#fff;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0;text-decoration:none;font-size:14px;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:var(--wd-cta-weight,500);line-height:1;letter-spacing:var(--wd-cta-letter-spacing,.1em);transition:background-position 600ms ease,color 200ms ease}
     .wd-footer-cta svg{flex:none;width:14px;height:14px}
     .wd-footer-cta:hover,.wd-footer-cta:focus-visible{background-position:0 0;color:#2b1450}
     .wd-footer-rights{display:flex;flex-wrap:wrap;align-items:center;align-self:center;gap:8px 16px;color:#e1d7ee;font-size:14px;line-height:1.4;margin:0}
@@ -81,7 +81,7 @@
     render(){
       const values = {...CONFIG};
       for (const key of Object.keys(values)) if(this.hasAttribute(key)) values[key]=this.getAttribute(key);
-      this.shadowRoot.innerHTML = `<style>${CSS}</style><footer class="wd-footer-root" aria-label="Rodapé Work Digital"><div class="wd-footer-inner"><div class="wd-footer-brand"><a class="wd-footer-home"><img class="wd-footer-logo" alt="Work Digital" width="4340" height="1340" decoding="async"></a><p class="wd-footer-description">Criação de sites e lojas virtuais de alta performance e focados em conversão.</p></div><div class="wd-footer-contact"><p class="wd-footer-title">Como podemos te ajudar?</p><a class="wd-footer-cta"><span>ENTRE EM CONTATO</span>${arrow}</a></div><p class="wd-footer-rights"><a class="wd-footer-rights-brand">Work Digital © <span class="wd-footer-year"></span></a> <span class="wd-footer-divider" aria-hidden="true">|</span> <span>Todos os direitos reservados</span></p><nav class="wd-footer-socials" aria-label="Redes sociais e canais de contato"></nav></div></footer>`;
+      this.shadowRoot.innerHTML = `<style>${CSS}</style><footer class="wd-footer-root" aria-label="Rodapé Work Digital"><div class="wd-footer-inner"><div class="wd-footer-brand"><a class="wd-footer-home"><img class="wd-footer-logo" alt="Work Digital" width="4340" height="1340" decoding="async"></a><p class="wd-footer-description">Criação de sites e lojas virtuais de alta performance e focados em conversão.</p></div><div class="wd-footer-contact"><p class="wd-footer-title">Como podemos te ajudar?</p><a class="wd-footer-cta wd-cta"><span>ENTRE EM CONTATO</span>${arrow}</a></div><p class="wd-footer-rights"><a class="wd-footer-rights-brand">Work Digital © <span class="wd-footer-year"></span></a> <span class="wd-footer-divider" aria-hidden="true">|</span> <span>Todos os direitos reservados</span></p><nav class="wd-footer-socials" aria-label="Redes sociais e canais de contato"></nav></div></footer>`;
       const root=this.shadowRoot;
       const home=url(values.home,['https:','http:'])||CONFIG.home;
       root.querySelector('.wd-footer-home').href=home;
@@ -89,7 +89,8 @@
       root.querySelector('.wd-footer-logo').src=url(values.logo,['https:','http:'])||CONFIG.logo;
       root.querySelector('.wd-footer-cta').href=url(values.contact,['https:','http:'])||CONFIG.contact;
       root.querySelector('.wd-footer-year').textContent=new Date().getFullYear();
-      for(const [key,icon] of Object.entries(ICONS)){
+      for(const key of ['linkedin','instagram','facebook']){
+        const icon=ICONS[key];
         if(key==='whatsapp'||key==='email')continue;
         const href=url(values[key]);if(!href)continue;
         const a=document.createElement('a');
@@ -105,14 +106,14 @@
   // Fontes compartilhadas: uma única inclusão, caso a página não as carregue.
   if(!document.querySelector('link[href*="family=Space+Grotesk"],link[href*="family=Space%20Grotesk"],link[data-wd-footer-fonts]')){
     const link=document.createElement('link');link.rel='stylesheet';link.dataset.wdFooterFonts='';
-    link.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&family=Space+Grotesk:wght@400;500&display=swap';
+    link.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&family=Space+Grotesk:wght@400;500;600&display=swap';
     document.head.append(link);
   }
   if(!document.querySelector('script[src*="/whatsapp.js"]')){
-    const widget=document.createElement('script');widget.src=new URL('whatsapp.js?v=20261003-r4',source).href;widget.defer=true;document.head.append(widget);
+    const widget=document.createElement('script');widget.src=new URL('whatsapp.js?v=20261003-r5',source).href;widget.defer=true;document.head.append(widget);
   }
   if(!document.querySelector('link[href*="/wd-revision.css"]')){
-    const styles=document.createElement('link');styles.rel='stylesheet';styles.href=new URL('wd-revision.css?v=20261003-r4',source).href;document.head.append(styles);
+    const styles=document.createElement('link');styles.rel='stylesheet';styles.href=new URL('wd-revision.css?v=20261003-r5',source).href;document.head.append(styles);
   }
   if(!document.querySelector('link[href*="family=Nunito"]')){
     const font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap';document.head.append(font);
