@@ -10,7 +10,7 @@
  const CONFIG = {endpoint:URL_ENVIO,privacyUrl:URL_PRIVACIDADE,...window.WD_CONTACT_CONFIG};
  if(document.querySelector('.wd-contact'))return;
  const source=new URL(document.currentScript?.src||'/contact.js',document.baseURI);
- const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('contact.css?v=20261003-contact3',source).href;document.head.append(css);
+ const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('contact.css?v=20261003-contact4',source).href;document.head.append(css);
  function loadGSAP(){
   if(window.gsap)return Promise.resolve(window.gsap);
   return new Promise(resolve=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js';s.onload=()=>resolve(window.gsap);s.onerror=()=>resolve(null);document.head.append(s)});
