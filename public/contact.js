@@ -10,7 +10,7 @@
  const CONFIG = {endpoint:URL_ENVIO,privacyUrl:URL_PRIVACIDADE,...window.WD_CONTACT_CONFIG};
  if(document.querySelector('.wd-contact'))return;
  const source=new URL(document.currentScript?.src||'/contact.js',document.baseURI);
- const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('contact.css?v=20261003-contact2',source).href;document.head.append(css);
+ const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('contact.css?v=20261003-contact3',source).href;document.head.append(css);
  function loadGSAP(){
   if(window.gsap)return Promise.resolve(window.gsap);
   return new Promise(resolve=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js';s.onload=()=>resolve(window.gsap);s.onerror=()=>resolve(null);document.head.append(s)});
@@ -35,7 +35,7 @@
  let mobileCTA;
  if(links){mobileCTA=document.createElement('button');mobileCTA.className='wd-contact-mobile-cta';mobileCTA.type='button';mobileCTA.textContent='ENTRE EM CONTATO';mobileCTA.setAttribute('aria-expanded','false');mobileCTA.setAttribute('aria-controls',body.id);links.append(mobileCTA)}
  const reduced=matchMedia('(prefers-reduced-motion: reduce)'),mobile=matchMedia('(max-width:768px)');
- let isOpen=false,anim=null,gsapAPI=null,opener=cta,scrollY=0,bodyStyle='',inertStates=[],sending=false,requestController=null,session=0;
+ let isOpen=false,closing=false,anim=null,gsapAPI=null,opener=cta,scrollY=0,bodyStyle='',inertStates=[],sending=false,requestController=null,session=0;
  animationReady.then(g=>{gsapAPI=g});
  function lockPage(){scrollY=window.scrollY;bodyStyle=document.body.getAttribute('style')||'';document.body.style.position='fixed';document.body.style.top=-scrollY+'px';document.body.style.width='100%';document.body.style.overflow='hidden';inertStates=[...document.body.children].filter(el=>el!==box&&!['SCRIPT','STYLE','LINK'].includes(el.tagName)).map(el=>[el,el.inert]);inertStates.forEach(([el])=>el.inert=true)}
  function unlockPage(){inertStates.forEach(([el,value])=>el.inert=value);inertStates=[];document.body.setAttribute('style',bodyStyle);window.scrollTo(0,scrollY)}
@@ -43,10 +43,10 @@
  function setFinalOpen(){box.style.width=mobile.matches?'100%':'477px';box.style.height=mobile.matches?'100dvh':'671px';bts.style.right=mobile.matches?'20px':'-135px';cta.style.right=mobile.matches?'0':'-135px';[title,...fields,foot].forEach(el=>el.style.opacity='1')}
  function resetResult(){form.hidden=false;form.style.opacity='1';result.hidden=true;result.style.opacity='0';submit.disabled=false;submit.textContent='Enviar';sending=false}
  async function abrirContato(trigger=cta){
-  if(isOpen)return;isOpen=true;session++;const openSession=session;opener=trigger;anim?.kill();resetResult();nav?.classList.remove('wd-nav-open','wd-contact-nav-open');const toggle=nav?.querySelector('.mobile-toggle');toggle?.setAttribute('aria-expanded','false');toggle?.setAttribute('aria-label','Abrir menu');
-  box.dataset.open='true';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby',title.id);body.inert=false;setExpanded(true);lockPage();menu.focus({preventScroll:true});
+  if(isOpen||closing)return;isOpen=true;session++;const openSession=session;opener=trigger;anim?.kill();resetResult();nav?.classList.remove('wd-nav-open','wd-contact-nav-open');const toggle=nav?.querySelector('.mobile-toggle');toggle?.setAttribute('aria-expanded','false');toggle?.setAttribute('aria-label','Abrir menu');
+  box.dataset.open='true';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby',title.id);body.inert=false;form.inert=true;cta.tabIndex=-1;setExpanded(true);lockPage();menu.focus({preventScroll:true});
   const g=gsapAPI||await animationReady;if(!isOpen||session!==openSession)return;
-  const complete=()=>{if(isOpen)form.elements.nome.focus({preventScroll:true})};
+  const complete=()=>{if(isOpen){form.inert=false;form.elements.nome.focus({preventScroll:true})}};
   if(!g){setFinalOpen();complete();return}
   g.set([title,...fields,foot],{opacity:0});
   if(mobile.matches||reduced.matches){setFinalOpen();anim=g.timeline({onComplete:complete}).fromTo(body,{opacity:0},{opacity:1,duration:reduced.matches?.12:.25});return}
@@ -56,8 +56,8 @@
   anim.to(fields,{opacity:1,stagger:.18},Math.max(0,anim.duration()-1.5)).to(foot,{opacity:1});
  }
  function fecharContato(){
-  if(!isOpen)return;isOpen=false;session++;requestController?.abort();anim?.kill();body.inert=true;setExpanded(false);
-  const complete=()=>{box.dataset.open='false';box.removeAttribute('role');box.removeAttribute('aria-modal');box.removeAttribute('aria-labelledby');box.style.removeProperty('width');box.style.removeProperty('height');body.style.opacity='1';bts.style.right='0';cta.style.right='0';resetResult();unlockPage();if(opener?.isConnected){if(mobile.matches&&opener===mobileCTA){nav?.classList.add('wd-nav-open');nav?.querySelector('.mobile-toggle')?.setAttribute('aria-expanded','true');nav?.querySelector('.mobile-toggle')?.setAttribute('aria-label','Fechar menu')}opener.focus({preventScroll:true})}};
+  if(!isOpen)return;closing=true;isOpen=false;session++;requestController?.abort();anim?.kill();body.inert=true;setExpanded(false);
+  const complete=()=>{closing=false;cta.tabIndex=0;box.dataset.open='false';box.removeAttribute('role');box.removeAttribute('aria-modal');box.removeAttribute('aria-labelledby');box.style.removeProperty('width');box.style.removeProperty('height');body.style.opacity='1';bts.style.right='0';cta.style.right='0';resetResult();unlockPage();if(opener?.isConnected){if(mobile.matches&&opener===mobileCTA){nav?.classList.add('wd-nav-open');nav?.querySelector('.mobile-toggle')?.setAttribute('aria-expanded','true');nav?.querySelector('.mobile-toggle')?.setAttribute('aria-label','Fechar menu')}opener.focus({preventScroll:true})}};
   if(!gsapAPI){complete();return}
   if(mobile.matches||reduced.matches){anim=gsapAPI.to(body,{opacity:0,duration:.12,onComplete:complete});return}
   anim=gsapAPI.timeline({defaults:{duration:.5},onComplete:complete}).to(box,{height:60}).to(title,{opacity:0},'<').to(box,{width:207}).to([bts,cta],{right:0},'<');
@@ -66,10 +66,10 @@
  menu.addEventListener('click',()=>{if(isOpen)fecharContato();else if(nav){nav.classList.toggle(innerWidth<=980?'wd-nav-open':'wd-contact-nav-open');menu.setAttribute('aria-expanded',String(nav.classList.contains('wd-nav-open')||nav.classList.contains('wd-contact-nav-open')))}});
  box.querySelector('.wd-contact-close').addEventListener('click',fecharContato);
  document.addEventListener('pointerdown',e=>{if(isOpen&&!box.contains(e.target)&&e.target!==mobileCTA)fecharContato()});
- document.addEventListener('keydown',e=>{if(!isOpen)return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();fecharContato();return}if(e.key==='Tab'){const focusable=[...box.querySelectorAll('button,a[href],input')].filter(el=>!el.disabled&&!el.closest('[inert]')&&el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden');const first=focusable[0],last=focusable.at(-1);if(e.shiftKey&&(document.activeElement===first||!box.contains(document.activeElement))){e.preventDefault();last?.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}}},true);
+ document.addEventListener('keydown',e=>{if(!isOpen)return;if(e.key==='Escape'){e.preventDefault();e.stopPropagation();fecharContato();return}if(e.key==='Tab'){const focusable=[...box.querySelectorAll('button,a[href],input')].filter(el=>el.tabIndex>=0&&!el.disabled&&!el.closest('[inert]')&&el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden');const first=focusable[0],last=focusable.at(-1);if(e.shiftKey&&(document.activeElement===first||!box.contains(document.activeElement))){e.preventDefault();last?.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}}},true);
  // Os CTAs de contato existentes, inclusive no rodapé com shadow DOM, usam o mesmo painel.
  document.addEventListener('click',e=>{const link=e.composedPath().find(el=>el.tagName==='A');if(link&&(/\/contato\/?(?:$|[?#])/.test(link.href)||link.getAttribute('href')==='#contato')){e.preventDefault();abrirContato(link)}});
- mobile.addEventListener('change',()=>{if(isOpen){anim?.kill();setFinalOpen();body.style.opacity='1'}});
+ mobile.addEventListener('change',()=>{if(isOpen){anim?.kill();setFinalOpen();body.style.opacity='1';form.inert=false;form.elements.nome.focus({preventScroll:true})}});
  function validate(){let valid=true;for(const name of ['nome','email']){const input=form.elements[name],ok=input.value.trim()!==''&&(name!=='email'||input.validity.valid);input.setAttribute('aria-invalid',String(!ok));box.querySelector('#wd-contact-'+name+'-error').textContent=ok?'':name==='nome'?'Informe seu nome completo.':'Informe um e-mail válido.';if(!ok&&valid){input.focus();valid=false}}return valid}
  ['nome','email'].forEach(name=>form.elements[name].addEventListener('input',()=>{form.elements[name].removeAttribute('aria-invalid');box.querySelector('#wd-contact-'+name+'-error').textContent=''}));
  async function enviarFormulario(dados){
