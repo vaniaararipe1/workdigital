@@ -10,7 +10,7 @@
  const CONFIG = {endpoint:URL_ENVIO,privacyUrl:URL_PRIVACIDADE,...window.WD_CONTACT_CONFIG};
  if(document.querySelector('.wd-contact'))return;
  const source=new URL(document.currentScript?.src||'/contact.js',document.baseURI);
- const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('contact.css?v=20261003-contact',source).href;document.head.append(css);
+ const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('contact.css?v=20261003-contact2',source).href;document.head.append(css);
  function loadGSAP(){
   if(window.gsap)return Promise.resolve(window.gsap);
   return new Promise(resolve=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js';s.onload=()=>resolve(window.gsap);s.onerror=()=>resolve(null);document.head.append(s)});
@@ -20,6 +20,7 @@
  const nav=document.querySelector('.site-nav'),oldCTA=nav?.querySelector('.nav-cta'),links=nav?.querySelector('.nav-links');
  if(oldCTA){const slot=document.createElement('span');slot.className='wd-contact-slot';slot.setAttribute('aria-hidden','true');oldCTA.replaceWith(slot)}
  document.body.classList.add('wd-contact-installed');
+ document.documentElement.classList.add('wd-contact-root');
  const box=document.createElement('section');box.className='wd-contact';box.id='wd-contact';box.dataset.open='false';box.setAttribute('aria-label','Contato Work Digital');
  box.innerHTML=`<div class="wd-contact-buttons"><button class="wd-contact-menu" type="button" aria-label="Abrir menu" aria-expanded="false"><span class="wd-contact-menu-line"></span><span class="wd-contact-menu-line"></span><span class="wd-contact-menu-line"></span></button><button class="wd-contact-cta" type="button" aria-expanded="false" aria-controls="wd-contact-body">ENTRE EM CONTATO</button></div>
  <div class="wd-contact-body" id="wd-contact-body" inert><h2 class="wd-contact-title" id="wd-contact-heading">Vamos trabalhar juntos.</h2><form class="wd-contact-form" novalidate>
@@ -56,7 +57,7 @@
  }
  function fecharContato(){
   if(!isOpen)return;isOpen=false;session++;requestController?.abort();anim?.kill();body.inert=true;setExpanded(false);
-  const complete=()=>{box.dataset.open='false';box.removeAttribute('role');box.removeAttribute('aria-modal');box.removeAttribute('aria-labelledby');box.style.removeProperty('width');box.style.removeProperty('height');body.style.opacity='1';bts.style.right='0';cta.style.right='0';resetResult();unlockPage();if(opener?.isConnected){if(mobile.matches&&opener===mobileCTA){nav?.classList.add('wd-nav-open');nav?.querySelector('.mobile-toggle')?.setAttribute('aria-expanded','true')}opener.focus({preventScroll:true})}};
+  const complete=()=>{box.dataset.open='false';box.removeAttribute('role');box.removeAttribute('aria-modal');box.removeAttribute('aria-labelledby');box.style.removeProperty('width');box.style.removeProperty('height');body.style.opacity='1';bts.style.right='0';cta.style.right='0';resetResult();unlockPage();if(opener?.isConnected){if(mobile.matches&&opener===mobileCTA){nav?.classList.add('wd-nav-open');nav?.querySelector('.mobile-toggle')?.setAttribute('aria-expanded','true');nav?.querySelector('.mobile-toggle')?.setAttribute('aria-label','Fechar menu')}opener.focus({preventScroll:true})}};
   if(!gsapAPI){complete();return}
   if(mobile.matches||reduced.matches){anim=gsapAPI.to(body,{opacity:0,duration:.12,onComplete:complete});return}
   anim=gsapAPI.timeline({defaults:{duration:.5},onComplete:complete}).to(box,{height:60}).to(title,{opacity:0},'<').to(box,{width:207}).to([bts,cta],{right:0},'<');
