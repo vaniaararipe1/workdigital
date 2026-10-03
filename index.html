@@ -416,11 +416,42 @@ body{isolation:isolate}
  .wd-explore-image img{transform:none}
 }
 </style>
+<style>
+/* Estrutura dos dois retângulos; mantém tipografia, CTA e estados existentes. */
+#wd-explore{background:transparent}
+#wd-explore .wd-explore-layout{display:block;padding:28px;border-radius:16px;border:1px solid rgba(189,164,255,.13);background:linear-gradient(125deg,rgba(96,37,225,.12),rgba(49,22,78,.2));isolation:isolate;overflow:hidden}
+#wd-explore .wd-explore-dots{position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;background-image:radial-gradient(circle,rgba(189,164,255,.24) 1px,transparent 1.3px),radial-gradient(circle,rgba(224,174,244,.14) .8px,transparent 1.2px);background-size:24px 24px,37px 37px;background-position:0 0,11px 9px}
+#wd-explore .wd-explore-header{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start;margin-bottom:32px}
+#wd-explore .wd-explore-intro{min-width:0;padding:40px 20px 0}
+#wd-explore .wd-explore-subtitle{margin-bottom:0}
+#wd-explore .wd-explore-header>.wd-explore-cta{align-self:start;margin-top:40px}
+#wd-explore .wd-explore-body{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:stretch}
+#wd-explore .wd-explore-list{grid-column:auto;min-width:0;border-radius:12px;background:rgba(29,14,54,.62)}
+#wd-explore .wd-explore-photo{position:relative;min-width:0;min-height:0;margin:0;border-radius:12px;overflow:hidden;background:rgba(96,37,225,.12)}
+#wd-explore .wd-explore-photo>img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+/* Mesma revelação dos cards, agora alinhada ao painel fotográfico inteiro. */
+@media(min-width:992px){#wd-explore .wd-explore-image{left:calc(50% + 14px);right:0;top:0;bottom:0;aspect-ratio:auto;border-radius:12px;z-index:2}}
+@media(max-width:991px){
+ #wd-explore .wd-explore-header{grid-template-columns:minmax(0,1fr);gap:24px;margin-bottom:28px}
+ #wd-explore .wd-explore-intro{padding:0}
+ #wd-explore .wd-explore-header>.wd-explore-cta{margin-top:0}
+ #wd-explore .wd-explore-body{grid-template-columns:minmax(0,1fr);gap:28px}
+ #wd-explore .wd-explore-photo{width:100%;aspect-ratio:4/3}
+}
+@media(max-width:479px){#wd-explore .wd-explore-layout{padding:20px}#wd-explore .wd-explore-body{gap:20px}}
+</style>
 <section class="wd-explore-section" id="wd-explore" aria-labelledby="wd-explore-heading">
  <div class="wd-explore-layout">
-  <div class="wd-explore-list">
+  <div class="wd-explore-dots" aria-hidden="true"></div>
+  <div class="wd-explore-header">
+   <div class="wd-explore-intro">
    <h2 class="wd-explore-heading" id="wd-explore-heading">Aceite o desafio do novo</h2>
    <h2 class="wd-explore-subtitle">Soluções Work</h2>
+   </div>
+   <a class="wd-explore-cta" href="#contato" data-wd-explore-url="https://workdigital.art.br/contato/">SOLICITE UMA PROPOSTA <svg class="wd-explore-cta-icon" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M12 1 1 12M2 1h10v10" stroke="currentColor" stroke-width="1.4"/></svg></a>
+  </div>
+  <div class="wd-explore-body">
+   <div class="wd-explore-list">
    <a class="wd-explore-card is-active" href="#criacao-de-sites" data-wd-explore-url="https://workdigital.art.br/criacao-de-site/">
     <span class="wd-explore-image"><img src="https://picsum.photos/800/500?random=1" alt="Imagem provisória para Criação de Sites" loading="lazy" width="800" height="500"></span>
     <div class="wd-explore-card-title"><h3>Criação de Sites</h3><span class="wd-explore-arrow" aria-hidden="true">↗</span></div>
@@ -436,10 +467,11 @@ body{isolation:isolate}
     <div class="wd-explore-card-title"><h3>Criação de Landing pages</h3><span class="wd-explore-arrow" aria-hidden="true">↗</span></div>
     <p>Atrair não é o suficiente. É preciso conquistar seu visitante no momento em que ele chega a sua página de vendas. Criamos Landing Pages que convertem e alavancam seus resultados.</p>
    </a>
-  </div>
-  <div class="wd-explore-visual">
-   <a class="wd-explore-cta" href="#contato" data-wd-explore-url="https://workdigital.art.br/contato/">SOLICITE UMA PROPOSTA <svg class="wd-explore-cta-icon" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M12 1 1 12M2 1h10v10" stroke="currentColor" stroke-width="1.4"/></svg></a>
-   <div class="wd-explore-default" aria-hidden="true">Área de imagem</div>
+   </div>
+   <figure class="wd-explore-photo">
+    <!-- FOTO DA SEÇÃO: troque somente o src abaixo. -->
+    <img src="https://picsum.photos/900/1100?random=21" alt="Foto provisória de ambientação da seção de soluções Work Digital" loading="lazy" width="900" height="1100">
+   </figure>
   </div>
  </div>
 </section>
