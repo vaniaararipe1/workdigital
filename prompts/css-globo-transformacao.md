@@ -6,9 +6,10 @@ Prévia: `preview-globo-transformacao.png` (os pontos da prévia são só um pad
 ## PROMPT (copie daqui para baixo)
 
 Substitua a iluminação do card e do globo da seção "Transformação digital" (`#wd-transformacao`)
-por este HTML e CSS. Mantenha o mapa de pontos que já existe dentro de `.wd-tr-dots` (apague o
-`background-image` de teste dessa classe e use o mapa atual), e mantenha textos, botão e
-responsivo como estão. Remova o CSS antigo do card, do globo e do brilho, para não haver
+por este HTML e CSS. **Não remova o mapa de pontos com os países/continentes que já existe:**
+coloque-o dentro de `.wd-tr-dots`, no lugar do comentário. O `background-image` e o
+`background-size` de `.wd-tr-dots` são só um padrão de teste: apague essas duas linhas e use o mapa
+atual. Mantenha textos, botão e responsivo como estão. Remova o CSS antigo do card, do globo e do brilho, para não haver
 conflito.
 
 ```html
