@@ -170,3 +170,9 @@ body .payoff{padding-bottom:40px}
 :root{--wd-cta-radius:9999px}
 .wd-cta{border-radius:var(--wd-cta-radius)!important}
 .wd-cta::before,.wd-cta::after{border-radius:inherit}
+
+/* Retângulos com cantos mais arredondados. */
+:root{--wd-panel-radius:32px;--wd-inner-radius:24px;--wd-media-radius:20px}
+.site-nav,#wd-explore .wd-explore-layout,.wd-works-card,.wd-tr-card,.wd-trust-panel,.wd-blog-link,.wd-blog-item{border-radius:var(--wd-panel-radius)}
+#wd-explore .wd-explore-list,#wd-explore .wd-explore-photo,#wd-explore .wd-explore-card,.wd-trust-card{border-radius:var(--wd-inner-radius)}
+#wd-explore .wd-explore-media,.wd-works-media,.wd-blog-image{border-radius:var(--wd-media-radius)}
