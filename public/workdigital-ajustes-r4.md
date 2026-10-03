@@ -1,3 +1,103 @@
+# Work Digital — correções r4
+
+## Diagnóstico das regras
+
+- Título: `.intro-block{max-width:820px}`, fontes independentes de `.intro-title` e `.intro .intro-title`, inclusive mobile, impediam a escala compartilhada.
+- Idiomas: `.dropdown{width:min(390px,88vw)}` e `.wd-language .dropdown{width:min(390px,calc(100vw - 48px))}` no mobile alargavam o painel.
+- Uptitles: nenhuma regra ativa anulava o gradiente existente; aplicada a definição explícita com inline-block e !important solicitada.
+- Fotos: duas regras de `.wd-explore-photo` repetiam a direção transparente à esquerda.
+- Hover: estados de `.wd-explore-card` no HTML e em `wd-revision.css` aplicavam fundos próprios, substituídos pelo pseudo-elemento com opacity.
+- Transformação: fundo começava em #1f0e46; o `.wd-tr-card::after` mobile acrescentava escurecimento e foi removido.
+
+## GERAL
+
+### 1. Título em duas linhas e escala compartilhada
+
+```html
+<h1 class="intro-title wd-uptitle"><span>Criação de sites</span><br><span>profissionais</span></h1>
+```
+
+```css
+/* GERAL — mesma escala de display, preservando os valores da frase. */
+:root{--wd-display-size:clamp(44px,6.835vw,120px)}
+.intro .intro-title,.wd-statement-title{font-size:var(--wd-display-size);line-height:1.05}
+.wd-statement-title{margin:0 auto;font-weight:500;letter-spacing:-.04167em;text-align:center;text-wrap:balance;color:#efe7ff}
+.intro .intro-block{max-width:none;width:100%}
+.intro .intro-title span{display:inline-block;white-space:nowrap}
+@media(max-width:991px){:root{--wd-display-size:clamp(44px,7.2vw,76px)}}
+@media(max-width:600px){:root{--wd-display-size:clamp(36px,9.4vw,56px)}.intro .intro-title span{white-space:normal}}
+
+```
+
+### 2. Dropdown com largura própria
+
+```css
+.wd-language{width:auto;min-width:0}
+.wd-language .dropdown{width:max-content;min-width:120px;max-width:160px;left:auto;right:0;transform:translateY(12px) scale(.985)}
+@media(max-width:980px){.wd-language .dropdown{top:62px}}
+```
+
+### 3. Todos os uptitles
+
+| Seletor | Texto | Classe |
+|---|---|---|
+| `.intro-title` | Criação de sites profissionais | wd-uptitle |
+| `#wd-explore-heading` | Aceite o desafio do novo | wd-uptitle |
+| `.wd-transformacao-eyebrow` | EXPLORE | wd-uptitle |
+| `.wd-blog-eyebrow` | BLOG | wd-uptitle |
+| `.wd-trust-eyebrow` | Confiança | wd-uptitle |
+
+```css
+.wd-uptitle{display:inline-block;background:linear-gradient(90deg,#FFFFFF 0%,#EDE4FF 45%,#F7C9EC 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;color:transparent!important}
+```
+
+## SOLUÇÕES WORK
+
+### 1. Transparência à direita
+
+```css
+#wd-explore .wd-explore-photo,
+#wd-explore .wd-explore-body .wd-explore-photo{
+ background:linear-gradient(90deg,rgba(70,26,143,.72) 0%,rgba(42,17,78,.40) 60%,rgba(29,14,54,0) 100%);border:0;
+}
+```
+
+### 2. Hover com gradiente
+
+```css
+/* SOLUÇÕES WORK — transição apenas da opacidade; foco equivalente ao hover. */
+#wd-explore .wd-explore-card{position:relative;isolation:isolate;transition:box-shadow .45s cubic-bezier(.22,1,.36,1)}
+#wd-explore .wd-explore-card::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;background:linear-gradient(135deg,rgba(124,92,255,.38) 0%,rgba(183,155,255,.22) 45%,rgba(255,143,203,.20) 100%);opacity:0;transition:opacity .45s cubic-bezier(.22,1,.36,1);pointer-events:none}
+#wd-explore .wd-explore-card:hover::before,#wd-explore .wd-explore-card:focus-visible::before,#wd-explore .wd-explore-card.is-active::before{opacity:1}
+#wd-explore .wd-explore-card:hover,#wd-explore .wd-explore-card:focus-visible{box-shadow:0 0 0 1px rgba(214,198,255,.35),0 20px 60px -20px rgba(124,92,255,.55)}
+@media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-card,#wd-explore .wd-explore-card::before{transition:none}}
+
+```
+
+O JS existente permanece: o primeiro card carrega com is-active e perde essa classe uma única vez ao entrar/focar qualquer card. Não volta a ser selecionado ao sair.
+
+## TRANSFORMAÇÃO DIGITAL
+
+### 1. Apenas iluminação do fundo
+
+```css
+.wd-tr-card{background:radial-gradient(50% 70% at 72% 55%,rgba(226,216,255,.55) 0%,rgba(190,170,255,.25) 45%,rgba(190,170,255,0) 75%),radial-gradient(60% 55% at 22% 108%,rgba(240,228,246,.55) 0%,rgba(220,205,240,.22) 45%,rgba(220,205,240,0) 75%),radial-gradient(55% 70% at 8% 10%,rgba(30,14,70,.45) 0%,rgba(30,14,70,0) 70%),linear-gradient(100deg,#3a1d86 0%,#4526a0 28%,#5a3bbd 52%,#8d76e8 76%,#cfc2ff 100%);}
+```
+
+Removido `.wd-tr-card::after` mobile. Globo, glow, mapa, conteúdo, botão, dimensões e encaixe responsivo permanecem.
+
+## Alterações — uma linha por item
+
+- GERAL 1: H1 em duas linhas no desktop, com a mesma variável de tamanho da frase.
+- GERAL 2: Dropdown de idiomas entre 120px e 160px, conservando seu estilo gaussiano.
+- GERAL 3: Cinco uptitles com classe única e gradiente explícito protegido contra sobrescritas.
+- SOLUÇÕES WORK 1: Moldura das fotos com roxo à esquerda e transparência à direita.
+- SOLUÇÕES WORK 2: Gradiente de hover/foco/estado inicial animado por opacity; lógica do primeiro card preservada.
+- TRANSFORMAÇÃO DIGITAL 1: Fundo substituído pelo gradiente enviado e overlay escuro removido.
+
+## Arquivo CSS completo atualizado
+
+```css
 /* GERAL */
 :root{--wd-uptitle-gradient:linear-gradient(90deg,#FFFFFF 0%,#EDE4FF 45%,#F7C9EC 100%);--wd-description-font:"Nunito",system-ui,sans-serif;--wd-article-hover:linear-gradient(0deg,#301258,#4b247e)}
 p:not(.payoff-copy):not(.wd-transformacao-closing-text):not(.wd-works-eyebrow):not(.wd-transformacao-eyebrow):not(.wd-blog-eyebrow):not(.wd-trust-eyebrow),blockquote,.drop-copy small{font-family:var(--wd-description-font)}
@@ -165,3 +265,5 @@ body .payoff{padding-bottom:40px}
 #wd-explore .wd-explore-card:hover::before,#wd-explore .wd-explore-card:focus-visible::before,#wd-explore .wd-explore-card.is-active::before{opacity:1}
 #wd-explore .wd-explore-card:hover,#wd-explore .wd-explore-card:focus-visible{box-shadow:0 0 0 1px rgba(214,198,255,.35),0 20px 60px -20px rgba(124,92,255,.55)}
 @media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-card,#wd-explore .wd-explore-card::before{transition:none}}
+
+```
