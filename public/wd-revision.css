@@ -202,3 +202,6 @@ body .payoff{padding-bottom:40px}
 #wd-explore .wd-explore-photo .wd-explore-media{transition:opacity .9s cubic-bezier(.4,0,.2,1),visibility 0s linear .9s}
 #wd-explore .wd-explore-photo .wd-explore-media.is-visible{transition-delay:0s,0s}
 @media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-photo .wd-explore-media{transition:none}}
+
+/* Quadradinhos das setas com cantos mais arredondados. */
+#wd-explore .wd-explore-arrow,#wd-blog .wd-blog-arrow{border-radius:16px!important}
