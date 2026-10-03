@@ -241,13 +241,11 @@ body{margin:0}
 @keyframes lightFieldDrift{from{transform:translate3d(-4%,-3%,0) scale(1)}to{transform:translate3d(5%,4%,0) scale(1.10)}}
 @media(max-width:760px){.light-field-inner::before{filter:blur(28px)}}
 @media(prefers-reduced-motion:reduce){.light-field-inner::before{animation:none}}
-/* Páginas claras: o vidro do menu fica mais escuro para não ficar cinza sobre o fundo claro */
-.site-nav::before{background:rgba(18,19,22,.86)}
 .bsearch{display:flex;align-items:center;gap:10px;width:min(360px,100%);height:46px;margin:18px auto 0;padding:0 18px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.6);color:var(--muted);transition:border-color .25s,background .25s}
 .bsearch:focus-within{border-color:#6025E1;background:#fff}
 .bsearch svg{width:18px;height:18px;flex:none}
 .bsearch input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:500 15px var(--display)}
-.wd-dark-band{margin-top:clamp(64px,8vw,120px)}
+wd-footer{margin-top:clamp(64px,8vw,120px)}
 .hero .up,.empty{font-family:var(--display)!important}
 
 </style>
@@ -258,12 +256,44 @@ body{margin:0}
 /* Botões da página mantêm o próprio estilo; o padrão global de botão da home vale só para os CTAs .wd-cta */
 button:where(:not(.wd-cta)){font-family:inherit;font-weight:inherit;letter-spacing:inherit}
 </style>
+<style>
+/* Versão positiva (páginas claras): menu, painel de contato e rodapé em tons claros */
+.site-nav{border-color:rgba(23,19,31,.10)!important;box-shadow:0 18px 55px rgba(23,19,31,.10)!important}
+.site-nav::before{background:rgba(255,255,255,.74)!important}
+.nav-item,.nav-link,.nav-trigger{color:#17131F!important}
+.dropdown{background:rgba(255,255,255,.86)!important;border-color:rgba(23,19,31,.10)!important;box-shadow:0 22px 60px rgba(23,19,31,.14)!important}
+.dropdown a{color:#17131F!important}
+.dropdown a:hover,.dropdown a:focus-visible{background:rgba(96,37,225,.07)!important}
+.mobile-toggle{border-color:rgba(23,19,31,.14)!important;background:rgba(23,19,31,.04)!important;color:#17131F!important}
+.mobile-toggle i,.mobile-toggle i:before,.mobile-toggle i:after{background:#17131F!important}
+.site-nav.wd-contact-open .mobile-toggle i{background:transparent!important}
+@media(max-width:980px){.site-nav.wd-nav-open .nav-links{background:rgba(255,255,255,.95)!important;border-color:rgba(96,37,225,.16)!important}}
+.nav-cta,.wd-contact .nav-cta.wd-cta{background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365)!important;background-size:280% 100%!important;background-position:100% 0!important;color:#fff!important;transition:background-position .6s ease,color .2s ease!important}
+.nav-cta:hover,.nav-cta:focus-visible,.wd-contact .nav-cta.wd-cta:hover,.wd-contact .nav-cta.wd-cta:focus-visible{background-position:0 0!important;color:#2b1450!important}
+.site-nav.wd-contact-open .wd-contact-close-trigger{background:none!important;color:#17131F!important}
+.wd-contact-glass{background:rgba(255,255,255,.80)!important}
+.wd-contact-stroke{stroke:rgba(23,19,31,.10)!important}
+.wd-contact-shadow{fill:rgba(23,19,31,.12)!important}
+.wd-contact-backdrop{background:rgba(244,243,236,.45)!important}
+.wd-contact,.wd-contact-title,.wd-contact-result-title{color:#17131F!important}
+.wd-contact .wd-contact-uptitle.wd-uptitle{background:linear-gradient(90deg,#6025E1,#A23FC9 55%,#D9467F)!important;-webkit-background-clip:text!important;background-clip:text!important}
+.wd-contact .wd-contact-input{color:#17131F!important;border-bottom-color:rgba(23,19,31,.18)!important}
+.wd-contact .wd-contact-input:hover{border-color:rgba(23,19,31,.42)!important}
+.wd-contact .wd-contact-input::placeholder{color:#6B6578!important}
+.wd-contact .wd-contact-input:focus,.wd-contact .wd-contact-input:focus-visible{caret-color:#17131F!important}
+.wd-contact-field::after{background:linear-gradient(90deg,#6025E1,#A23FC9,#D9467F)!important}
+.wd-contact .wd-contact-input[aria-invalid="true"]{border-color:#C9184A!important}
+.wd-contact .wd-contact-input[aria-invalid="true"]::placeholder,.wd-contact-field-error{color:#C9184A!important}
+.wd-contact-privacy,.wd-contact-result-text,.wd-contact-result-note{color:#6B6578!important}
+.wd-contact-privacy a{color:#17131F!important}
+wd-footer{--wd-footer-icon-cutout:#F4F3EC!important;border-top:1px solid rgba(23,19,31,.10)!important}
+</style>
 
 
 <header class="site-header">
   <nav class="site-nav" aria-label="Navegação principal">
     <a class="brand" href="https://workdigital-hero-preview.onrender.com/" aria-label="Work Digital — Home">
-      <img src="./ativos-externos/logo-work-digital-branco-criacao-de-site-sp.svg" alt="Work Digital">
+      <img src="./img/logo-work-digital-positivo.svg" alt="Work Digital">
     </a>
     <div class="nav-links">
       <a class="nav-link" href="https://workdigital-hero-preview.onrender.com/">Home</a>
@@ -306,7 +336,7 @@ button:where(:not(.wd-cta)){font-family:inherit;font-weight:inherit;letter-spaci
     </nav>
   </div>
 </main>
-<div class="wd-dark-band"><div class="light-field-inner" aria-hidden="true"></div><wd-footer id="wd-footer"></wd-footer></div>
+<wd-footer id="wd-footer" data-theme="light"></wd-footer>
 
 
 

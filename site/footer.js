@@ -58,6 +58,11 @@
       .wd-footer-socials{justify-content:flex-start;gap:16px}
     }
     @media(prefers-reduced-motion:reduce){a{transition:none!important}}
+    :host([data-theme="light"]){color:#17131F}
+    :host([data-theme="light"]) .wd-footer-description,:host([data-theme="light"]) .wd-footer-rights,:host([data-theme="light"]) .wd-footer-social{color:#4A4458}
+    :host([data-theme="light"]) .wd-footer-social:hover,:host([data-theme="light"]) .wd-footer-social:focus-visible{color:#6025E1;background:rgba(96,37,225,.08)}
+    :host([data-theme="light"]) .wd-footer-rights-brand:hover{color:#17131F}
+    :host([data-theme="light"]) a:focus-visible{outline-color:#6025E1}
   `;
   const ICONS = {
     instagram: '<rect x="11" y="11" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="20" cy="20" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="25.6" cy="14.5" r="1.2" fill="currentColor"/>',
@@ -86,7 +91,7 @@
       const home=url(values.home,['https:','http:'])||CONFIG.home;
       root.querySelector('.wd-footer-home').href=home;
       root.querySelector('.wd-footer-rights-brand').href=home;
-      root.querySelector('.wd-footer-logo').src=url(values.logo,['https:','http:'])||CONFIG.logo;
+      root.querySelector('.wd-footer-logo').src=url(values.logo,['https:','http:'])||(this.dataset.theme==='light'?new URL('img/logo-work-digital-positivo.svg',source).href:CONFIG.logo);
       root.querySelector('.wd-footer-cta').href=url(values.contact,['https:','http:'])||CONFIG.contact;
       root.querySelector('.wd-footer-year').textContent=new Date().getFullYear();
       for(const key of ['linkedin','instagram','facebook']){
