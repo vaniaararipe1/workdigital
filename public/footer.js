@@ -109,11 +109,14 @@
     link.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&family=Space+Grotesk:wght@400;500;600&display=swap';
     document.head.append(link);
   }
+  if(!document.querySelector('script[src*="/contact.js"]')){
+    const contact=document.createElement('script');contact.src=new URL('contact.js?v=20261003-contact',source).href;contact.defer=true;document.head.append(contact);
+  }
   if(!document.querySelector('script[src*="/whatsapp.js"]')){
-    const widget=document.createElement('script');widget.src=new URL('whatsapp.js?v=20261003-whatsapp-live',source).href;widget.defer=true;document.head.append(widget);
+    const widget=document.createElement('script');widget.src=new URL('whatsapp.js?v=20261003-contact',source).href;widget.defer=true;document.head.append(widget);
   }
   if(!document.querySelector('link[href*="/wd-revision.css"]')){
-    const styles=document.createElement('link');styles.rel='stylesheet';styles.href=new URL('wd-revision.css?v=20261003-whatsapp-live',source).href;document.head.append(styles);
+    const styles=document.createElement('link');styles.rel='stylesheet';styles.href=new URL('wd-revision.css?v=20261003-contact',source).href;document.head.append(styles);
   }
   if(!document.querySelector('link[href*="family=Nunito"]')){
     const font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap';document.head.append(font);
