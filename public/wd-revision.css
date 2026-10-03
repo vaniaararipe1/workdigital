@@ -92,3 +92,13 @@ body .payoff{padding-bottom:40px}
 }
 @media(max-width:600px){.site-nav{gap:8px;padding-left:12px}.site-nav .brand img{width:108px}}
 @media(max-width:360px){.site-nav .brand img{width:92px}}
+/* Tablet mantém texto acima e globo abaixo; celular preserva contraste sobre o globo. */
+@media(min-width:769px) and (max-width:991px){
+ .wd-tr-card{height:auto;min-height:0;padding-bottom:420px}
+ .wd-tr-content{height:auto;max-width:none}
+ .wd-tr-globe{height:420px;top:auto;bottom:0;left:calc(50% - 110px);transform:none}
+ .wd-tr-glow{top:auto;bottom:-60px;left:32%;width:75%;transform:none}
+}
+@media(max-width:768px){
+ .wd-tr-card::after{background:radial-gradient(ellipse 140% 110% at 0% 8%,rgba(36,16,79,.96) 0%,rgba(36,16,79,.88) 45%,rgba(36,16,79,.75) 66%,rgba(36,16,79,0) 100%)}
+}
