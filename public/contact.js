@@ -27,10 +27,11 @@
  const body=box.querySelector('.wd-contact-body'),form=box.querySelector('form'),fields=[...box.querySelectorAll('.wd-contact-field')],foot=box.querySelector('.wd-contact-foot'),submit=box.querySelector('.wd-contact-submit'),result=box.querySelector('.wd-contact-result'),heading=box.querySelector('.wd-contact-heading'),blocks=[...box.querySelectorAll('.wd-contact-anim')];
  const privacy=box.querySelector('.wd-contact-privacy-link');if(CONFIG.privacyUrl)privacy.href=CONFIG.privacyUrl;else{privacy.removeAttribute('target');privacy.setAttribute('aria-disabled','true');privacy.title='URL oficial da Política de Privacidade pendente de configuração'}
  const toggle=nav.querySelector('.mobile-toggle'),links=nav.querySelector('.nav-links');
- const mobileCTA=document.createElement('button');mobileCTA.className='wd-contact-mobile-trigger nav-cta wd-cta';mobileCTA.type='button';mobileCTA.innerHTML='SOLICITAR PROPOSTA <span aria-hidden="true">↗</span>';links?.append(mobileCTA);
+ const mobileCTA=document.createElement('button');mobileCTA.className='wd-contact-mobile-trigger nav-cta wd-cta';mobileCTA.type='button';mobileCTA.setAttribute('data-wd-contact','');mobileCTA.innerHTML='SOLICITAR PROPOSTA <span aria-hidden="true">↗</span>';links?.append(mobileCTA);
  const reduced=matchMedia('(prefers-reduced-motion: reduce)'),mobile=matchMedia('(max-width:768px)');
  const originalMarkup=ctaMenu.innerHTML,originalLabel=ctaMenu.getAttribute('aria-label'),originalWidth=ctaMenu.style.width,toggleControls=toggle?.getAttribute('aria-controls');
  let isOpen=false,closing=false,anim=null,labelTween=null,gsapAPI=null,opener=ctaMenu,closeControl=ctaMenu,scrollY=0,bodyStyle='',inertStates=[],sending=false,requestController=null,session=0;
+ let headerRestore=[];
  const s={W:0,H:0};animationReady.then(g=>gsapAPI=g);
  function shapePath(n,W,H){
   const x0=n.left,y0=n.top,x1=n.right,y1=n.bottom;
@@ -42,14 +43,26 @@
  function targetHeight(){const n=nav.getBoundingClientRect();return Math.max(0,mobile.matches?innerHeight-n.bottom-12:Math.min(600,innerHeight-n.bottom-24))}
  function panelWidth(){return mobile.matches?nav.getBoundingClientRect().width:Math.min(PANEL_W,nav.getBoundingClientRect().width)}
  function draw(){const n=nav.getBoundingClientRect(),d=mobile.matches?shapePathMobile(n,s.H):shapePath(n,s.W,s.H);glass.style.clipPath=`path("${d}")`;glass.style.webkitClipPath=`path("${d}")`;stage.querySelectorAll('path').forEach(p=>p.setAttribute('d',d));Object.assign(box.style,{left:(mobile.matches?n.left:n.right-panelWidth())+'px',top:n.bottom+'px',width:panelWidth()+'px',height:s.H+'px'});box.style.setProperty('--wd-contact-height',s.H+'px')}
+ function revealMenu(){
+  headerRestore=[];
+  for(const el of [header,nav]){
+   const style=getComputedStyle(el),rect=el.getBoundingClientRect(),props=[];
+   if(style.visibility==='hidden')props.push(['visibility','visible']);
+   if(style.display==='none')props.push(['display',el===nav?'flex':'block']);
+   if(Number(style.opacity)===0)props.push(['opacity','1']);
+   if(rect.bottom<=0&&style.transform!=='none')props.push(['transform','none']);
+   for(const [key,value] of props){headerRestore.push([el,key,el.style.getPropertyValue(key),el.style.getPropertyPriority(key)]);el.style.setProperty(key,value,'important')}
+  }
+ }
+ function restoreMenu(){headerRestore.forEach(([el,key,value,priority])=>{if(value)el.style.setProperty(key,value,priority);else el.style.removeProperty(key)});headerRestore=[]}
  function lockPage(){scrollY=window.scrollY;bodyStyle=document.body.getAttribute('style')||'';document.body.style.position='fixed';document.body.style.top=-scrollY+'px';document.body.style.width='100%';document.body.style.overflow='hidden';const nodes=[...document.body.children].filter(el=>![box,header,backdrop].includes(el)&&!['SCRIPT','STYLE','LINK'].includes(el.tagName));nodes.push(...[...nav.querySelectorAll('a,button')].filter(el=>el!==closeControl));inertStates=nodes.map(el=>[el,el.inert]);inertStates.forEach(([el])=>el.inert=true)}
- function unlockPage(){inertStates.forEach(([el,value])=>el.inert=value);inertStates=[];document.body.setAttribute('style',bodyStyle);window.scrollTo(0,scrollY)}
+ function unlockPage(){inertStates.forEach(([el,value])=>el.inert=value);inertStates=[];document.body.setAttribute('style',bodyStyle);window.scrollTo({top:scrollY,left:0,behavior:'instant'})}
  function swapLabel(open){labelTween?.kill();if(open){const width=ctaMenu.getBoundingClientRect().width;if(width)ctaMenu.style.width=width+'px';ctaMenu.innerHTML='<i class="wd-contact-cta-label"></i>';const label=ctaMenu.firstElementChild;label.innerHTML=originalMarkup;const replace=()=>{ctaMenu.classList.add('wd-contact-close-trigger');label.innerHTML='<span class="wd-contact-close-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>'};if(gsapAPI&&!reduced.matches)labelTween=gsapAPI.timeline().to(label,{opacity:0,y:-4,duration:.15}).add(replace).to(label,{opacity:1,y:0,duration:.15});else replace();ctaMenu.setAttribute('aria-label','Fechar contato')}else{ctaMenu.classList.remove('wd-contact-close-trigger');ctaMenu.innerHTML=originalMarkup;ctaMenu.style.width=originalWidth;if(originalLabel===null)ctaMenu.removeAttribute('aria-label');else ctaMenu.setAttribute('aria-label',originalLabel)}}
  function setExpanded(open){[ctaMenu,mobileCTA].forEach(el=>el.setAttribute('aria-expanded',String(open)));if(closeControl===toggle){toggle.setAttribute('aria-label',open?'Fechar contato':'Abrir menu');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-controls',open?body.id:toggleControls||'wd-nav-links')}}
  function resetResult(){form.hidden=false;heading.hidden=false;form.style.opacity='1';result.hidden=true;result.style.opacity='0';submit.disabled=false;submit.innerHTML='ENVIAR <span aria-hidden="true">↗</span>';sending=false}
- function cleanup(){closing=false;box.dataset.open='false';box.classList.remove('is-on','is-opening','is-closing');box.removeAttribute('role');box.removeAttribute('aria-modal');box.removeAttribute('aria-labelledby');stage.classList.remove('is-on');nav.classList.remove('wd-contact-open');header.classList.remove('wd-contact-header-open');backdrop.classList.remove('is-on');backdrop.style.opacity='0';body.inert=true;body.style.opacity='1';body.style.transform='none';resetResult();swapLabel(false);unlockPage();if(opener?.isConnected){if(opener===mobileCTA){nav.classList.add('wd-nav-open');toggle?.setAttribute('aria-expanded','true');toggle?.setAttribute('aria-label','Fechar menu')}opener.focus({preventScroll:true})}}
+ function cleanup(){closing=false;box.dataset.open='false';box.classList.remove('is-on','is-opening','is-closing');box.removeAttribute('role');box.removeAttribute('aria-modal');box.removeAttribute('aria-labelledby');stage.classList.remove('is-on');nav.classList.remove('wd-contact-open');header.classList.remove('wd-contact-header-open');backdrop.classList.remove('is-on');backdrop.style.opacity='0';body.inert=true;body.style.opacity='1';body.style.transform='none';resetResult();swapLabel(false);unlockPage();restoreMenu();if(opener?.isConnected){if(opener===mobileCTA){nav.classList.add('wd-nav-open');toggle?.setAttribute('aria-expanded','true');toggle?.setAttribute('aria-label','Fechar menu')}opener.focus({preventScroll:true})}}
  async function abrirContato(trigger=ctaMenu){
-  if(isOpen||closing)return;isOpen=true;session++;const openSession=session;opener=trigger;resetResult();nav.classList.remove('wd-nav-open');toggle?.setAttribute('aria-expanded','false');
+  if(isOpen||closing)return;isOpen=true;session++;const openSession=session;opener=trigger;revealMenu();resetResult();nav.classList.remove('wd-nav-open');toggle?.setAttribute('aria-expanded','false');
   nav.querySelectorAll('.nav-item').forEach(item=>{item.classList.remove('wd-dropdown-open','wd-solutions-open');item.classList.add('wd-dropdown-dismissed');item.querySelector('.nav-trigger')?.setAttribute('aria-expanded','false')});
   closeControl=ctaMenu.getBoundingClientRect().width?ctaMenu:toggle;lockPage();
   box.dataset.open='true';box.classList.add('is-opening');body.style.opacity='1';body.style.transform='none';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby','wd-contact-heading');body.inert=false;form.inert=true;setExpanded(true);closeControl?.focus({preventScroll:true});
@@ -76,12 +89,18 @@
       .to(backdrop,{opacity:0,duration:reduced.matches?.18:.65,ease:'power2.inOut'},0);
   if(!reduced.matches)anim.to(s,{H:0,W:closedWidth,duration:mobile.matches?.7:.85,ease:'power3.inOut',onUpdate:draw},.16);
  }
- [ctaMenu,mobileCTA].forEach(el=>{el.setAttribute('aria-controls',body.id);el.setAttribute('aria-haspopup','dialog');el.setAttribute('aria-expanded','false');el.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(isOpen)fecharContato();else abrirContato(el)})});
+ [ctaMenu,mobileCTA].forEach(el=>{el.setAttribute('data-wd-contact','');el.setAttribute('aria-controls',body.id);el.setAttribute('aria-haspopup','dialog');el.setAttribute('aria-expanded','false');el.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(isOpen)fecharContato();else abrirContato(el)})});
  toggle?.addEventListener('click',e=>{if(isOpen){e.preventDefault();e.stopImmediatePropagation();fecharContato()}},true);
  backdrop.addEventListener('click',fecharContato);box.querySelector('.wd-contact-close').addEventListener('click',fecharContato);
  document.addEventListener('pointerdown',e=>{if(isOpen&&!box.contains(e.target)&&!nav.contains(e.target))fecharContato()});
  document.addEventListener('keydown',e=>{if(!isOpen)return;if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();fecharContato();return}if(e.key==='Tab'){const available=[closeControl,...box.querySelectorAll('button,a[href],input,textarea')].filter(el=>el&&!el.disabled&&!el.closest('[inert]')&&el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden'),first=available[0],last=available.at(-1);if(e.shiftKey&&(document.activeElement===first||!available.includes(document.activeElement))){e.preventDefault();last?.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}}},true);
- document.addEventListener('click',e=>{const link=e.composedPath().find(el=>el.tagName==='A');if(link&&link!==ctaMenu&&(/\/contato\/?(?:$|[?#])/.test(link.href)||link.getAttribute('href')==='#contato')){e.preventDefault();abrirContato(link)}});
+ document.addEventListener('click',e=>{
+  // composedPath reaches the footer CTA inside its shadow root as well.
+  const path=e.composedPath(),trigger=path.find(el=>el.nodeType===1&&el.hasAttribute?.('data-wd-contact'));
+  if(trigger&&trigger!==ctaMenu){e.preventDefault();abrirContato(trigger);return}
+  const link=path.find(el=>el.tagName==='A');
+  if(link&&link!==ctaMenu&&(/\/contato\/?(?:$|[?#])/.test(link.href)||link.getAttribute('href')==='#contato')){e.preventDefault();abrirContato(link)}
+ });
  function resize(){if(!isOpen&&!closing)return;if(closing){draw();return}anim?.kill();const nextControl=ctaMenu.getBoundingClientRect().width?ctaMenu:toggle;if(nextControl!==closeControl){if(!inertStates.some(([el])=>el===closeControl))inertStates.push([closeControl,false]);closeControl.inert=true;closeControl=nextControl;closeControl.inert=false;if(closeControl!==toggle){toggle?.setAttribute('aria-label','Abrir menu');toggle?.setAttribute('aria-controls',toggleControls||'wd-nav-links');toggle?.setAttribute('aria-expanded','false')}setExpanded(true)}s.W=panelWidth();s.H=targetHeight();draw();box.classList.remove('is-opening');box.classList.add('is-on');blocks.forEach(el=>{el.style.opacity='1';el.style.transform='none'});form.inert=false;anim=null}
  window.addEventListener('resize',resize,{passive:true});window.visualViewport?.addEventListener('resize',resize,{passive:true});
  const observer=new ResizeObserver(()=>{if(isOpen||closing)draw()});observer.observe(nav);

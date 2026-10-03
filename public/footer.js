@@ -81,7 +81,7 @@
     render(){
       const values = {...CONFIG};
       for (const key of Object.keys(values)) if(this.hasAttribute(key)) values[key]=this.getAttribute(key);
-      this.shadowRoot.innerHTML = `<style>${CSS}</style><footer class="wd-footer-root" aria-label="Rodapé Work Digital"><div class="wd-footer-inner"><div class="wd-footer-brand"><a class="wd-footer-home"><img class="wd-footer-logo" alt="Work Digital" width="4340" height="1340" decoding="async"></a><p class="wd-footer-description">Criação de sites e lojas virtuais de alta performance e focados em conversão.</p></div><div class="wd-footer-contact"><p class="wd-footer-title">Como podemos te ajudar?</p><a class="wd-footer-cta wd-cta"><span>ENTRE EM CONTATO</span>${arrow}</a></div><p class="wd-footer-rights"><a class="wd-footer-rights-brand">Work Digital © <span class="wd-footer-year"></span></a> <span class="wd-footer-divider" aria-hidden="true">|</span> <span>Todos os direitos reservados</span></p><nav class="wd-footer-socials" aria-label="Redes sociais e canais de contato"></nav></div></footer>`;
+      this.shadowRoot.innerHTML = `<style>${CSS}</style><footer class="wd-footer-root" aria-label="Rodapé Work Digital"><div class="wd-footer-inner"><div class="wd-footer-brand"><a class="wd-footer-home"><img class="wd-footer-logo" alt="Work Digital" width="4340" height="1340" decoding="async"></a><p class="wd-footer-description">Criação de sites e lojas virtuais de alta performance e focados em conversão.</p></div><div class="wd-footer-contact"><p class="wd-footer-title">Como podemos te ajudar?</p><a class="wd-footer-cta wd-cta" data-wd-contact><span>ENTRE EM CONTATO</span>${arrow}</a></div><p class="wd-footer-rights"><a class="wd-footer-rights-brand">Work Digital © <span class="wd-footer-year"></span></a> <span class="wd-footer-divider" aria-hidden="true">|</span> <span>Todos os direitos reservados</span></p><nav class="wd-footer-socials" aria-label="Redes sociais e canais de contato"></nav></div></footer>`;
       const root=this.shadowRoot;
       const home=url(values.home,['https:','http:'])||CONFIG.home;
       root.querySelector('.wd-footer-home').href=home;
@@ -110,7 +110,7 @@
     document.head.append(link);
   }
   if(!document.querySelector('script[src*="/contact.js"]')){
-    const contact=document.createElement('script');contact.src=new URL('contact.js?v=20261003-contact-minimal',source).href;contact.defer=true;document.head.append(contact);
+    const contact=document.createElement('script');contact.src=new URL('contact.js?v=20261003-contact-all-ctas',source).href;contact.defer=true;document.head.append(contact);
   }
   if(!document.querySelector('script[src*="/whatsapp.js"]')){
     const widget=document.createElement('script');widget.src=new URL('whatsapp.js?v=20261003-contact-minimal',source).href;widget.defer=true;document.head.append(widget);
