@@ -210,14 +210,14 @@ body{isolation:isolate}
 <div class="light-field" aria-hidden="true"><div class="light-field-inner"></div></div>
 <header class="site-header">
   <nav class="site-nav" aria-label="Navegação principal">
-    <a class="brand" href="https://workdigital-hero-preview.onrender.com/" aria-label="Work Digital — Home">
+    <a class="brand" href="https://claude.ai/artifact/K3DaWGpPSDzZs2TZpjwHjw" aria-label="Work Digital — Home" target="_blank" rel="noopener">
       <img src="./ativos-externos/logo-work-digital-branco-criacao-de-site-sp.svg" alt="Work Digital">
     </a>
     <div class="nav-links">
-      <a class="nav-link" href="https://workdigital-hero-preview.onrender.com/">Home</a>
-      <a class="nav-link" href="https://workdigital-hero-preview.onrender.com/#wd-explore">Soluções</a>
+      <a class="nav-link" href="https://claude.ai/artifact/K3DaWGpPSDzZs2TZpjwHjw" target="_blank" rel="noopener">Home</a>
+      <a class="nav-link" href="https://claude.ai/artifact/Y2eQb4LZVTwWfbNdqz7nbi" target="_blank" rel="noopener">Soluções</a>
       <a class="nav-link" href="#topo" aria-current="page">Works</a>
-      <a class="nav-link" href="https://workdigital.art.br/blog/">Blog</a>
+      <a class="nav-link" href="https://claude.ai/artifact/2p828J4i2F3ekJZAnydNYc" target="_blank" rel="noopener">Blog</a>
     </div>
     <div class="wd-nav-actions">
       <div class="nav-item wd-language">
@@ -352,7 +352,7 @@ cats.forEach((c, i) => {
 const svc = p => p.services.map(s => `<span>${s}</span>`).join("");
 projects.forEach(p => {
   const a = document.createElement("a");
-  a.className = `card ${p.size}${p.offset ? " offset" : ""}`; a.href = "#case-" + p.slug; a.dataset.cursor = "1";
+  a.className = `card ${p.size}${p.offset ? " offset" : ""}`; a.href = "https://claude.ai/artifact/3Fh9si9SLB3sa15y3GoaKC"; a.target = "_blank"; a.rel = "noopener"; a.dataset.cursor = "1";
   a.innerHTML = `<div class="media"><canvas></canvas><span class="tag mono">Preview</span></div>
     <div class="meta"><h2>${p.client}</h2><span class="yr mono">${p.year}</span></div>
     <p class="desc">${p.title}</p><div class="svc mono">${svc(p)}</div>`;

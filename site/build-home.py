@@ -38,6 +38,8 @@ cursor_css='''<style>
 assert t.count('\ufffd')==5
 t=t.replace('\ufffd','\\uFFFD')
 i=t.rindex('</body>'); t=t[:i]+cursor_css+t[i:]
+from apply_home import link_pages
+t=link_pages(t)
 open(OUT+'/home.html','w').write(t)
 os.makedirs(OUT+'/media',exist_ok=True)
 for f in os.listdir(H+'/media'): shutil.copy(H+'/media/'+f, OUT+'/media/'+f)

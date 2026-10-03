@@ -1,5 +1,5 @@
 import os, re, shutil
-from apply_home import apply
+from apply_home import apply, link_pages, PAGES
 
 OUT = 'site-build'
 HOMEF = '/home/user/workdigital/home-final'
@@ -23,6 +23,10 @@ ft = ft.replace('\n  `;', LIGHT, 1)
 x = "root.querySelector('.wd-footer-logo').src=url(values.logo,['https:','http:'])||CONFIG.logo;"
 assert x in ft
 ft = ft.replace(x, "root.querySelector('.wd-footer-logo').src=(this.dataset.theme==='light'&&!this.hasAttribute('logo'))?new URL('img/logo-work-digital-positivo.svg',source).href:(url(values.logo,['https:','http:'])||CONFIG.logo);")
+ft = ft.replace("home: 'https://workdigital.art.br/',", "home: '" + PAGES['home'] + "',")
+y = "root.querySelector('.wd-footer-rights-brand').href=home;"
+assert y in ft
+ft = ft.replace(y, y + "root.querySelectorAll('.wd-footer-home,.wd-footer-rights-brand').forEach(a=>{a.target='_blank';a.rel='noopener';});")
 open(f'{OUT}/footer.js', 'w').write(ft)
 shutil.copy(f'{HOMEF}/img/logo-work-digital.svg', f'{OUT}/img/')
 logo = open(f'{HOMEF}/img/logo-work-digital.svg').read()
@@ -63,16 +67,18 @@ t = apply(t, active='Soluções', header_re=r'<header class="hd">.*?</header>\n'
           remove_res=[r'<footer id="contato">.*?</footer>\n', r'<nav class="menu" id="menu".*?</nav>\n',
                       r'<a class="wa".*?</a>\n', r'<button class="menu-btn".*?</button>\n'],
           extra_css='wd-footer{position:relative;z-index:1}\n.bgfx{transition:opacity .2s linear}\n')
-open(OUT + '/solucoes.html', 'w').write(t)
+open(OUT + '/solucoes.html', 'w').write(link_pages(t))
 
 # ---------- Case interna ----------
 t = open('case-work-digital.html').read()
 t = sub1(t, 'body{background:var(--bg);', 'html{background:#121316}body{background:transparent;')
 t = sub1(t, '<a class="pill dark" href="#top">Vamos conversar', '<a class="pill dark" href="https://workdigital.art.br/contato/">Vamos conversar')
+for a, b in [('<a class="logo" href="#top"', f'<a class="logo" href="{PAGES["home"]}"'), ('<a class="pill light back" href="#top">', f'<a class="pill light back" href="{PAGES["cases"]}">')]:
+    t = sub1(t, a, b)
 t = apply(t, active='Works', keep_header=True,
           remove_res=[r'<a class="wa".*?</a>\n'],
           extra_css='wd-footer{position:relative;z-index:1}\n')
-open(OUT + '/case-interna.html', 'w').write(t)
+open(OUT + '/case-interna.html', 'w').write(link_pages(t))
 
 # ---------- Blog (claro) ----------
 t = open('blog-work-digital.html').read()
@@ -82,6 +88,7 @@ t = sub1(t, '<ul class="cats rv" id="cats" aria-label="Categorias"></ul>',
          '<input id="q" type="search" placeholder="Buscar artigos" aria-label="Buscar artigos"></label>')
 t = re.sub(r"const srch=document\.getElementById\('srch'\).*?(?=// Reveal)",
            "const q=document.getElementById('q');\nq.addEventListener('input',()=>{term=q.value.trim().toLowerCase(); apply();});\n\n", t, count=1, flags=re.S)
+t = sub1(t, 'const link=p=>p.href?`href="${p.href}" target="_blank" rel="noopener"`:\'href="#"\';', 'const link=p=>`href="' + PAGES['post'] + '" target="_blank" rel="noopener"`;')
 t = apply(t, active='Blog', dark=False,
           header_re=r'<header class="hd" id="hd">.*?</header>\n\n<div class="drawer".*?</div>\n',
           remove_res=[r'<footer class="ft" id="contato">.*?</footer>\n', r'<a class="wa".*?</a>\n'],
@@ -93,11 +100,16 @@ t = apply(t, active='Blog', dark=False,
 wd-footer{margin-top:clamp(64px,8vw,120px)}
 .hero .up,.empty{font-family:var(--display)!important}
 ''')
-open(OUT + '/blog.html', 'w').write(t)
+open(OUT + '/blog.html', 'w').write(link_pages(t))
 
 # ---------- Post (claro) ----------
 t = open('post-work-digital.html').read()
 t = re.sub(r"// Busca: abre o campo.*?(?=// Reveal)", '', t, count=1, flags=re.S)
+for a, b in [('<a class="chip" href="#">', f'<a class="chip" href="{PAGES["blog"]}">'),
+             ('<a href="#">Criação de Blogs da Work</a>', f'<a href="{PAGES["solucoes"]}">Criação de Blogs da Work</a>'),
+             ('<a class="all" href="#">', f'<a class="all" href="{PAGES["blog"]}">')]:
+    t = sub1(t, a, b)
+t = t.replace('<a class="card rv" href="#">', f'<a class="card rv" href="{PAGES["post"]}">')
 t = apply(t, active='Blog', dark=False,
           header_re=r'<header class="hd" id="hd">.*?</header>\n\n<div class="drawer".*?</div>\n',
           remove_res=[r'<footer class="ft" id="contato">.*?</footer>\n', r'<a class="wa".*?</a>\n'],
@@ -106,12 +118,14 @@ t = apply(t, active='Blog', dark=False,
 .card .d,.ph .dek{font-family:var(--body)}
 .card .d{font-family:var(--display)!important}
 ''')
-open(OUT + '/post.html', 'w').write(t)
+t = sub1(t, '<a class="nav-link" href="#" aria-current="page">Blog', '<a class="nav-link" href="' + PAGES['blog'] + '" aria-current="page">Blog')
+open(OUT + '/post.html', 'w').write(link_pages(t))
 print('ok')
 
 # ---------- Cases (já com o menu/fundo/rodapé; remove o bloco final que agora está no rodapé) ----------
 t = open('cases-site/cases.html').read()
 t, n = re.subn(r'  <section class="cta wrap" id="contato".*?</section>\n', '', t, count=1, flags=re.S); assert n == 1
 t, n = re.subn(r'/\* ---------- Copy e-mail ---------- \*/\n.*?\n\};\n', '', t, count=1, flags=re.S); assert n == 1
-open(OUT + '/cases.html', 'w').write(t)
+t = sub1(t, 'a.href = "#case-" + p.slug;', 'a.href = "' + PAGES['case'] + '"; a.target = "_blank"; a.rel = "noopener";')
+open(OUT + '/cases.html', 'w').write(link_pages(t))
 print('cases ok')

@@ -98,7 +98,7 @@ def header(active):
     links = {'Home': HOME_URL, 'Soluções': HOME_URL + '#wd-explore',
              'Works': 'https://workdigital.art.br/cases/', 'Blog': 'https://workdigital.art.br/blog/'}
     h = re.sub(r'<a class="nav-link" href="[^"]*">(Home|Soluções|Works|Blog)</a>',
-               lambda m: f'<a class="nav-link" href="{links[m.group(1)]}"' +
+               lambda m: f'<a class="nav-link" href="{"#" if m.group(1) == active else links[m.group(1)]}"' +
                (' aria-current="page"' if m.group(1) == active else '') + f'>{m.group(1)}</a>', h)
     return h
 
@@ -136,4 +136,34 @@ def apply(t, *, active, dark=True, band=False, keep_header=False, extra_css='', 
         assert footer_slot in t
         t = t.replace(footer_slot, footer_slot + '\n' + band, 1)
     t = VIEWPORT + t.rstrip() + '\n' + SCRIPTS
+    return t
+
+
+# ---------- Links entre as páginas (prévias publicadas) ----------
+PAGES = {
+    'home': 'https://claude.ai/artifact/K3DaWGpPSDzZs2TZpjwHjw',
+    'solucoes': 'https://claude.ai/artifact/Y2eQb4LZVTwWfbNdqz7nbi',
+    'cases': 'https://claude.ai/artifact/JRyLZxgMsFFUnvkSMXaiZ1',
+    'case': 'https://claude.ai/artifact/3Fh9si9SLB3sa15y3GoaKC',
+    'blog': 'https://claude.ai/artifact/2p828J4i2F3ekJZAnydNYc',
+    'post': 'https://claude.ai/artifact/FtXL4pXoAfAXYYKwcxV1w8',
+}
+
+
+def link_pages(t):
+    P = PAGES
+    for a, b in [('https://workdigital-hero-preview.onrender.com/#wd-explore', P['solucoes']),
+                 ('https://workdigital-hero-preview.onrender.com/', P['home']),
+                 ('https://workdigital.art.br/cases/', P['cases']),
+                 ('https://workdigital.art.br/blog/', P['blog']),
+                 ('https://workdigital.art.br/como-potencializar-a-sua-marca-com-o-blog-marketing/', P['post']),
+                 ('<a class="nav-link" href="#wd-explore">', f'<a class="nav-link" href="{P["solucoes"]}">')]:
+        t = t.replace(a, b)
+    # cada prévia é uma página separada: os links entre elas abrem a página correspondente
+    def tgt(m):
+        tag = m.group(0)
+        if 'target=' in tag:
+            return re.sub(r'target="[^"]*"', 'target="_blank"', tag)
+        return tag[:-1] + ' target="_blank" rel="noopener">'
+    t = re.sub(r'<a [^>]*href="https://claude\.ai/artifact/[^"]+"[^>]*>', tgt, t)
     return t
