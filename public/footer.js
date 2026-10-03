@@ -14,8 +14,8 @@
     instagram: 'https://www.instagram.com/workdigitalbr/',
     linkedin: 'https://www.linkedin.com/company/workdigitalbr',
     facebook: 'https://www.facebook.com/workdigital.global',
-    whatsapp: 'https://wa.me/5511993916363',
-    email: 'mailto:hello@workdigital.art.br'
+    whatsapp: '',
+    email: ''
   };
   const CSS = `
     :host{display:block;min-width:0;scroll-margin-top:110px;color:#f7f6fb;font-family:"Space Grotesk",Arial,sans-serif}
@@ -25,15 +25,15 @@
     .wd-footer-brand{min-width:0}
     .wd-footer-home{display:block;width:min(400px,100%);border-radius:4px}
     .wd-footer-logo{display:block;width:100%;height:auto;aspect-ratio:4340/1340;object-fit:contain}
-    .wd-footer-description{max-width:430px;margin:28px 0 0;color:#e1d7ee;font:400 16px/1.6 "Nunito",system-ui,sans-serif;text-wrap:pretty}
+    .wd-footer-description{max-width:430px;margin:28px 0 0;color:#e1d7ee;font:400 18px/1.6 "Nunito",system-ui,sans-serif;text-wrap:pretty}
     .wd-footer-contact{display:flex;flex-direction:column;align-items:flex-end;gap:24px;min-width:0}
-    .wd-footer-title{margin:0;font-size:36px;font-weight:400;line-height:1.3;letter-spacing:-.025em;text-align:right;text-wrap:balance}
+    .wd-footer-title{margin:0;font-size:38px;font-weight:400;line-height:1.3;letter-spacing:-.025em;text-align:right;text-wrap:balance}
     .wd-footer-cta{display:flex;align-items:center;justify-content:center;gap:20px;min-height:54px;max-width:100%;padding:18px 20px;border-radius:6px;color:#fff;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0;text-decoration:none;font-size:14px;font-weight:400;line-height:1;letter-spacing:.1em;transition:background-position 600ms ease,color 200ms ease}
     .wd-footer-cta svg{flex:none;width:14px;height:14px}
     .wd-footer-cta:hover,.wd-footer-cta:focus-visible{background-position:0 0;color:#2b1450}
-    .wd-footer-rights{display:flex;flex-wrap:wrap;align-items:center;align-self:center;gap:8px 16px;color:#e1d7ee;font-size:18px;line-height:1.4;margin:0}
+    .wd-footer-rights{display:flex;flex-wrap:wrap;align-items:center;align-self:center;gap:8px 16px;color:#e1d7ee;font-size:14px;line-height:1.4;margin:0}
     .wd-footer-rights-brand{color:inherit;text-decoration:none;transition:color .2s ease}
-    .wd-footer-divider{display:block;height:16px;width:1px;background:rgba(225,215,238,.5)}
+    .wd-footer-divider{display:inline;color:inherit}
     .wd-footer-socials{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:16px}
     .wd-footer-social{display:flex;justify-content:center;align-items:center;flex:none;width:44px;height:44px;color:#e1d7ee;text-decoration:none;border-radius:50%;transition:color .2s ease,background-color .2s ease}
     .wd-footer-social svg{display:block;width:40px;height:40px}
@@ -43,18 +43,18 @@
     @media(max-width:991px){
       .wd-footer-root{padding:80px 40px 64px}
       .wd-footer-inner{gap:96px 40px}
-      .wd-footer-title{font-size:30px}
-      .wd-footer-rights{font-size:16px}
+      .wd-footer-title{font-size:32px}
+      .wd-footer-rights{font-size:14px}
       .wd-footer-socials{gap:10px}
     }
     @media(max-width:600px){
       .wd-footer-root{padding:64px 20px 40px}
       .wd-footer-inner{grid-template-columns:minmax(0,1fr);gap:40px}
       .wd-footer-home{width:100%;max-width:400px}
-      .wd-footer-description{font-size:15px;margin-top:24px}
+      .wd-footer-description{font-size:17px;margin-top:24px}
       .wd-footer-contact{align-items:flex-start}
-      .wd-footer-title{text-align:left;font-size:30px}
-      .wd-footer-rights{font-size:15px;gap:8px 12px}
+      .wd-footer-title{text-align:left;font-size:32px}
+      .wd-footer-rights{font-size:13px;gap:8px 12px}
       .wd-footer-socials{justify-content:flex-start;gap:16px}
     }
     @media(prefers-reduced-motion:reduce){a{transition:none!important}}
@@ -81,7 +81,7 @@
     render(){
       const values = {...CONFIG};
       for (const key of Object.keys(values)) if(this.hasAttribute(key)) values[key]=this.getAttribute(key);
-      this.shadowRoot.innerHTML = `<style>${CSS}</style><footer class="wd-footer-root" aria-label="Rodapé Work Digital"><div class="wd-footer-inner"><div class="wd-footer-brand"><a class="wd-footer-home"><img class="wd-footer-logo" alt="Work Digital" width="4340" height="1340" decoding="async"></a><p class="wd-footer-description">Criação de sites e lojas virtuais de alta performance e focados em conversão.</p></div><div class="wd-footer-contact"><p class="wd-footer-title">Qual é a sua ideia?</p><a class="wd-footer-cta"><span>ENTRE EM CONTATO</span>${arrow}</a></div><p class="wd-footer-rights"><a class="wd-footer-rights-brand">Work Digital <span class="wd-footer-year"></span> ©</a><span class="wd-footer-divider" aria-hidden="true"></span><span>Todos os direitos reservados</span></p><nav class="wd-footer-socials" aria-label="Redes sociais e canais de contato"></nav></div></footer>`;
+      this.shadowRoot.innerHTML = `<style>${CSS}</style><footer class="wd-footer-root" aria-label="Rodapé Work Digital"><div class="wd-footer-inner"><div class="wd-footer-brand"><a class="wd-footer-home"><img class="wd-footer-logo" alt="Work Digital" width="4340" height="1340" decoding="async"></a><p class="wd-footer-description">Criação de sites e lojas virtuais de alta performance e focados em conversão.</p></div><div class="wd-footer-contact"><p class="wd-footer-title">Como podemos te ajudar?</p><a class="wd-footer-cta"><span>ENTRE EM CONTATO</span>${arrow}</a></div><p class="wd-footer-rights"><a class="wd-footer-rights-brand">Work Digital © <span class="wd-footer-year"></span></a><span class="wd-footer-divider" aria-hidden="true">|</span><span>Todos os direitos reservados</span></p><nav class="wd-footer-socials" aria-label="Redes sociais e canais de contato"></nav></div></footer>`;
       const root=this.shadowRoot;
       const home=url(values.home,['https:','http:'])||CONFIG.home;
       root.querySelector('.wd-footer-home').href=home;
@@ -90,6 +90,7 @@
       root.querySelector('.wd-footer-cta').href=url(values.contact,['https:','http:'])||CONFIG.contact;
       root.querySelector('.wd-footer-year').textContent=new Date().getFullYear();
       for(const [key,icon] of Object.entries(ICONS)){
+        if(key==='whatsapp'||key==='email')continue;
         const href=url(values[key]);if(!href)continue;
         const a=document.createElement('a');
         a.className='wd-footer-social';a.href=href;a.target='_blank';a.rel='noopener';
@@ -106,6 +107,15 @@
     const link=document.createElement('link');link.rel='stylesheet';link.dataset.wdFooterFonts='';
     link.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&family=Space+Grotesk:wght@400;500&display=swap';
     document.head.append(link);
+  }
+  if(!document.querySelector('script[src$="/whatsapp.js"]')){
+    const widget=document.createElement('script');widget.src=new URL('whatsapp.js',source).href;widget.defer=true;document.head.append(widget);
+  }
+  if(!document.querySelector('link[href$="/wd-revision.css"]')){
+    const styles=document.createElement('link');styles.rel='stylesheet';styles.href=new URL('wd-revision.css',source).href;document.head.append(styles);
+  }
+  if(!document.querySelector('link[href*="family=Nunito"]')){
+    const font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap';document.head.append(font);
   }
   function mount(){
     if(script?.hasAttribute('data-manual')||document.querySelector('wd-footer'))return;
