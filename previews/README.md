@@ -20,6 +20,7 @@ Pasta `site/`: as páginas usam os mesmos arquivos da home (`footer.js`, `contac
 
 | Página | Arquivo | Prévia online |
 |---|---|---|
+| Home (cópia da versão final do GPT, com cursor e rodapé novo) | `site/home.html` | https://claude.ai/artifact/K3DaWGpPSDzZs2TZpjwHjw |
 | Cases (menu, fundo e rodapé da home) | `site/cases.html` | https://claude.ai/artifact/JRyLZxgMsFFUnvkSMXaiZ1 |
 | Soluções | `site/solucoes.html` | https://claude.ai/artifact/Y2eQb4LZVTwWfbNdqz7nbi |
 | Case interna | `site/case-interna.html` | https://claude.ai/artifact/3Fh9si9SLB3sa15y3GoaKC |
