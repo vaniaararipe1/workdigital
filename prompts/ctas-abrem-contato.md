@@ -8,25 +8,30 @@ Feito a partir da versão publicada em https://workdigital-hero-preview.onrender
 
 ## PROMPT (copie daqui para baixo)
 
-Faça **todos os botões de contato da home abrirem o painel de contato do menu** (o mesmo que abre
-em SOLICITAR PROPOSTA). **Não altere nada** no visual nem na animação do painel e do menu, nem em
-qualquer outra parte do site. A mudança é só em qual botão abre o painel.
+Faça **todos os botões de contato da home abrirem o painel de contato do menu**, o mesmo que abre
+ao clicar em SOLICITAR PROPOSTA. São 5 botões:
+1. **SOLICITAR PROPOSTA**, no menu (`.nav-cta`).
+2. O botão de contato do **menu do celular**.
+3. **SOLICITE UMA PROPOSTA**, na seção Soluções (`.wd-explore-cta`).
+4. **SOLICITE PROPOSTA**, na seção **Transformação digital** (`.wd-transformacao-cta`).
+5. **ENTRE EM CONTATO**, no rodapé (`.wd-footer-cta`, gerado no `footer.js`).
 
-### O problema
-- O botão **SOLICITE PROPOSTA** da seção Transformação digital (`.wd-transformacao-cta`) tem um
-  `addEventListener('click', ...)` próprio no `index.html`, com o comentário *"Honor #contato once
-  it exists; until then use Work's real contact page."*.
-- Esse código faz `location.assign('https://workdigital.art.br/contato/')`, então o usuário sai do
-  site em vez de ver o painel.
-- **Remova esse listener inteiro.**
+**Não altere nada** no visual nem na animação do painel e do menu, nem em qualquer outra parte do
+site. A mudança é só em qual botão abre o painel.
 
-### Deixar explícito quais botões abrem o contato
-1. Adicione o atributo `data-wd-contact` nestes botões:
-   - `.nav-cta` (SOLICITAR PROPOSTA, no menu);
-   - o CTA de contato do menu do celular;
-   - `.wd-explore-cta` (SOLICITE UMA PROPOSTA, em Soluções);
-   - `.wd-transformacao-cta` (SOLICITE PROPOSTA, em Transformação digital);
-   - `.wd-footer-cta` (ENTRE EM CONTATO, no rodapé, gerado no `footer.js`).
+### 1. Corrigir o CTA da Transformação digital (o mais importante)
+- Hoje, o botão **SOLICITE PROPOSTA** da seção Transformação digital (`.wd-transformacao-cta`)
+  **leva o usuário para fora do site** em vez de abrir o painel.
+- A causa é um `addEventListener('click', ...)` próprio desse botão no `index.html`, com o
+  comentário *"Honor #contato once it exists; until then use Work's real contact page."*. Esse
+  código faz `location.assign('https://workdigital.art.br/contato/')`.
+- **Remova esse listener inteiro.** O resto do script da seção Transformação digital (animação das
+  linhas, do título etc.) continua igual.
+- Depois da correção, esse botão abre o painel do menu como os outros.
+
+### 2. Marcar todos os botões de contato
+1. Adicione o atributo `data-wd-contact` nos 5 botões listados no início, incluindo o
+   `.wd-transformacao-cta`.
 2. No `contact.js`, junto do listener de clique que já existe, trate também esse atributo:
    ```js
    document.addEventListener('click',e=>{
@@ -41,22 +46,22 @@ qualquer outra parte do site. A mudança é só em qual botão abre o painel.
    JavaScript falhar, o link continua levando para a página de contato. A lógica do
    `data-wd-explore-url` continua como está.
 
-### Comportamento ao abrir a partir de um botão no meio da página
+### 3. Comportamento ao abrir a partir de um botão no meio da página
 - O painel continua saindo **de dentro do menu**, exatamente como hoje, sem mudar a posição nem a
   animação.
 - Se o menu estiver escondido pela rolagem, mostre o menu primeiro e só então abra o painel.
 - A página **não pode pular** de posição ao abrir nem ao fechar.
-- Ao fechar, o foco volta para o botão que abriu o painel (a variável `opener` já faz isso; só
-  confirme que funciona para todos os botões acima).
+- Ao fechar, o foco volta para o botão que abriu o painel. A variável `opener` já faz isso; só
+  confirme que funciona para os 5 botões.
 - No celular, todos esses botões abrem a mesma versão de tela cheia que já existe.
 
-### Conferir no final
+### 4. Conferir no final
 Teste cada botão no computador e no celular e me diga, em uma linha cada, se abre o painel sem
 sair da página:
 - menu;
 - menu do celular;
 - Soluções;
-- Transformação digital;
+- **Transformação digital**;
 - rodapé.
 
 Não altere nenhum outro arquivo ou estilo.
