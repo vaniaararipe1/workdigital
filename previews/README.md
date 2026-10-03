@@ -21,3 +21,10 @@ Pasta `site/`: as páginas usam os mesmos arquivos da home (`footer.js`, `contac
 | Página | Arquivo | Prévia online |
 |---|---|---|
 | Cases (menu, fundo e rodapé da home) | `site/cases.html` | https://claude.ai/artifact/JRyLZxgMsFFUnvkSMXaiZ1 |
+| Soluções | `site/solucoes.html` | https://claude.ai/artifact/Y2eQb4LZVTwWfbNdqz7nbi |
+| Case interna | `site/case-interna.html` | https://claude.ai/artifact/3Fh9si9SLB3sa15y3GoaKC |
+| Blog (claro) | `site/blog.html` | https://claude.ai/artifact/2p828J4i2F3ekJZAnydNYc |
+| Post do blog (claro) | `site/post.html` | https://claude.ai/artifact/FtXL4pXoAfAXYYKwcxV1w8 |
+
+`site/footer.js` é a cópia do rodapé da home com o texto "Tem um projeto em mente?" / "FALE COM A GENTE".
+Os scripts `site/apply_home.py` e `site/build-all.py` geram as páginas a partir de `home-final/`.

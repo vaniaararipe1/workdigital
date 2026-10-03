@@ -1,0 +1,342 @@
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Work Digital — Case</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Nunito:wght@400;600&family=Silkscreen&display=swap">
+<style>
+/* Layout: Lusion-style horizontal case page — fixed pill header, intro panel at left, media strip scrolled sideways by vertical scroll, light "next project" panel at the end. Single dark look by choice. */
+:root{
+  --bg:#150e24; --fg:#F4F0FA; --muted:#B6ADC9; --accent:#C4A8FF; --pink:#FF9BD0;
+  --pill:#ffffff; --pill-dark:#2a2140; --line:rgba(244,240,250,.14);
+  --display:"Space Grotesk","Helvetica Neue",Arial,sans-serif;
+  --body:"Nunito",system-ui,sans-serif;
+  --pad:clamp(16px,3.4vw,48px);
+  --ease:cubic-bezier(.22,1,.36,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:#121316}body{background:transparent;color:var(--fg);font-family:var(--body);overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* Header (fixed pills) */
+.hd{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:20;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:24px var(--pad);pointer-events:none}
+.hd > *{pointer-events:auto}
+.logo{font:600 22px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;color:var(--accent);justify-self:start}
+.pill{display:inline-flex;align-items:center;gap:10px;height:42px;padding:0 20px;border-radius:999px;font:500 13px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;transition:transform .4s var(--ease),background .3s}
+.pill:hover{transform:scale(1.04)}
+.pill.light{background:var(--pill);color:#140c22}
+.pill.dark{background:var(--pill-dark);color:#fff}
+.pill .dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.circle{width:42px;height:42px;border-radius:50%;background:var(--pill);display:grid;place-items:center}
+.circle i{width:14px;height:2px;background:#140c22;border-radius:2px}
+.hd .right{justify-self:end;display:flex;gap:10px;align-items:center}
+
+/* Horizontal scroller */
+.hs{position:relative}
+.stick{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.track{display:flex;align-items:center;gap:40px;height:100%;padding-left:var(--pad);will-change:transform}
+.intro{flex:0 0 auto;width:min(760px,62vw);height:100%;display:grid;grid-template-columns:1.25fr .75fr;gap:32px;align-content:center;padding-top:40px}
+.intro h1{grid-column:1 / -1;font:400 clamp(44px,5vw,72px)/1 var(--display);letter-spacing:-.03em;margin:0 0 12px}
+.intro p{font-size:14.5px;line-height:1.55;margin:0 0 14px;color:var(--fg);max-width:46ch}
+.intro p a{color:var(--accent);transition:color .2s}
+.intro p a:hover{color:var(--pink)}
+.intro h2{font:500 11px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+.intro ul{list-style:none;margin:0 0 28px;padding:0;font-size:13.5px;line-height:1.6}
+.intro ul a{border-bottom:1px solid transparent;transition:border-color .2s}
+.intro ul a:hover{border-color:currentColor}
+.intro .cta{margin-top:18px}
+.note{font:400 11px/1.4 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:22px}
+
+/* Media items */
+.m{flex:0 0 auto;position:relative;border-radius:12px;overflow:hidden;background:#21183a}
+.m.h74{height:74%}
+.m.full{height:100%;border-radius:0}
+.w169{aspect-ratio:16/9}.w34{aspect-ratio:3/4}.w11{aspect-ratio:1}.w45{aspect-ratio:4/5}
+.m .cap{position:absolute;left:14px;bottom:12px;font:500 10px var(--display);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8);background:rgba(20,12,34,.5);padding:6px 10px;border-radius:999px;backdrop-filter:blur(6px)}
+
+/* Mock site visuals (stand-ins for case images) */
+.site{position:absolute;inset:0;background:#F7F4EC;color:#141414;display:grid;grid-template-rows:auto 1fr}
+.site nav{display:flex;justify-content:space-between;align-items:center;padding:2.4% 4%;font:700 clamp(9px,1vw,13px) var(--display);text-transform:uppercase}
+.site nav span{font-weight:500;opacity:.6;letter-spacing:.06em}
+.site .hero{display:grid;grid-template-columns:1.1fr 1fr;align-items:center;gap:5%;padding:0 6% 5%}
+.site h3{font:700 clamp(22px,3.6vw,58px)/.92 var(--display);text-transform:uppercase;margin:0 0 4%}
+.site p{font-size:clamp(9px,.95vw,14px);margin:0 0 6%;color:#555}
+.site .btn{display:inline-block;background:#0091FE;color:#fff;font:600 clamp(8px,.85vw,12px) var(--display);padding:3% 5%;letter-spacing:.04em;text-transform:uppercase}
+.mark{aspect-ratio:1;background:conic-gradient(from 45deg,#0091FE 0 25%,#141414 0 50%,#0091FE 0 75%,#F7F4EC 0);border:3px solid #141414}
+.poster{position:absolute;inset:0;background:radial-gradient(60% 50% at 50% 55%,#0091FE 0%,#0a3f78 45%,#0b0b14 85%);display:flex;flex-direction:column;justify-content:space-between;padding:110px 7% 7%}
+.poster b{font:700 clamp(40px,6vw,96px)/.85 var(--display);text-transform:uppercase;color:#F7F4EC;letter-spacing:-.02em}
+.poster small{font:500 11px var(--display);letter-spacing:.12em;text-transform:uppercase;color:#cfe8ff;display:flex;justify-content:space-between}
+.poster .sh{align-self:center;width:46%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 40% 35%,#1d1d2b,#000);box-shadow:0 0 80px 20px rgba(0,145,254,.55)}
+.fabric{position:absolute;inset:0;background:
+  repeating-linear-gradient(45deg,rgba(255,255,255,.06) 0 2px,transparent 2px 7px),
+  repeating-linear-gradient(-45deg,rgba(0,0,0,.18) 0 2px,transparent 2px 7px),
+  radial-gradient(70% 70% at 40% 40%,#2c6fd6,#0d2c66)}
+.fabric .tag{position:absolute;left:12%;top:16%;width:34%;aspect-ratio:1;background:conic-gradient(from 45deg,#F7F4EC 0 25%,#141414 0 50%,#F7F4EC 0 75%,transparent 0);opacity:.9;transform:rotate(-8deg);mix-blend-mode:screen}
+.phone{position:absolute;left:50%;top:50%;width:46%;aspect-ratio:9/19;transform:translate(-50%,-50%);border-radius:30px;border:7px solid #0e0a18;background:#F7F4EC;padding:16% 9% 10%;display:flex;flex-direction:column;gap:7%;box-shadow:0 40px 80px -30px rgba(0,0,0,.8)}
+.phone .t{height:9%;width:85%;background:#141414}.phone .s{height:4%;width:60%;background:#cfc8ba}.phone .i{flex:1;background:conic-gradient(from 45deg,#0091FE 0 25%,#141414 0 50%,#0091FE 0 75%,#e7e1d4 0)}.phone .c{height:7%;width:55%;background:#0091FE}
+.phone-bg{position:absolute;inset:0;background:radial-gradient(70% 60% at 50% 60%,#6b4fd0,#241444)}
+.sketch{position:absolute;inset:0;background:#e9dfc8;background-image:
+  radial-gradient(circle at 30% 26%,transparent 17%,rgba(80,60,40,.5) 17.3%,transparent 17.8%),
+  radial-gradient(circle at 70% 24%,transparent 9%,rgba(80,60,40,.45) 9.3%,transparent 9.8%),
+  radial-gradient(circle at 46% 66%,transparent 21%,rgba(80,60,40,.45) 21.3%,transparent 21.8%),
+  linear-gradient(rgba(80,60,40,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(80,60,40,.18) 1px,transparent 1px);
+  background-size:auto,auto,auto,48px 48px,48px 48px}
+.sketch em{position:absolute;right:10%;top:44%;font:italic 400 clamp(18px,2.2vw,30px)/1.1 Georgia,serif;color:rgba(60,45,30,.8);transform:rotate(-6deg)}
+.palette{position:absolute;inset:0;display:grid;grid-template-rows:repeat(4,1fr)}
+.palette span{display:flex;align-items:center;padding:0 10%;font:500 13px var(--display);letter-spacing:.08em}
+
+/* Next project (light panel) */
+.next{flex:0 0 auto;width:min(980px,78vw);height:100%;background:#f1eef7;color:#16102a;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding:0 6%}
+.next::before{content:"";position:absolute;inset:-10%;background:radial-gradient(40% 18% at 30% 40%,rgba(124,92,255,.16),transparent 70%),radial-gradient(30% 14% at 60% 52%,rgba(255,155,208,.18),transparent 70%);transform:rotate(-12deg)}
+.next .big{position:relative;font:300 clamp(56px,8vw,128px)/1 var(--display);letter-spacing:-.04em;color:#b9b2c9;white-space:nowrap;transition:color .5s var(--ease),transform .7s var(--ease)}
+.next:hover .big{color:#16102a;transform:translateX(-14px)}
+.next .bottom{position:absolute;left:6%;right:6%;bottom:9%;display:flex;align-items:center;gap:20px;font:500 12px var(--display);letter-spacing:.06em;text-transform:uppercase}
+.next .bottom i{flex:0 0 120px;height:1px;background:#16102a;opacity:.5;transition:flex-basis .6s var(--ease)}
+.next:hover .bottom i{flex-basis:200px}
+.next .bottom b{font-size:18px}
+
+/* Loader shown when "next project" is clicked */
+.loader{position:fixed;inset:0;z-index:50;background:#07050d;display:grid;place-items:center;opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s}
+.loader.on{opacity:1;visibility:visible}
+.loader p{font:400 clamp(14px,1.6vw,20px) "Silkscreen",monospace;letter-spacing:.4em;color:#fff;margin:0}
+.loader .bar{position:absolute;left:50%;top:58%;transform:translateX(-50%);width:120px;height:8px;background:#2a2140}
+.loader .bar span{display:block;height:100%;width:0;background:#fff}
+.loader .num{position:absolute;bottom:6%;left:50%;transform:translateX(-50%);font:300 clamp(48px,7vw,96px)/1 var(--display);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+
+/* WhatsApp float */
+.wa{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:30;width:56px;height:56px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 10px 30px -8px rgba(37,211,102,.6)}
+.wa svg{width:28px;height:28px;fill:#fff}
+
+/* Mobile: vertical stack */
+@media (max-width:900px){
+  .hd{grid-template-columns:1fr auto;padding:16px var(--pad)}
+  .hd .back{display:none}
+  .hd .circle,.hd .pill.dark{display:none}
+  .hs{height:auto!important}
+  .stick{position:static;height:auto;overflow:visible}
+  .track{flex-direction:column;align-items:stretch;transform:none!important;padding:96px var(--pad) 40px;gap:16px}
+  .intro{width:auto;grid-template-columns:1fr;padding-top:0;gap:8px;margin-bottom:24px}
+  .m.h74,.m.full{height:auto;width:100%;border-radius:12px}
+  .m.full.w34,.m.full.w45{aspect-ratio:4/5}
+  .next{width:auto;min-height:60vh;border-radius:12px;margin-top:8px}
+  .next .big{white-space:normal;font-size:clamp(44px,13vw,72px)}
+  .note{margin-bottom:24px}
+  .site + .cap{display:none}
+  .next{min-height:52vh}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Custom cursor (same as the Works page): small dot that follows the mouse; grows on links, shows a label on key items */
+.wd-cursor{position:fixed;left:0;top:0;z-index:2147483000;pointer-events:none;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#F2EEF8;mix-blend-mode:difference;
+  transition:width .4s cubic-bezier(.22,1,.36,1),height .4s cubic-bezier(.22,1,.36,1),margin .4s cubic-bezier(.22,1,.36,1),background .3s;display:grid;place-items:center}
+.wd-cursor b{font:500 11px/1 "Space Grotesk",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#fff;opacity:0;transition:opacity .2s;white-space:nowrap}
+.wd-cursor.link{width:40px;height:40px;margin:-20px 0 0 -20px}
+.wd-cursor.big{width:96px;height:96px;margin:-48px 0 0 -48px;background:#7C5CFF;mix-blend-mode:normal}
+.wd-cursor.big b{opacity:1}
+@media (hover:hover) and (pointer:fine){.has-wd-cursor,.has-wd-cursor a,.has-wd-cursor button{cursor:none}}
+body{margin:0}
+:root{--purple:#6025E1;--green:#04CD8F;--wine:#C00252}
+/* MENU (copiado da home) */
+/* HEADER */
+.site-header{position:fixed;top:18px;left:0;right:0;z-index:90;padding:0 clamp(18px,3.2vw,48px);pointer-events:none}
+.site-nav{pointer-events:auto;max-width:1240px;margin:0 auto;height:72px;display:flex;align-items:center;gap:34px;padding:0 14px 0 20px;border:1px solid rgba(255,255,255,.10);border-radius:20px;background:rgba(18,19,22,.58);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%);box-shadow:0 18px 55px rgba(0,0,0,.18)}
+.brand{display:flex;align-items:center;flex:0 0 auto;margin-right:auto}
+.brand img{display:block;width:142px;height:auto}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-item,.nav-link{position:relative;display:flex;align-items:center;height:72px;color:#f7f6fb;text-decoration:none;font-size:12px;font-weight:650;letter-spacing:.075em;text-transform:uppercase;white-space:nowrap}
+.nav-link:after,.nav-trigger:after{content:"";position:absolute;left:0;right:100%;bottom:19px;height:1px;background:var(--green);transition:right .32s cubic-bezier(.22,1,.36,1)}
+.nav-link:hover:after,.nav-item:hover .nav-trigger:after{right:0}
+.nav-trigger{appearance:none;border:0;background:none;color:#f7f6fb;font-size:12px;text-transform:uppercase;height:72px;padding:0;cursor:pointer;display:flex;align-items:center;gap:8px;position:relative}
+.nav-trigger svg{width:11px;height:11px;transition:transform .3s ease}
+.nav-item:hover .nav-trigger svg,.nav-item:focus-within .nav-trigger svg{transform:rotate(180deg)}
+.dropdown{position:absolute;top:62px;left:50%;width:min(390px,88vw);padding:12px;border:1px solid rgba(255,255,255,.13);border-radius:18px;background:rgba(26,24,32,.48);backdrop-filter:blur(28px) saturate(170%);-webkit-backdrop-filter:blur(28px) saturate(170%);box-shadow:0 24px 70px rgba(0,0,0,.34);opacity:0;visibility:hidden;transform:translate(-50%,12px) scale(.985);transform-origin:50% 0;transition:opacity .24s ease,transform .34s cubic-bezier(.22,1,.36,1),visibility .24s}
+.nav-item:hover .dropdown,.nav-item:focus-within .dropdown{opacity:1;visibility:visible;transform:translate(-50%,0) scale(1)}
+.dropdown a{display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:12px;min-height:66px;padding:12px 14px;border-radius:12px;color:#f7f6fb;text-decoration:none;transition:background .22s ease,transform .22s ease}
+.dropdown a:hover{background:rgba(255,255,255,.075);transform:translateX(2px)}
+.drop-index{font-size:11px;color:var(--green);letter-spacing:.08em}
+.drop-copy strong{display:block;font-size:14px;font-weight:600;letter-spacing:-.01em;text-transform:none}
+.drop-copy small{display:block;margin-top:3px;color:#a9b0b0;font-size:12px;font-weight:400;letter-spacing:0;text-transform:none}
+.drop-arrow{font-size:18px;color:#8c9594;transition:transform .22s ease,color .22s ease}
+.dropdown a:hover .drop-arrow{transform:translateX(3px);color:var(--green)}
+.lang{display:flex;align-items:center;gap:6px;color:#9da5a4;font-size:11px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.lang strong{color:#fff;font-weight:650}
+.nav-cta{height:46px;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:0 20px;border-radius:6px;background:linear-gradient(90deg,#CBFFFC 0%,#EDFFFE 26.25%,#FFFDFA 47.57%,#FAD1FF 88.96%);background-size:180% 100%;background-position:0% 50%;color:#222;text-decoration:none;font-size:14px;line-height:1;text-transform:uppercase;white-space:nowrap;border:0;transition:background-position .55s cubic-bezier(.22,1,.36,1),color .3s ease}
+.nav-cta span{transition:transform .35s ease}
+.nav-cta:hover{background-position:100% 50%;color:#111}
+.nav-cta:hover span{transform:translate(3px,-3px)}
+.mobile-toggle{display:none;width:44px;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;align-items:center;justify-content:center}
+.mobile-toggle i,.mobile-toggle i:before,.mobile-toggle i:after{display:block;width:18px;height:1px;background:#fff;position:relative;content:""}
+.mobile-toggle i:before{position:absolute;top:-6px}.mobile-toggle i:after{position:absolute;top:6px}
+
+
+@media(max-width:980px){
+  .nav-links,.lang,.nav-cta{display:none}
+  .site-nav{height:64px;border-radius:17px;padding-right:10px}
+  .brand img{width:132px}
+  .mobile-toggle{display:flex}
+}
+.site-nav{position:relative;isolation:isolate;background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+.site-nav::before{content:"";position:absolute;inset:0;border-radius:inherit;background:rgba(18,19,22,.58);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%);z-index:-1;pointer-events:none}
+.dropdown{background:rgba(28,22,42,.28);backdrop-filter:blur(36px) saturate(145%);-webkit-backdrop-filter:blur(36px) saturate(145%);border:1px solid rgba(255,255,255,.14);box-shadow:0 22px 60px rgba(0,0,0,.20)}
+.dropdown a{display:flex;gap:0;padding:16px 18px;min-height:68px}
+/* Fundo da home: camada de luz fixa (copiada da home) */
+body{isolation:isolate}
+.light-field{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.light-field-inner{position:absolute;inset:0;height:100%;overflow:hidden;background:#121316}
+.light-field-inner::before{content:"";position:absolute;inset:-20%;background:
+ radial-gradient(ellipse at 24% 42%,rgba(96,37,225,.92),transparent 44%),
+ radial-gradient(ellipse at 78% 60%,rgba(237,72,151,.82),transparent 40%),
+ radial-gradient(ellipse at 60% 84%,rgba(4,205,143,.32),transparent 34%),
+ radial-gradient(ellipse at 42% 68%,rgba(150,72,253,.48),transparent 45%);
+ filter:blur(42px);animation:lightFieldDrift 22s ease-in-out infinite alternate;will-change:transform}
+.light-field-inner::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 24%,rgba(18,19,22,.26),transparent 63%)}
+@keyframes lightFieldDrift{from{transform:translate3d(-4%,-3%,0) scale(1)}to{transform:translate3d(5%,4%,0) scale(1.10)}}
+@media(max-width:760px){.light-field-inner::before{filter:blur(28px)}}
+@media(prefers-reduced-motion:reduce){.light-field-inner::before{animation:none}}
+wd-footer{position:relative;z-index:1}
+
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./wd-revision.css">
+<link rel="stylesheet" href="./contact.css">
+<style>
+/* Botões da página mantêm o próprio estilo; o padrão global de botão da home vale só para os CTAs .wd-cta */
+button:where(:not(.wd-cta)){font-family:inherit;font-weight:inherit;letter-spacing:inherit}
+</style>
+
+
+<div class="light-field" aria-hidden="true"><div class="light-field-inner"></div></div>
+<header class="site-header">
+  <nav class="site-nav" aria-label="Navegação principal">
+    <a class="brand" href="https://workdigital-hero-preview.onrender.com/" aria-label="Work Digital — Home">
+      <img src="./ativos-externos/logo-work-digital-branco-criacao-de-site-sp.svg" alt="Work Digital">
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="https://workdigital-hero-preview.onrender.com/">Home</a>
+      <a class="nav-link" href="https://workdigital-hero-preview.onrender.com/#wd-explore">Soluções</a>
+      <a class="nav-link" href="https://workdigital.art.br/cases/" aria-current="page">Works</a>
+      <a class="nav-link" href="https://workdigital.art.br/blog/">Blog</a>
+    </div>
+    <div class="wd-nav-actions">
+      <div class="nav-item wd-language">
+        <button class="nav-trigger wd-language-trigger wd-cta" type="button" aria-label="Idioma do site: Português" aria-haspopup="true" aria-expanded="false" aria-controls="wd-language-dropdown"><svg class="wd-language-globe" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><ellipse cx="12" cy="12" rx="4" ry="9" stroke="currentColor" stroke-width="1.5"/><path d="M3 12h18" stroke="currentColor" stroke-width="1.5"/></svg>PT<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.25 6 7.75l3.5-3.5" stroke="currentColor" stroke-width="1.2"/></svg></button>
+        <div class="dropdown" id="wd-language-dropdown">
+          <a href="https://workdigital.art.br/" lang="pt-BR" aria-current="true"><span class="drop-copy"><strong>Português</strong></span></a>
+          <a href="https://workdigital.art.br/en/" lang="en"><span class="drop-copy"><strong>English</strong></span></a>
+        </div>
+      </div>
+      <button class="nav-cta wd-cta" data-wd-contact type="button">SOLICITAR PROPOSTA <span>↗</span></button>
+      <button class="mobile-toggle" type="button" aria-label="Abrir menu"><i></i></button>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="hs" id="hs">
+    <div class="stick">
+      <div class="track" id="track">
+        <div class="intro">
+          <h1>Vice Versa Estamparia</h1>
+          <div>
+            <p>A Vice Versa estampa uniformes desde 1985 e precisava de um site à altura do que entrega: claro para quem compra no atacado e fácil de atualizar pela própria equipe.</p>
+            <p>Separamos as linhas <a href="#top">universitária</a>, <a href="#top">profissional</a> e <a href="#top">escolar</a>, criamos um pedido de orçamento por categoria e um painel simples para a equipe trocar fotos e preços sem depender de ninguém.</p>
+            <a class="pill light cta" href="#top"><span class="dot"></span> Ver projeto no ar</a>
+            <div class="note">Prévia · textos e imagens de exemplo</div>
+          </div>
+          <div>
+            <h2>Serviços</h2>
+            <ul><li>Estratégia</li><li>UX e UI design</li><li>Desenvolvimento web</li><li>Conteúdo</li><li>SEO</li></ul>
+            <h2>Links</h2>
+            <ul><li><a href="#top">Site no ar</a></li><li><a href="#top">Instagram</a></li></ul>
+          </div>
+        </div>
+
+        <div class="m h74 w169"><div class="site"><nav>Vice Versa <span>Produtos · Quem somos · Contato</span></nav><div class="hero"><div><h3>Estampando desde 1985</h3><p>Uniformes universitários, profissionais e escolares.</p><span class="btn">Pedir orçamento</span></div><div class="mark"></div></div></div><span class="cap">Home</span></div>
+
+        <div class="m full w34"><div class="poster"><small><span>Vice Versa</span><span>Linha 2026</span></small><div class="sh"></div><b>Vista<br>a marca</b></div></div>
+
+        <div class="m h74 w11"><div class="fabric"><div class="tag"></div></div><span class="cap">Estampa</span></div>
+
+        <div class="m h74 w169" style="background:#120b20"><div class="site" style="inset:8% 10%;border-radius:8px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(0,0,0,.8)"><nav>Linha profissional <span>Camisetas · Polos · Jalecos</span></nav><div class="hero"><div><h3>Sua marca no uniforme</h3><p>Camisetas, polos e jalecos com bordado ou silk.</p><span class="btn">Ver produtos</span></div><div class="mark"></div></div></div><span class="cap">Página de produto</span></div>
+
+        <div class="m full w45"><div class="phone-bg"></div><div class="phone"><div class="t"></div><div class="s"></div><div class="i"></div><div class="c"></div></div></div>
+
+        <div class="m full w34"><div class="sketch"><em>Uma página<br>por público</em></div></div>
+
+        <div class="m h74 w34"><div class="palette"><span style="background:#0091FE">#0091FE</span><span style="background:#141414">#141414</span><span style="background:#F7F4EC;color:#141414">#F7F4EC</span><span style="background:#5A5A5A">#5A5A5A</span></div></div>
+
+        <a class="next" href="#top" id="next" aria-label="Próximo projeto">
+          <div class="big">Próximo case</div>
+          <div class="bottom"><span>Próximo projeto</span><i></i><b>→</b></div>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="loader" id="loader" aria-hidden="true"><p>Carregando</p><div class="bar"><span id="bar"></span></div><div class="num" id="num">000</div></div>
+
+
+<div class="wd-cursor" id="wdCursor" aria-hidden="true" hidden><b></b></div>
+<script>
+(function(){
+  const hs=document.getElementById('hs'), track=document.getElementById('track');
+  const mobile=matchMedia('(max-width:900px)'), reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let dist=0, cur=0, target=0;
+  function size(){
+    if(mobile.matches){ hs.style.height=''; track.style.transform=''; return; }
+    dist=Math.max(0, track.scrollWidth - innerWidth);
+    hs.style.height=(innerHeight + dist)+'px';
+    update(); cur=target; apply();
+  }
+  function update(){
+    const top=hs.getBoundingClientRect().top;
+    const p=Math.min(1,Math.max(0,-top/Math.max(1,dist)));
+    target=p*dist;
+  }
+  function apply(){ track.style.transform='translate3d('+(-cur)+'px,0,0)'; }
+  function loop(){
+    if(!mobile.matches){
+      cur += reduce ? (target-cur) : (target-cur)*0.12;
+      if(Math.abs(target-cur)<0.1) cur=target;
+      apply();
+    }
+    requestAnimationFrame(loop);
+  }
+  addEventListener('scroll',update,{passive:true});
+  addEventListener('resize',size);
+  mobile.addEventListener('change',size);
+  document.fonts && document.fonts.ready.then(size);
+  size(); loop();
+
+  // "Next project" loader, as in the reference
+  const loader=document.getElementById('loader'), bar=document.getElementById('bar'), num=document.getElementById('num');
+  document.getElementById('next').addEventListener('click',e=>{
+    e.preventDefault(); loader.classList.add('on');
+    let n=0; const t=setInterval(()=>{ n=Math.min(100,n+Math.ceil(Math.random()*9));
+      num.textContent=String(n).padStart(3,'0'); bar.style.width=n+'%';
+      if(n>=100){ clearInterval(t); setTimeout(()=>{ loader.classList.remove('on'); bar.style.width='0'; num.textContent='000'; scrollTo({top:0}); },500); }
+    },70);
+  });
+})();
+
+// Custom cursor (shared across pages)
+(function(){
+  if(!matchMedia('(hover: hover) and (pointer: fine)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c=document.getElementById('wdCursor'), lb=c.querySelector('b'); c.hidden=false; document.body.classList.add('has-wd-cursor');
+  const LABELS=[["#next","Próximo"],[".m","Ver"]];
+  let mx=innerWidth/2,my=innerHeight/2,x=mx,y=my;
+  addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});
+  document.addEventListener('mouseover',e=>{
+    let label=null; for(const [sel,txt] of LABELS){ if(e.target.closest(sel)){label=txt;break;} }
+    c.classList.toggle('big',!!label); if(label) lb.textContent=label;
+    c.classList.toggle('link',!label && !!e.target.closest('a,button'));
+  });
+  document.addEventListener('mouseleave',()=>{c.classList.remove('big','link');});
+  (function tick(){x+=(mx-x)*.18;y+=(my-y)*.18;c.style.transform=`translate(${x}px,${y}px)`;requestAnimationFrame(tick);})();
+})();
+</script>
+<script src="./footer.js" defer></script>
+<script src="./wd-revision.js" defer></script>

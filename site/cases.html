@@ -262,14 +262,6 @@ body{isolation:isolate}
     </div>
   </section>
 
-  <section class="cta wrap" id="contato" aria-labelledby="cta-t">
-    <div class="mono" style="color: var(--muted); margin-bottom: 24px">Próximo projeto</div>
-    <h2 id="cta-t">Tem um projeto em mente?</h2>
-    <div class="cta-row">
-      <a href="#contato" class="big-link">Fale com a gente <span class="arr" aria-hidden="true">→</span></a>
-      <div class="email"><code id="mail">contato@workdigital.com.br</code><button class="copy" id="copy">Copiar</button></div>
-    </div>
-  </section>
 </main>
 
 
@@ -419,13 +411,6 @@ if (fine && !reduce) {
   addEventListener("mousemove", e => { floater.style.left = e.clientX + "px"; floater.style.top = e.clientY + "px"; });
 }
 
-/* ---------- Copy e-mail ---------- */
-document.getElementById("copy").onclick = async (e) => {
-  const btn = e.currentTarget, txt = document.getElementById("mail").textContent;
-  try { await navigator.clipboard.writeText(txt); btn.textContent = "Copiado"; }
-  catch (err) { const s = getSelection(); s.selectAllChildren(document.getElementById("mail")); btn.textContent = "Selecionado"; }
-  setTimeout(() => btn.textContent = "Copiar", 1800);
-};
 
 
 /* Redraw once fonts arrive so the type-based thumbnails use the display face */
