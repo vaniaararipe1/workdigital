@@ -63,7 +63,7 @@
   trigger.addEventListener('click',()=>{if(item.classList.contains('wd-dropdown-open'))close(item,true);else open();});
   item.addEventListener('focusin',event=>{if(event.target!==trigger)open();});
   item.addEventListener('focusout',event=>{if(!item.contains(event.relatedTarget))close(item);});
-  trigger.addEventListener('keydown',event=>{if(event.key==='ArrowDown'){event.preventDefault();open();panel.querySelector('a').focus();}});
+  trigger.addEventListener('keydown',event=>{if(event.key==='ArrowDown'){event.preventDefault();open();requestAnimationFrame(()=>panel.querySelector('a').focus());}});
   item.addEventListener('keydown',event=>{if(event.key==='Escape'){event.stopPropagation();close(item,true);trigger.focus();}if(event.key==='ArrowDown'||event.key==='ArrowUp'){const links=[...panel.querySelectorAll('a')],index=links.indexOf(document.activeElement);if(index>=0){event.preventDefault();links[(index+(event.key==='ArrowDown'?1:-1)+links.length)%links.length].focus();}}});
  });
  document.addEventListener('pointerdown',event=>{items.forEach(item=>{if(!item.contains(event.target))close(item,true);});});

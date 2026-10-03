@@ -95,7 +95,7 @@ body .payoff{padding-bottom:40px}
 }
 
 /* MENU — três grupos; SOLUÇÕES e idiomas usam o mesmo componente. */
-.site-nav{display:grid;grid-template-columns:1fr auto 1fr;gap:20px}
+.site-nav{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;padding-left:14px;padding-right:14px}
 .site-nav .brand{margin-right:0;justify-self:start}
 .site-nav .nav-links{justify-self:center}
 .wd-nav-actions{display:flex;align-items:center;justify-self:end;gap:24px;min-width:0}
