@@ -12,3 +12,12 @@ Versões salvas para ajustar depois ao visual final da home.
 
 Os arquivos são o conteúdo publicado nas prévias (sem o cabeçalho `<!doctype html>`, que a
 plataforma de prévia adiciona). Textos, números e imagens são exemplos.
+
+## Páginas internas com o visual da home final
+
+Pasta `site/`: as páginas usam os mesmos arquivos da home (`footer.js`, `contact.js`, `contact.css`,
+`whatsapp.js`, `wd-revision.js`, `wd-revision.css`), copiados sem alteração de `home-final/`.
+
+| Página | Arquivo | Prévia online |
+|---|---|---|
+| Cases (menu, fundo e rodapé da home) | `site/cases.html` | https://claude.ai/artifact/JRyLZxgMsFFUnvkSMXaiZ1 |
