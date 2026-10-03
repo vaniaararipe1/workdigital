@@ -5,10 +5,12 @@
  const URL_PRIVACIDADE='';
  const CONFIG={endpoint:URL_ENVIO,privacyUrl:URL_PRIVACIDADE,...window.WD_CONTACT_CONFIG};
  const PANEL_W=477, R=32, RI=24, FIL=20;
- const nav=document.querySelector('.site-nav'),header=nav?.closest('.site-header'),ctaMenu=nav?.querySelector('.nav-cta');
+ const nav=document.querySelector('.site-nav'),header=nav?.closest('.site-header');let ctaMenu=nav?.querySelector('.nav-cta');
  if(!nav||!header||!ctaMenu||document.querySelector('.wd-contact'))return;
+ // The proposal CTA is an action, never a navigation link (including middle-click).
+ if(ctaMenu.tagName==='A'){const button=document.createElement('button');for(const attr of ctaMenu.attributes)if(!['href','target','rel','onclick'].includes(attr.name))button.setAttribute(attr.name,attr.value);button.type='button';button.innerHTML=ctaMenu.innerHTML;ctaMenu.replaceWith(button);ctaMenu=button}
  const source=new URL(document.currentScript?.src||'/contact.js',document.baseURI);
- const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('contact.css?v=20261003-contact-glass',source).href;document.head.append(css);
+ const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('contact.css?v=20261003-contact-fluid',source).href;document.head.append(css);
  const font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&family=Space+Grotesk:wght@400;500;600&display=swap';document.head.append(font);
  const animationReady=window.gsap?Promise.resolve(window.gsap):new Promise(resolve=>{const script=document.createElement('script');script.src='https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js';script.onload=()=>resolve(window.gsap);script.onerror=()=>resolve(null);document.head.append(script)});
  document.documentElement.classList.add('wd-contact-root');
@@ -45,31 +47,42 @@
  function swapLabel(open){labelTween?.kill();if(open){const width=ctaMenu.getBoundingClientRect().width;if(width)ctaMenu.style.width=width+'px';ctaMenu.innerHTML='<i class="wd-contact-cta-label"></i>';const label=ctaMenu.firstElementChild;label.innerHTML=originalMarkup;const replace=()=>label.innerHTML='FECHAR <span aria-hidden="true">✕</span>';if(gsapAPI&&!reduced.matches)labelTween=gsapAPI.timeline().to(label,{opacity:0,y:-4,duration:.15}).add(replace).to(label,{opacity:1,y:0,duration:.15});else replace();ctaMenu.setAttribute('aria-label','Fechar contato')}else{ctaMenu.innerHTML=originalMarkup;ctaMenu.style.width=originalWidth;if(originalLabel===null)ctaMenu.removeAttribute('aria-label');else ctaMenu.setAttribute('aria-label',originalLabel)}}
  function setExpanded(open){[ctaMenu,mobileCTA].forEach(el=>el.setAttribute('aria-expanded',String(open)));if(closeControl===toggle){toggle.setAttribute('aria-label',open?'Fechar contato':'Abrir menu');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-controls',open?body.id:toggleControls||'wd-nav-links')}}
  function resetResult(){form.hidden=false;heading.hidden=false;form.style.opacity='1';result.hidden=true;result.style.opacity='0';submit.disabled=false;submit.innerHTML='ENVIAR <span aria-hidden="true">↗</span>';sending=false}
- function cleanup(){closing=false;box.dataset.open='false';box.classList.remove('is-on');box.removeAttribute('role');box.removeAttribute('aria-modal');box.removeAttribute('aria-labelledby');stage.classList.remove('is-on');nav.classList.remove('wd-contact-open');header.classList.remove('wd-contact-header-open');backdrop.classList.remove('is-on');backdrop.style.opacity='0';body.inert=true;resetResult();swapLabel(false);unlockPage();if(opener?.isConnected){if(opener===mobileCTA){nav.classList.add('wd-nav-open');toggle?.setAttribute('aria-expanded','true');toggle?.setAttribute('aria-label','Fechar menu')}opener.focus({preventScroll:true})}}
+ function cleanup(){closing=false;box.dataset.open='false';box.classList.remove('is-on','is-opening','is-closing');box.removeAttribute('role');box.removeAttribute('aria-modal');box.removeAttribute('aria-labelledby');stage.classList.remove('is-on');nav.classList.remove('wd-contact-open');header.classList.remove('wd-contact-header-open');backdrop.classList.remove('is-on');backdrop.style.opacity='0';body.inert=true;body.style.opacity='1';body.style.transform='none';resetResult();swapLabel(false);unlockPage();if(opener?.isConnected){if(opener===mobileCTA){nav.classList.add('wd-nav-open');toggle?.setAttribute('aria-expanded','true');toggle?.setAttribute('aria-label','Fechar menu')}opener.focus({preventScroll:true})}}
  async function abrirContato(trigger=ctaMenu){
   if(isOpen||closing)return;isOpen=true;session++;const openSession=session;opener=trigger;resetResult();nav.classList.remove('wd-nav-open');toggle?.setAttribute('aria-expanded','false');
   nav.querySelectorAll('.nav-item').forEach(item=>{item.classList.remove('wd-dropdown-open','wd-solutions-open');item.classList.add('wd-dropdown-dismissed');item.querySelector('.nav-trigger')?.setAttribute('aria-expanded','false')});
   closeControl=ctaMenu.getBoundingClientRect().width?ctaMenu:toggle;lockPage();
-  box.dataset.open='true';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby','wd-contact-heading');body.inert=false;form.inert=true;setExpanded(true);closeControl?.focus({preventScroll:true});
+  box.dataset.open='true';box.classList.add('is-opening');body.style.opacity='1';body.style.transform='none';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby','wd-contact-heading');body.inert=false;form.inert=true;setExpanded(true);closeControl?.focus({preventScroll:true});
   const n=nav.getBoundingClientRect(),c=ctaMenu.getBoundingClientRect();s.W=mobile.matches?n.width:Math.min(panelWidth(),Math.max(80,n.right-c.left+14));s.H=0;
   stage.classList.add('is-on');nav.classList.add('wd-contact-open');header.classList.add('wd-contact-header-open');backdrop.classList.add('is-on');draw();
   const g=gsapAPI||await animationReady;if(!isOpen||session!==openSession)return;swapLabel(true);
-  const complete=()=>{if(!isOpen)return;box.classList.add('is-on');form.inert=false;form.elements.nome.focus({preventScroll:true})};
+  const complete=()=>{if(!isOpen)return;box.classList.remove('is-opening');box.classList.add('is-on');form.inert=false;form.elements.nome.focus({preventScroll:true})};
   if(!g){s.W=panelWidth();s.H=targetHeight();draw();blocks.forEach(el=>{el.style.opacity='1';el.style.transform='none'});backdrop.style.opacity='1';complete();return}
   g.set(blocks,{opacity:0,y:10});g.to(backdrop,{opacity:1,duration:reduced.matches?.2:.4});
   if(reduced.matches){s.W=panelWidth();s.H=targetHeight();draw();box.classList.add('is-on');anim=g.timeline({onComplete:complete}).to(blocks,{opacity:1,y:0,duration:.2});return}
-  anim=g.timeline({onComplete:complete,onReverseComplete:cleanup});
-  if(mobile.matches){anim.to(s,{H:targetHeight(),duration:.6,ease:'power3.inOut',onUpdate:draw}).add(()=>box.classList.add('is-on')).to(blocks,{opacity:1,y:0,stagger:.07,duration:.5,ease:'power2.out'})}
-  else{anim.to(s,{H:56,duration:.4,ease:'power3.out',onUpdate:draw}).to(s,{W:panelWidth(),duration:.5,ease:'power3.inOut',onUpdate:draw}).to(s,{H:targetHeight(),duration:.6,ease:'power3.inOut',onUpdate:draw},'-=.15').add(()=>box.classList.add('is-on'),'-=.4').to(blocks,{opacity:1,y:0,stagger:.07,duration:.5,ease:'power2.out'},'-=.35')}
+  anim=g.timeline({onComplete:complete});
+  // One continuous morph: no stop between widening and expanding vertically.
+  anim.to(s,{W:panelWidth(),H:targetHeight(),duration:mobile.matches?.8:1.05,ease:'power3.inOut',onUpdate:draw})
+      .to(blocks,{opacity:1,y:0,stagger:.055,duration:.55,ease:'power2.out'},'-=.32');
  }
- function fecharContato(){if(!isOpen)return;closing=true;isOpen=false;session++;requestController?.abort();labelTween?.kill();body.inert=true;setExpanded(false);if(gsapAPI){gsapAPI.to(backdrop,{opacity:0,duration:reduced.matches?.2:.4});if(reduced.matches){anim?.kill();gsapAPI.to(blocks,{opacity:0,duration:.2,onComplete:cleanup})}else if(anim&&anim.time()>.001)anim.timeScale(1.4).reverse();else if(s.H>0){anim=gsapAPI.timeline({onComplete:cleanup}).to(s,{H:56,duration:.3,ease:'power3.inOut',onUpdate:draw}).to(s,{W:Math.max(80,nav.getBoundingClientRect().right-ctaMenu.getBoundingClientRect().left+14),duration:.35,ease:'power3.inOut',onUpdate:draw}).to(s,{H:0,duration:.25,ease:'power3.inOut',onUpdate:draw})}else cleanup()}else cleanup()}
- [ctaMenu,mobileCTA].forEach(el=>{el.setAttribute('aria-controls',body.id);el.setAttribute('aria-haspopup','dialog');el.setAttribute('aria-expanded','false');el.addEventListener('click',e=>{e.preventDefault();if(isOpen)fecharContato();else abrirContato(el)})});
+ function fecharContato(){
+  if(!isOpen)return;closing=true;isOpen=false;session++;requestController?.abort();anim?.kill();labelTween?.kill();body.inert=true;box.classList.remove('is-opening');box.classList.add('is-closing');setExpanded(false);
+  if(!gsapAPI){s.H=0;draw();cleanup();return}
+  // Hide the content before the viewport shrinks; keep scrolling disabled throughout.
+  gsapAPI.killTweensOf([backdrop,body,...blocks]);
+  const n=nav.getBoundingClientRect(),c=ctaMenu.getBoundingClientRect(),closedWidth=mobile.matches?n.width:Math.min(panelWidth(),Math.max(80,n.right-c.left+14));
+  anim=gsapAPI.timeline({onComplete:cleanup});
+  anim.to(body,{opacity:0,y:-6,duration:reduced.matches?.18:.22,ease:'power2.out'},0)
+      .to(backdrop,{opacity:0,duration:reduced.matches?.18:.65,ease:'power2.inOut'},0);
+  if(!reduced.matches)anim.to(s,{H:0,W:closedWidth,duration:mobile.matches?.7:.85,ease:'power3.inOut',onUpdate:draw},.16);
+ }
+ [ctaMenu,mobileCTA].forEach(el=>{el.setAttribute('aria-controls',body.id);el.setAttribute('aria-haspopup','dialog');el.setAttribute('aria-expanded','false');el.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(isOpen)fecharContato();else abrirContato(el)})});
  toggle?.addEventListener('click',e=>{if(isOpen){e.preventDefault();e.stopImmediatePropagation();fecharContato()}},true);
  backdrop.addEventListener('click',fecharContato);box.querySelector('.wd-contact-close').addEventListener('click',fecharContato);
  document.addEventListener('pointerdown',e=>{if(isOpen&&!box.contains(e.target)&&!nav.contains(e.target))fecharContato()});
  document.addEventListener('keydown',e=>{if(!isOpen)return;if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();fecharContato();return}if(e.key==='Tab'){const available=[closeControl,...box.querySelectorAll('button,a[href],input,textarea')].filter(el=>el&&!el.disabled&&!el.closest('[inert]')&&el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden'),first=available[0],last=available.at(-1);if(e.shiftKey&&(document.activeElement===first||!available.includes(document.activeElement))){e.preventDefault();last?.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}}},true);
  document.addEventListener('click',e=>{const link=e.composedPath().find(el=>el.tagName==='A');if(link&&link!==ctaMenu&&(/\/contato\/?(?:$|[?#])/.test(link.href)||link.getAttribute('href')==='#contato')){e.preventDefault();abrirContato(link)}});
- function resize(){if(!isOpen&&!closing)return;anim?.kill();if(closing){cleanup();return}const nextControl=ctaMenu.getBoundingClientRect().width?ctaMenu:toggle;if(nextControl!==closeControl){if(!inertStates.some(([el])=>el===closeControl))inertStates.push([closeControl,false]);closeControl.inert=true;closeControl=nextControl;closeControl.inert=false;if(closeControl!==toggle){toggle?.setAttribute('aria-label','Abrir menu');toggle?.setAttribute('aria-controls',toggleControls||'wd-nav-links');toggle?.setAttribute('aria-expanded','false')}setExpanded(true)}s.W=panelWidth();s.H=targetHeight();draw();box.classList.add('is-on');blocks.forEach(el=>{el.style.opacity='1';el.style.transform='none'});form.inert=false;anim=null}
+ function resize(){if(!isOpen&&!closing)return;if(closing){draw();return}anim?.kill();const nextControl=ctaMenu.getBoundingClientRect().width?ctaMenu:toggle;if(nextControl!==closeControl){if(!inertStates.some(([el])=>el===closeControl))inertStates.push([closeControl,false]);closeControl.inert=true;closeControl=nextControl;closeControl.inert=false;if(closeControl!==toggle){toggle?.setAttribute('aria-label','Abrir menu');toggle?.setAttribute('aria-controls',toggleControls||'wd-nav-links');toggle?.setAttribute('aria-expanded','false')}setExpanded(true)}s.W=panelWidth();s.H=targetHeight();draw();box.classList.remove('is-opening');box.classList.add('is-on');blocks.forEach(el=>{el.style.opacity='1';el.style.transform='none'});form.inert=false;anim=null}
  window.addEventListener('resize',resize,{passive:true});window.visualViewport?.addEventListener('resize',resize,{passive:true});
  const observer=new ResizeObserver(()=>{if(isOpen||closing)draw()});observer.observe(nav);
  const idea=form.elements.ideia;function growIdea(){idea.style.height='auto';const line=parseFloat(getComputedStyle(idea).lineHeight),limit=line*3+13;idea.style.height=Math.min(limit,idea.scrollHeight)+'px';idea.style.overflowY=idea.scrollHeight>limit?'auto':'hidden'}idea.addEventListener('input',growIdea);

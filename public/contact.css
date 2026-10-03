@@ -18,6 +18,9 @@
 .wd-contact{display:none;position:fixed;z-index:200;overflow:hidden;padding:36px 32px 28px;background:transparent;border:0;box-shadow:none;color:#F7F6FB;font-family:"Nunito",system-ui,sans-serif;isolation:isolate;pointer-events:none;scrollbar-color:#b79bff55 transparent;scrollbar-width:thin}
 .wd-contact[data-open="true"]{display:block}
 .wd-contact.is-on{pointer-events:auto;overflow-y:auto;overscroll-behavior:contain}
+.wd-contact.is-opening,.wd-contact.is-closing{overflow:hidden!important;scrollbar-width:none;pointer-events:none}
+.wd-contact.is-opening::-webkit-scrollbar,.wd-contact.is-closing::-webkit-scrollbar{display:none}
+.site-nav button.nav-cta{font-family:inherit;cursor:pointer}
 .wd-contact-anim{opacity:0;transform:translateY(10px)}
 .wd-contact .wd-contact-uptitle.wd-uptitle{display:inline-block;margin:0 0 12px;background:linear-gradient(90deg,#B79BFF 0%,#E58BFF 50%,#FF8FCB 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important;font:600 12px/1.25 "Space Grotesk",system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase}
 .wd-contact-title{margin:0 0 30px;color:#F7F6FB;font:500 30px/1.05 "Space Grotesk",system-ui,sans-serif;letter-spacing:-.03em}
