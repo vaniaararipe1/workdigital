@@ -180,3 +180,11 @@ body .payoff{padding-bottom:40px}
 /* CTA alinhado à borda da imagem, descontando a moldura de 20px. */
 #wd-explore .wd-explore-header>.wd-explore-cta{margin-right:20px;max-width:calc(100% - 20px)}
 @media(max-width:991px){#wd-explore .wd-explore-header>.wd-explore-cta{margin-right:0;max-width:100%}}
+
+/* Setas seguem a paleta do hover dos CTAs. */
+#wd-explore .wd-explore-card:hover .wd-explore-arrow,
+#wd-explore .wd-explore-card:focus-visible .wd-explore-arrow,
+#wd-blog .wd-blog-link:hover .wd-blog-arrow,
+#wd-blog .wd-blog-link:focus-visible .wd-blog-arrow{
+ background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:0% 0%;color:#24123e;
+}
