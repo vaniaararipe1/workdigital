@@ -114,6 +114,15 @@ footer{position:relative;z-index:1;background:linear-gradient(180deg,rgba(20,16,
   .orb{width:120vw;left:-30vw}
 }
 @media (prefers-reduced-motion:reduce){.orb,.orb2{animation:none}*{transition:none!important;animation:none!important}}
+
+/* Custom cursor (same as the Works page): small dot that follows the mouse; grows on links, shows a label on key items */
+.wd-cursor{position:fixed;left:0;top:0;z-index:60;pointer-events:none;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#F2EEF8;mix-blend-mode:difference;
+  transition:width .4s cubic-bezier(.22,1,.36,1),height .4s cubic-bezier(.22,1,.36,1),margin .4s cubic-bezier(.22,1,.36,1),background .3s;display:grid;place-items:center}
+.wd-cursor b{font:500 11px/1 "Space Grotesk",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#fff;opacity:0;transition:opacity .2s;white-space:nowrap}
+.wd-cursor.link{width:40px;height:40px;margin:-20px 0 0 -20px}
+.wd-cursor.big{width:96px;height:96px;margin:-48px 0 0 -48px;background:#7C5CFF;mix-blend-mode:normal}
+.wd-cursor.big b{opacity:1}
+@media (hover:hover) and (pointer:fine){.has-wd-cursor,.has-wd-cursor a,.has-wd-cursor button{cursor:none}}
 </style>
 
 <div class="bgfx" aria-hidden="true">
@@ -152,6 +161,7 @@ footer{position:relative;z-index:1;background:linear-gradient(180deg,rgba(20,16,
 <a class="wa" href="https://wa.me/" aria-label="Falar no WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3 .78.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.25-.12-1.47-.72-1.7-.8-.23-.09-.4-.13-.56.12-.17.25-.64.8-.79.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.15-.25-.02-.38.1-.5.12-.11.25-.29.38-.44.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.4-.42-.56-.43h-.48a.92.92 0 0 0-.66.31c-.23.25-.87.85-.87 2.07s.89 2.4 1.01 2.57c.12.16 1.75 2.67 4.24 3.74.59.26 1.05.41 1.41.52.6.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29z"/></svg></a>
 <button class="menu-btn" id="menuBtn" aria-label="Abrir menu" aria-expanded="false"><i></i></button>
 
+<div class="wd-cursor" id="wdCursor" aria-hidden="true" hidden><b></b></div>
 <script>
 const SERVICES = [
   { id:'sites', name:'Criação de Sites', teaser:'Sites profissionais, rápidos e fáceis de atualizar.', blocks:[
@@ -397,4 +407,20 @@ document.getElementById('yr').textContent=new Date().getFullYear();
   requestAnimationFrame(frame);
 })();
 
+
+// Custom cursor (shared across pages)
+(function(){
+  if(!matchMedia('(hover: hover) and (pointer: fine)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c=document.getElementById('wdCursor'), lb=c.querySelector('b'); c.hidden=false; document.body.classList.add('has-wd-cursor');
+  const LABELS=[[".svc:not(.is-open)","Abrir"],[".see","Works"]];
+  let mx=innerWidth/2,my=innerHeight/2,x=mx,y=my;
+  addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});
+  document.addEventListener('mouseover',e=>{
+    let label=null; for(const [sel,txt] of LABELS){ if(e.target.closest(sel)){label=txt;break;} }
+    c.classList.toggle('big',!!label); if(label) lb.textContent=label;
+    c.classList.toggle('link',!label && !!e.target.closest('a,button'));
+  });
+  document.addEventListener('mouseleave',()=>{c.classList.remove('big','link');});
+  (function tick(){x+=(mx-x)*.18;y+=(my-y)*.18;c.style.transform=`translate(${x}px,${y}px)`;requestAnimationFrame(tick);})();
+})();
 </script>
