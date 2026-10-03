@@ -197,3 +197,8 @@ body .payoff{padding-bottom:40px}
 #wd-explore .wd-explore-card:hover .wd-explore-arrow,#wd-explore .wd-explore-card:focus-visible .wd-explore-arrow{color:#24123e}
 #wd-explore .wd-explore-card:hover .wd-explore-arrow::before,#wd-explore .wd-explore-card:focus-visible .wd-explore-arrow::before{opacity:1}
 @media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-arrow,#wd-explore .wd-explore-arrow::before{transition:none}}
+
+/* Mídias: crossfade real, com saída visível até concluir a transição. */
+#wd-explore .wd-explore-photo .wd-explore-media{transition:opacity .9s cubic-bezier(.4,0,.2,1),visibility 0s linear .9s}
+#wd-explore .wd-explore-photo .wd-explore-media.is-visible{transition-delay:0s,0s}
+@media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-photo .wd-explore-media{transition:none}}

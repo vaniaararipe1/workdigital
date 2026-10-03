@@ -31,7 +31,8 @@
  const cards=[...root.querySelectorAll('.wd-explore-card')],media=[...root.querySelectorAll('.wd-explore-media')];
  const reduced=matchMedia('(prefers-reduced-motion: reduce)'),stacked=matchMedia('(max-width:1199px)');
  let current=0;
- function show(index){current=index;media.forEach((el,i)=>{const visible=i===index;el.classList.toggle('is-visible',visible);const v=el.querySelector('video');v.pause();if(visible&&!reduced.matches)v.play().catch(()=>{});});}
+ const pauseTimers=new Map();
+ function show(index){current=index;media.forEach((el,i)=>{const visible=i===index;clearTimeout(pauseTimers.get(el));pauseTimers.delete(el);el.classList.toggle('is-visible',visible);const v=el.querySelector('video');if(visible){if(reduced.matches)v.pause();else v.play().catch(()=>{});}else if(reduced.matches)v.pause();else pauseTimers.set(el,setTimeout(()=>{if(!el.classList.contains('is-visible'))v.pause();pauseTimers.delete(el);},900));});}
  cards.forEach((card,i)=>{card.addEventListener('mouseenter',()=>show(i));card.addEventListener('focusin',()=>show(i));card.addEventListener('mouseleave',()=>show(0));card.addEventListener('focusout',()=>show(0));});
  function resize(){if(stacked.matches)return;const h=list.getBoundingClientRect().height;const inner=Math.max(0,h-40);body.style.setProperty('--wd-panel-height',h+'px');body.style.setProperty('--wd-media-height',inner+'px');body.style.setProperty('--wd-media-width',(inner*9/11)+'px');}
  new ResizeObserver(resize).observe(list);stacked.addEventListener('change',resize);reduced.addEventListener('change',()=>show(current));
