@@ -159,12 +159,15 @@ body .payoff{padding-bottom:40px}
 .intro .intro-title span{display:inline-block;white-space:nowrap}
 @media(max-width:991px){:root{--wd-display-size:clamp(44px,7.2vw,76px)}}
 @media(max-width:600px){:root{--wd-display-size:clamp(36px,9.4vw,56px)}.intro .intro-title span{white-space:normal}}
-/* SOLUÇÕES WORK — transição apenas da opacidade; foco equivalente ao hover. */
-#wd-explore .wd-explore-card{position:relative;isolation:isolate;transition:color .7s cubic-bezier(.4,0,.2,1)}
-#wd-explore .wd-explore-card::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;background:linear-gradient(135deg,rgba(124,92,255,.38) 0%,rgba(183,155,255,.22) 45%,rgba(255,143,203,.20) 100%);opacity:0;box-shadow:0 0 0 1px rgba(214,198,255,.35),0 20px 60px -20px rgba(124,92,255,.55);transition:opacity .7s cubic-bezier(.4,0,.2,1);pointer-events:none}
-#wd-explore .wd-explore-card:hover::before,#wd-explore .wd-explore-card:focus-visible::before,#wd-explore .wd-explore-card.is-active::before{opacity:1}
+/* SOLUÇÕES, BLOG E DEPOIMENTOS — mesmo hover, com foco equivalente. */
+#wd-explore .wd-explore-card,#wd-blog .wd-blog-link,#wd-trust .wd-trust-card{position:relative;isolation:isolate;transition:color .7s cubic-bezier(.4,0,.2,1)}
+#wd-explore .wd-explore-card::before,#wd-blog .wd-blog-link::before,#wd-trust .wd-trust-card::before{display:block;content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;background:linear-gradient(135deg,rgba(124,92,255,.38) 0%,rgba(183,155,255,.22) 45%,rgba(255,143,203,.20) 100%);opacity:0;box-shadow:0 0 0 1px rgba(214,198,255,.35),0 20px 60px -20px rgba(124,92,255,.55);transition:opacity .7s cubic-bezier(.4,0,.2,1);pointer-events:none}
+#wd-explore .wd-explore-card:hover::before,#wd-explore .wd-explore-card:focus-visible::before,#wd-explore .wd-explore-card.is-active::before,#wd-blog .wd-blog-link:hover::before,#wd-blog .wd-blog-link:focus-visible::before,#wd-trust .wd-trust-card:hover::before,#wd-trust .wd-trust-card:focus-visible::before{opacity:1}
 
-@media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-card,#wd-explore .wd-explore-card::before{transition:none}}
+#wd-blog .wd-blog-link{overflow:visible}
+#wd-blog .wd-blog-item{transition:border-color .7s cubic-bezier(.4,0,.2,1)}
+#wd-trust .wd-trust-card::after{transition:opacity .7s cubic-bezier(.4,0,.2,1)}
+@media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-card,#wd-explore .wd-explore-card::before,#wd-blog .wd-blog-link,#wd-blog .wd-blog-link::before,#wd-blog .wd-blog-item,#wd-trust .wd-trust-card,#wd-trust .wd-trust-card::before,#wd-trust .wd-trust-card::after{transition:none}}
 
 /* CTAs completamente arredondados. */
 :root{--wd-cta-radius:9999px}
