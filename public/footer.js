@@ -27,7 +27,7 @@
     .wd-footer-logo{display:block;width:100%;height:auto;aspect-ratio:4340/1340;object-fit:contain}
     .wd-footer-description{max-width:430px;margin:28px 0 0;color:#e1d7ee;font:400 18px/1.6 "Nunito",system-ui,sans-serif;text-wrap:pretty}
     .wd-footer-contact{display:flex;flex-direction:column;align-items:flex-end;gap:24px;min-width:0}
-    .wd-footer-title{margin:0;font-size:38px;font-weight:400;line-height:1.3;letter-spacing:-.025em;text-align:right;text-wrap:balance}
+    .wd-footer-title{margin:0;font-size:clamp(52px,4.5vw,72px);font-weight:400;line-height:1.3;letter-spacing:-.025em;text-align:right;text-wrap:balance}
     .wd-footer-cta{display:flex;align-items:center;justify-content:center;gap:20px;min-height:54px;max-width:100%;padding:18px 20px;border-radius:var(--wd-cta-radius,9999px);color:#fff;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0;text-decoration:none;font-size:14px;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:var(--wd-cta-weight,500);line-height:1;letter-spacing:var(--wd-cta-letter-spacing,.1em);transition:background-position 600ms ease,color 200ms ease}
     .wd-footer-cta svg{flex:none;width:14px;height:14px}
     .wd-footer-cta:hover,.wd-footer-cta:focus-visible{background-position:0 0;color:#2b1450}
@@ -43,7 +43,7 @@
     @media(max-width:991px){
       .wd-footer-root{padding:80px 40px 64px}
       .wd-footer-inner{gap:96px 40px}
-      .wd-footer-title{font-size:32px}
+      .wd-footer-title{font-size:48px}
       .wd-footer-rights{font-size:14px}
       .wd-footer-socials{gap:10px}
     }
@@ -53,7 +53,7 @@
       .wd-footer-home{width:100%;max-width:400px}
       .wd-footer-description{font-size:17px;margin-top:24px}
       .wd-footer-contact{align-items:flex-start}
-      .wd-footer-title{text-align:left;font-size:32px}
+      .wd-footer-title{text-align:left;font-size:40px}
       .wd-footer-rights{font-size:13px;gap:8px 12px}
       .wd-footer-socials{justify-content:flex-start;gap:16px}
     }
