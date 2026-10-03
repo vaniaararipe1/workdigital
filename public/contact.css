@@ -5,6 +5,14 @@
 .site-header.wd-contact-header-open{z-index:190}
 .site-nav.wd-contact-open{border-color:transparent;box-shadow:none}
 .site-nav.wd-contact-open .dropdown{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.site-nav.wd-contact-open .wd-language{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.site-nav.wd-contact-open .wd-contact-close-trigger{justify-content:flex-end!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;color:#F7F6FB!important;outline:none}
+.site-nav.wd-contact-open .wd-contact-close-trigger::before,.site-nav.wd-contact-open .wd-contact-close-trigger::after{display:none!important}
+.wd-contact-close-trigger .wd-contact-cta-label{width:100%;justify-content:flex-end}
+.wd-contact-close-icon{display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;transition:opacity .3s ease}
+.wd-contact-close-icon svg{display:block;width:28px;height:28px}
+.wd-contact-close-trigger:hover .wd-contact-close-icon{opacity:.7}
+.wd-contact-close-trigger:focus-visible .wd-contact-close-icon{outline:2px solid #bda4ff;outline-offset:2px}
 .site-nav.wd-contact-open::before{opacity:0;transition:none}
 .wd-contact-stage{position:fixed;inset:0;z-index:1;pointer-events:none;visibility:hidden}
 .wd-contact-stage.is-on{visibility:visible}
@@ -32,7 +40,7 @@
 .wd-contact .wd-contact-input::placeholder{color:#A9B0B0;opacity:1;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:400}
 .wd-contact .wd-contact-input:hover{border-color:rgba(255,255,255,.4)}
 .wd-contact .wd-contact-input:focus{outline:none}
-.wd-contact .wd-contact-input:focus-visible{outline:2px solid #bda4ff;outline-offset:4px}
+.wd-contact .wd-contact-input:focus,.wd-contact .wd-contact-input:focus-visible{outline:none!important;box-shadow:none!important;caret-color:#F7F6FB}
 .wd-contact textarea.wd-contact-input{resize:none;overflow-y:hidden;max-height:85px}
 .wd-contact .wd-contact-input[aria-invalid="true"]{border-color:#FF8FA3}
 .wd-contact .wd-contact-input[aria-invalid="true"]::placeholder{color:#FF8FA3}
