@@ -1,0 +1,83 @@
+
+#wd-statement-2,#wd-blog{box-sizing:border-box;background:transparent;color:#f7f6fb;font-family:"Space Grotesk",Arial,sans-serif}
+#wd-statement-2 *,#wd-blog *{box-sizing:border-box}
+.wd-statement-2-section{min-height:75vh;display:flex;align-items:center;justify-content:center;padding:96px 40px}
+.wd-statement-2-inner{width:100%;max-width:1200px;margin-inline:auto}
+.wd-statement-2-title{margin:0;font-size:clamp(44px,6.835vw,120px);font-weight:500;line-height:1;letter-spacing:-.04167em;text-align:center;text-wrap:balance;color:#efe7ff}
+.wd-statement-2-line{display:block;padding-bottom:.055em;--wd-from:#6025e1;--wd-to:#cbb6ff;color:#efe7ff}
+.wd-blog-section{padding:120px 40px;scroll-margin-top:110px}
+.wd-blog-inner{max-width:1520px;margin-inline:auto;padding-inline:40px}
+.wd-blog-header{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:80px}
+.wd-blog-eyebrow{margin:0 0 31px;font-size:clamp(16px,1.46vw,22px);font-weight:500;line-height:1.4;letter-spacing:.24em;}
+.wd-blog-title{margin:0;color:#f7f6fb;text-wrap:balance}
+.wd-blog-intro,.wd-blog-excerpt{font-family:"Nunito",system-ui,sans-serif;font-size:16px;font-weight:400;line-height:1.6;color:#d9cfe7}
+.wd-blog-intro{max-width:420px;margin:48px 0 0;text-wrap:pretty}
+.wd-blog-list{display:grid;grid-template-columns:minmax(0,1fr);margin-bottom:80px}
+.wd-blog-item{min-width:0;border-bottom:1px solid rgba(151,112,211,.25);transition:border-color .2s ease-in-out}
+.wd-blog-link{position:relative;isolation:isolate;display:grid;grid-template-columns:250px minmax(0,1fr) 50px;align-items:start;column-gap:clamp(40px,7.196vw,97px);padding:40px;border-radius:16px;overflow:hidden;text-decoration:none;color:inherit}
+.wd-blog-link::before{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(0deg,#301258,#4b247e);opacity:0;transition:opacity .2s ease-in-out}
+.wd-blog-image{display:block;width:100%;height:auto;aspect-ratio:25/16;object-fit:cover;border-radius:6px}
+.wd-blog-content{display:flex;flex-direction:column;gap:24px;min-width:0;max-width:710px}
+.wd-blog-article-title{margin:0;font-size:clamp(28px,2.623vw,42px);font-weight:500;line-height:1;letter-spacing:0;text-wrap:pretty;overflow-wrap:break-word;color:#f7f6fb}
+.wd-blog-excerpt{margin:0}
+.wd-blog-meta{display:flex;flex-wrap:wrap;gap:8px 18px;color:#cfc1e4;font-size:14px;font-weight:400;line-height:1.4;text-transform:uppercase;letter-spacing:.025em}
+.wd-blog-arrow{display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:6px;background:rgba(255,255,255,.05);color:#f7f6fb}
+.wd-blog-arrow svg{display:block;width:18px;height:18px}
+.wd-blog-footer{display:flex;justify-content:center}
+.wd-blog-cta{display:flex;align-items:center;justify-content:center;gap:20px;min-height:54px;max-width:100%;padding:18px 20px;border-radius:6px;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0;color:#fff;text-decoration:none;font-size:inherit;transition:background-position 600ms ease,color 200ms ease}
+.wd-blog-cta svg{flex:none;width:14px;height:14px}
+.wd-blog-cta:hover,.wd-blog-cta:focus-visible{background-position:0 0;color:#2b1450}
+.wd-blog-link:focus-visible,.wd-blog-cta:focus-visible{outline:2px solid #e7dcff;outline-offset:5px}
+.wd-blog-link:focus-visible::before{opacity:1}
+.wd-blog-item:focus-within{border-bottom-color:transparent}
+@supports (background-clip:text) or (-webkit-background-clip:text){
+ .wd-statement-2-line{background:linear-gradient(90deg,var(--wd-from),var(--wd-to));background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+ .wd-blog-eyebrow{;}
+}
+/* O título da Auros é sólido; somente o eyebrow e a frase têm gradiente. */
+@media (hover:hover){
+ .wd-blog-link:hover::before{opacity:1}
+ .wd-blog-item:hover,.wd-blog-item:has(+ .wd-blog-item:hover){border-bottom-color:transparent}
+}
+@media (max-width:1199px) and (min-width:992px){
+ .wd-blog-link{grid-template-columns:210px minmax(0,1fr) 50px;gap:40px;padding:32px}
+}
+@media (max-width:991px){
+ .wd-statement-2-section{min-height:65vh;padding:72px 24px}
+ .wd-statement-2-title{font-size:clamp(44px,7.2vw,76px)}
+ .wd-blog-section{padding:80px 20px}
+ .wd-blog-inner{padding-inline:20px}
+ .wd-blog-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+ .wd-blog-item{border:0;border-radius:16px;background:linear-gradient(0deg,#301258,#4b247e)}
+ .wd-blog-link{height:100%;grid-template-columns:minmax(0,1fr) 50px;gap:36px 16px;padding:24px 24px 42px}
+ .wd-blog-image{grid-column:1/-1;aspect-ratio:16/9}
+ .wd-blog-content{display:contents}
+ .wd-blog-article-title{grid-column:1;grid-row:2;font-size:30px}
+ .wd-blog-arrow{grid-column:2;grid-row:2}
+ .wd-blog-excerpt,.wd-blog-meta{grid-column:1/-1}
+ .wd-blog-link::before{display:none}
+ .wd-blog-item:focus-within{outline:2px solid #e7dcff;outline-offset:4px}
+ .wd-blog-link:focus-visible{outline:none}
+}
+@media (max-width:600px){
+ .wd-statement-2-section{min-height:60vh;padding:64px 20px}
+ .wd-statement-2-title{font-size:clamp(36px,9.4vw,56px)}
+ .wd-blog-section{padding:64px 16px}
+ .wd-blog-inner{padding:0}
+ .wd-blog-header{margin-bottom:48px}
+ .wd-blog-title{}
+ .wd-blog-intro{margin-top:32px}
+ .wd-blog-intro,.wd-blog-excerpt{font-size:15px;line-height:1.6}
+ /* Carrossel nativo: arraste/toque e navegação por Tab, sem biblioteca. */
+ .wd-blog-list{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:6px;overscroll-behavior-x:contain;padding:6px;margin:0 -6px 48px;scrollbar-width:thin;scrollbar-color:#cbb6ff transparent}
+ .wd-blog-item{flex:0 0 92%;scroll-snap-align:start}
+ .wd-blog-link{padding:24px 24px 42px;gap:32px 12px;grid-template-columns:minmax(0,1fr) 42px}
+ .wd-blog-article-title{font-size:28px}
+ .wd-blog-arrow{width:42px;height:42px}
+ .wd-blog-meta{font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){
+ .wd-blog-item,.wd-blog-link::before,.wd-blog-cta{transition:none}
+ .wd-blog-list{scroll-behavior:auto;scroll-snap-type:none}
+ .wd-statement-2-line{--wd-from:#efe7ff!important;--wd-to:#f5c3d8!important}
+}

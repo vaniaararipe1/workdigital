@@ -1,0 +1,22 @@
+WORK DIGITAL — HOME FINAL
+Versão do preview: 1f928b61030f33f73ddaf0c667665e5d88420252
+Preview: https://workdigital-hero-preview.onrender.com/?v=1f928b61
+
+index.html: código completo, sem edições, com CSS/JS incorporados e a simulação de partículas.
+Arquivos da raiz: CSS e JS globais da home, idênticos à versão final.
+media/ e img/: ativos locais usados na home, com os nomes atuais.
+ativos-externos/: cópias das imagens e do logo carregados do site original, com os nomes de origem.
+fontes/: folhas Google Fonts e arquivos de fontes usados.
+vendor/: cópia do GSAP externo.
+referencia/: cópias separadas dos CSS/JS incorporados e dos CSS dos componentes em Shadow DOM; não são substituições para os arquivos originais.
+REFERENCIA-ESTILOS.txt: seletores, fontes, cores, raios, sombras, blur e regras responsivas dos componentes solicitados.
+ATIVOS-E-DEPENDENCIAS.json: origem e identificação dos ativos, inclusive os incorporados no HTML.
+INVENTARIO-ARQUIVOS.json: tamanhos e hashes dos arquivos.
+
+Para visualizar: extraia tudo em uma pasta e sirva essa pasta pela raiz de um servidor HTTP, por exemplo:
+python3 -m http.server 8000
+Depois abra http://localhost:8000
+
+O index.html mantém exatamente as referências originais, inclusive URLs externas. As cópias adicionais desses ativos não foram ligadas automaticamente ao HTML, para não modificar o código final solicitado. A visualização fiel continua dependendo de internet para essas URLs. Não foi criada uma versão offline modificada.
+
+Nenhum arquivo do site online foi alterado e nenhum deploy foi executado durante esta exportação.

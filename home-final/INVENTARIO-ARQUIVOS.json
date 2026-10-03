@@ -1,0 +1,327 @@
+[
+  {
+    "arquivo": "ATIVOS-E-DEPENDENCIAS.json",
+    "bytes": 20046,
+    "sha256": "f5eb145ea1664e4a36b9bb4c4dee74acf84fc8cac64eba9b9a17bfa7b472100e"
+  },
+  {
+    "arquivo": "LEIA-ME.txt",
+    "bytes": 1620,
+    "sha256": "9e8a25ac500a4c8492e02b79f0c00a1a7d2275d7c113a254728a1b3303a9a5c9"
+  },
+  {
+    "arquivo": "REFERENCIA-ESTILOS.txt",
+    "bytes": 54082,
+    "sha256": "149ed0c9a3d3d2b07905829c43d0c8ea8f5799e2626d3d0675b0bcdd7dad6348"
+  },
+  {
+    "arquivo": "ativos-externos/6-motivos-que-mostram-a-importancia-de-ter-um-site-para-o-seu-negocio.jpg",
+    "bytes": 28117,
+    "sha256": "bf657ea5860d8485d32f5610f212b05396e130f69d179b90fd0cd9fe3a0b8f6e"
+  },
+  {
+    "arquivo": "ativos-externos/como-potencializar-a-sua-marca-com-o-blog-marketing.jpg",
+    "bytes": 43156,
+    "sha256": "928ad8738974ee0f7192653c160750f74889485cf26bf24435c1548d9c3939ba"
+  },
+  {
+    "arquivo": "ativos-externos/logo-work-digital-branco-criacao-de-site-sp.svg",
+    "bytes": 4891,
+    "sha256": "10bb54af4ce99a6de19dbfd3882408f4652a2cf0d9a8a42131dfcae2362c72fc"
+  },
+  {
+    "arquivo": "contact.css",
+    "bytes": 8660,
+    "sha256": "0ddda461e68131ef4a7cfb74c700aeb78732d00f49fc54cd501dc30adfaa2a96"
+  },
+  {
+    "arquivo": "contact.js",
+    "bytes": 21377,
+    "sha256": "907f6c4520c1f38f9138dd4b769757345eefcc1da1501e9433ad121daef9602d"
+  },
+  {
+    "arquivo": "fontes/1/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj42Vksj.ttf",
+    "bytes": 69356,
+    "sha256": "6c0346b8d297ebdc225832833e03e884a26ad99d265ecd3924d46e1ba285ea87"
+  },
+  {
+    "arquivo": "fontes/1/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7aUUsj.ttf",
+    "bytes": 69416,
+    "sha256": "3e699ead1876244fa392243054ddefe7cf631b488438828a8a100731a22ab995"
+  },
+  {
+    "arquivo": "fontes/1/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf",
+    "bytes": 69360,
+    "sha256": "ec926d5065eaca49a48f96e312bbae0bbc5733c24215cf5dfabbdccee926fef7"
+  },
+  {
+    "arquivo": "fontes/1/XRXI3I6Li01BKofiOc5wtlZ2di8HDGUmRTM.ttf",
+    "bytes": 125536,
+    "sha256": "1506fc96971e84d1a4ca89f0d1157a881b9ce217bbfa05d2b3c9e3c8f6723091"
+  },
+  {
+    "arquivo": "fontes/1/XRXI3I6Li01BKofiOc5wtlZ2di8HDLshRTM.ttf",
+    "bytes": 125528,
+    "sha256": "9ecbdba35fa74f10a1a916c31649b802a12deb9e66c7b1fe4650afcfd4d16971"
+  },
+  {
+    "arquivo": "fontes/1/XRXI3I6Li01BKofiOc5wtlZ2di8HDOUhRTM.ttf",
+    "bytes": 125564,
+    "sha256": "3760b7585b52d4beda5f161d0a86050b82e24428fec40f36edd7b872d0ee35b0"
+  },
+  {
+    "arquivo": "fontes/2/XRXI3I6Li01BKofiOc5wtlZ2di8HDGUmRTM.ttf",
+    "bytes": 125536,
+    "sha256": "1506fc96971e84d1a4ca89f0d1157a881b9ce217bbfa05d2b3c9e3c8f6723091"
+  },
+  {
+    "arquivo": "fontes/2/XRXI3I6Li01BKofiOc5wtlZ2di8HDLshRTM.ttf",
+    "bytes": 125528,
+    "sha256": "9ecbdba35fa74f10a1a916c31649b802a12deb9e66c7b1fe4650afcfd4d16971"
+  },
+  {
+    "arquivo": "fontes/3/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj42Vksj.ttf",
+    "bytes": 69356,
+    "sha256": "6c0346b8d297ebdc225832833e03e884a26ad99d265ecd3924d46e1ba285ea87"
+  },
+  {
+    "arquivo": "fontes/3/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7aUUsj.ttf",
+    "bytes": 69416,
+    "sha256": "3e699ead1876244fa392243054ddefe7cf631b488438828a8a100731a22ab995"
+  },
+  {
+    "arquivo": "fontes/3/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf",
+    "bytes": 69360,
+    "sha256": "ec926d5065eaca49a48f96e312bbae0bbc5733c24215cf5dfabbdccee926fef7"
+  },
+  {
+    "arquivo": "fontes/3/XRXI3I6Li01BKofiOc5wtlZ2di8HDGUmRTM.ttf",
+    "bytes": 125536,
+    "sha256": "1506fc96971e84d1a4ca89f0d1157a881b9ce217bbfa05d2b3c9e3c8f6723091"
+  },
+  {
+    "arquivo": "fontes/3/XRXI3I6Li01BKofiOc5wtlZ2di8HDLshRTM.ttf",
+    "bytes": 125528,
+    "sha256": "9ecbdba35fa74f10a1a916c31649b802a12deb9e66c7b1fe4650afcfd4d16971"
+  },
+  {
+    "arquivo": "fontes/4/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj42Vksj.ttf",
+    "bytes": 69356,
+    "sha256": "6c0346b8d297ebdc225832833e03e884a26ad99d265ecd3924d46e1ba285ea87"
+  },
+  {
+    "arquivo": "fontes/4/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVksj.ttf",
+    "bytes": 69308,
+    "sha256": "3e756954468ff1cb302dae0414262e72f76a67d87bef3fa1f3226cd0fb9b2d85"
+  },
+  {
+    "arquivo": "fontes/4/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7aUUsj.ttf",
+    "bytes": 69416,
+    "sha256": "3e699ead1876244fa392243054ddefe7cf631b488438828a8a100731a22ab995"
+  },
+  {
+    "arquivo": "fontes/4/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf",
+    "bytes": 69360,
+    "sha256": "ec926d5065eaca49a48f96e312bbae0bbc5733c24215cf5dfabbdccee926fef7"
+  },
+  {
+    "arquivo": "fontes/google-fonts-1.css",
+    "bytes": 1356,
+    "sha256": "3c5d7a214a30ebf1f45c3c18c8c962ee395847feabce6be43c48cc4a8cfbb1fd"
+  },
+  {
+    "arquivo": "fontes/google-fonts-2.css",
+    "bytes": 430,
+    "sha256": "42de614fa0a450ec15ef404b28e6c9b8638d046fcc49f3552dea230a31715d25"
+  },
+  {
+    "arquivo": "fontes/google-fonts-3.css",
+    "bytes": 1141,
+    "sha256": "03aa414125c442159d6b3710f6757e4a8821c4c5d3427026cc58c02f847793c6"
+  },
+  {
+    "arquivo": "fontes/google-fonts-4.css",
+    "bytes": 948,
+    "sha256": "8d03eb23399e2fdc3d8e60573c7252f7990a7fe13082e4de2267308760ce0eb4"
+  },
+  {
+    "arquivo": "footer.js",
+    "bytes": 10610,
+    "sha256": "421d397b6de1456882cbfafe02a24cf156e3be523d5de25dd062d08c99ad90fe"
+  },
+  {
+    "arquivo": "img/logo-work-digital.svg",
+    "bytes": 5107,
+    "sha256": "46ff085a68ed8a0a9c0657947d6ce15cd538eeeea6ce28619f485bbcdeaea92e"
+  },
+  {
+    "arquivo": "index.html",
+    "bytes": 2643544,
+    "sha256": "b0db7a333bcfac8b2b247f6ebfd101d0ea73a779cec7c0cb5620a8ef69410bdd"
+  },
+  {
+    "arquivo": "media/cert-loja-integrada.svg",
+    "bytes": 8682,
+    "sha256": "56bf6fcde67565fd3b7affcac16fc8a90cc6d6d9c256b5f51cec60d0c4065088"
+  },
+  {
+    "arquivo": "media/cert-mailchimp.svg",
+    "bytes": 6460,
+    "sha256": "22a7bcbbb6f8d2c4f1f63703bb4e0393b3b0cb489beeaf2d30e716821aed02e6"
+  },
+  {
+    "arquivo": "media/cert-nuvem-shop.svg",
+    "bytes": 2700,
+    "sha256": "f3639d7c0c030da91495889b3241c5f4011746abebd1732d595a0284b6e49cc4"
+  },
+  {
+    "arquivo": "media/cert-rd-station.svg",
+    "bytes": 2058,
+    "sha256": "cdbea0e7e5fa4f65bd11242a46160b60a2761e8683dda8baf2d363d99fe96a93"
+  },
+  {
+    "arquivo": "media/cert-shopify.svg",
+    "bytes": 3131,
+    "sha256": "60c65eaddffbf9655e4ac4f506ff0599114f2982b6322b1dbaa39e937f228182"
+  },
+  {
+    "arquivo": "media/cert-wordpress.svg",
+    "bytes": 4344,
+    "sha256": "731b0d51e31eb0e647ed1c27998ad6e697718c41942cbf422df63d3bc3790e28"
+  },
+  {
+    "arquivo": "media/criacao-de-sites-servico-blog.webm",
+    "bytes": 548459,
+    "sha256": "017d6da1344d30b340e0c15b88892d05fe4d12070b0f15b977538d4dc094d583"
+  },
+  {
+    "arquivo": "media/criacao-de-sites-servico-landing-page.webm",
+    "bytes": 750974,
+    "sha256": "b852d90e5d0a45cb4aaec9c8467e7ec820290105999b28f07d7b5d9fd74ddca2"
+  },
+  {
+    "arquivo": "media/criacao-de-sites-servico-sites.webm",
+    "bytes": 696899,
+    "sha256": "b7e1db13cd4d2690a5d5c0e0d9a7034b6676bc3f54ef0f0af46e1ad98d0d892d"
+  },
+  {
+    "arquivo": "media/servico-blog.jpg",
+    "bytes": 93569,
+    "sha256": "5654d39e7fef3d59115b3c0b6c50b269ede32188fcaa73221d03b06dbbb2c29f"
+  },
+  {
+    "arquivo": "media/servico-landing-page.jpg",
+    "bytes": 116981,
+    "sha256": "d70e3fc7f9f253cf4165b2581ca0ffd34fd952a6e1dbdf925e17c6059b8aabaa"
+  },
+  {
+    "arquivo": "media/servico-sites.jpg",
+    "bytes": 96229,
+    "sha256": "b217d89ad676663bd925c5314c514aaddca094ccf0352ede3f4cd8d9c3e1e4e8"
+  },
+  {
+    "arquivo": "referencia/footer-shadow.css",
+    "bytes": 3401,
+    "sha256": "8546ad20feb5aeb535917fc088ab37f61e82ad14983132c627f7e6baf87546d7"
+  },
+  {
+    "arquivo": "referencia/inline-css-01.css",
+    "bytes": 16271,
+    "sha256": "42c7a946f13e7084c1d0943390cd7d15a6fbd73dc6091eaf5b5cedfa63bd4d41"
+  },
+  {
+    "arquivo": "referencia/inline-css-02.css",
+    "bytes": 6767,
+    "sha256": "c3d4a47123e1a5e5b449b90b57816d5e5abaf52b10e08a2e3a029a154d42a292"
+  },
+  {
+    "arquivo": "referencia/inline-css-03.css",
+    "bytes": 2149,
+    "sha256": "78467c1316e3207e9a468f4e87d6446b397d158ba3002e115dd8dd3ceae29521"
+  },
+  {
+    "arquivo": "referencia/inline-css-04.css",
+    "bytes": 3922,
+    "sha256": "605bf67a42952cab1d9b7098336a49313f9f0561dc7e50bbea0aeec9717c3b26"
+  },
+  {
+    "arquivo": "referencia/inline-css-05.css",
+    "bytes": 7766,
+    "sha256": "724c975e6a25cd9b355bf5b362ba82eb610658bad4dcfb22771f3fef72b757f5"
+  },
+  {
+    "arquivo": "referencia/inline-css-06.css",
+    "bytes": 4841,
+    "sha256": "0d9b1779b4f9be2f2b94e9a3ca2d1595b2dfa64f0f46823425aa4fa39b890522"
+  },
+  {
+    "arquivo": "referencia/inline-css-07.css",
+    "bytes": 6135,
+    "sha256": "e704774e7530bfeb98bce3be6f791e9e3582fbef18fed7148aab7a36463da356"
+  },
+  {
+    "arquivo": "referencia/inline-js-01.js",
+    "bytes": 2819,
+    "sha256": "5b2c0e28f74fb44269adbf4d6926ec029a69df0f965d3e44bfde571a9a7bec8e"
+  },
+  {
+    "arquivo": "referencia/inline-js-02.js",
+    "bytes": 933,
+    "sha256": "2f4af1d8f8aea8ace75535c87ae5e2d9baf47ac343bd82453c83e9cd1fa1a1b4"
+  },
+  {
+    "arquivo": "referencia/inline-js-03.js",
+    "bytes": 3302,
+    "sha256": "a823efa6b18ac51e4048dd4c460cb85f7b82bdff4a51988822ab5ae62e2e5575"
+  },
+  {
+    "arquivo": "referencia/inline-js-04.js",
+    "bytes": 2241,
+    "sha256": "da73e2f43c2d694146839204fb27393469553af2ece2b6c102f41f19a4387d53"
+  },
+  {
+    "arquivo": "referencia/inline-js-05.js",
+    "bytes": 3007,
+    "sha256": "ea1ccbe6d0aabe0dd47ff0a168c3e02027f15cbe8a47c45a33dc92650fcf63ea"
+  },
+  {
+    "arquivo": "referencia/inline-js-06.js",
+    "bytes": 2644,
+    "sha256": "d1e06e62b19c671526d89ef548ab8a14889af40f9fb113820b0305f628dcf12d"
+  },
+  {
+    "arquivo": "referencia/inline-js-07.js",
+    "bytes": 5415,
+    "sha256": "b48ab67b5684ac9637ecfe11d2086cc0a353f4b66e7308264c120b30c7ea3f78"
+  },
+  {
+    "arquivo": "referencia/inline-js-08.js",
+    "bytes": 1389433,
+    "sha256": "723be4aac9f45e77b399bac59ad691c382b6f2c0e92533cc50aa72981176e9b6"
+  },
+  {
+    "arquivo": "referencia/whatsapp-shadow.css",
+    "bytes": 3858,
+    "sha256": "0fd6154c1481474407eb823a0b2dcd2efc939070f7390a0ec532da458e946fba"
+  },
+  {
+    "arquivo": "vendor/gsap.min.js",
+    "bytes": 72927,
+    "sha256": "92bb9a96476f983d212a2bc4f54c889039c1696dd4461d40a736860938570fbb"
+  },
+  {
+    "arquivo": "wd-revision.css",
+    "bytes": 17970,
+    "sha256": "3b4918d301d24837092d11babd84a4eb74ddf42e8f006d73edc3e8c3407badf5"
+  },
+  {
+    "arquivo": "wd-revision.js",
+    "bytes": 6702,
+    "sha256": "20d96feee1627a4dba89b4f611beca464a2b8354c6052caf25a8abcee56dbfe0"
+  },
+  {
+    "arquivo": "whatsapp.js",
+    "bytes": 9546,
+    "sha256": "a81427b2b76d033b966d37f6faace3d45f65128ec8244d81e346247510b09a83"
+  }
+]

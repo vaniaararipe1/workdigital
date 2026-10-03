@@ -1,0 +1,1550 @@
+WORK DIGITAL — REFERENCIA DOS ESTILOS DA HOME FINAL
+Versao: 1f928b61030f33f73ddaf0c667665e5d88420252
+Data da copia: 2026-10-03
+Preview: https://workdigital-hero-preview.onrender.com/?v=1f928b61
+
+Codigo original preservado. As regras abaixo sao transcritas dos arquivos, incluindo overrides e media queries; a ordem da cascata e o !important determinam o resultado.
+footer.js e whatsapp.js usam Shadow DOM: os seletores dessas partes ficam dentro de seus componentes.
+CSS de contato e inserido no head antes da inicializacao; seu script tambem inclui a mesma folha.
+Fontes: Space Grotesk (titulos/CTAs); Nunito (textos); fallback Arial/system-ui/sans-serif conforme cada seletor. Pesos e tamanhos exatos estao nas regras abaixo e nas folhas Google Fonts incluidas.
+Cursor: nao ha um cursor grafico personalizado da marca. Usa o cursor nativo do navegador; cursor:pointer/default e caret-color dos campos estao nas regras. O realce azul da captura do navegador nao e um ativo do site.
+
+VARIAVEIS CSS / CORES / RAIOS / MEDIDAS GLOBAIS
+Fonte: index.html <style> 1; contexto: padrao
+:root { --bg:#121316;
+  --bg-deep:#16171B;
+  --ink:#f6f6f8;
+  --muted:#a7abae;
+  --purple:#6025E1;
+  --green:#04CD8F;
+  --wine:#C00252; }
+
+Fonte: wd-revision.css; contexto: padrao
+:root { --wd-uptitle-gradient:linear-gradient(90deg,#FFFFFF 0%,#EDE4FF 45%,#F7C9EC 100%);--wd-description-font:"Nunito",system-ui,sans-serif;--wd-article-hover:linear-gradient(0deg,#301258,#4b247e) }
+
+Fonte: wd-revision.css; contexto: padrao
+:root { --wd-layout-max:1440px;--wd-layout-gutter:3vw;--wd-cta-weight:500;--wd-cta-letter-spacing:.1em }
+
+Fonte: wd-revision.css; contexto: @media(max-width:991px)
+:root { --wd-layout-gutter:24px }
+
+Fonte: wd-revision.css; contexto: @media(max-width:479px)
+:root { --wd-layout-gutter:16px }
+
+Fonte: wd-revision.css; contexto: padrao
+:root { --wd-display-size:clamp(44px,6.835vw,120px) }
+
+Fonte: wd-revision.css; contexto: @media(max-width:991px)
+:root { --wd-display-size:clamp(44px,7.2vw,76px) }
+
+Fonte: wd-revision.css; contexto: @media(max-width:600px)
+:root { --wd-display-size:clamp(36px,9.4vw,56px) }
+
+Fonte: wd-revision.css; contexto: padrao
+:root { --wd-cta-radius:9999px }
+
+Fonte: wd-revision.css; contexto: padrao
+:root { --wd-panel-radius:32px;--wd-inner-radius:24px;--wd-media-radius:20px }
+
+
+========================================================================
+MENU
+========================================================================
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .site-header
+position:fixed;top:18px;left:0;right:0;z-index:90;padding:0 clamp(18px,3.2vw,48px);pointer-events:none
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .site-nav
+pointer-events:auto;max-width:1240px;margin:0 auto;height:72px;display:flex;align-items:center;gap:34px;padding:0 14px 0 20px;border:1px solid rgba(255,255,255,.10);border-radius:20px;background:rgba(18,19,22,.58);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%);box-shadow:0 18px 55px rgba(0,0,0,.18)
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .brand
+display:flex;align-items:center;flex:0 0 auto;margin-right:auto
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .brand img
+display:block;width:142px;height:auto
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-links
+display:flex;align-items:center;gap:32px
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-item,.nav-link
+position:relative;display:flex;align-items:center;height:72px;color:#f7f6fb;text-decoration:none;font-size:12px;font-weight:650;letter-spacing:.075em;text-transform:uppercase;white-space:nowrap
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-link:after,.nav-trigger:after
+content:"";position:absolute;left:0;right:100%;bottom:19px;height:1px;background:var(--green);transition:right .32s cubic-bezier(.22,1,.36,1)
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-link:hover:after,.nav-item:hover .nav-trigger:after
+right:0
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-trigger
+appearance:none;border:0;background:none;color:#f7f6fb;font-size:12px;text-transform:uppercase;height:72px;padding:0;cursor:pointer;display:flex;align-items:center;gap:8px;position:relative
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-trigger svg
+width:11px;height:11px;transition:transform .3s ease
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-item:hover .nav-trigger svg,.nav-item:focus-within .nav-trigger svg
+transform:rotate(180deg)
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .mobile-toggle
+display:none;width:44px;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;align-items:center;justify-content:center
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .mobile-toggle i,.mobile-toggle i:before,.mobile-toggle i:after
+display:block;width:18px;height:1px;background:#fff;position:relative;content:""
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .mobile-toggle i:before
+position:absolute;top:-6px
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .mobile-toggle i:after
+position:absolute;top:6px
+
+Arquivo: index.html <style> 1
+Contexto: @media(max-width:980px)
+Seletor: .nav-links,.lang,.nav-cta
+display:none
+
+Arquivo: index.html <style> 1
+Contexto: @media(max-width:980px)
+Seletor: .site-nav
+height:64px;border-radius:17px;padding-right:10px
+
+Arquivo: index.html <style> 1
+Contexto: @media(max-width:980px)
+Seletor: .brand img
+width:132px
+
+Arquivo: index.html <style> 1
+Contexto: @media(max-width:980px)
+Seletor: .mobile-toggle
+display:flex
+
+Arquivo: index.html <style> 1
+Contexto: @media(max-width:980px)
+Seletor: .site-header
+top:12px;padding-inline:12px
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .site-nav
+position:relative;isolation:isolate;background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .site-nav::before
+content:"";position:absolute;inset:0;border-radius:inherit;background:rgba(18,19,22,.58);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%);z-index:-1;pointer-events:none
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-nav-open .nav-links
+display:flex;position:absolute;top:76px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;padding:16px;border:1px solid #bda4ff33;border-radius:16px;background:#24123edb;backdrop-filter:blur(30px)
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-nav-open .nav-links .nav-link,.site-nav.wd-nav-open .nav-links .nav-item,.site-nav.wd-nav-open .nav-links .nav-trigger
+height:auto;min-height:44px;width:100%
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-nav-open .nav-links .nav-item
+flex-wrap:wrap
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-nav-open .nav-links .dropdown
+position:static;display:none;transform:none!important;opacity:1;visibility:visible;width:100%;background:transparent;box-shadow:none;border:0;backdrop-filter:none
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-nav-open .nav-links .nav-item.wd-solutions-open .dropdown
+display:block
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:600px)
+Seletor: .site-nav
+gap:8px;padding-left:12px
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:600px)
+Seletor: .site-nav .brand img
+width:108px
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:360px)
+Seletor: .site-nav .brand img
+width:92px
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .site-nav
+display:grid;grid-template-columns:1fr auto 1fr;gap:20px;padding-left:14px;padding-right:14px
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .site-nav .brand
+margin-right:0;justify-self:start
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .site-nav .nav-links
+justify-self:center
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-nav-actions
+display:flex;align-items:center;justify-self:end;gap:24px;min-width:0
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-language .nav-trigger
+display:flex;align-items:center;gap:7px
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav
+grid-template-columns:1fr auto;gap:16px
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .wd-nav-actions
+gap:16px
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-nav-open .nav-links .nav-item.wd-dropdown-open .dropdown
+display:block
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:600px)
+Seletor: .wd-nav-actions
+gap:10px
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:600px)
+Seletor: .wd-language .nav-trigger
+font-size:11px;letter-spacing:0;gap:4px
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .site-header
+padding-inline:var(--wd-layout-gutter)
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .site-nav,#wd-explore .wd-explore-layout
+width:100%;max-width:var(--wd-layout-max)
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-language .nav-trigger
+width:auto;padding-inline:10px;white-space:nowrap
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .site-nav,#wd-explore .wd-explore-layout,.wd-works-card,.wd-tr-card,.wd-trust-panel,.wd-blog-link,.wd-blog-item
+border-radius:var(--wd-panel-radius)!important
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav
+z-index:2;transition:border-color .2s,box-shadow .2s
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav::before
+transition:opacity .15s
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-header.wd-contact-header-open
+z-index:190
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav.wd-contact-open
+border-color:transparent;box-shadow:none
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav.wd-contact-open .dropdown
+opacity:0!important;visibility:hidden!important;pointer-events:none!important
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav.wd-contact-open .wd-language
+opacity:0!important;visibility:hidden!important;pointer-events:none!important
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav.wd-contact-open .wd-contact-close-trigger
+justify-content:flex-end!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;color:#F7F6FB!important;outline:none
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav.wd-contact-open .wd-contact-close-trigger::before,.site-nav.wd-contact-open .wd-contact-close-trigger::after
+display:none!important
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav.wd-contact-open::before
+opacity:0;transition:none
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav button.nav-cta
+font-family:inherit;cursor:pointer
+
+Arquivo: contact.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-nav-open .wd-contact-mobile-trigger
+display:flex!important;align-items:center;justify-content:center;width:100%;min-height:46px;margin-top:12px
+
+Arquivo: contact.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-contact-open .mobile-toggle i
+background:transparent
+
+Arquivo: contact.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-contact-open .mobile-toggle i::before
+top:0;transform:rotate(45deg)
+
+Arquivo: contact.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-contact-open .mobile-toggle i::after
+top:0;transform:rotate(-45deg)
+
+
+========================================================================
+DROPDOWNS E IDIOMAS
+========================================================================
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-item,.nav-link
+position:relative;display:flex;align-items:center;height:72px;color:#f7f6fb;text-decoration:none;font-size:12px;font-weight:650;letter-spacing:.075em;text-transform:uppercase;white-space:nowrap
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-link:hover:after,.nav-item:hover .nav-trigger:after
+right:0
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-item:hover .nav-trigger svg,.nav-item:focus-within .nav-trigger svg
+transform:rotate(180deg)
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .dropdown
+position:absolute;top:62px;left:50%;width:min(390px,88vw);padding:12px;border:1px solid rgba(255,255,255,.13);border-radius:18px;background:rgba(26,24,32,.48);backdrop-filter:blur(28px) saturate(170%);-webkit-backdrop-filter:blur(28px) saturate(170%);box-shadow:0 24px 70px rgba(0,0,0,.34);opacity:0;visibility:hidden;transform:translate(-50%,12px) scale(.985);transform-origin:50% 0;transition:opacity .24s ease,transform .34s cubic-bezier(.22,1,.36,1),visibility .24s
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-item:hover .dropdown,.nav-item:focus-within .dropdown
+opacity:1;visibility:visible;transform:translate(-50%,0) scale(1)
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .dropdown a
+display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:12px;min-height:66px;padding:12px 14px;border-radius:12px;color:#f7f6fb;text-decoration:none;transition:background .22s ease,transform .22s ease
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .dropdown a:hover
+background:rgba(255,255,255,.075);transform:translateX(2px)
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .drop-index
+font-size:11px;color:var(--green);letter-spacing:.08em
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .drop-copy strong
+display:block;font-size:14px;font-weight:600;letter-spacing:-.01em;text-transform:none
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .drop-copy small
+display:block;margin-top:3px;color:#a9b0b0;font-size:12px;font-weight:400;letter-spacing:0;text-transform:none
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .drop-arrow
+font-size:18px;color:#8c9594;transition:transform .22s ease,color .22s ease
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .dropdown a:hover .drop-arrow
+transform:translateX(3px);color:var(--green)
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .dropdown
+background:rgba(28,22,42,.28);backdrop-filter:blur(36px) saturate(145%);-webkit-backdrop-filter:blur(36px) saturate(145%);border:1px solid rgba(255,255,255,.14);box-shadow:0 22px 60px rgba(0,0,0,.20)
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .dropdown a
+display:flex;gap:0;padding:16px 18px;min-height:68px
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: p:not(.payoff-copy):not(.wd-transformacao-closing-text):not(.wd-works-eyebrow):not(.wd-transformacao-eyebrow):not(.wd-blog-eyebrow):not(.wd-trust-eyebrow),blockquote,.drop-copy small
+font-family:var(--wd-description-font)
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .dropdown .drop-copy strong
+font-size:16px
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .dropdown .drop-copy small
+font-size:15px;line-height:1.5
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-nav-open .nav-links .nav-link,.site-nav.wd-nav-open .nav-links .nav-item,.site-nav.wd-nav-open .nav-links .nav-trigger
+height:auto;min-height:44px;width:100%
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-nav-open .nav-links .nav-item
+flex-wrap:wrap
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-nav-open .nav-links .dropdown
+position:static;display:none;transform:none!important;opacity:1;visibility:visible;width:100%;background:transparent;box-shadow:none;border:0;backdrop-filter:none
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-nav-open .nav-links .nav-item.wd-solutions-open .dropdown
+display:block
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-language .nav-trigger
+display:flex;align-items:center;gap:7px
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-language .wd-language-globe
+width:18px;height:18px;transform:none!important
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-language
+width:auto;min-width:0
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-language .dropdown
+width:max-content;min-width:120px;max-width:160px;left:auto;right:0;transform:translateY(12px) scale(.985)
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-language:hover .dropdown,.wd-language:focus-within .dropdown,.wd-language.wd-dropdown-open .dropdown
+transform:translateY(0) scale(1)
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .nav-item.wd-dropdown-open .dropdown
+opacity:1;visibility:visible
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .nav-item.wd-dropdown-dismissed .dropdown
+opacity:0;visibility:hidden
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .dropdown a:focus-visible
+background:rgba(255,255,255,.075);transform:translateX(2px);outline:2px solid #bda4ff;outline-offset:-2px
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .wd-language
+height:64px
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .wd-language .dropdown
+top:62px
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:980px)
+Seletor: .site-nav.wd-nav-open .nav-links .nav-item.wd-dropdown-open .dropdown
+display:block
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:600px)
+Seletor: .wd-language .nav-trigger
+font-size:11px;letter-spacing:0;gap:4px
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:600px)
+Seletor: .wd-language .wd-language-globe
+width:16px;height:16px
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-language .nav-trigger
+width:auto;padding-inline:10px;white-space:nowrap
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav.wd-contact-open .dropdown
+opacity:0!important;visibility:hidden!important;pointer-events:none!important
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav.wd-contact-open .wd-language
+opacity:0!important;visibility:hidden!important;pointer-events:none!important
+
+
+========================================================================
+BOTOES / CTAs
+========================================================================
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-cta
+height:46px;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:0 20px;border-radius:6px;background:linear-gradient(90deg,#CBFFFC 0%,#EDFFFE 26.25%,#FFFDFA 47.57%,#FAD1FF 88.96%);background-size:180% 100%;background-position:0% 50%;color:#222;text-decoration:none;font-size:14px;line-height:1;text-transform:uppercase;white-space:nowrap;border:0;transition:background-position .55s cubic-bezier(.22,1,.36,1),color .3s ease
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-cta span
+transition:transform .35s ease
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-cta:hover
+background-position:100% 50%;color:#111
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-cta:hover span
+transform:translate(3px,-3px)
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .hero-cta
+display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:28px;height:52px;padding:0 22px;border-radius:6px;background:linear-gradient(90deg,#CBFFFC 0%,#EDFFFE 26.25%,#FFFDFA 47.57%,#FAD1FF 88.96%);background-size:180% 100%;background-position:0% 50%;color:#222;font-size:14px;line-height:1;text-transform:uppercase;border:0;transition:background-position .55s cubic-bezier(.22,1,.36,1),color .3s ease
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .hero-cta span
+transition:transform .35s ease
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .hero-cta:hover
+background-position:100% 50%;color:#111
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .hero-cta:hover span
+transform:translate(3px,-3px)
+
+Arquivo: index.html <style> 1
+Contexto: @media(max-width:980px)
+Seletor: .nav-links,.lang,.nav-cta
+display:none
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .hero-cta
+margin-top:48px
+
+Arquivo: index.html <style> 1
+Contexto: @media(max-width:760px)
+Seletor: .hero-cta
+margin-top:32px;font-size:12px;padding-inline:16px
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .hero-cta,.hero-cta:hover,.hero-cta:focus-visible
+text-decoration:none
+
+Arquivo: index.html <style> 2
+Contexto: padrao
+Seletor: .wd-explore-card:focus-visible,.wd-explore-cta:focus-visible
+outline:2px solid #bda4ff;outline-offset:5px
+
+Arquivo: index.html <style> 2
+Contexto: padrao
+Seletor: .wd-explore-cta
+display:flex;align-items:center;justify-content:center;gap:16px;
+ width:max-content;max-width:100%;margin-left:auto;min-height:52px;padding:14px 20px;
+ border-radius:6px;text-decoration:none;color:#fff;font-size:14px;line-height:1;white-space:nowrap;
+ border:0;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);
+ background-size:280% 100%;background-position:100% 0%;
+ transition:background-position 600ms ease,color 200ms ease
+
+Arquivo: index.html <style> 2
+Contexto: padrao
+Seletor: .wd-explore-cta:hover,.wd-explore-cta:focus-visible
+background-position:0% 0%;color:#24123e
+
+Arquivo: index.html <style> 2
+Contexto: padrao
+Seletor: .wd-explore-cta-icon
+width:14px;height:14px;flex:0 0 14px;color:inherit
+
+Arquivo: index.html <style> 2
+Contexto: @media(max-width:991px)
+Seletor: .wd-explore-cta
+margin:0;white-space:normal
+
+Arquivo: index.html <style> 3
+Contexto: padrao
+Seletor: #wd-explore .wd-explore-header>.wd-explore-cta
+align-self:start;margin-top:40px
+
+Arquivo: index.html <style> 3
+Contexto: @media(max-width:991px)
+Seletor: #wd-explore .wd-explore-header>.wd-explore-cta
+margin-top:0
+
+Arquivo: index.html <style> 5
+Contexto: padrao
+Seletor: .wd-transformacao-cta
+position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:16px;width:max-content;max-width:calc(100% - 40px);min-height:52px;margin:48px 0 0 40px;padding:14px 20px;border:0;border-radius:6px;text-decoration:none;color:#fff;font-size:14px;line-height:1;white-space:nowrap;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0%;transition:background-position 600ms ease,color 200ms ease
+
+Arquivo: index.html <style> 5
+Contexto: padrao
+Seletor: .wd-transformacao-cta:hover,.wd-transformacao-cta:focus-visible
+background-position:0% 0%;color:#24123e
+
+Arquivo: index.html <style> 5
+Contexto: padrao
+Seletor: .wd-transformacao-cta:focus-visible
+outline:2px solid #bda4ff;outline-offset:5px
+
+Arquivo: index.html <style> 5
+Contexto: padrao
+Seletor: .wd-transformacao-cta-icon
+width:14px;height:14px;flex:0 0 14px;color:inherit
+
+Arquivo: index.html <style> 5
+Contexto: @media(max-width:991px)
+Seletor: .wd-transformacao-cta
+margin:32px 0 0;max-width:100%
+
+Arquivo: index.html <style> 5
+Contexto: @media(prefers-reduced-motion:reduce)
+Seletor: .wd-transformacao-cta
+transition:none
+
+Arquivo: index.html <style> 5
+Contexto: padrao
+Seletor: .wd-transformacao-cta
+position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:16px;width:max-content;max-width:100%;min-height:54px;margin:40px 0 0;padding:14px 20px;border:0;border-radius:4px;text-decoration:none;color:#fff;font-size:14px;line-height:1;white-space:nowrap;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0%;transition:background-position 600ms ease,color 200ms ease
+
+Arquivo: index.html <style> 5
+Contexto: padrao
+Seletor: .wd-transformacao-cta:hover,.wd-transformacao-cta:focus-visible
+background-position:0% 0%;color:#24123e
+
+Arquivo: index.html <style> 5
+Contexto: padrao
+Seletor: .wd-transformacao-cta:focus-visible
+outline:2px solid #bda4ff;outline-offset:5px
+
+Arquivo: index.html <style> 5
+Contexto: padrao
+Seletor: .wd-transformacao-cta-icon
+width:14px;height:14px;flex:0 0 14px;color:inherit
+
+Arquivo: index.html <style> 5
+Contexto: @media(max-width:991px)
+Seletor: .wd-transformacao-cta
+margin-top:32px
+
+Arquivo: index.html <style> 5
+Contexto: @media(max-width:600px)
+Seletor: .wd-transformacao-cta
+font-size:13px
+
+Arquivo: index.html <style> 5
+Contexto: @media(prefers-reduced-motion:reduce)
+Seletor: .wd-transformacao-cta
+transition:none
+
+Arquivo: index.html <style> 7
+Contexto: padrao
+Seletor: .wd-blog-cta
+display:flex;align-items:center;justify-content:center;gap:20px;min-height:54px;max-width:100%;padding:18px 20px;border-radius:6px;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0;color:#fff;text-decoration:none;font-size:inherit;transition:background-position 600ms ease,color 200ms ease
+
+Arquivo: index.html <style> 7
+Contexto: padrao
+Seletor: .wd-blog-cta svg
+flex:none;width:14px;height:14px
+
+Arquivo: index.html <style> 7
+Contexto: padrao
+Seletor: .wd-blog-cta:hover,.wd-blog-cta:focus-visible
+background-position:0 0;color:#2b1450
+
+Arquivo: index.html <style> 7
+Contexto: padrao
+Seletor: .wd-blog-link:focus-visible,.wd-blog-cta:focus-visible
+outline:2px solid #e7dcff;outline-offset:5px
+
+Arquivo: index.html <style> 7
+Contexto: @media (prefers-reduced-motion:reduce)
+Seletor: .wd-blog-item,.wd-blog-link::before,.wd-blog-cta
+transition:none
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-cta,button
+font-family:"Space Grotesk",system-ui,sans-serif;font-weight:var(--wd-cta-weight);letter-spacing:var(--wd-cta-letter-spacing)
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-tr-content .wd-transformacao-cta
+margin-left:0
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-cta
+border-radius:var(--wd-cta-radius)!important
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-cta::before,.wd-cta::after
+border-radius:inherit
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: #wd-explore .wd-explore-header>.wd-explore-cta
+margin-right:20px;max-width:calc(100% - 20px)
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:991px)
+Seletor: #wd-explore .wd-explore-header>.wd-explore-cta
+margin-right:0;max-width:100%
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav.wd-contact-open .wd-contact-close-trigger
+justify-content:flex-end!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;color:#F7F6FB!important;outline:none
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav.wd-contact-open .wd-contact-close-trigger::before,.site-nav.wd-contact-open .wd-contact-close-trigger::after
+display:none!important
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-close-trigger .wd-contact-cta-label
+width:100%;justify-content:flex-end
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-close-icon
+display:flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;transition:opacity .3s ease
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-close-icon svg
+display:block;width:28px;height:28px
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-close-trigger:hover .wd-contact-close-icon
+opacity:.7
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-close-trigger:focus-visible .wd-contact-close-icon
+outline:2px solid #bda4ff;outline-offset:2px
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav button.nav-cta
+font-family:inherit;cursor:pointer
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .nav-cta.wd-cta
+display:inline-flex;flex:none;align-items:center;justify-content:center;gap:10px;height:46px;min-height:46px;padding:0 20px;border:0;border-radius:9999px;background:linear-gradient(90deg,#CBFFFC 0%,#EDFFFE 26.25%,#FFFDFA 47.57%,#FAD1FF 88.96%);background-size:180% 100%;background-position:0% 50%;color:#222;font:500 14px/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background-position .55s cubic-bezier(.22,1,.36,1),color .3s ease
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .nav-cta.wd-cta:hover,.wd-contact .nav-cta.wd-cta:focus-visible
+background-position:100% 50%;color:#111
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .nav-cta span
+transition:transform .35s ease
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .nav-cta:hover span,.wd-contact .nav-cta:focus-visible span
+transform:translate(3px,-3px)
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .wd-contact-submit
+width:145px
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-submit:disabled
+opacity:.75;cursor:wait
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-cta-label
+display:inline-flex;align-items:center;gap:10px;font-style:normal
+
+Arquivo: contact.css
+Contexto: @media(max-width:768px)
+Seletor: .wd-contact .wd-contact-submit
+width:125px;padding-inline:14px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-cta
+display:flex;align-items:center;justify-content:center;gap:20px;min-height:54px;max-width:100%;padding:18px 20px;border-radius:var(--wd-cta-radius,9999px);color:#fff;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0;text-decoration:none;font-size:14px;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:var(--wd-cta-weight,500);line-height:1;letter-spacing:var(--wd-cta-letter-spacing,.1em);transition:background-position 600ms ease,color 200ms ease
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-cta svg
+flex:none;width:14px;height:14px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-cta:hover,.wd-footer-cta:focus-visible
+background-position:0 0;color:#2b1450
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-actions
+display:grid;gap:8px
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-action
+display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px;border:1px solid #27272a;border-radius:var(--wd-cta-radius,9999px);background:#09090b;color:#d4d4d8;text-decoration:none;font-size:12px;transition:background .3s,border-color .3s
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-action:hover
+border-color:#10b981;background:#022c2222;color:#fff
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-open
+width:100%;padding:12px;display:flex;gap:8px;align-items:center;justify-content:center;border:0;border-radius:var(--wd-cta-radius,9999px);background:#059669;color:#fff;font-size:12px;font-weight:700;text-decoration:none
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-open svg
+width:20px;height:20px
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-action[aria-disabled=true],.wd-whatsapp-open[aria-disabled=true]
+opacity:.65;cursor:default
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: button,.wd-whatsapp-action,.wd-whatsapp-open
+font-family:"Space Grotesk",system-ui,sans-serif;font-weight:var(--wd-cta-weight,500);letter-spacing:var(--wd-cta-letter-spacing,.1em)
+
+
+========================================================================
+UPTITLES
+========================================================================
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .intro-title
+margin:0;line-height:1;letter-spacing:-.04em;font-weight:500;text-transform:none
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .intro-title span
+display:block
+
+Arquivo: index.html <style> 1
+Contexto: @media(max-width:760px)
+Seletor: .intro-title
+font-size:clamp(48px,13vw,68px)
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .intro-title
+line-height:1;letter-spacing:-.045em
+
+Arquivo: index.html <style> 1
+Contexto: @media(max-width:760px)
+Seletor: .intro-title
+font-size:clamp(40px,10.6vw,68px)
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-uptitle:not(.intro-title)
+font-family:"Space Grotesk",system-ui,sans-serif;font-size:20px;font-weight:500;line-height:1.4;letter-spacing:.2em;text-transform:uppercase
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-uptitle
+display:inline-block;background:linear-gradient(90deg,#FFFFFF 0%,#EDE4FF 45%,#F7C9EC 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;color:transparent!important
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:991px)
+Seletor: .wd-uptitle:not(.intro-title)
+font-size:16px
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .intro .intro-title,.wd-statement-title
+font-size:var(--wd-display-size);line-height:1.05
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .intro .intro-title span
+display:inline-block;white-space:nowrap
+
+Arquivo: wd-revision.css
+Contexto: @media(max-width:600px)
+Seletor: .intro .intro-title span
+white-space:normal
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .wd-contact-uptitle.wd-uptitle
+display:inline-block;margin:0 0 12px;background:linear-gradient(90deg,#B79BFF 0%,#E58BFF 50%,#FF8FCB 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important;font:600 12px/1.25 "Space Grotesk",system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase
+
+
+========================================================================
+RODAPE
+========================================================================
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-root
+background:transparent;padding:140px clamp(20px,5.3vw,84px) 80px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-inner
+max-width:1440px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:140px 80px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-brand
+min-width:0
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-home
+display:block;width:min(400px,100%);border-radius:4px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-logo
+display:block;width:100%;height:auto;aspect-ratio:4340/1340;object-fit:contain
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-description
+max-width:430px;margin:28px 0 0;color:#e1d7ee;font:400 18px/1.6 "Nunito",system-ui,sans-serif;text-wrap:pretty
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-contact
+display:flex;flex-direction:column;align-items:flex-end;gap:24px;min-width:0
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-title
+margin:0;font-size:clamp(52px,4.5vw,72px);font-weight:400;line-height:1.3;letter-spacing:-.025em;text-align:right;white-space:nowrap
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-cta
+display:flex;align-items:center;justify-content:center;gap:20px;min-height:54px;max-width:100%;padding:18px 20px;border-radius:var(--wd-cta-radius,9999px);color:#fff;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0;text-decoration:none;font-size:14px;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:var(--wd-cta-weight,500);line-height:1;letter-spacing:var(--wd-cta-letter-spacing,.1em);transition:background-position 600ms ease,color 200ms ease
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-cta svg
+flex:none;width:14px;height:14px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-cta:hover,.wd-footer-cta:focus-visible
+background-position:0 0;color:#2b1450
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-rights
+display:flex;flex-wrap:wrap;align-items:center;align-self:center;gap:8px 16px;color:#e1d7ee;font-size:14px;line-height:1.4;margin:0
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-rights-brand
+color:inherit;text-decoration:none;transition:color .2s ease
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-divider
+display:inline;color:inherit
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-socials
+display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:16px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-social
+display:flex;justify-content:center;align-items:center;flex:none;width:44px;height:44px;color:#e1d7ee;text-decoration:none;border-radius:50%;transition:color .2s ease,background-color .2s ease
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-social svg
+display:block;width:40px;height:40px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-social:hover,.wd-footer-social:focus-visible
+color:#fff;background:rgba(203,182,255,.12)
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-rights-brand:hover
+color:#fff
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: @media(max-width:991px)
+Seletor: .wd-footer-root
+padding:80px 40px 64px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: @media(max-width:991px)
+Seletor: .wd-footer-inner
+gap:96px 40px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: @media(max-width:991px)
+Seletor: .wd-footer-title
+font-size:clamp(28px,4vw,40px)
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: @media(max-width:991px)
+Seletor: .wd-footer-rights
+font-size:14px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: @media(max-width:991px)
+Seletor: .wd-footer-socials
+gap:10px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: @media(max-width:600px)
+Seletor: .wd-footer-root
+padding:64px 20px 40px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: @media(max-width:600px)
+Seletor: .wd-footer-inner
+grid-template-columns:minmax(0,1fr);gap:40px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: @media(max-width:600px)
+Seletor: .wd-footer-home
+width:100%;max-width:400px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: @media(max-width:600px)
+Seletor: .wd-footer-description
+font-size:17px;margin-top:24px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: @media(max-width:600px)
+Seletor: .wd-footer-contact
+align-items:flex-start
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: @media(max-width:600px)
+Seletor: .wd-footer-title
+text-align:left;font-size:clamp(18px,5.6vw,32px)
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: @media(max-width:600px)
+Seletor: .wd-footer-rights
+font-size:13px;gap:8px 12px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: @media(max-width:600px)
+Seletor: .wd-footer-socials
+justify-content:flex-start;gap:16px
+
+
+========================================================================
+CURSOR E FOCO
+========================================================================
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .nav-trigger
+appearance:none;border:0;background:none;color:#f7f6fb;font-size:12px;text-transform:uppercase;height:72px;padding:0;cursor:pointer;display:flex;align-items:center;gap:8px;position:relative
+
+Arquivo: index.html <style> 1
+Contexto: padrao
+Seletor: .hero-cta,.hero-cta:hover,.hero-cta:focus-visible
+text-decoration:none
+
+Arquivo: index.html <style> 2
+Contexto: padrao
+Seletor: .wd-explore-card:focus-visible,.wd-explore-cta:focus-visible
+outline:2px solid #bda4ff;outline-offset:5px
+
+Arquivo: index.html <style> 2
+Contexto: padrao
+Seletor: .wd-explore-card.is-active .wd-explore-arrow,.wd-explore-card:hover .wd-explore-arrow,.wd-explore-card:focus-visible .wd-explore-arrow
+background:rgba(96,37,225,.35)
+
+Arquivo: index.html <style> 2
+Contexto: padrao
+Seletor: .wd-explore-card:hover .wd-explore-image,.wd-explore-card:focus-visible .wd-explore-image
+opacity:1;clip-path:inset(0)
+
+Arquivo: index.html <style> 2
+Contexto: padrao
+Seletor: .wd-explore-card:hover .wd-explore-image img,.wd-explore-card:focus-visible .wd-explore-image img
+transform:scale(1)
+
+Arquivo: index.html <style> 2
+Contexto: padrao
+Seletor: .wd-explore-cta:hover,.wd-explore-cta:focus-visible
+background-position:0% 0%;color:#24123e
+
+Arquivo: index.html <style> 5
+Contexto: padrao
+Seletor: .wd-transformacao-cta:hover,.wd-transformacao-cta:focus-visible
+background-position:0% 0%;color:#24123e
+
+Arquivo: index.html <style> 5
+Contexto: padrao
+Seletor: .wd-transformacao-cta:focus-visible
+outline:2px solid #bda4ff;outline-offset:5px
+
+Arquivo: index.html <style> 5
+Contexto: padrao
+Seletor: .wd-transformacao-cta:hover,.wd-transformacao-cta:focus-visible
+background-position:0% 0%;color:#24123e
+
+Arquivo: index.html <style> 5
+Contexto: padrao
+Seletor: .wd-transformacao-cta:focus-visible
+outline:2px solid #bda4ff;outline-offset:5px
+
+Arquivo: index.html <style> 6
+Contexto: padrao
+Seletor: .wd-trust-control
+width:44px;height:44px;border:1px solid rgba(203,182,255,.45);border-radius:4px;background:transparent;color:#fff;cursor:pointer;font:24px/1 system-ui;transition:background-color .2s
+
+Arquivo: index.html <style> 6
+Contexto: padrao
+Seletor: .wd-trust-control:disabled
+opacity:.35;cursor:default
+
+Arquivo: index.html <style> 6
+Contexto: padrao
+Seletor: .wd-trust-card:hover::before,.wd-trust-card:focus-visible::before
+opacity:1
+
+Arquivo: index.html <style> 6
+Contexto: padrao
+Seletor: .wd-trust-card:hover::after,.wd-trust-card:focus-visible::after
+opacity:0
+
+Arquivo: index.html <style> 6
+Contexto: padrao
+Seletor: #wd-trust :focus-visible
+outline:2px solid #cbb6ff;outline-offset:5px
+
+Arquivo: index.html <style> 6
+Contexto: padrao
+Seletor: #wd-trust .wd-trust-card:focus-visible
+outline-offset:-3px
+
+Arquivo: index.html <style> 7
+Contexto: padrao
+Seletor: .wd-blog-cta:hover,.wd-blog-cta:focus-visible
+background-position:0 0;color:#2b1450
+
+Arquivo: index.html <style> 7
+Contexto: padrao
+Seletor: .wd-blog-link:focus-visible,.wd-blog-cta:focus-visible
+outline:2px solid #e7dcff;outline-offset:5px
+
+Arquivo: index.html <style> 7
+Contexto: padrao
+Seletor: .wd-blog-link:focus-visible::before
+opacity:1
+
+Arquivo: index.html <style> 7
+Contexto: @media (max-width:991px)
+Seletor: .wd-blog-link:focus-visible
+outline:none
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .wd-explore-card:hover .wd-explore-video,.wd-explore-card:focus-visible .wd-explore-video
+transform:scale(1)
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: .dropdown a:focus-visible
+background:rgba(255,255,255,.075);transform:translateX(2px);outline:2px solid #bda4ff;outline-offset:-2px
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: #wd-explore .wd-explore-card:hover::before,#wd-explore .wd-explore-card:focus-visible::before,#wd-explore .wd-explore-card.is-active::before,#wd-blog .wd-blog-link:hover::before,#wd-blog .wd-blog-link:focus-visible::before,#wd-trust .wd-trust-card:hover::before,#wd-trust .wd-trust-card:focus-visible::before
+opacity:1
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: #wd-blog .wd-blog-link:hover .wd-blog-arrow,
+#wd-blog .wd-blog-link:focus-visible .wd-blog-arrow
+background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:0% 0%;color:#24123e;
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: #wd-explore .wd-explore-card:hover .wd-explore-arrow,#wd-explore .wd-explore-card:focus-visible .wd-explore-arrow
+color:#24123e
+
+Arquivo: wd-revision.css
+Contexto: padrao
+Seletor: #wd-explore .wd-explore-card:hover .wd-explore-arrow::before,#wd-explore .wd-explore-card:focus-visible .wd-explore-arrow::before
+opacity:1
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-close-trigger:focus-visible .wd-contact-close-icon
+outline:2px solid #bda4ff;outline-offset:2px
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .site-nav button.nav-cta
+font-family:inherit;cursor:pointer
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-field
+position:relative;margin:0 0 26px
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-field::after
+content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,#B79BFF,#E58BFF,#FF8FCB);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.22,1,.36,1);pointer-events:none
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-field:focus-within::after
+transform:scaleX(1)
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .wd-contact-input
+display:block;width:100%;min-width:0;min-height:37px;height:37px;margin:0;padding:0 0 12px;border:0;border-bottom:1px solid rgba(255,255,255,.16);border-radius:0;background:transparent;box-shadow:none;color:#F7F6FB;font:300 20px/1.2 "Nunito",system-ui,sans-serif;letter-spacing:normal;transition:border-color .3s
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .wd-contact-input::placeholder
+color:#A9B0B0;opacity:1;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:400
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .wd-contact-input:hover
+border-color:rgba(255,255,255,.4)
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .wd-contact-input:focus
+outline:none
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .wd-contact-input:focus,.wd-contact .wd-contact-input:focus-visible
+outline:none!important;box-shadow:none!important;caret-color:#F7F6FB
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact textarea.wd-contact-input
+resize:none;overflow-y:hidden;max-height:85px
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .wd-contact-input[aria-invalid="true"]
+border-color:#FF8FA3
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .wd-contact-input[aria-invalid="true"]::placeholder
+color:#FF8FA3
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-field:has([aria-invalid="true"])::after
+background:#FF8FA3
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-field-error
+position:absolute;top:calc(100% + 4px);left:0;color:#FF8FA3;font:400 12px/1.2 "Nunito",system-ui,sans-serif
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .nav-cta.wd-cta
+display:inline-flex;flex:none;align-items:center;justify-content:center;gap:10px;height:46px;min-height:46px;padding:0 20px;border:0;border-radius:9999px;background:linear-gradient(90deg,#CBFFFC 0%,#EDFFFE 26.25%,#FFFDFA 47.57%,#FAD1FF 88.96%);background-size:180% 100%;background-position:0% 50%;color:#222;font:500 14px/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;white-space:nowrap;cursor:pointer;transition:background-position .55s cubic-bezier(.22,1,.36,1),color .3s ease
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .nav-cta.wd-cta:hover,.wd-contact .nav-cta.wd-cta:focus-visible
+background-position:100% 50%;color:#111
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact .nav-cta:hover span,.wd-contact .nav-cta:focus-visible span
+transform:translate(3px,-3px)
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact-submit:disabled
+opacity:.75;cursor:wait
+
+Arquivo: contact.css
+Contexto: padrao
+Seletor: .wd-contact button:focus-visible,.wd-contact a:focus-visible,.wd-contact-mobile-trigger:focus-visible
+outline:2px solid #bda4ff;outline-offset:4px
+
+Arquivo: contact.css
+Contexto: @media(max-width:768px)
+Seletor: .wd-contact-field
+margin-bottom:22px
+
+Arquivo: contact.css
+Contexto: @media(max-width:768px)
+Seletor: .wd-contact .wd-contact-input
+font-size:16px;min-height:33px;height:33px
+
+Arquivo: contact.css
+Contexto: @media(max-width:768px)
+Seletor: .wd-contact textarea.wd-contact-input
+max-height:72px
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-cta:hover,.wd-footer-cta:focus-visible
+background-position:0 0;color:#2b1450
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-footer-social:hover,.wd-footer-social:focus-visible
+color:#fff;background:rgba(203,182,255,.12)
+
+Arquivo: footer.js (Shadow DOM)
+Contexto: padrao
+Seletor: a:focus-visible
+outline:2px solid #e7dcff;outline-offset:5px
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: button
+cursor:pointer
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: button:focus-visible,a:focus-visible
+outline:2px solid #fff;outline-offset:4px
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-action[aria-disabled=true],.wd-whatsapp-open[aria-disabled=true]
+opacity:.65;cursor:default
+
+
+========================================================================
+WHATSAPP
+========================================================================
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-toggle
+position:relative;display:flex;align-items:center;justify-content:center;width:64px;height:64px;padding:16px;background:#059669;color:white;border:2px solid #34d39980;border-radius:50%;box-shadow:0 25px 50px -12px #05966966;transition:transform .3s,background .3s
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-toggle:hover
+background:#10b981;transform:scale(1.05)
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-toggle:active
+transform:scale(.95)
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-toggle svg
+position:relative;width:28px;height:28px;z-index:1
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-pulse
+position:absolute;inset:-4px;border-radius:50%;background:#10b981;opacity:.4;animation:wdWhatsappPing 1s cubic-bezier(0,0,.2,1) infinite;pointer-events:none
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-badge
+position:absolute;right:-4px;top:-4px;padding:2px 8px;font:800 10px/1.5 system-ui;color:white;background:#f97316;border:0;outline:0;box-shadow:none;border-radius:99px
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-panel
+width:384px;max-width:calc(100vw - 40px);margin-bottom:12px;border-radius:24px;border:1px solid #10b98166;background:#09090b;box-shadow:0 25px 50px -12px #0008;overflow:hidden;animation:wdWhatsappEnter .45s ease-out
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-panel[hidden]
+display:none
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-heading
+display:flex;align-items:center;gap:12px;padding:16px;background:linear-gradient(90deg,#059669,#0f766e);color:white
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-avatar
+display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#fff3;font-weight:700;flex:none
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-avatar svg
+width:24px;height:24px
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-title
+margin:0;font-family:"Space Grotesk",system-ui,sans-serif;font-size:14px;font-weight:700;line-height:1.3
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-status
+font-size:11px;color:#d1fae5
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-close
+margin-left:auto;border:0;border-radius:8px;background:none;color:white;width:28px;height:28px;font-size:24px
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-close:hover
+background:#fff3
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-body
+padding:16px;background:#18181b
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-greeting
+padding:14px;border:1px solid #27272a;border-radius:16px;background:#09090b;font-size:12px;line-height:1.625;margin:0 0 12px
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-topics
+font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#a1a1aa;margin:0 0 12px
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-actions
+display:grid;gap:8px
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-action
+display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px;border:1px solid #27272a;border-radius:var(--wd-cta-radius,9999px);background:#09090b;color:#d4d4d8;text-decoration:none;font-size:12px;transition:background .3s,border-color .3s
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-action:hover
+border-color:#10b981;background:#022c2222;color:#fff
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-footer
+padding:12px;border-top:1px solid #27272a
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-open
+width:100%;padding:12px;display:flex;gap:8px;align-items:center;justify-content:center;border:0;border-radius:var(--wd-cta-radius,9999px);background:#059669;color:#fff;font-size:12px;font-weight:700;text-decoration:none
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-open svg
+width:20px;height:20px
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-notice
+font-size:11px;line-height:1.5;margin:8px 0 0;color:#d4d4d8
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: .wd-whatsapp-action[aria-disabled=true],.wd-whatsapp-open[aria-disabled=true]
+opacity:.65;cursor:default
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: padrao
+Seletor: button,.wd-whatsapp-action,.wd-whatsapp-open
+font-family:"Space Grotesk",system-ui,sans-serif;font-weight:var(--wd-cta-weight,500);letter-spacing:var(--wd-cta-letter-spacing,.1em)
+
+Arquivo: whatsapp.js (Shadow DOM)
+Contexto: @media(max-width:639px)
+Seletor: .wd-whatsapp-panel
+width:320px
+
+DEPENDENCIAS E OBSERVACOES
+Imagens SVG/data URI e icones SVG inline continuam integralmente dentro do HTML/JS original.
+Os ativos externos e as fontes foram copiados com seus nomes de arquivo originais; index.html permanece com as URLs atuais, sem substituicoes.
+As duas fotos do blog foram recuperadas da copia local anterior dos mesmos ativos (otimizadas nessa copia); o servidor de origem devolveu erro ao tentar baixar novamente. Os URLs originais continuam no HTML, preservando a versao usada online.
+GSAP externo esta tambem em vendor/gsap.min.js. A simulacao de particulas e suas bibliotecas estao incorporadas no index.html completo.
+Formas e mapa de pontos gerados em SVG/canvas permanecem no codigo. Os 4 cases usam imagens provisórias SVG ja existentes.
+Formulario: endpoint e URL de privacidade continuam vazios, exatamente como na versao atual; nenhuma integracao foi adicionada.
+Para ver a copia fiel, sirva a pasta do ZIP pela raiz via HTTP (por exemplo, python3 -m http.server 8000); as URLs absolutas externas continuam necessitando internet.

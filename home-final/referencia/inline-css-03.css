@@ -1,0 +1,23 @@
+
+/* Estrutura dos dois retângulos; mantém tipografia, CTA e estados existentes. */
+#wd-explore{background:transparent}
+#wd-explore .wd-explore-layout{display:block;padding:28px;border-radius:16px;border:1px solid rgba(189,164,255,.13);background:linear-gradient(125deg,rgba(96,37,225,.12),rgba(49,22,78,.2));isolation:isolate;overflow:hidden}
+#wd-explore .wd-explore-dots{position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;background-size:24px 24px,37px 37px;}
+#wd-explore .wd-explore-header{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start;margin-bottom:32px}
+#wd-explore .wd-explore-intro{min-width:0;padding:40px 20px 0}
+#wd-explore .wd-explore-subtitle{margin-bottom:0}
+#wd-explore .wd-explore-header>.wd-explore-cta{align-self:start;margin-top:40px}
+#wd-explore .wd-explore-body{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:stretch}
+#wd-explore .wd-explore-list{grid-column:auto;min-width:0;border-radius:12px;background:linear-gradient(90deg,rgba(29,14,54,0) 0%,rgba(42,17,78,.40) 40%,rgba(70,26,143,.72) 100%)}
+#wd-explore .wd-explore-photo{position:relative;min-width:0;min-height:0;margin:0;border-radius:12px;overflow:hidden;background:rgba(96,37,225,.12)}
+#wd-explore .wd-explore-photo>img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+/* Mesma revelação dos cards, agora alinhada ao painel fotográfico inteiro. */
+@media(min-width:992px){#wd-explore .wd-explore-image{left:calc(50% + 14px);right:0;top:0;bottom:0;aspect-ratio:auto;border-radius:12px;z-index:2}}
+@media(max-width:991px){
+ #wd-explore .wd-explore-header{grid-template-columns:minmax(0,1fr);gap:24px;margin-bottom:28px}
+ #wd-explore .wd-explore-intro{padding:0}
+ #wd-explore .wd-explore-header>.wd-explore-cta{margin-top:0}
+ #wd-explore .wd-explore-body{grid-template-columns:minmax(0,1fr);gap:28px}
+ #wd-explore .wd-explore-photo{width:100%;aspect-ratio:4/3}
+}
+@media(max-width:479px){#wd-explore .wd-explore-layout{padding:20px}#wd-explore .wd-explore-body{gap:20px}}

@@ -1,0 +1,64 @@
+
+/* Confiança: Auros Trust composition adapted to Work Digital assets. */
+#wd-trust{background:transparent;padding:24px 0 80px;color:#fff;font-family:"Space Grotesk",Arial,sans-serif;scroll-margin-top:110px}
+#wd-trust *{box-sizing:border-box}
+.wd-trust-panel{width:min(1360px,calc(100% - 64px));margin:0 auto;padding:80px 0 40px;border-radius:16px;overflow:hidden;background:rgba(37,17,67,.62);box-shadow:0 0 100px rgba(96,37,225,.12)}
+.wd-trust-header{text-align:center;padding:0 40px 46px}
+.wd-trust-eyebrow{margin:0 0 32px;font-size:20px;line-height:1.4;font-weight:500;letter-spacing:.2em;text-transform:uppercase;}
+.wd-trust-title{margin:0;text-wrap:balance}
+.wd-trust-controls{display:none;justify-content:flex-end;gap:12px;padding:0 32px 20px}
+.wd-trust-control{width:44px;height:44px;border:1px solid rgba(203,182,255,.45);border-radius:4px;background:transparent;color:#fff;cursor:pointer;font:24px/1 system-ui;transition:background-color .2s}
+.wd-trust-control:hover{background:rgba(96,37,225,.5)}
+.wd-trust-control:disabled{opacity:.35;cursor:default}
+.wd-trust-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:0 40px;gap:0;list-style:none;margin:0}
+.wd-trust-card{position:relative;isolation:isolate;display:flex;flex-direction:column;justify-content:space-between;gap:32px;min-width:0;min-height:0;margin:0;padding:48px 36px;border-radius:16px;outline-offset:-3px}
+.wd-trust-card::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:linear-gradient(0deg,#34165b,#54258d);opacity:0;transition:opacity .2s ease-in-out}
+.wd-trust-card::after{content:"";position:absolute;right:0;top:48px;bottom:48px;width:1px;background:rgba(203,182,255,.16);transition:opacity .2s}
+.wd-trust-card:hover::before,.wd-trust-card:focus-visible::before{opacity:1}
+.wd-trust-card:hover::after,.wd-trust-card:focus-visible::after{opacity:0}
+.wd-trust-quote{margin:0;color:#f2f2f2;font-family:"Nunito",system-ui,sans-serif;font-size:clamp(18px,1.5vw,20px);font-weight:400;line-height:1.3}
+.wd-trust-quote::before{content:"“"}.wd-trust-quote::after{content:"”"}
+.wd-trust-attribution{display:flex;flex-direction:column;align-items:flex-start;gap:32px;margin:0}
+.wd-trust-person{margin:0;color:#d7cde5;font-size:clamp(16px,1.46vw,20px);line-height:1.4;letter-spacing:.025em;text-transform:uppercase;font-style:normal;font-weight:400}
+.wd-trust-person span{display:block}
+.wd-trust-marquee{overflow:hidden;width:100%;margin-top:48px;position:relative}
+.wd-trust-track{display:flex;width:max-content;animation:wd-trust-marquee var(--wd-trust-duration,180s) linear infinite;animation-play-state:paused;will-change:transform}
+.wd-trust-logo-group{display:flex;align-items:center;flex-shrink:0;list-style:none;padding:0;margin:0}
+.wd-trust-logo-item{display:flex;justify-content:center;align-items:center;flex:0 0 220px;width:220px;height:56px;padding-right:70px}
+.wd-trust-logo{display:block;max-width:150px;max-height:56px;width:auto;height:auto;object-fit:contain}
+#wd-trust :focus-visible{outline:2px solid #cbb6ff;outline-offset:5px}
+#wd-trust .wd-trust-card:focus-visible{outline-offset:-3px}
+@keyframes wd-trust-marquee{to{transform:translateX(-50%)}}
+@media(max-width:1179px){
+ .wd-trust-panel{padding:64px 0 32px;width:calc(100% - 32px)}
+ .wd-trust-header{padding:0 32px 40px}
+ .wd-trust-controls{display:flex}
+ .wd-trust-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#7d51b8 transparent;padding:0 32px 16px;scroll-padding-inline:32px}
+ .wd-trust-card{flex:0 0 calc(100% / 1.06);scroll-snap-align:start;padding:40px 32px}
+ .wd-trust-quote{font-size:20px;line-height:1.5}
+ .wd-trust-person{font-size:18px}
+ .wd-trust-marquee{margin-top:40px}
+}
+@media(max-width:600px){
+ #wd-trust{padding:16px 0 48px}
+ .wd-trust-panel{padding:48px 0 24px}
+ .wd-trust-header{padding:0 24px 32px}
+ .wd-trust-eyebrow{font-size:16px;margin-bottom:24px}
+ .wd-trust-title{}
+ .wd-trust-controls{padding:0 24px 16px}
+ .wd-trust-grid{padding:0 16px 16px;scroll-padding-inline:16px}
+ .wd-trust-card{padding:32px 24px;gap:32px;min-height:0}
+ .wd-trust-quote{font-size:18px;line-height:1.5}
+ .wd-trust-person{font-size:16px}
+ .wd-trust-attribution{gap:24px}
+ .wd-trust-marquee{margin-top:32px}
+ .wd-trust-logo-item{flex-basis:180px;width:180px;padding-right:40px;height:48px}
+ .wd-trust-logo{max-width:140px;max-height:48px}
+}
+@media(prefers-reduced-motion:reduce){
+ .wd-trust-track{animation:none;will-change:auto;width:100%}
+ .wd-trust-logo-group{width:100%;flex-wrap:wrap;justify-content:center;gap:24px}
+ .wd-trust-logo-group[aria-hidden="true"],.wd-trust-logo-repeat{display:none}
+ .wd-trust-logo-item{flex:0 0 150px;width:150px;padding-right:0}
+ .wd-trust-card::before,.wd-trust-card::after,.wd-trust-control{transition:none}
+}

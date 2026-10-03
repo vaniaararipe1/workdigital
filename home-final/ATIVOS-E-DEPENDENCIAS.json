@@ -1,0 +1,515 @@
+{
+  "commit": "1f928b61030f33f73ddaf0c667665e5d88420252",
+  "ativos": [
+    {
+      "arquivo": "wd-revision.css",
+      "origem": "public/wd-revision.css",
+      "tipo": "codigo original"
+    },
+    {
+      "arquivo": "contact.css",
+      "origem": "public/contact.css",
+      "tipo": "codigo original"
+    },
+    {
+      "arquivo": "wd-revision.js",
+      "origem": "public/wd-revision.js",
+      "tipo": "codigo original"
+    },
+    {
+      "arquivo": "footer.js",
+      "origem": "public/footer.js",
+      "tipo": "codigo original"
+    },
+    {
+      "arquivo": "contact.js",
+      "origem": "public/contact.js",
+      "tipo": "codigo original"
+    },
+    {
+      "arquivo": "whatsapp.js",
+      "origem": "public/whatsapp.js",
+      "tipo": "codigo original"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 718050,
+      "sha256": "efa3ba93b0796c7ecdacc9566674f1bdc506ffd26688d7888f4e59a9b526ea12"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "Espaço provisório para a imagem do case 1",
+      "mime": "data:image/svg+xml",
+      "bytes": 395,
+      "sha256": "c4f38a151e4274c7ee119d8b5595a40834363b8295c5910da9f9e92f39a2cb9d"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "Espaço provisório para a imagem do case 2",
+      "mime": "data:image/svg+xml",
+      "bytes": 395,
+      "sha256": "c4f38a151e4274c7ee119d8b5595a40834363b8295c5910da9f9e92f39a2cb9d"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "Espaço provisório para a imagem do case 3",
+      "mime": "data:image/svg+xml",
+      "bytes": 395,
+      "sha256": "c4f38a151e4274c7ee119d8b5595a40834363b8295c5910da9f9e92f39a2cb9d"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "Espaço provisório para a imagem do case 4",
+      "mime": "data:image/svg+xml",
+      "bytes": 395,
+      "sha256": "c4f38a151e4274c7ee119d8b5595a40834363b8295c5910da9f9e92f39a2cb9d"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "Bacio di Latte",
+      "mime": "data:image/png;base64",
+      "bytes": 3658,
+      "sha256": "d226b50878eac6c9b81396747775628b42249aa2f10e6a4c8a96fec44d2126dd"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "Dasa",
+      "mime": "data:image/png;base64",
+      "bytes": 1258,
+      "sha256": "44fbbcf959a2fdad2ab99203a82ea0eab8334fcdd56007f08f096f0304c59601"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "Confederação Brasileira de Paraquedismo",
+      "mime": "data:image/png;base64",
+      "bytes": 4147,
+      "sha256": "8dd60bffe78854bf103afd398b3d71598af223b146840189f974d90182718094"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "Fiamm Latin America",
+      "mime": "data:image/png;base64",
+      "bytes": 2584,
+      "sha256": "92d8c9ddf4fef4cdcee3ee0eed8178f44b5f55d77533317a557faea399e1b132"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "Linea Alimentos",
+      "mime": "data:image/png;base64",
+      "bytes": 2844,
+      "sha256": "5f245417063d7df826223d3d64178ef8dd2098442d56ddfdaf67c392698ad2f4"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 3658,
+      "sha256": "d226b50878eac6c9b81396747775628b42249aa2f10e6a4c8a96fec44d2126dd"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 1258,
+      "sha256": "44fbbcf959a2fdad2ab99203a82ea0eab8334fcdd56007f08f096f0304c59601"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 4147,
+      "sha256": "8dd60bffe78854bf103afd398b3d71598af223b146840189f974d90182718094"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 2584,
+      "sha256": "92d8c9ddf4fef4cdcee3ee0eed8178f44b5f55d77533317a557faea399e1b132"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 2844,
+      "sha256": "5f245417063d7df826223d3d64178ef8dd2098442d56ddfdaf67c392698ad2f4"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 3658,
+      "sha256": "d226b50878eac6c9b81396747775628b42249aa2f10e6a4c8a96fec44d2126dd"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 1258,
+      "sha256": "44fbbcf959a2fdad2ab99203a82ea0eab8334fcdd56007f08f096f0304c59601"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 4147,
+      "sha256": "8dd60bffe78854bf103afd398b3d71598af223b146840189f974d90182718094"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 2584,
+      "sha256": "92d8c9ddf4fef4cdcee3ee0eed8178f44b5f55d77533317a557faea399e1b132"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 2844,
+      "sha256": "5f245417063d7df826223d3d64178ef8dd2098442d56ddfdaf67c392698ad2f4"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 3658,
+      "sha256": "d226b50878eac6c9b81396747775628b42249aa2f10e6a4c8a96fec44d2126dd"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 1258,
+      "sha256": "44fbbcf959a2fdad2ab99203a82ea0eab8334fcdd56007f08f096f0304c59601"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 4147,
+      "sha256": "8dd60bffe78854bf103afd398b3d71598af223b146840189f974d90182718094"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 2584,
+      "sha256": "92d8c9ddf4fef4cdcee3ee0eed8178f44b5f55d77533317a557faea399e1b132"
+    },
+    {
+      "tipo": "ativo incorporado no HTML",
+      "tag": "img",
+      "alt": "",
+      "mime": "data:image/png;base64",
+      "bytes": 2844,
+      "sha256": "5f245417063d7df826223d3d64178ef8dd2098442d56ddfdaf67c392698ad2f4"
+    },
+    {
+      "arquivo": "ativos-externos/logo-work-digital-branco-criacao-de-site-sp.svg",
+      "origem": "https://workdigital.art.br/wp-content/uploads/2022/05/logo-work-digital-branco-criacao-de-site-sp.svg",
+      "bytes": 4891,
+      "sha256": "10bb54af4ce99a6de19dbfd3882408f4652a2cf0d9a8a42131dfcae2362c72fc",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "media/servico-sites.jpg",
+      "origem": "https://workdigital-hero-preview.onrender.com/media/servico-sites.jpg",
+      "bytes": 96229,
+      "sha256": "b217d89ad676663bd925c5314c514aaddca094ccf0352ede3f4cd8d9c3e1e4e8",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "media/criacao-de-sites-servico-sites.webm",
+      "origem": "https://workdigital-hero-preview.onrender.com/media/criacao-de-sites-servico-sites.webm",
+      "bytes": 696899,
+      "sha256": "b7e1db13cd4d2690a5d5c0e0d9a7034b6676bc3f54ef0f0af46e1ad98d0d892d",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "media/servico-blog.jpg",
+      "origem": "https://workdigital-hero-preview.onrender.com/media/servico-blog.jpg",
+      "bytes": 93569,
+      "sha256": "5654d39e7fef3d59115b3c0b6c50b269ede32188fcaa73221d03b06dbbb2c29f",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "media/criacao-de-sites-servico-blog.webm",
+      "origem": "https://workdigital-hero-preview.onrender.com/media/criacao-de-sites-servico-blog.webm",
+      "bytes": 548459,
+      "sha256": "017d6da1344d30b340e0c15b88892d05fe4d12070b0f15b977538d4dc094d583",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "media/servico-landing-page.jpg",
+      "origem": "https://workdigital-hero-preview.onrender.com/media/servico-landing-page.jpg",
+      "bytes": 116981,
+      "sha256": "d70e3fc7f9f253cf4165b2581ca0ffd34fd952a6e1dbdf925e17c6059b8aabaa",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "media/criacao-de-sites-servico-landing-page.webm",
+      "origem": "https://workdigital-hero-preview.onrender.com/media/criacao-de-sites-servico-landing-page.webm",
+      "bytes": 750974,
+      "sha256": "b852d90e5d0a45cb4aaec9c8467e7ec820290105999b28f07d7b5d9fd74ddca2",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "media/cert-wordpress.svg",
+      "origem": "https://workdigital-hero-preview.onrender.com/media/cert-wordpress.svg",
+      "bytes": 4344,
+      "sha256": "731b0d51e31eb0e647ed1c27998ad6e697718c41942cbf422df63d3bc3790e28",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "media/cert-rd-station.svg",
+      "origem": "https://workdigital-hero-preview.onrender.com/media/cert-rd-station.svg",
+      "bytes": 2058,
+      "sha256": "cdbea0e7e5fa4f65bd11242a46160b60a2761e8683dda8baf2d363d99fe96a93",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "media/cert-mailchimp.svg",
+      "origem": "https://workdigital-hero-preview.onrender.com/media/cert-mailchimp.svg",
+      "bytes": 6460,
+      "sha256": "22a7bcbbb6f8d2c4f1f63703bb4e0393b3b0cb489beeaf2d30e716821aed02e6",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "media/cert-shopify.svg",
+      "origem": "https://workdigital-hero-preview.onrender.com/media/cert-shopify.svg",
+      "bytes": 3131,
+      "sha256": "60c65eaddffbf9655e4ac4f506ff0599114f2982b6322b1dbaa39e937f228182",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "media/cert-loja-integrada.svg",
+      "origem": "https://workdigital-hero-preview.onrender.com/media/cert-loja-integrada.svg",
+      "bytes": 8682,
+      "sha256": "56bf6fcde67565fd3b7affcac16fc8a90cc6d6d9c256b5f51cec60d0c4065088",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "media/cert-nuvem-shop.svg",
+      "origem": "https://workdigital-hero-preview.onrender.com/media/cert-nuvem-shop.svg",
+      "bytes": 2700,
+      "sha256": "f3639d7c0c030da91495889b3241c5f4011746abebd1732d595a0284b6e49cc4",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "ativos-externos/como-potencializar-a-sua-marca-com-o-blog-marketing.jpg",
+      "origem": "https://workdigital.art.br/wp-content/uploads/2022/06/como-potencializar-a-sua-marca-com-o-blog-marketing.jpg",
+      "bytes": 43156,
+      "sha256": "928ad8738974ee0f7192653c160750f74889485cf26bf24435c1548d9c3939ba",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "ativos-externos/6-motivos-que-mostram-a-importancia-de-ter-um-site-para-o-seu-negocio.jpg",
+      "origem": "https://workdigital.art.br/wp-content/uploads/2022/05/6-motivos-que-mostram-a-importancia-de-ter-um-site-para-o-seu-negocio.jpg",
+      "bytes": 28117,
+      "sha256": "bf657ea5860d8485d32f5610f212b05396e130f69d179b90fd0cd9fe3a0b8f6e",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "footer.js",
+      "origem": "https://workdigital-hero-preview.onrender.com/footer.js?v=20261003-footer-one-line",
+      "bytes": 10610,
+      "sha256": "421d397b6de1456882cbfafe02a24cf156e3be523d5de25dd062d08c99ad90fe",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "wd-revision.js",
+      "origem": "https://workdigital-hero-preview.onrender.com/wd-revision.js?v=20261003-contact-minimal",
+      "bytes": 6702,
+      "sha256": "20d96feee1627a4dba89b4f611beca464a2b8354c6052caf25a8abcee56dbfe0",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "img/logo-work-digital.svg",
+      "origem": "https://workdigital-hero-preview.onrender.com/img/logo-work-digital.svg",
+      "bytes": 5107,
+      "sha256": "46ff085a68ed8a0a9c0657947d6ce15cd538eeeea6ce28619f485bbcdeaea92e",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "vendor/gsap.min.js",
+      "origem": "https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js",
+      "bytes": 72927,
+      "sha256": "92bb9a96476f983d212a2bc4f54c889039c1696dd4461d40a736860938570fbb",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/google-fonts-1.css",
+      "origem": "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&family=Space+Grotesk:wght@400;500;600&display=swap",
+      "bytes": 1356,
+      "sha256": "3c5d7a214a30ebf1f45c3c18c8c962ee395847feabce6be43c48cc4a8cfbb1fd",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/1/XRXI3I6Li01BKofiOc5wtlZ2di8HDGUmRTM.ttf",
+      "origem": "https://fonts.gstatic.com/s/nunito/v32/XRXI3I6Li01BKofiOc5wtlZ2di8HDGUmRTM.ttf",
+      "bytes": 125536,
+      "sha256": "1506fc96971e84d1a4ca89f0d1157a881b9ce217bbfa05d2b3c9e3c8f6723091",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/1/XRXI3I6Li01BKofiOc5wtlZ2di8HDLshRTM.ttf",
+      "origem": "https://fonts.gstatic.com/s/nunito/v32/XRXI3I6Li01BKofiOc5wtlZ2di8HDLshRTM.ttf",
+      "bytes": 125528,
+      "sha256": "9ecbdba35fa74f10a1a916c31649b802a12deb9e66c7b1fe4650afcfd4d16971",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/1/XRXI3I6Li01BKofiOc5wtlZ2di8HDOUhRTM.ttf",
+      "origem": "https://fonts.gstatic.com/s/nunito/v32/XRXI3I6Li01BKofiOc5wtlZ2di8HDOUhRTM.ttf",
+      "bytes": 125564,
+      "sha256": "3760b7585b52d4beda5f161d0a86050b82e24428fec40f36edd7b872d0ee35b0",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/1/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj42Vksj.ttf",
+      "origem": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj42Vksj.ttf",
+      "bytes": 69356,
+      "sha256": "6c0346b8d297ebdc225832833e03e884a26ad99d265ecd3924d46e1ba285ea87",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/1/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7aUUsj.ttf",
+      "origem": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7aUUsj.ttf",
+      "bytes": 69416,
+      "sha256": "3e699ead1876244fa392243054ddefe7cf631b488438828a8a100731a22ab995",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/1/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf",
+      "origem": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf",
+      "bytes": 69360,
+      "sha256": "ec926d5065eaca49a48f96e312bbae0bbc5733c24215cf5dfabbdccee926fef7",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/google-fonts-2.css",
+      "origem": "https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap",
+      "bytes": 430,
+      "sha256": "42de614fa0a450ec15ef404b28e6c9b8638d046fcc49f3552dea230a31715d25",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/2/XRXI3I6Li01BKofiOc5wtlZ2di8HDGUmRTM.ttf",
+      "origem": "https://fonts.gstatic.com/s/nunito/v32/XRXI3I6Li01BKofiOc5wtlZ2di8HDGUmRTM.ttf",
+      "bytes": 125536,
+      "sha256": "1506fc96971e84d1a4ca89f0d1157a881b9ce217bbfa05d2b3c9e3c8f6723091",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/2/XRXI3I6Li01BKofiOc5wtlZ2di8HDLshRTM.ttf",
+      "origem": "https://fonts.gstatic.com/s/nunito/v32/XRXI3I6Li01BKofiOc5wtlZ2di8HDLshRTM.ttf",
+      "bytes": 125528,
+      "sha256": "9ecbdba35fa74f10a1a916c31649b802a12deb9e66c7b1fe4650afcfd4d16971",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/google-fonts-3.css",
+      "origem": "https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&family=Space+Grotesk:wght@400;500;600&display=swap",
+      "bytes": 1141,
+      "sha256": "03aa414125c442159d6b3710f6757e4a8821c4c5d3427026cc58c02f847793c6",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/3/XRXI3I6Li01BKofiOc5wtlZ2di8HDGUmRTM.ttf",
+      "origem": "https://fonts.gstatic.com/s/nunito/v32/XRXI3I6Li01BKofiOc5wtlZ2di8HDGUmRTM.ttf",
+      "bytes": 125536,
+      "sha256": "1506fc96971e84d1a4ca89f0d1157a881b9ce217bbfa05d2b3c9e3c8f6723091",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/3/XRXI3I6Li01BKofiOc5wtlZ2di8HDLshRTM.ttf",
+      "origem": "https://fonts.gstatic.com/s/nunito/v32/XRXI3I6Li01BKofiOc5wtlZ2di8HDLshRTM.ttf",
+      "bytes": 125528,
+      "sha256": "9ecbdba35fa74f10a1a916c31649b802a12deb9e66c7b1fe4650afcfd4d16971",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/3/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj42Vksj.ttf",
+      "origem": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj42Vksj.ttf",
+      "bytes": 69356,
+      "sha256": "6c0346b8d297ebdc225832833e03e884a26ad99d265ecd3924d46e1ba285ea87",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/3/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7aUUsj.ttf",
+      "origem": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7aUUsj.ttf",
+      "bytes": 69416,
+      "sha256": "3e699ead1876244fa392243054ddefe7cf631b488438828a8a100731a22ab995",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/3/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf",
+      "origem": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf",
+      "bytes": 69360,
+      "sha256": "ec926d5065eaca49a48f96e312bbae0bbc5733c24215cf5dfabbdccee926fef7",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/google-fonts-4.css",
+      "origem": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap",
+      "bytes": 948,
+      "sha256": "8d03eb23399e2fdc3d8e60573c7252f7990a7fe13082e4de2267308760ce0eb4",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/4/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj42Vksj.ttf",
+      "origem": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj42Vksj.ttf",
+      "bytes": 69356,
+      "sha256": "6c0346b8d297ebdc225832833e03e884a26ad99d265ecd3924d46e1ba285ea87",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/4/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVksj.ttf",
+      "origem": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVksj.ttf",
+      "bytes": 69308,
+      "sha256": "3e756954468ff1cb302dae0414262e72f76a67d87bef3fa1f3226cd0fb9b2d85",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/4/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7aUUsj.ttf",
+      "origem": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7aUUsj.ttf",
+      "bytes": 69416,
+      "sha256": "3e699ead1876244fa392243054ddefe7cf631b488438828a8a100731a22ab995",
+      "mime": "copiado da fonte original"
+    },
+    {
+      "arquivo": "fontes/4/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf",
+      "origem": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj7oUUsj.ttf",
+      "bytes": 69360,
+      "sha256": "ec926d5065eaca49a48f96e312bbae0bbc5733c24215cf5dfabbdccee926fef7",
+      "mime": "copiado da fonte original"
+    }
+  ]
+}
