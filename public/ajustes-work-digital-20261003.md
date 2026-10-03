@@ -17,6 +17,102 @@ p:not(.payoff-copy):not(.wd-transformacao-closing-text):not(.wd-works-eyebrow):n
 @supports((background-clip:text) or (-webkit-background-clip:text)){
  .wd-uptitle,#wd-explore .wd-uptitle,.wd-transformacao-heading .wd-uptitle,.wd-blog-header .wd-uptitle,.wd-trust-header .wd-uptitle,.intro .intro-title{background:var(--wd-uptitle-gradient);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 }
+/* MENU */
+.wd-language{display:flex;align-items:center;gap:7px;flex:none;color:#fff}
+.wd-language svg{width:18px;height:18px;flex:none}
+.wd-language select{max-width:110px;min-height:44px;padding:6px 4px;border:0;border-radius:4px;background:transparent;color:#fff;font:400 12px/1.4 "Space Grotesk",sans-serif;cursor:pointer}
+.wd-language option{color:#fff;background:#24123e}
+.wd-language select:focus-visible{outline:2px solid #e7dcff;outline-offset:3px}
+.wd-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.dropdown .drop-copy strong{font-size:16px}
+.dropdown .drop-copy small{font-size:15px;line-height:1.5}
+/* HEADER */
+body .payoff{padding-bottom:40px}
+#wd-explore{padding-top:40px;padding-bottom:56px}
+/* SOLUÇÕES WORK */
+#wd-explore .wd-explore-dots{display:block;width:100%;height:100%;background:none;border-radius:inherit;pointer-events:none;z-index:0}
+.wd-explore-video{display:block;width:100%;height:100%;object-fit:cover}
+.wd-explore-photo>.wd-explore-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.wd-explore-image>.wd-explore-video{transform:scale(1.05);transition:transform .6s var(--wd-explore-ease)}
+.wd-explore-card:hover .wd-explore-video,.wd-explore-card:focus-visible .wd-explore-video{transform:scale(1)}
+#wd-explore .wd-explore-card.is-active,#wd-explore .wd-explore-card:hover,#wd-explore .wd-explore-card:focus-visible{background:var(--wd-article-hover)}
+/* WORKS E FRASE */
+#wd-works{padding-top:56px;padding-bottom:48px}
+#wd-works .wd-works-header{max-width:1080px;margin-inline:auto}
+#wd-works .wd-works-intro{max-width:1000px;margin-inline:auto;text-wrap:balance}
+#wd-statement{min-height:0;padding-top:64px;padding-bottom:64px}
+#wd-statement .wd-statement-inner{max-width:1360px}
+/* CERTIFICAÇÕES — substituem a frase após o card. */
+.wd-certifications{width:min(1360px,calc(100% - 64px));display:grid;grid-template-columns:repeat(6,minmax(0,1fr));align-items:center;gap:40px;margin:64px auto 40px}
+.wd-certifications img{display:block;width:100%;height:42px;object-fit:contain;filter:brightness(0) invert(1);opacity:.85}
+/* CONFIANÇA */
+#wd-trust .wd-trust-card:last-child::after{display:none}
+#wd-trust .wd-trust-quote{font-family:var(--wd-description-font);font-size:16px;line-height:1.6}
+#wd-trust .wd-trust-logo-item{flex-basis:260px;width:260px;height:76px;padding-right:60px}
+#wd-trust .wd-trust-logo{max-width:200px;max-height:76px}
+@media(max-width:991px){
+ .wd-uptitle,#wd-explore .wd-uptitle,.wd-transformacao-heading .wd-uptitle,.wd-blog-header .wd-uptitle,.wd-trust-header .wd-uptitle{font-size:16px}
+ .wd-section-desc,.intro .wd-section-desc,#wd-works .wd-section-desc,#wd-transformacao .wd-section-desc,#wd-blog .wd-section-desc{font-size:16px}
+ #wd-statement .wd-statement-line{white-space:normal}
+ 
+ .wd-certifications{width:calc(100% - 32px);gap:24px;margin-top:48px}
+ .wd-certifications img{height:32px}
+ .wd-language{margin-left:auto}.site-nav{gap:16px}
+ .site-nav .brand{margin-right:auto}.wd-language select{max-width:100px}
+ #wd-trust .wd-trust-quote{font-size:16px}
+}
+@media(max-width:600px){
+ .wd-section-desc,.intro .wd-section-desc,#wd-works .wd-section-desc,#wd-transformacao .wd-section-desc,#wd-blog .wd-section-desc{font-size:15px}
+ body .payoff{padding-bottom:24px}#wd-explore{padding-top:24px;padding-bottom:32px}
+ #wd-works{padding-top:32px;padding-bottom:32px}#wd-statement{padding-top:40px;padding-bottom:40px}#wd-transformacao{padding-top:24px}
+ .wd-certifications{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 20px;margin:40px auto 24px}.wd-certifications img{height:30px}
+ #wd-trust .wd-trust-quote{font-size:15px}
+ #wd-trust .wd-trust-logo-item{flex-basis:220px;width:220px;height:66px;padding-right:40px}#wd-trust .wd-trust-logo{max-width:180px;max-height:66px}
+ .wd-language{gap:3px}.wd-language select{font-size:11px;max-width:89px}.wd-language svg{width:16px;height:16px}
+}
+@media(prefers-reduced-motion:reduce){.wd-explore-image>.wd-explore-video{transform:none;transition:none}}
+/* TRANSFORMAÇÃO DIGITAL — HTML/CSS fornecido pela Vânia substitui a iluminação anterior. */
+#wd-transformacao{padding-top:32px}
+.wd-tr-card{position:relative;overflow:hidden;isolation:isolate;width:calc(100% - 64px);max-width:1360px;height:600px;margin:0 auto;border-radius:16px;background:radial-gradient(55% 75% at 78% 50%,rgba(214,200,255,.55) 0%,rgba(214,200,255,0) 70%),radial-gradient(45% 55% at 38% 105%,rgba(226,214,255,.38) 0%,rgba(226,214,255,0) 70%),linear-gradient(90deg,#24104f 0%,#34187a 35%,#5a3db8 62%,#a993f5 100%);box-shadow:0 0 140px 10px rgba(124,92,255,.28)}
+.wd-tr-glow{position:absolute;z-index:0;pointer-events:none;top:50%;left:42%;width:70%;aspect-ratio:1;transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle,rgba(238,230,255,.85) 0%,rgba(205,188,255,.45) 40%,rgba(205,188,255,0) 70%);filter:blur(70px)}
+.wd-tr-globe{position:absolute;z-index:1;pointer-events:none;top:50%;left:54%;height:150%;aspect-ratio:1;transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle at 4% 50%,rgba(255,255,255,.95) 0%,rgba(255,255,255,0) 18%),radial-gradient(circle at 62% 82%,rgba(252,250,255,.95) 0%,rgba(252,250,255,0) 42%),radial-gradient(circle at 48% 22%,rgba(196,176,255,.75) 0%,rgba(196,176,255,0) 55%),radial-gradient(circle at 55% 50%,#e9e1ff 0%,#ddd0ff 55%,#cfbdff 100%);box-shadow:inset 24px 0 40px rgba(255,255,255,.85),inset 70px 0 120px rgba(255,255,255,.45),0 0 40px 8px rgba(245,240,255,.9),0 0 120px 30px rgba(214,198,255,.65),0 0 240px 60px rgba(170,145,255,.35)}
+.wd-tr-dots{position:absolute;inset:0;border-radius:50%;background-image:none;-webkit-mask-image:radial-gradient(ellipse 75% 85% at 66% 50%,#000 50%,transparent 82%);mask-image:radial-gradient(ellipse 75% 85% at 66% 50%,#000 50%,transparent 82%)}
+.wd-tr-dots>svg{display:block;position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.wd-tr-content{position:relative;z-index:2;padding:0 80px;height:100%;display:flex;flex-direction:column;justify-content:center;color:#fff;max-width:560px}
+/* Retém a largura de leitura, o botão e o título atuais dentro do novo wrapper. */
+.wd-tr-content .wd-transformacao-content{width:100%;max-width:none;padding:0}
+.wd-tr-content .wd-transformacao-cta{margin-left:0}
+@media(min-width:992px){.wd-tr-content{max-width:740px}.wd-tr-content .wd-transformacao-description{max-width:540px}}
+@media(min-width:769px) and (max-width:991px){.wd-tr-card{width:calc(100% - 32px)}.wd-tr-content{padding:48px 32px;max-width:600px}}
+@media(max-width:768px){
+ #wd-transformacao{padding-top:24px}.wd-tr-card{width:calc(100% - 32px);height:auto;min-height:600px}
+ .wd-tr-globe{height:90%;left:40%}
+ .wd-tr-card::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 105% 90% at 5% 30%,rgba(36,16,79,.92) 0%,rgba(36,16,79,.75) 40%,rgba(36,16,79,0) 90%)}
+ .wd-tr-content{padding:48px 32px;height:auto;min-height:600px;max-width:none}
+ .wd-tr-content .wd-transformacao-description{max-width:620px}
+ .wd-tr-glow{filter:blur(55px)}
+}
+@media(max-width:600px){.wd-tr-content{padding:40px 24px}.wd-tr-content .wd-transformacao-title{white-space:normal}}
+/* O seletor também permanece acessível no menu mobile. */
+@media(max-width:980px){
+ .site-nav.wd-nav-open .nav-links{display:flex;position:absolute;top:76px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;padding:16px;border:1px solid #bda4ff33;border-radius:16px;background:#24123edb;backdrop-filter:blur(30px)}
+ .site-nav.wd-nav-open .nav-link,.site-nav.wd-nav-open .nav-item,.site-nav.wd-nav-open .nav-trigger{height:auto;min-height:44px;width:100%}
+ .site-nav.wd-nav-open .nav-item{flex-wrap:wrap}
+ .site-nav.wd-nav-open .dropdown{position:static;display:none;transform:none!important;opacity:1;visibility:visible;width:100%;background:transparent;box-shadow:none;border:0;backdrop-filter:none}
+ .site-nav.wd-nav-open .nav-item.wd-solutions-open .dropdown{display:block}
+}
+@media(max-width:600px){.site-nav{gap:8px;padding-left:12px}.site-nav .brand img{width:108px}}
+@media(max-width:360px){.site-nav .brand img{width:92px}}
+/* Tablet mantém texto acima e globo abaixo; celular preserva contraste sobre o globo. */
+@media(min-width:769px) and (max-width:991px){
+ .wd-tr-card{height:auto;min-height:0;padding-bottom:420px}
+ .wd-tr-content{height:auto;max-width:none}
+ .wd-tr-globe{height:420px;top:auto;bottom:0;left:calc(50% - 110px);transform:none}
+ .wd-tr-glow{top:auto;bottom:-60px;left:32%;width:75%;transform:none}
+}
+@media(max-width:768px){
+ .wd-tr-card::after{background:radial-gradient(ellipse 140% 110% at 0% 8%,rgba(36,16,79,.96) 0%,rgba(36,16,79,.88) 45%,rgba(36,16,79,.75) 66%,rgba(36,16,79,0) 100%)}
+}
 
 ```
 ```javascript
@@ -287,6 +383,75 @@ body .payoff{padding-bottom:40px}
 #wd-statement .wd-statement-inner{max-width:1360px}
 
 ```
+```javascript
+
+(()=>{
+ const root=document.getElementById('wd-transformacao');
+ if(!root||root.dataset.wdInitialized)return;
+ root.dataset.wdInitialized='true';
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ const titles=[document.getElementById('wd-statement-title'),root.querySelector('.wd-transformacao-closing-text')].filter(Boolean);
+ const measurement=document.createElement('canvas').getContext('2d');
+ const originals=titles.map(el=>el.getAttribute('aria-label'));
+ const clamp=x=>Math.min(1,Math.max(0,x));
+ const color=(a,b,p)=>`rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*p)).join(',')})`;
+ let queued=false;
+ function split(el,text){
+  const twoLines=el.id==='wd-statement-title';
+  if(twoLines)el.style.fontSize='';
+  const css=getComputedStyle(el),width=el.clientWidth;
+  if(!measurement||width<=0)return;
+  measurement.font=`${css.fontWeight} ${css.fontSize} ${css.fontFamily}`;
+  let spacing=parseFloat(css.letterSpacing)||0;
+  const measure=text=>measurement.measureText(text).width+spacing*Math.max(0,text.length-1);
+  const lines=[];let line='';
+  for(const word of text.split(/\s+/)){
+   const candidate=line?`${line} ${word}`:word;
+   if(line&&measure(candidate)>width){lines.push(line);line=word;}else line=candidate;
+  }
+  if(line)lines.push(line);
+  if(twoLines && innerWidth>991){
+   lines.splice(0,lines.length,'Onde você está','quando seu cliente','NÃO procura por você?');
+  }
+  const fragment=document.createDocumentFragment();
+  lines.forEach((text,i)=>{
+   const span=document.createElement('span');span.className=el.id==='wd-statement-title'?'wd-statement-line':'wd-transformacao-line';span.setAttribute('aria-hidden','true');
+   const words=text.split(/(NÃO)/);
+   words.forEach(word=>{
+    if(word==='NÃO'){const strong=document.createElement('strong');strong.className='wd-statement-emphasis';strong.textContent=word;span.append(strong);}else span.append(document.createTextNode(word));
+   });
+   if(i<lines.length-1)span.append(document.createTextNode(' '));
+   fragment.append(span);
+  });
+  el.replaceChildren(fragment);
+ }
+ function update(){
+  queued=false;
+  titles.forEach(el=>{
+   const rect=el.getBoundingClientRect(),lines=[...el.children];
+   // Auros: top 60% -> bottom 60%, scrubbed color, 0.3 stagger.
+   const progress=reduced.matches?1:clamp((innerHeight*.6-rect.top)/Math.max(1,rect.height));
+   const duration=1+.3*Math.max(0,lines.length-1);
+   lines.forEach((line,i)=>{
+    const p=clamp(progress*duration-i*.3);
+    line.style.setProperty('--wd-line-from',color([96,37,225],[239,231,255],p));
+    line.style.setProperty('--wd-line-to',color([203,182,255],[245,195,216],p));
+   });
+  });
+ }
+ function request(){if(!queued){queued=true;requestAnimationFrame(update);}}
+ function resize(){titles.forEach((el,i)=>split(el,originals[i]));request();}
+ addEventListener('scroll',request,{passive:true});
+ addEventListener('resize',resize,{passive:true});
+ reduced.addEventListener('change',request);
+ document.fonts.ready.then(resize);resize();
+ root.querySelector('.wd-transformacao-cta').addEventListener('click',event=>{
+  // Honor #contato once it exists; until then use Work's real contact page.
+  if(!document.getElementById('contato')){event.preventDefault();location.assign('https://workdigital.art.br/contato/');}
+ });
+})();
+
+```
 
 ## EXPLORE / TRANSFORMAÇÃO DIGITAL (`#wd-transformacao`)
 
@@ -480,7 +645,7 @@ Frase substituída pelos seis SVGs oficiais na seção acima. A seção `#wd-sta
     render(){
       const values = {...CONFIG};
       for (const key of Object.keys(values)) if(this.hasAttribute(key)) values[key]=this.getAttribute(key);
-      this.shadowRoot.innerHTML = `<style>${CSS}</style><footer class="wd-footer-root" aria-label="Rodapé Work Digital"><div class="wd-footer-inner"><div class="wd-footer-brand"><a class="wd-footer-home"><img class="wd-footer-logo" alt="Work Digital" width="4340" height="1340" decoding="async"></a><p class="wd-footer-description">Criação de sites e lojas virtuais de alta performance e focados em conversão.</p></div><div class="wd-footer-contact"><p class="wd-footer-title">Como podemos te ajudar?</p><a class="wd-footer-cta"><span>ENTRE EM CONTATO</span>${arrow}</a></div><p class="wd-footer-rights"><a class="wd-footer-rights-brand">Work Digital © <span class="wd-footer-year"></span></a><span class="wd-footer-divider" aria-hidden="true">|</span><span>Todos os direitos reservados</span></p><nav class="wd-footer-socials" aria-label="Redes sociais e canais de contato"></nav></div></footer>`;
+      this.shadowRoot.innerHTML = `<style>${CSS}</style><footer class="wd-footer-root" aria-label="Rodapé Work Digital"><div class="wd-footer-inner"><div class="wd-footer-brand"><a class="wd-footer-home"><img class="wd-footer-logo" alt="Work Digital" width="4340" height="1340" decoding="async"></a><p class="wd-footer-description">Criação de sites e lojas virtuais de alta performance e focados em conversão.</p></div><div class="wd-footer-contact"><p class="wd-footer-title">Como podemos te ajudar?</p><a class="wd-footer-cta"><span>ENTRE EM CONTATO</span>${arrow}</a></div><p class="wd-footer-rights"><a class="wd-footer-rights-brand">Work Digital © <span class="wd-footer-year"></span></a> <span class="wd-footer-divider" aria-hidden="true">|</span> <span>Todos os direitos reservados</span></p><nav class="wd-footer-socials" aria-label="Redes sociais e canais de contato"></nav></div></footer>`;
       const root=this.shadowRoot;
       const home=url(values.home,['https:','http:'])||CONFIG.home;
       root.querySelector('.wd-footer-home').href=home;
