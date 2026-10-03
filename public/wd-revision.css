@@ -165,3 +165,8 @@ body .payoff{padding-bottom:40px}
 #wd-explore .wd-explore-card:hover::before,#wd-explore .wd-explore-card:focus-visible::before,#wd-explore .wd-explore-card.is-active::before{opacity:1}
 #wd-explore .wd-explore-card:hover,#wd-explore .wd-explore-card:focus-visible{box-shadow:0 0 0 1px rgba(214,198,255,.35),0 20px 60px -20px rgba(124,92,255,.55)}
 @media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-card,#wd-explore .wd-explore-card::before{transition:none}}
+
+/* CTAs completamente arredondados. */
+:root{--wd-cta-radius:9999px}
+.wd-cta{border-radius:var(--wd-cta-radius)!important}
+.wd-cta::before,.wd-cta::after{border-radius:inherit}

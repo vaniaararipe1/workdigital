@@ -28,7 +28,7 @@
     .wd-footer-description{max-width:430px;margin:28px 0 0;color:#e1d7ee;font:400 18px/1.6 "Nunito",system-ui,sans-serif;text-wrap:pretty}
     .wd-footer-contact{display:flex;flex-direction:column;align-items:flex-end;gap:24px;min-width:0}
     .wd-footer-title{margin:0;font-size:38px;font-weight:400;line-height:1.3;letter-spacing:-.025em;text-align:right;text-wrap:balance}
-    .wd-footer-cta{display:flex;align-items:center;justify-content:center;gap:20px;min-height:54px;max-width:100%;padding:18px 20px;border-radius:6px;color:#fff;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0;text-decoration:none;font-size:14px;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:var(--wd-cta-weight,500);line-height:1;letter-spacing:var(--wd-cta-letter-spacing,.1em);transition:background-position 600ms ease,color 200ms ease}
+    .wd-footer-cta{display:flex;align-items:center;justify-content:center;gap:20px;min-height:54px;max-width:100%;padding:18px 20px;border-radius:var(--wd-cta-radius,9999px);color:#fff;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0;text-decoration:none;font-size:14px;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:var(--wd-cta-weight,500);line-height:1;letter-spacing:var(--wd-cta-letter-spacing,.1em);transition:background-position 600ms ease,color 200ms ease}
     .wd-footer-cta svg{flex:none;width:14px;height:14px}
     .wd-footer-cta:hover,.wd-footer-cta:focus-visible{background-position:0 0;color:#2b1450}
     .wd-footer-rights{display:flex;flex-wrap:wrap;align-items:center;align-self:center;gap:8px 16px;color:#e1d7ee;font-size:14px;line-height:1.4;margin:0}
@@ -110,10 +110,10 @@
     document.head.append(link);
   }
   if(!document.querySelector('script[src*="/whatsapp.js"]')){
-    const widget=document.createElement('script');widget.src=new URL('whatsapp.js?v=20261003-r8',source).href;widget.defer=true;document.head.append(widget);
+    const widget=document.createElement('script');widget.src=new URL('whatsapp.js?v=20261003-pill',source).href;widget.defer=true;document.head.append(widget);
   }
   if(!document.querySelector('link[href*="/wd-revision.css"]')){
-    const styles=document.createElement('link');styles.rel='stylesheet';styles.href=new URL('wd-revision.css?v=20261003-r8',source).href;document.head.append(styles);
+    const styles=document.createElement('link');styles.rel='stylesheet';styles.href=new URL('wd-revision.css?v=20261003-pill',source).href;document.head.append(styles);
   }
   if(!document.querySelector('link[href*="family=Nunito"]')){
     const font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap';document.head.append(font);
