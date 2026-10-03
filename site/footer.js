@@ -91,7 +91,7 @@
       const home=url(values.home,['https:','http:'])||CONFIG.home;
       root.querySelector('.wd-footer-home').href=home;
       root.querySelector('.wd-footer-rights-brand').href=home;
-      root.querySelector('.wd-footer-logo').src=url(values.logo,['https:','http:'])||(this.dataset.theme==='light'?new URL('img/logo-work-digital-positivo.svg',source).href:CONFIG.logo);
+      root.querySelector('.wd-footer-logo').src=(this.dataset.theme==='light'&&!this.hasAttribute('logo'))?new URL('img/logo-work-digital-positivo.svg',source).href:(url(values.logo,['https:','http:'])||CONFIG.logo);
       root.querySelector('.wd-footer-cta').href=url(values.contact,['https:','http:'])||CONFIG.contact;
       root.querySelector('.wd-footer-year').textContent=new Date().getFullYear();
       for(const key of ['linkedin','instagram','facebook']){

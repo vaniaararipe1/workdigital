@@ -22,7 +22,7 @@ ft = ft.replace('\n  `;', LIGHT, 1)
 # versão positiva do logo no rodapé quando data-theme="light"
 x = "root.querySelector('.wd-footer-logo').src=url(values.logo,['https:','http:'])||CONFIG.logo;"
 assert x in ft
-ft = ft.replace(x, "root.querySelector('.wd-footer-logo').src=url(values.logo,['https:','http:'])||(this.dataset.theme==='light'?new URL('img/logo-work-digital-positivo.svg',source).href:CONFIG.logo);")
+ft = ft.replace(x, "root.querySelector('.wd-footer-logo').src=(this.dataset.theme==='light'&&!this.hasAttribute('logo'))?new URL('img/logo-work-digital-positivo.svg',source).href:(url(values.logo,['https:','http:'])||CONFIG.logo);")
 open(f'{OUT}/footer.js', 'w').write(ft)
 shutil.copy(f'{HOMEF}/img/logo-work-digital.svg', f'{OUT}/img/')
 logo = open(f'{HOMEF}/img/logo-work-digital.svg').read()
