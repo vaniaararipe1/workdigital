@@ -70,14 +70,14 @@ def cases(t, out):
     t = sub1(t, '<div class="media"><canvas></canvas><span class="tag mono">Preview</span></div>', '<div class="media"><div class="vm"></div></div>')
     t = sub1(t, 'const ctl = mountCanvas(a.querySelector("canvas"), p);', 'const ctl = wdThumb(a.querySelector(".vm"), p.slug, p.w, p.h);')
     t = sub1(t, '<div class="floater" id="floater" aria-hidden="true"><canvas></canvas></div>', '<div class="floater" id="floater" aria-hidden="true"><div class="vm"></div></div>')
-    t = sub1(t, 'const fctl = mountCanvas(floater.querySelector("canvas"), projects[0]);', 'const fctl = wdThumb(floater.querySelector(".vm"), projects[0].slug, projects[0].w, projects[0].h);')
-    t = sub1(t, 'fctl.set(projects.find(p => p.slug === r.dataset.slug)); fctl.play();', 'const pr = projects.find(p => p.slug === r.dataset.slug); fctl.set(pr.slug, pr.w, pr.h); fctl.play();')
+    t = sub1(t, 'const fctl = mountCanvas(floater.querySelector("canvas"), projects[0]);', 'const fctl = wdThumb(floater.querySelector(".vm"), projects[0].slug, projects[0].w, projects[0].h); floater.style.aspectRatio = projects[0].w + " / " + projects[0].h;')
+    t = sub1(t, 'fctl.set(projects.find(p => p.slug === r.dataset.slug)); fctl.play();', 'const pr = projects.find(p => p.slug === r.dataset.slug); floater.style.aspectRatio = pr.w + " / " + pr.h; fctl.set(pr.slug, pr.w, pr.h); fctl.play();')
     t, n = re.subn(r'/\* Redraw once fonts arrive.*?\n.*?\n', '', t, count=1); assert n == 1
     t = sub1(t, '<sup id="count">(12)</sup>', f'<sup id="count">({len(projs)})</sup>')
     # zoom do hover passa do canvas para a mídia nova
     t = t.replace('.card:hover .media canvas, .card:focus-visible .media canvas { transform: scale(1.045); }',
                   '.card:hover .media .vm, .card:focus-visible .media .vm { transform: scale(1.045); }')
-    t = sub1(t, '</style>', MEDIA_CSS + '.floater .vm{position:absolute}\n</style>')
+    t = sub1(t, '</style>', MEDIA_CSS + '.floater .vm{position:absolute}\n/* cada card mantém o formato da arte em qualquer tela (sem corte) */\n.grid .card .media{aspect-ratio:4/5}.grid .card.large .media{aspect-ratio:16/7.5}.grid .card.medium .media{aspect-ratio:4/3}\n</style>')
     return t
 
 def home(t, out):
@@ -113,20 +113,18 @@ document.querySelectorAll(".wd-works-card").forEach(card => {
 
 # A seção Works define o CSS mais abaixo no documento, por isso os seletores levam .wd-works-section
 HOME_CSS = r'''
-@media (min-width:992px){
- .wd-works-section .wd-works-grid{grid-template-rows:repeat(2,minmax(400px,auto))}
- .wd-works-section .wd-works-card:nth-child(1){grid-column:1 / span 2;grid-row:1}
- .wd-works-section .wd-works-card:nth-child(2){grid-column:1;grid-row:2}
- .wd-works-section .wd-works-card:nth-child(3){grid-column:3;grid-row:1 / span 2}
- .wd-works-section .wd-works-card:nth-child(4){grid-column:2;grid-row:2}
-}
-.wd-works-section .wd-works-card:nth-child(n){background:#1d0f36;color:#fff}
+.wd-works-section .wd-works-grid{display:flex;flex-wrap:wrap;gap:20px;grid-template-rows:none}
+.wd-works-section .wd-works-card:nth-child(n){grid-column:auto;grid-row:auto;min-height:0;aspect-ratio:var(--wd-ar);background:#1d0f36;color:#fff}
+.wd-works-section .wd-works-card:nth-child(1){--wd-ar:2400/1125;order:1;width:calc((100% - 20px) * 2.1333 / 2.9333)}
+.wd-works-section .wd-works-card:nth-child(3){--wd-ar:1200/1500;order:2;width:calc((100% - 20px) * .8 / 2.9333)}
+.wd-works-section .wd-works-card:nth-child(2){--wd-ar:1600/1200;order:3;width:calc((100% - 20px) / 2)}
+.wd-works-section .wd-works-card:nth-child(4){--wd-ar:1600/1200;order:4;width:calc((100% - 20px) / 2)}
 .wd-works-section .wd-works-card:nth-child(n) .wd-works-media{position:absolute;inset:0;align-self:stretch;justify-self:stretch;height:auto;z-index:0;max-width:none;width:auto;aspect-ratio:auto;border:0;border-radius:inherit;background:#1d0f36}
 .wd-works-section .wd-works-card::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;border-radius:inherit;background:linear-gradient(180deg,rgba(20,8,40,.78) 0%,rgba(20,8,40,0) 30%,rgba(20,8,40,0) 58%,rgba(20,8,40,.88) 100%)}
 .wd-works-section .wd-works-dots{display:none}
 .wd-works-section .wd-works-card h3{color:#fff;text-shadow:0 2px 18px rgba(10,4,24,.45)}
 .wd-works-section .wd-works-card:nth-child(n) .wd-works-description{color:#ece8f5;max-width:34ch;text-shadow:0 1px 12px rgba(10,4,24,.5)}
 .wd-works-card:hover .wd-works-media .vm,.wd-works-card:focus-visible .wd-works-media .vm{transform:scale(1.045)}
-@media (max-width:991px){.wd-works-section .wd-works-card:nth-child(n){min-height:420px}}
-@media (max-width:479px){.wd-works-section .wd-works-card:nth-child(n){min-height:0;aspect-ratio:4/4.8}}
+@media (max-width:1180px){.wd-works-section .wd-works-card:nth-child(n){padding:26px}.wd-works-section .wd-works-card h3{font-size:30px}.wd-works-section .wd-works-card:nth-child(n) .wd-works-description{font-size:15px}}
+@media (max-width:899px){.wd-works-section .wd-works-card:nth-child(n){width:100%;padding:24px 20px}}
 '''

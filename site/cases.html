@@ -269,6 +269,8 @@ body{font-family:var(--text)}
 .vm video{opacity:0;transition:opacity .2s ease}
 .vm.vm-on video{opacity:1}
 .floater .vm{position:absolute}
+/* cada card mantém o formato da arte em qualquer tela (sem corte) */
+.grid .card .media{aspect-ratio:4/5}.grid .card.large .media{aspect-ratio:16/7.5}.grid .card.medium .media{aspect-ratio:4/3}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./wd-revision.css">
@@ -394,10 +396,10 @@ vg.onclick = () => setView("grid"); vl.onclick = () => setView("list");
 
 
 /* ---------- Floating preview in list ---------- */
-const floater = document.getElementById("floater"); const fctl = wdThumb(floater.querySelector(".vm"), projects[0].slug, projects[0].w, projects[0].h);
+const floater = document.getElementById("floater"); const fctl = wdThumb(floater.querySelector(".vm"), projects[0].slug, projects[0].w, projects[0].h); floater.style.aspectRatio = projects[0].w + " / " + projects[0].h;
 let mx = innerWidth / 2, my = innerHeight / 2, fx = mx, fy = my;
 if (fine) {
-  list.addEventListener("mouseover", e => { const r = e.target.closest(".row"); if (!r) return; const pr = projects.find(p => p.slug === r.dataset.slug); fctl.set(pr.slug, pr.w, pr.h); fctl.play(); floater.classList.add("on"); });
+  list.addEventListener("mouseover", e => { const r = e.target.closest(".row"); if (!r) return; const pr = projects.find(p => p.slug === r.dataset.slug); floater.style.aspectRatio = pr.w + " / " + pr.h; fctl.set(pr.slug, pr.w, pr.h); fctl.play(); floater.classList.add("on"); });
   list.addEventListener("mouseleave", () => { floater.classList.remove("on"); fctl.stop(); });
 }
 
