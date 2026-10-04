@@ -220,6 +220,17 @@ body{font-family:var(--text)}
 .svc{color:#CBB6FF}
 .svc span+span::before{color:#04CD8F}
 .media{border-radius:16px}
+.bar{border:0;justify-content:flex-end;padding-block:8px 0}
+.grid[hidden],.list[hidden]{display:none!important}
+.views{border-color:var(--line)}
+.views .chip{font-family:var(--display);color:#EFE7FF;font-weight:500}
+.views .chip:hover{color:#fff}
+.views .chip[aria-pressed="true"]{background:#6025E1;color:#fff;border-color:#6025E1}
+.row{border-color:var(--line)}
+@media(min-width:901px){.row{grid-template-columns:1.4fr 1.6fr 40px}}
+.row .name{font-weight:500;color:#F7F6FB}
+.row:hover .arrow{color:#04CD8F}
+.floater{border-radius:16px}
 .media .tag::before{background:#04CD8F}
 .cursor.big{background:linear-gradient(135deg,#6025E1,#C00252)}
 .section-head{color:#CBB6FF;justify-content:center;text-align:center;letter-spacing:.2em}
@@ -271,6 +282,12 @@ body{font-family:var(--text)}
   </section>
 
   <section class="wrap" id="trabalhos" aria-label="Projetos">
+    <div class="bar">
+      <div class="views" role="group" aria-label="Modo de visualização">
+        <button class="chip" id="v-grid" aria-pressed="true">Grid</button>
+        <button class="chip" id="v-list" aria-pressed="false">Lista</button>
+      </div>
+    </div>
     <div class="grid" id="grid"></div>
     <div class="list" id="list" hidden></div>
   </section>
@@ -385,6 +402,12 @@ projects.forEach(p => {
   r.dataset.slug = p.slug; list.appendChild(r); p.row = r;
 });
 document.getElementById("marquee").innerHTML = '<span class="marquee-logo"><img src="./img/cliente-bacio-di-latte.png" alt="Bacio di Latte" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-dasa.png" alt="Dasa" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-confedera-o-brasileira-de-paraquedismo.png" alt="Confederação Brasileira de Paraquedismo" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-fiamm-latin-america.png" alt="Fiamm Latin America" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-linea-alimentos.png" alt="Linea Alimentos" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-bacio-di-latte.png" alt="Bacio di Latte" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-dasa.png" alt="Dasa" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-confedera-o-brasileira-de-paraquedismo.png" alt="Confederação Brasileira de Paraquedismo" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-fiamm-latin-america.png" alt="Fiamm Latin America" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-linea-alimentos.png" alt="Linea Alimentos" loading="lazy" decoding="async"></span>' + '<span class="marquee-logo"><img src="./img/cliente-bacio-di-latte.png" aria-hidden="true" alt="Bacio di Latte" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-dasa.png" aria-hidden="true" alt="Dasa" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-confedera-o-brasileira-de-paraquedismo.png" aria-hidden="true" alt="Confederação Brasileira de Paraquedismo" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-fiamm-latin-america.png" aria-hidden="true" alt="Fiamm Latin America" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-linea-alimentos.png" aria-hidden="true" alt="Linea Alimentos" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-bacio-di-latte.png" aria-hidden="true" alt="Bacio di Latte" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-dasa.png" aria-hidden="true" alt="Dasa" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-confedera-o-brasileira-de-paraquedismo.png" aria-hidden="true" alt="Confederação Brasileira de Paraquedismo" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-fiamm-latin-america.png" aria-hidden="true" alt="Fiamm Latin America" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-linea-alimentos.png" aria-hidden="true" alt="Linea Alimentos" loading="lazy" decoding="async"></span>';
+
+/* ---------- Grid / list ---------- */
+const vg = document.getElementById("v-grid"), vl = document.getElementById("v-list");
+function setView(v) { grid.hidden = v !== "grid"; list.hidden = v !== "list"; vg.setAttribute("aria-pressed", v === "grid"); vl.setAttribute("aria-pressed", v === "list"); try { localStorage.setItem("wd-view", v); } catch (e) {} }
+vg.onclick = () => setView("grid"); vl.onclick = () => setView("list");
+try { if (localStorage.getItem("wd-view") === "list") setView("list"); } catch (e) {}
 
 /* ---------- Floating preview in list ---------- */
 const floater = document.getElementById("floater"); const fctl = mountCanvas(floater.querySelector("canvas"), projects[0]);

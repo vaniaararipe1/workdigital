@@ -42,6 +42,17 @@ body{font-family:var(--text)}
 .svc{color:#CBB6FF}
 .svc span+span::before{color:#04CD8F}
 .media{border-radius:16px}
+.bar{border:0;justify-content:flex-end;padding-block:8px 0}
+.grid[hidden],.list[hidden]{display:none!important}
+.views{border-color:var(--line)}
+.views .chip{font-family:var(--display);color:#EFE7FF;font-weight:500}
+.views .chip:hover{color:#fff}
+.views .chip[aria-pressed="true"]{background:#6025E1;color:#fff;border-color:#6025E1}
+.row{border-color:var(--line)}
+@media(min-width:901px){.row{grid-template-columns:1.4fr 1.6fr 40px}}
+.row .name{font-weight:500;color:#F7F6FB}
+.row:hover .arrow{color:#04CD8F}
+.floater{border-radius:16px}
 .media .tag::before{background:#04CD8F}
 .cursor.big{background:linear-gradient(135deg,#6025E1,#C00252)}
 .section-head{color:#CBB6FF;justify-content:center;text-align:center;letter-spacing:.2em}
@@ -59,7 +70,8 @@ body{font-family:var(--text)}
     # ---- conteúdo ----
     t, n = re.subn(r'    <div class="hero-eyebrow mono">.*?</div>\n', '', t, count=1); assert n == 1
     t = sub1(t, '<span>Trabalhos<sup id="count">(12)</sup></span>', '<span>Works<sup id="count">(12)</sup></span>')
-    t, n = re.subn(r'    <div class="bar">.*?\n    </div>\n(?=    <div class="grid")', '', t, count=1, flags=re.S); assert n == 1
+    # barra só com Grid / Lista (sem filtros e sem as linhas)
+    t = sub1(t, '      <div class="filters" id="filters" role="group" aria-label="Filtrar por categoria"></div>\n', '')
     t = sub1(t, '<span id="cl-t">Marcas que confiam na gente</span><span>Exemplos</span>', '<span id="cl-t">Marcas que confiam na gente</span>')
     t = sub1(t, '<strong>8<em>a</em></strong><span class="mono">De estrada</span>', '<strong>6 anos</strong><span class="mono">De estrada</span>')
     # ---- anos ----
@@ -77,7 +89,7 @@ body{font-family:var(--text)}
     # ---- sem filtros e sem alternância grade/lista ----
     t, n = re.subn(r'cats\.forEach\(\(c, i\) => \{.*?\n\}\);\n', '', t, count=1, flags=re.S); assert n == 1
     t = sub1(t, ', filters = document.getElementById("filters");', ';')
-    t, n = re.subn(r'/\* ---------- Filters ---------- \*/.*?(?=/\* ---------- Floating preview)', '', t, count=1, flags=re.S); assert n == 1
+    t, n = re.subn(r'/\* ---------- Filters ---------- \*/.*?(?=/\* ---------- Grid / list)', '', t, count=1, flags=re.S); assert n == 1
     # ---- carrossel com os logos dos clientes (os mesmos da home) ----
     group = ''.join(f'<span class="marquee-logo"><img src="./img/{f}" alt="{a}" loading="lazy" decoding="async"></span>' for f, a in logos)
     t = sub1(t, 'document.getElementById("marquee").innerHTML = [...projects, ...projects].map(p => `<span>${p.client}</span>`).join("");',
