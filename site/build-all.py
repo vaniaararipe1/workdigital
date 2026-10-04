@@ -138,7 +138,38 @@ t = sub1(t, '<a class="pill light cta" href="#top"><span class="dot"></span> Ver
 # sem o bloco "Links"
 t = sub1(t, '            <h2>Links</h2>\n            <ul><li><a href="#top">Site no ar</a></li><li><a href="#top">Instagram</a></li></ul>\n', '')
 t = sub1(t, '            <div class="note">Prévia · textos e imagens de exemplo</div>\n', '')
-t = sub1(t, 'aria-label="Work Digital, início">Work Digital</a>', 'aria-label="Work Digital, início"><img src="./ativos-externos/logo-work-digital-branco-criacao-de-site-sp.svg" alt="Work Digital"></a>')
+t = sub1(t, 'aria-label="Work Digital, início">Work Digital</a>', 'aria-label="Work Digital, início"><img class="logo-neg" src="./ativos-externos/logo-work-digital-branco-criacao-de-site-sp.svg" alt="Work Digital"><img class="logo-pos" src="./img/logo-work-digital-positivo.svg" alt="" aria-hidden="true"></a>')
+# verifica o que está por trás do logo e usa a versão positiva sobre fundos claros
+t = t.rstrip() + '''
+<script>
+(function(){
+  const logo=document.querySelector('.hd .logo'); if(!logo)return;
+  const hd=document.querySelector('.hd');
+  function lum(c){const m=c.match(/[\\d.]+/g);if(!m)return null;const a=m.length>3?+m[3]:1;if(a<.5)return null;return (0.2126*m[0]+0.7152*m[1]+0.0722*m[2])/255;}
+  function bgAt(x,y){
+    for(const el of document.elementsFromPoint(x,y)){
+      if(hd.contains(el)||el.closest('.site-header,wd-footer,.wd-whatsapp'))continue;
+      for(let n=el;n&&n!==document.documentElement;n=n.parentElement){const l=lum(getComputedStyle(n).backgroundColor);if(l!==null)return l;}
+      return 0;
+    }
+    return 0;
+  }
+  function check(){
+    const r=logo.getBoundingClientRect();if(!r.width)return;
+    const pts=[[.15,.5],[.5,.5],[.85,.5]];let light=0;
+    pts.forEach(([fx,fy])=>{if(bgAt(r.left+r.width*fx,r.top+r.height*fy)>.62)light++;});
+    logo.classList.toggle('on-light',light>=2);
+  }
+  let busy=false;
+  function req(){if(!busy){busy=true;requestAnimationFrame(()=>{busy=false;check();});}}
+  addEventListener('scroll',()=>{req();clearTimeout(window.__wdLogoT);window.__wdLogoT=setTimeout(check,350);},{passive:true});
+  addEventListener('resize',req,{passive:true});
+  setInterval(()=>{if(!document.hidden)check();},400);
+  check();
+})();
+</script>
+'''
+
 for a, b in [('<a class="logo" href="#top"', f'<a class="logo" href="{PAGES["home"]}"'), ('<a class="pill light back" href="#top">', f'<a class="pill light back" href="{PAGES["cases"]}">')]:
     t = sub1(t, a, b)
 t = apply(t, active='Works', keep_header=True, hidden_home_header=True,
@@ -153,13 +184,14 @@ body:has(.site-header.wd-contact-header-open) .hd{opacity:0;pointer-events:none}
 .wd-work-cta{display:inline-flex;align-items:center;justify-content:center;gap:16px;width:max-content;max-width:100%;min-height:54px;padding:14px 20px;border:0;text-decoration:none;color:#fff;font-size:14px;line-height:1;white-space:nowrap;text-transform:uppercase;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0%;transition:background-position .6s ease,color .2s ease}
 .wd-work-cta:hover,.wd-work-cta:focus-visible{background-position:0% 0%;color:#24123e}
 .wd-work-cta svg{width:14px;height:14px;flex:0 0 14px}
-/* logo sobre vidro escuro (mesmo do Voltar): continua legível quando passa por cima das imagens claras */
-.hd .logo{display:inline-flex;align-items:center;height:46px;padding:0 18px;border-radius:999px;background:rgba(18,19,22,.74);border:1px solid rgba(189,164,255,.28);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%)}
-html.wd-lite .hd .logo{background:rgba(18,19,22,.93)}
-.hd .logo img{display:block;width:124px;height:auto}
-@media(max-width:600px){.hd .logo{height:42px;padding:0 14px}}
+/* logo: troca para a versão positiva quando passa por cima de uma imagem clara */
+.hd .logo{position:relative;display:block}
+.hd .logo img{display:block;width:142px;height:auto;transition:opacity .25s ease}
+.hd .logo .logo-pos{position:absolute;left:0;top:0;opacity:0}
+.hd .logo.on-light .logo-neg{opacity:0}
+.hd .logo.on-light .logo-pos{opacity:1}
 @media(max-width:900px){.intro .cta{margin-bottom:36px}}
-@media(max-width:600px){.hd .logo img{width:104px}}
+@media(max-width:600px){.hd .logo img{width:120px}}
 /* Voltar: vidro escuro com borda (estilo do menu), para não competir com o "Solicitar proposta" */
 .hd .pill.light.back{background:rgba(18,19,22,.58);color:#F7F6FB;border:1px solid rgba(189,164,255,.28);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%)}
 .hd .pill.light.back:hover{background:rgba(96,37,225,.42);border-color:rgba(189,164,255,.5)}
