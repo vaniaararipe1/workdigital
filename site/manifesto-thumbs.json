@@ -45,15 +45,15 @@
       "arquivos": {
         "webp": {
           "arquivo": "bacio-di-latte-home.webp",
-          "kb": 74
+          "kb": 75
         },
         "webm": {
           "arquivo": "bacio-di-latte-home.webm",
-          "kb": 387
+          "kb": 385
         },
         "mp4": {
           "arquivo": "bacio-di-latte-home.mp4",
-          "kb": 463
+          "kb": 460
         }
       },
       "fps": 30,
@@ -77,7 +77,7 @@
       "arquivos": {
         "webp": {
           "arquivo": "linea-alimentos-home.webp",
-          "kb": 75
+          "kb": 81
         },
         "webm": {
           "arquivo": "linea-alimentos-home.webm",
@@ -85,7 +85,7 @@
         },
         "mp4": {
           "arquivo": "linea-alimentos-home.mp4",
-          "kb": 465
+          "kb": 471
         }
       },
       "fps": 30,
@@ -109,7 +109,7 @@
       "arquivos": {
         "webp": {
           "arquivo": "stw-brasil-home.webp",
-          "kb": 55
+          "kb": 61
         },
         "webm": {
           "arquivo": "stw-brasil-home.webm",
@@ -117,7 +117,7 @@
         },
         "mp4": {
           "arquivo": "stw-brasil-home.mp4",
-          "kb": 464
+          "kb": 470
         }
       },
       "fps": 30,
@@ -141,7 +141,7 @@
       "arquivos": {
         "webp": {
           "arquivo": "cbpq-home.webp",
-          "kb": 45
+          "kb": 51
         },
         "webm": {
           "arquivo": "cbpq-home.webm",
@@ -149,7 +149,7 @@
         },
         "mp4": {
           "arquivo": "cbpq-home.mp4",
-          "kb": 459
+          "kb": 465
         }
       },
       "fps": 30,
