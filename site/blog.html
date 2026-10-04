@@ -10,7 +10,7 @@
 /* Layout: Intercom-blog structure — floating pill header, giant centered title, category row, featured post (text left / image right), editorial row list with right thumbnails, pagination, footer. Light cream look by client request. */
 :root{
   --bg:#F4F3EC; --ink:#17131F; --muted:#6B6578; --line:rgba(23,19,31,.13);
-  --accent:#7C5CFF; --lilac:#C4A8FF; --pink:#FF8FCB; --pill:#ffffff;
+  --accent:#6025E1; --lilac:#C4A8FF; --pink:#FF8FCB; --pill:#ffffff;
   --display:"Space Grotesk","Helvetica Neue",Arial,sans-serif;
   --body:"Nunito",system-ui,sans-serif;
   --pad:clamp(16px,4vw,64px);
@@ -81,7 +81,8 @@ img{display:block;max-width:100%}
 .feat .badge::before{content:"";width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#7C5CFF,#FF8FCB)}
 .feat h2{margin:18px 0 0;font:600 clamp(32px,3.6vw,52px)/1.04 var(--display);letter-spacing:-.035em}
 .feat h2 a{background:linear-gradient(currentColor,currentColor) 0 100%/0 2px no-repeat;transition:background-size .5s var(--ease)}
-.feat:hover h2 a{background-size:100% 2px}
+.feat h2 a{background-image:none!important;text-decoration:none!important;transition:color .3s}
+.feat:hover h2 a,.feat h2 a:focus-visible{color:var(--accent)}
 .feat p{margin:22px 0 0;font-size:18px;line-height:1.6;color:var(--muted);max-width:480px}
 .more{display:inline-flex;align-items:center;gap:10px;margin-top:30px;font:600 15px/1 var(--display)}
 .more svg{width:16px;height:16px;transition:transform .4s var(--ease)}

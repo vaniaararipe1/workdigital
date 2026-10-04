@@ -6,7 +6,11 @@ def sub1(t, a, b):
     return t.replace(a, b)
 
 def blog(t):
+    # cor de destaque (hover dos títulos dos posts etc.): roxo da Work
+    t = sub1(t, '--accent:#7C5CFF;', '--accent:#6025E1;')
     t = sub1(t, '<title>Blog Work Digital</title>', '<title>Blog da Work</title>')
+    # post em destaque: sem sublinhado; no hover o título fica no roxo da Work, igual aos outros
+    t = sub1(t, '.feat:hover h2 a{background-size:100% 2px}', '.feat h2 a{background-image:none!important;text-decoration:none!important;transition:color .3s}\n.feat:hover h2 a,.feat h2 a:focus-visible{color:var(--accent)}')
     t = sub1(t, '<h1 class="rv">Blog Work Digital</h1>', '<h1 class="rv">Blog da Work</h1>')
     t = sub1(t, '.hero h1{margin:0;font:600 clamp(56px,11.2vw,164px)/.92 var(--display);letter-spacing:-.055em}',
              '.hero h1{margin:0;font:600 clamp(44px,8vw,120px)/.94 var(--display);letter-spacing:-.05em}')
@@ -73,6 +77,7 @@ JS = '''<script>
 '''
 ARROW = '<svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M12.0641 1.14239L.499 12.7061M1.9673.7061h9.5726c.53 0 .9591.4291.9591.9605v9.5712" stroke="currentColor" stroke-width="1.41181"/></svg>'
 def post(t, out):
+    t = sub1(t, '--accent:#7C5CFF;', '--accent:#6025E1;')
     shutil.copy(out + '/media/servico-blog.jpg', out + '/img/servico-blog.jpg')
     # compartilhar no início (abaixo do autor) e no fim (antes do CTA)
     t, n = re.subn(r'(    <div class="by rv">.*?\n    </div>\n)', lambda m: m.group(1) + '    ' + share_bar('Compartilhar', 'share-top rv') + '\n', t, count=1, flags=re.S); assert n == 1
