@@ -190,3 +190,14 @@ t, n = re.subn(r'/\* ---------- Copy e-mail ---------- \*/\n.*?\n\};\n', '', t, 
 t = sub1(t, 'a.href = "#case-" + p.slug;', 'a.href = "' + PAGES['case'] + '"; a.target = "_top";')
 open(OUT + '/cases.html', 'w').write(link_pages(t))
 print('cases ok')
+
+# ---- Blog e Post: fotos embutidas (base64) viram arquivos separados, carregados sob demanda ----
+import base64, hashlib
+for name in ['blog', 'post']:
+    p = OUT + f'/{name}.html'; t = open(p).read()
+    def ext(m):
+        data = base64.b64decode(m.group(2)); fn = 'img/foto-' + hashlib.md5(data).hexdigest()[:10] + '.jpg'
+        open(OUT + '/' + fn, 'wb').write(data); return './' + fn
+    t = re.sub(r'data:image/(jpeg|jpg);base64,([A-Za-z0-9+/=]+)', ext, t)
+    open(p, 'w').write(t)
+print('fotos ok')

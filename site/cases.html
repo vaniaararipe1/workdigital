@@ -405,7 +405,7 @@ if (fine && !reduce) {
   addEventListener("mousemove", e => { mx = e.clientX; my = e.clientY; });
   grid.addEventListener("mouseover", e => cursor.classList.toggle("big", !!e.target.closest("[data-cursor]")));
   grid.addEventListener("mouseleave", () => cursor.classList.remove("big"));
-  (function tick() { cx += (mx - cx) * 0.18; cy += (my - cy) * 0.18; fx += (mx - fx) * 0.12; fy += (my - fy) * 0.12;
+  (function tick() { cx = mx; cy = my; fx += (mx - fx) * 0.12; fy += (my - fy) * 0.12;
     cursor.style.transform = `translate(${cx}px, ${cy}px)`; floater.style.left = fx + "px"; floater.style.top = fy + "px"; requestAnimationFrame(tick); })();
 } else if (fine) {
   addEventListener("mousemove", e => { floater.style.left = e.clientX + "px"; floater.style.top = e.clientY + "px"; });

@@ -507,14 +507,14 @@ document.fonts && document.fonts.ready.then(layout);
   const c=document.getElementById('wdCursor'), lb=c.querySelector('b'); c.hidden=false; document.body.classList.add('has-wd-cursor');
   const LABELS=[[".svc:not(.is-open)","Abrir"],[".see","Works"]];
   let mx=innerWidth/2,my=innerHeight/2,x=mx,y=my;
-  addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});
+  addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;c.style.transform=`translate(${mx}px,${my}px)`;},{passive:true});
   document.addEventListener('mouseover',e=>{
     let label=null; for(const [sel,txt] of LABELS){ if(e.target.closest(sel)){label=txt;break;} }
     c.classList.toggle('big',!!label); if(label) lb.textContent=label;
     c.classList.toggle('link',!label && !!e.target.closest('a,button'));
   });
   document.addEventListener('mouseleave',()=>{c.classList.remove('big','link');});
-  (function tick(){const dx=mx-x,dy=my-y;if(Math.abs(dx)+Math.abs(dy)>.1){x+=dx*.18;y+=dy*.18;c.style.transform=`translate(${x}px,${y}px)`;}requestAnimationFrame(tick);})();
+  
 })();
 </script>
 <script src="./footer.js" defer></script>

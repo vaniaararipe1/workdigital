@@ -58,6 +58,22 @@ for a,b in [('function resize(){const r=art.getBoundingClientRect();width=r.widt
     assert t.count(a)==1, a[:60]
     t=t.replace(a,b)
 t=link_pages(t)
+# ---- carregamento em conexões lentas ----
+import re, subprocess
+# 1) arte das partículas: PNG embutido (957 KB em base64) -> arquivo WebP separado (268 KB)
+m=re.search(r'data:image/png;base64,([A-Za-z0-9+/=]{100000,})',t); assert m
+import base64 as _b64
+open('/tmp/_pa.png','wb').write(_b64.b64decode(m.group(1)))
+subprocess.run(['ffmpeg','-loglevel','error','-y','-i','/tmp/_pa.png','-c:v','libwebp','-quality','88','-compression_level','6',OUT+'/media/particle-art.webp'],check=True)
+t=t[:m.start()]+'./media/particle-art.webp'+t[m.end():]
+# 2) vídeos de Soluções só baixam quando a seção aparece (o script da seção já dá play no vídeo visível)
+n0=t.count('<video class="wd-explore-video" autoplay muted loop playsinline preload="metadata"')
+assert n0==3
+t=t.replace('<video class="wd-explore-video" autoplay muted loop playsinline preload="metadata"','<video class="wd-explore-video" muted loop playsinline preload="none"')
+# 3) código 3D (1,4 MB) em arquivo separado: o HTML aparece antes e o código fica em cache
+i=t.index('<script type="module">'); j=t.index('</script>',i)
+open(OUT+'/app.js','w').write(t[i+len('<script type="module">'):j])
+t=t[:i]+'<script type="module" src="./app.js"></script>'+t[j+len('</script>'):]
 open(OUT+'/home.html','w').write(t)
 # Soluções da home (telas entre 980 e 1199px): imagem com no máximo 520px e sem medidas antigas da versão larga
 js=open(H+'/wd-revision.js').read()
@@ -65,6 +81,9 @@ a="function resize(){if(stacked.matches)return;"
 assert a in js
 # o tamanho da imagem não depende mais da altura da lista (evita o ciclo que fazia a imagem crescer sem parar)
 js=js.replace(a,"function resize(){['--wd-panel-height','--wd-media-height','--wd-media-width'].forEach(p=>body.style.removeProperty(p));return;")
+# o primeiro vídeo só começa a baixar quando a seção Soluções aparece na tela
+assert js.count(' resize();show(0);')==1
+js=js.replace(' resize();show(0);'," resize();if(media[0])media[0].classList.add('is-visible');")
 open(OUT+'/wd-revision.js','w').write(js)
 css=open(H+'/wd-revision.css').read()
 css+='''

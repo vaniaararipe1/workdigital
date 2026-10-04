@@ -157,6 +157,11 @@ TICK_OLD = '(function tick(){x+=(mx-x)*.18;y+=(my-y)*.18;c.style.transform=`tran
 TICK_NEW = '(function tick(){const dx=mx-x,dy=my-y;if(Math.abs(dx)+Math.abs(dy)>.1){x+=dx*.18;y+=dy*.18;c.style.transform=`translate(${x}px,${y}px)`;}requestAnimationFrame(tick);})();'
 PERF = [  # desempenho: aplicado em todas as páginas
     (TICK_OLD, TICK_NEW),
+    # cursor acompanha o mouse na hora (sem o atraso de 18% por quadro)
+    ("addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});",
+     "addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;c.style.transform=`translate(${mx}px,${my}px)`;},{passive:true});"),
+    (TICK_NEW, ''),
+    ('(function tick() { cx += (mx - cx) * 0.18; cy += (my - cy) * 0.18;', '(function tick() { cx = mx; cy = my;'),
     # fundo de luz desenhado em 1/4 do tamanho e ampliado 4x (degradê suave: visual igual, 16x menos pixels para a GPU)
     ('.light-field-inner::before{content:"";position:absolute;inset:-20%;background:',
      '.light-field-inner::before{content:"";position:absolute;left:-20%;top:-20%;width:35%;height:35%;transform-origin:0 0;transform:scale(4);background:'),

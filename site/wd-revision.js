@@ -37,7 +37,7 @@
  function resize(){['--wd-panel-height','--wd-media-height','--wd-media-width'].forEach(p=>body.style.removeProperty(p));return;const h=list.getBoundingClientRect().height;const inner=Math.max(0,h-40);body.style.setProperty('--wd-panel-height',h+'px');body.style.setProperty('--wd-media-height',inner+'px');body.style.setProperty('--wd-media-width',(inner*9/11)+'px');}
  new ResizeObserver(resize).observe(list);stacked.addEventListener('change',resize);reduced.addEventListener('change',()=>show(current));
  new IntersectionObserver(entries=>{if(entries[0].isIntersecting)show(current);else media.forEach(el=>el.querySelector('video').pause());}).observe(root);
- resize();show(0);
+ resize();if(media[0])media[0].classList.add('is-visible');
 })();
 /* MENU mobile: navegação e SOLUÇÕES com toque e teclado. */
 (() => {
