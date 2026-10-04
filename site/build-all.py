@@ -159,6 +159,9 @@ t = t.rstrip() + '''
     const pts=[[.15,.5],[.5,.5],[.85,.5]];let light=0;
     pts.forEach(([fx,fy])=>{if(bgAt(r.left+r.width*fx,r.top+r.height*fy)>.62)light++;});
     logo.classList.toggle('on-light',light>=2);
+    // no rodapé (que já tem o logo grande e o CTA) o cabeçalho do case some para não duplicar
+    const ft=document.querySelector('wd-footer');
+    hd.classList.toggle('over-footer',!!ft&&ft.getBoundingClientRect().top<hd.getBoundingClientRect().bottom+24);
   }
   let busy=false;
   function req(){if(!busy){busy=true;requestAnimationFrame(()=>{busy=false;check();});}}
@@ -190,6 +193,7 @@ body:has(.site-header.wd-contact-header-open) .hd{opacity:0;pointer-events:none}
 .hd .logo .logo-pos{position:absolute;left:0;top:0;opacity:0}
 .hd .logo.on-light .logo-neg{opacity:0}
 .hd .logo.on-light .logo-pos{opacity:1}
+.hd.over-footer{opacity:0!important;visibility:hidden;transition:opacity .3s ease,visibility 0s .3s}
 @media(max-width:900px){.intro .cta{margin-bottom:36px}}
 @media(max-width:600px){.hd .logo img{width:120px}}
 /* Voltar: vidro escuro com borda (estilo do menu), para não competir com o "Solicitar proposta" */
