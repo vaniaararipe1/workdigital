@@ -49,6 +49,14 @@ t=t.replace(a,'this.particleAccumulator=Math.min(this.particleAccumulator+Math.m
 a='this.renderer.setPixelRatio(window.devicePixelRatio||1),this.renderer.setSize(n,o)'
 assert a in t
 t=t.replace(a,'this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5)),this.renderer.setSize(n,o)')
+# desempenho (home): desenho alternativo das partículas (canvas 2D, usado quando a GPU não está disponível)
+# 40% das partículas, 1.5x maiores (mesma cobertura visual) e densidade de pixels até 1.5
+for a,b in [('function resize(){const r=art.getBoundingClientRect();width=r.width;height=r.height;const d=devicePixelRatio||1;',
+             'function resize(){const r=art.getBoundingClientRect();width=r.width;height=r.height;const d=Math.min(devicePixelRatio||1,1.5);'),
+            ('  const count=PARTICLE_COUNT;\n', '  const count=Math.round(PARTICLE_COUNT*.4);\n'),
+            ('phase:random()*6.283,size:.75+random()*.5});', 'phase:random()*6.283,size:(.75+random()*.5)*1.5});')]:
+    assert t.count(a)==1, a[:60]
+    t=t.replace(a,b)
 t=link_pages(t)
 open(OUT+'/home.html','w').write(t)
 os.makedirs(OUT+'/media',exist_ok=True)

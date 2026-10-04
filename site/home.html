@@ -1236,7 +1236,7 @@ const PARTICLE_POINTER_RESPONSE = -60 * Math.log(1 - 0.07);
  let particles=[],width=1,height=1,raf=0,last=0,time=0,visible=true,ready=false;
  let mx=0,my=0,tx=0,ty=0,pointerActive=false;
  let randomSeed=921;const random=()=>{randomSeed=(Math.imul(randomSeed,1664525)+1013904223)>>>0;return randomSeed/4294967296;};
- function resize(){const r=art.getBoundingClientRect();width=r.width;height=r.height;const d=devicePixelRatio||1;canvas.width=Math.round(width*d);canvas.height=Math.round(height*d);ctx.setTransform(d,0,0,d,0,0);start();}
+ function resize(){const r=art.getBoundingClientRect();width=r.width;height=r.height;const d=Math.min(devicePixelRatio||1,1.5);canvas.width=Math.round(width*d);canvas.height=Math.round(height*d);ctx.setTransform(d,0,0,d,0,0);start();}
  function setup(){
   if(ready)return;
   const source=document.createElement('canvas');source.width=image.naturalWidth;source.height=image.naturalHeight;
@@ -1250,11 +1250,11 @@ const PARTICLE_POINTER_RESPONSE = -60 * Math.log(1 - 0.07);
    if(rr>1.18)continue;
    candidates.push({sx:x,sy:y,x:px,y:py,z:Math.sqrt(Math.max(.015,1-Math.min(.985,rr))),brightness});
   }
-  const count=PARTICLE_COUNT;
+  const count=Math.round(PARTICLE_COUNT*.4);
   // Samples retain the real glyph fragments and luminous variation of the supplied art.
   for(let i=0;i<count;i++){
    const p=candidates[Math.floor(random()*candidates.length)];
-   particles.push({...p,z:p.z*(random()<.55?1:-1),phase:random()*6.283,size:.75+random()*.5});
+   particles.push({...p,z:p.z*(random()<.55?1:-1),phase:random()*6.283,size:(.75+random()*.5)*1.5});
   }
   ready=true;art.classList.add('has-live-particles');resize();start();
  }
