@@ -60,7 +60,7 @@ t = sub1(t, ".words .plus::before,.words .plus::after{content:\"\";position:abso
 # rodapé fluido: a bola e as palavras somem suavemente quando o rodapé chega
 t = sub1(t, "document.fonts && document.fonts.ready.then(layout);\n", "document.fonts && document.fonts.ready.then(layout);\n"
          "(function(){const bgfx=document.querySelector('.bgfx');function fade(){const ft=document.querySelector('wd-footer');if(!ft)return;"
-         "const r=ft.getBoundingClientRect();const p=Math.min(1,Math.max(0,(innerHeight-r.top)/(Math.min(r.height,innerHeight)*.8)));bgfx.style.opacity=String(1-p);}"
+         "const r=ft.getBoundingClientRect();const p=Math.min(1,Math.max(0,(innerHeight-r.top)/(Math.min(r.height,innerHeight)*.8)));bgfx.style.opacity=p>=1?'0':String(1-p);}"
          "addEventListener('scroll',fade,{passive:true});addEventListener('resize',fade);setTimeout(fade,500);})();\n")
 # cards no padrão da home: raio 32px e as cores dos cards da home (#29134d; hover #301258 → #4b247e)
 # retângulos com as cores e efeitos do retângulo da seção Soluções da home (.wd-explore-layout + campo de pontos)
@@ -109,6 +109,10 @@ t = sub1(t, '.svc .icon svg{width:20px;height:20px;stroke:var(--fg);stroke-width
          '.svc .icon{width:56px;height:56px;margin:-8px -8px 0 0}.svc .icon span{display:block;font:300 56px/1 var(--display);color:var(--fg);transform:translateY(-.04em)}')
 # "Ver nossos works" leva para a página de cases
 t = sub1(t, '<a class="see" href="#top">', '<a class="see" href="' + PAGES['cases'] + '" target="_top">')
+# desempenho do fluido: densidade de pixels 1.25 (era 1.5), 12 iterações de pressão (eram 20), pausa quando a bola está escondida pelo rodapé
+t = sub1(t, 'dpr=Math.min(devicePixelRatio||1,1.5);', 'dpr=Math.min(devicePixelRatio||1,1.25);')
+t = sub1(t, 'for(let i=0;i<20;i++){T(pPres', 'for(let i=0;i<12;i++){T(pPres')
+t = sub1(t, 'function frame(now){', "function frame(now){if(bg.style.opacity==='0'){prev=now;requestAnimationFrame(frame);return;}")
 t = sub1(t, "const menu=document.getElementById('menu'), mb=document.getElementById('menuBtn');\n"
             "mb.addEventListener('click',()=>{const on=menu.classList.toggle('on'); mb.setAttribute('aria-expanded',on);});\n"
             "menu.addEventListener('click',()=>{menu.classList.remove('on');mb.setAttribute('aria-expanded',false);});\n"
@@ -180,6 +184,7 @@ print('ok')
 
 # ---------- Cases (já com o menu/fundo/rodapé; remove o bloco final que agora está no rodapé) ----------
 t = open('cases-site/cases.html').read()
+t = t.replace(' filter:blur(42px);animation:lightFieldDrift', ' animation:lightFieldDrift').replace('@media(max-width:760px){.light-field-inner::before{filter:blur(28px)}}', '')
 t, n = re.subn(r'  <section class="cta wrap" id="contato".*?</section>\n', '', t, count=1, flags=re.S); assert n == 1
 t, n = re.subn(r'/\* ---------- Copy e-mail ---------- \*/\n.*?\n\};\n', '', t, count=1, flags=re.S); assert n == 1
 t = sub1(t, 'a.href = "#case-" + p.slug;', 'a.href = "' + PAGES['case'] + '"; a.target = "_top";')

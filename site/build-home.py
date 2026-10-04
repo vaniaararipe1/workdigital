@@ -39,6 +39,16 @@ assert t.count('\ufffd')==5
 t=t.replace('\ufffd','\\uFFFD')
 i=t.rindex('</body>'); t=t[:i]+cursor_css+t[i:]
 from apply_home import link_pages
+# desempenho (home): sem o blur de tela cheia na camada de luz; no máximo 2 passos de simulação por quadro; densidade de pixels até 1.5
+assert t.count('filter:blur(42px);')==2
+t=t.replace(' filter:blur(42px);animation:lightFieldDrift',' animation:lightFieldDrift')
+t=t.replace('.light-field-inner::before{filter:blur(28px)}','')
+a='this.particleAccumulator+=Math.max(0,this.clock.getDelta());'
+assert a in t
+t=t.replace(a,'this.particleAccumulator=Math.min(this.particleAccumulator+Math.max(0,this.clock.getDelta()),PARTICLE_FIXED_STEP*2);')
+a='this.renderer.setPixelRatio(window.devicePixelRatio||1),this.renderer.setSize(n,o)'
+assert a in t
+t=t.replace(a,'this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5)),this.renderer.setSize(n,o)')
 t=link_pages(t)
 open(OUT+'/home.html','w').write(t)
 os.makedirs(OUT+'/media',exist_ok=True)

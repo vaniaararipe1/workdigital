@@ -14,10 +14,9 @@ LIGHT_LAYER = '''.light-field-inner{position:absolute;inset:0;height:100%;overfl
  radial-gradient(ellipse at 78% 60%,rgba(237,72,151,.82),transparent 40%),
  radial-gradient(ellipse at 60% 84%,rgba(4,205,143,.32),transparent 34%),
  radial-gradient(ellipse at 42% 68%,rgba(150,72,253,.48),transparent 45%);
- filter:blur(42px);animation:lightFieldDrift 22s ease-in-out infinite alternate;will-change:transform}
+ animation:lightFieldDrift 22s ease-in-out infinite alternate;will-change:transform}
 .light-field-inner::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 24%,rgba(18,19,22,.26),transparent 63%)}
 @keyframes lightFieldDrift{from{transform:translate3d(-4%,-3%,0) scale(1)}to{transform:translate3d(5%,4%,0) scale(1.10)}}
-@media(max-width:760px){.light-field-inner::before{filter:blur(28px)}}
 @media(prefers-reduced-motion:reduce){.light-field-inner::before{animation:none}}
 '''
 FIXED_FIELD = '''/* Fundo da home: camada de luz fixa (copiada da home) */
@@ -152,7 +151,16 @@ PAGES = {
 }
 
 
+TICK_OLD = '(function tick(){x+=(mx-x)*.18;y+=(my-y)*.18;c.style.transform=`translate(${x}px,${y}px)`;requestAnimationFrame(tick);})();'
+TICK_NEW = '(function tick(){const dx=mx-x,dy=my-y;if(Math.abs(dx)+Math.abs(dy)>.1){x+=dx*.18;y+=dy*.18;c.style.transform=`translate(${x}px,${y}px)`;}requestAnimationFrame(tick);})();'
+PERF = [  # desempenho: aplicado em todas as páginas
+    (TICK_OLD, TICK_NEW),
+]
+
+
 def link_pages(t):
+    for a, b in PERF:
+        t = t.replace(a, b)
     P = PAGES
     for a, b in [('https://workdigital-hero-preview.onrender.com/#wd-explore', P['solucoes']),
                  ('https://workdigital-hero-preview.onrender.com/', P['home']),
