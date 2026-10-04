@@ -206,9 +206,13 @@ body:has(.site-header.wd-contact-header-open) .hd{opacity:0;pointer-events:none}
 .wd-work-cta{display:inline-flex;align-items:center;justify-content:center;gap:16px;width:max-content;max-width:100%;min-height:54px;padding:14px 20px;border:0;text-decoration:none;color:#fff;font-size:14px;line-height:1;white-space:nowrap;text-transform:uppercase;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0%;transition:background-position .6s ease,color .2s ease}
 .wd-work-cta:hover,.wd-work-cta:focus-visible{background-position:0% 0%;color:#24123e}
 .wd-work-cta svg{width:14px;height:14px;flex:0 0 14px}
-.hd .logo img{display:block;width:142px;height:auto}
+/* logo sobre vidro escuro (mesmo do Voltar): continua legível quando passa por cima das imagens claras */
+.hd .logo{display:inline-flex;align-items:center;height:46px;padding:0 18px;border-radius:999px;background:rgba(18,19,22,.74);border:1px solid rgba(189,164,255,.28);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%)}
+html.wd-lite .hd .logo{background:rgba(18,19,22,.93)}
+.hd .logo img{display:block;width:124px;height:auto}
+@media(max-width:600px){.hd .logo{height:42px;padding:0 14px}}
 @media(max-width:900px){.intro .cta{margin-bottom:36px}}
-@media(max-width:600px){.hd .logo img{width:120px}}
+@media(max-width:600px){.hd .logo img{width:104px}}
 /* Voltar: vidro escuro com borda (estilo do menu), para não competir com o "Solicitar proposta" */
 .hd .pill.light.back{background:rgba(18,19,22,.58);color:#F7F6FB;border:1px solid rgba(189,164,255,.28);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%)}
 .hd .pill.light.back:hover{background:rgba(96,37,225,.42);border-color:rgba(189,164,255,.5)}
