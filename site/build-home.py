@@ -72,7 +72,7 @@ i=t.index('<article class="wd-works-card">');j=t.rindex('<article class="wd-work
 blk=t[i:j]; assert blk.count('<article class="wd-works-card">')==4 and blk.count('</article>')==4
 blk=blk.replace('<article class="wd-works-card">','<a class="wd-works-card" href="'+_P['case']+'" target="_top">').replace('</article>','</a>')
 t=t[:i]+blk+t[j:]
-t=t.replace('</head>','<style>a.wd-works-card{color:inherit;text-decoration:none}a.wd-works-card:first-child{color:#24123e}</style>\n</head>',1)
+t=t.replace('</head>','<style>a.wd-works-card{color:inherit;text-decoration:none}</style>\n</head>',1)
 # logo e "Home" na própria home levam ao topo (antes iam para #hero, que fica no meio do topo da página); ao chegar na home, começa no topo
 t=t.replace('</body>',"""<script>
 (function(){

@@ -342,7 +342,7 @@ const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
 
 
-const WD_CAN_PLAY = matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches && !window.WD_LITE;
+const WD_CAN_PLAY = matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches;
 function wdThumb(box, slug, w, h) {
   box.innerHTML = `<img class="vm-poster" src="./thumbs/${slug}.webp" width="${w}" height="${h}" alt="" loading="lazy" decoding="async">`;
   let video = null, loaded = false, want = false;

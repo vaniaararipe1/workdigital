@@ -19,7 +19,7 @@ def copy_files(out, slugs):
 
 # JS comum: liga pôster + vídeo num container; vídeo só carrega/toca com mouse (nunca no celular, modo leve ou movimento reduzido)
 MEDIA_JS = r'''
-const WD_CAN_PLAY = matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches && !window.WD_LITE;
+const WD_CAN_PLAY = matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches;
 function wdThumb(box, slug, w, h) {
   box.innerHTML = `<img class="vm-poster" src="./thumbs/${slug}.webp" width="${w}" height="${h}" alt="" loading="lazy" decoding="async">`;
   let video = null, loaded = false, want = false;
@@ -81,29 +81,52 @@ def cases(t, out):
     return t
 
 def home(t, out):
+    # Imagem ocupa o card inteiro: usa as artes dos cases (grande / médio / pequeno),
+    # que têm o formato de cada card. Ordem do DOM: Bacio, Linea, STW, CBPq.
     hs = DATA['home']
-    copy_files(out, [h['slug'] for h in hs])
+    byslug = {c['slug']: c for c in DATA['cases']}
+    cs = [byslug[h['slug'].replace('-home', '')] for h in hs]
+    copy_files(out, [c['slug'] for c in cs])
     i = t.index('<a class="wd-works-card"'); j = t.rindex('<a class="wd-works-card"'); j = t.index('</a>', j) + 4
-    blk = t[i:j]
-    cards = re.findall(r'<a class="wd-works-card".*?</a>', blk, flags=re.S)
+    cards = re.findall(r'<a class="wd-works-card".*?</a>', t[i:j], flags=re.S)
     assert len(cards) == 4
     new = []
-    for c, h in zip(cards, hs):
+    for c, h, cs_ in zip(cards, hs, cs):
+        w, hh = DIM[SIZE[cs_['formato']]]
         c = re.sub(r'<h3>.*?</h3>', f'<h3>{h["titulo"]}</h3>', c, count=1, flags=re.S)
-        c = re.sub(r'<div class="wd-works-media">.*?</div>', f'<div class="wd-works-media" data-thumb="{h["slug"]}"><div class="vm"></div></div>', c, count=1, flags=re.S)
+        c = re.sub(r'<div class="wd-works-media">.*?</div>', f'<div class="wd-works-media" data-thumb="{cs_["slug"]}" data-w="{w}" data-h="{hh}"><div class="vm"></div></div>', c, count=1, flags=re.S)
         c = re.sub(r'<p class="wd-works-description">.*?</p>', f'<p class="wd-works-description">{h["descricao"]}</p>', c, count=1, flags=re.S)
         new.append(c)
     t = t[:i] + '\n   '.join(new) + t[j:]
-    js = '<script>\n' + MEDIA_JS + r'''
+    t = t.replace('</body>', '<script>\n' + MEDIA_JS + HOME_JS + '</script>\n</body>', 1)
+    t = t.replace('</head>', '<style>' + MEDIA_CSS + HOME_CSS + '</style>\n</head>', 1)
+    return t
+
+HOME_JS = r'''
 document.querySelectorAll(".wd-works-card").forEach(card => {
-  const box = card.querySelector(".wd-works-media .vm"); if (!box) return;
-  const ctl = wdThumb(box, card.querySelector(".wd-works-media").dataset.thumb, 640, 400);
+  const m = card.querySelector(".wd-works-media"); if (!m) return;
+  const ctl = wdThumb(m.querySelector(".vm"), m.dataset.thumb, +m.dataset.w, +m.dataset.h);
   card.addEventListener("mouseenter", ctl.play); card.addEventListener("mouseleave", ctl.stop);
   card.addEventListener("focus", ctl.play); card.addEventListener("blur", ctl.stop);
 });
-</script>
 '''
-    t = t.replace('</body>', js + '</body>', 1)
-    css = MEDIA_CSS + '.wd-works-card:hover .wd-works-media .vm,.wd-works-card:focus-visible .wd-works-media .vm{transform:scale(1.045)}\n'
-    t = t.replace('</head>', '<style>' + css + '</style>\n</head>', 1)
-    return t
+
+# A seção Works define o CSS mais abaixo no documento, por isso os seletores levam .wd-works-section
+HOME_CSS = r'''
+@media (min-width:992px){
+ .wd-works-section .wd-works-grid{grid-template-rows:repeat(2,minmax(400px,auto))}
+ .wd-works-section .wd-works-card:nth-child(1){grid-column:1 / span 2;grid-row:1}
+ .wd-works-section .wd-works-card:nth-child(2){grid-column:1;grid-row:2}
+ .wd-works-section .wd-works-card:nth-child(3){grid-column:3;grid-row:1 / span 2}
+ .wd-works-section .wd-works-card:nth-child(4){grid-column:2;grid-row:2}
+}
+.wd-works-section .wd-works-card:nth-child(n){background:#1d0f36;color:#fff}
+.wd-works-section .wd-works-card:nth-child(n) .wd-works-media{position:absolute;inset:0;align-self:stretch;justify-self:stretch;height:auto;z-index:0;max-width:none;width:auto;aspect-ratio:auto;border:0;border-radius:inherit;background:#1d0f36}
+.wd-works-section .wd-works-card::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;border-radius:inherit;background:linear-gradient(180deg,rgba(20,8,40,.78) 0%,rgba(20,8,40,0) 30%,rgba(20,8,40,0) 58%,rgba(20,8,40,.88) 100%)}
+.wd-works-section .wd-works-dots{display:none}
+.wd-works-section .wd-works-card h3{color:#fff;text-shadow:0 2px 18px rgba(10,4,24,.45)}
+.wd-works-section .wd-works-card:nth-child(n) .wd-works-description{color:#ece8f5;max-width:34ch;text-shadow:0 1px 12px rgba(10,4,24,.5)}
+.wd-works-card:hover .wd-works-media .vm,.wd-works-card:focus-visible .wd-works-media .vm{transform:scale(1.045)}
+@media (max-width:991px){.wd-works-section .wd-works-card:nth-child(n){min-height:420px}}
+@media (max-width:479px){.wd-works-section .wd-works-card:nth-child(n){min-height:0;aspect-ratio:4/4.8}}
+'''
