@@ -69,6 +69,12 @@
     @media(max-width:600px){.wd-footer-cta{min-height:62px;padding:20px 30px;font-size:16px}}
     .wd-footer-rights{flex-wrap:nowrap;white-space:nowrap}
     @media(max-width:360px){.wd-footer-rights{font-size:12px;gap:8px}}
+    .wd-footer-socials{gap:8px}
+    .wd-footer-social{width:40px;height:40px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#F7F6FB;transition:background .3s,color .3s,border-color .3s,transform .3s}
+    .wd-footer-social svg{width:18px;height:18px}
+    .wd-footer-social:hover,.wd-footer-social:focus-visible{background:linear-gradient(135deg,#6025E1,#C00252);border-color:transparent;color:#fff;transform:translateY(-2px)}
+    :host([data-theme="light"]) .wd-footer-social{border-color:rgba(23,19,31,.14);background:rgba(255,255,255,.55);color:#2B2533}
+    :host([data-theme="light"]) .wd-footer-social:hover,:host([data-theme="light"]) .wd-footer-social:focus-visible{background:linear-gradient(135deg,#6025E1,#C00252);border-color:transparent;color:#fff}
   `;
   const ICONS = {
     instagram: '<rect x="11" y="11" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="20" cy="20" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="25.6" cy="14.5" r="1.2" fill="currentColor"/>',
@@ -77,6 +83,7 @@
     whatsapp: '<path d="M11 29l1.5-5a9 9 0 1 1 3.5 3.5Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M16 14.5c.5-.3.9.1 1.5 1.7.3.7 0 1-.6 1.6.8 1.9 2.2 3.2 4.1 4 .6-.7.9-1.1 1.6-.7l1.7.9c.6.3.6.8.4 1.3-.4 1-1.4 1.5-2.4 1.3-4.8-.9-8.7-4.7-9-8-.1-.9.4-1.7 1.2-2.1.6-.3 1-.2 1.5 0Z" fill="currentColor"/>',
     email: '<rect x="10" y="13" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m11 14 9 7 9-7" fill="none" stroke="currentColor" stroke-width="1.5"/>'
   };
+  const SHARE_ICONS = {"linkedin": "<path d=\"M4.5 9h3v10h-3zM6 4.2a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6zM10 9h2.9v1.4c.4-.8 1.4-1.6 3-1.6 3.1 0 3.6 2 3.6 4.7V19h-3v-4.8c0-1.2 0-2.6-1.6-2.6s-1.9 1.2-1.9 2.5V19H10z\" fill=\"currentColor\"/>", "instagram": "<rect x=\"3.5\" y=\"3.5\" width=\"17\" height=\"17\" rx=\"5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\"/><circle cx=\"12\" cy=\"12\" r=\"4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\"/><circle cx=\"17.3\" cy=\"6.8\" r=\"1.1\" fill=\"currentColor\"/>", "facebook": "<path d=\"M13.5 20v-7h2.4l.4-2.9h-2.8V8.3c0-.8.3-1.4 1.4-1.4h1.5V4.3c-.3 0-1.1-.1-2.1-.1-2.2 0-3.6 1.3-3.6 3.7v2.2H8.3V13h2.4v7z\" fill=\"currentColor\"/>"};
   const LABELS = {instagram:'Instagram',linkedin:'LinkedIn',facebook:'Facebook',whatsapp:'WhatsApp',email:'E-mail'};
   const arrow = '<svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M12.065 1.142L.5 12.706M1.968 .706h9.573c.53 0 .959.429.959.961v9.571" stroke="currentColor" stroke-width="1.412"/></svg>';
   function url(value, protocols = ['https:','http:','mailto:']) {
@@ -107,7 +114,7 @@
         const a=document.createElement('a');
         a.className='wd-footer-social';a.href=href;a.target='_blank';a.rel='noopener';
         a.setAttribute('aria-label',LABELS[key]);
-        a.innerHTML=`<svg viewBox="0 0 40 40" fill="none" aria-hidden="true" focusable="false"><circle cx="20" cy="20" r="19.4" stroke="currentColor" stroke-width="1.14"/>${icon}</svg>`;
+        a.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${SHARE_ICONS[key]}</svg>`;
         root.querySelector('.wd-footer-socials').append(a);
       }
       if(!root.querySelector('.wd-footer-social'))root.querySelector('.wd-footer-socials').remove();

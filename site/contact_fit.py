@@ -20,6 +20,8 @@ CSS = '''
  .wd-contact-title{font-size:21px;margin-bottom:16px}
  .wd-contact-field{margin-bottom:14px}
 }
+/* Ao fechar o popup, o fundo do menu volta no mesmo quadro em que o vidro do popup sai (antes havia um piscar transparente de .15s) */
+.site-nav::before{transition:none!important}
 /* Ajuste final automático (contact.js): o conteúdo encolhe até caber, sem barra de rolagem */
 .wd-contact>*{zoom:var(--wd-fit,1)}
 .wd-contact,.wd-contact.is-on{scrollbar-width:none}

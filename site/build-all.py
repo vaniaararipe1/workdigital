@@ -9,6 +9,14 @@ for f in ['footer.js', 'contact.js', 'contact.css', 'whatsapp.js', 'wd-revision.
     shutil.copy(f'{HOMEF}/{f}', f'{OUT}/{f}')
 import contact_fit; contact_fit.apply(OUT)
 ft = open(f'{OUT}/footer.js').read()
+# ícones das redes no rodapé: mesmo estilo dos botões de compartilhar do blog (círculo, ícone 18px, hover em gradiente roxo→vinho)
+import blog_post_fix as _bpf
+_ig = '<rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.3" cy="6.8" r="1.1" fill="currentColor"/>'
+_sh = {'linkedin': _bpf.ICONS['linkedin'], 'instagram': _ig, 'facebook': _bpf.ICONS['facebook']}
+_old = 'a.innerHTML=`<svg viewBox="0 0 40 40" fill="none" aria-hidden="true" focusable="false"><circle cx="20" cy="20" r="19.4" stroke="currentColor" stroke-width="1.14"/>${icon}</svg>`;'
+assert ft.count(_old) == 1
+ft = ft.replace(_old, 'a.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${SHARE_ICONS[key]}</svg>`;')
+ft = ft.replace('  const LABELS = {', '  const SHARE_ICONS = ' + __import__('json').dumps(_sh) + ';\n  const LABELS = {', 1)
 # o CTA do rodapé abre o popup de contato (sem link para a página de contato antiga)
 assert "contact: 'https://workdigital.art.br/contato/'" in ft
 ft = ft.replace("contact: 'https://workdigital.art.br/contato/'", "contact: '#contato'")
@@ -29,6 +37,15 @@ LIGHT = '''
   `;'''
 assert ft.count('\n  `;') == 1
 ft = ft.replace('\n  `;', LIGHT, 1)
+# (depois das regras do tema claro, para valer também no Blog e no Post)
+ft = ft.replace('\n  `;', """
+    .wd-footer-socials{gap:8px}
+    .wd-footer-social{width:40px;height:40px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#F7F6FB;transition:background .3s,color .3s,border-color .3s,transform .3s}
+    .wd-footer-social svg{width:18px;height:18px}
+    .wd-footer-social:hover,.wd-footer-social:focus-visible{background:linear-gradient(135deg,#6025E1,#C00252);border-color:transparent;color:#fff;transform:translateY(-2px)}
+    :host([data-theme="light"]) .wd-footer-social{border-color:rgba(23,19,31,.14);background:rgba(255,255,255,.55);color:#2B2533}
+    :host([data-theme="light"]) .wd-footer-social:hover,:host([data-theme="light"]) .wd-footer-social:focus-visible{background:linear-gradient(135deg,#6025E1,#C00252);border-color:transparent;color:#fff}
+  `;""", 1)
 # versão positiva do logo no rodapé quando data-theme="light"
 x = "root.querySelector('.wd-footer-logo').src=url(values.logo,['https:','http:'])||CONFIG.logo;"
 assert x in ft
