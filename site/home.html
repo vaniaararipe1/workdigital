@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
+<script>/* wd-lite */(function(){var lite=false;try{if(/[?&]lite=1/.test(location.search))lite=true;if(!/[?&]lite=0/.test(location.search)){var cv=document.createElement("canvas"),g=cv.getContext("webgl");var e=g&&g.getExtension("WEBGL_debug_renderer_info"),r=e?String(g.getParameter(e.UNMASKED_RENDERER_WEBGL)):"";if(!g||/SwiftShader|llvmpipe|softpipe|Basic Render|Intel\(R\) (HD Graphics( [2-5]\d{3})?|Q?G\d+)\b|GMA/i.test(r))lite=true;var lc=g&&g.getExtension("WEBGL_lose_context");lc&&lc.loseContext();if((navigator.hardwareConcurrency||8)<=2)lite=true;}}catch(x){}if(lite)document.documentElement.classList.add("wd-lite");window.WD_LITE=lite;})();</script>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -1236,7 +1238,7 @@ const PARTICLE_POINTER_RESPONSE = -60 * Math.log(1 - 0.07);
  let particles=[],width=1,height=1,raf=0,last=0,time=0,visible=true,ready=false;
  let mx=0,my=0,tx=0,ty=0,pointerActive=false;
  let randomSeed=921;const random=()=>{randomSeed=(Math.imul(randomSeed,1664525)+1013904223)>>>0;return randomSeed/4294967296;};
- function resize(){const r=art.getBoundingClientRect();width=r.width;height=r.height;const d=Math.min(devicePixelRatio||1,1.5);canvas.width=Math.round(width*d);canvas.height=Math.round(height*d);ctx.setTransform(d,0,0,d,0,0);start();}
+ function resize(){const r=art.getBoundingClientRect();width=r.width;height=r.height;const d=Math.min(devicePixelRatio||1,window.WD_LITE?1:1.5);canvas.width=Math.round(width*d);canvas.height=Math.round(height*d);ctx.setTransform(d,0,0,d,0,0);start();}
  function setup(){
   if(ready)return;
   const source=document.createElement('canvas');source.width=image.naturalWidth;source.height=image.naturalHeight;
@@ -1250,16 +1252,17 @@ const PARTICLE_POINTER_RESPONSE = -60 * Math.log(1 - 0.07);
    if(rr>1.18)continue;
    candidates.push({sx:x,sy:y,x:px,y:py,z:Math.sqrt(Math.max(.015,1-Math.min(.985,rr))),brightness});
   }
-  const count=Math.round(PARTICLE_COUNT*.4);
+  const count=Math.round(PARTICLE_COUNT*(window.WD_LITE?.2:.4));
   // Samples retain the real glyph fragments and luminous variation of the supplied art.
   for(let i=0;i<count;i++){
    const p=candidates[Math.floor(random()*candidates.length)];
-   particles.push({...p,z:p.z*(random()<.55?1:-1),phase:random()*6.283,size:(.75+random()*.5)*1.5});
+   particles.push({...p,z:p.z*(random()<.55?1:-1),phase:random()*6.283,size:(.75+random()*.5)*(window.WD_LITE?2.1:1.5)});
   }
   ready=true;art.classList.add('has-live-particles');resize();start();
  }
  function draw(stamp){
   raf=0;if(!ready||!visible||document.hidden||art.classList.contains("has-native-particles"))return;
+  if(window.WD_LITE&&last&&stamp-last<30&&!reduced.matches){raf=requestAnimationFrame(draw);return;}
   const dt=last?Math.max(0,(stamp-last)/1000):0;last=stamp;
   if(!reduced.matches)time+=dt*PARTICLE_SPEED;
   const smoothing=1-Math.exp(-PARTICLE_POINTER_RESPONSE*dt);
@@ -1310,7 +1313,7 @@ const PARTICLE_POINTER_RESPONSE = -60 * Math.log(1 - 0.07);
 })();
 
 </script>
-<script type="module" src="./app.js"></script>
+<script>(async()=>{try{if(!window.WD_LITE&&navigator.gpu&&!matchMedia("(prefers-reduced-motion: reduce)").matches&&await navigator.gpu.requestAdapter()){const s=document.createElement("script");s.type="module";s.src="./app.js";document.head.append(s);}}catch(e){}})();</script>
 <script src="./footer.js?v=20261003-footer-one-line" defer></script>
 <script src="./wd-revision.js?v=20261003-contact-minimal" defer></script>
 <style>
@@ -1343,4 +1346,5 @@ const PARTICLE_POINTER_RESPONSE = -60 * Math.log(1 - 0.07);
 </body></html>
 <!-- cursor_css_done --><style>/* Cursor desenhado pelo sistema (sem atraso). O círculo com texto continua só sobre os cards. */
 @media (hover:hover) and (pointer:fine){html,html body,html body *{cursor:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2216%22%20height%3D%2216%22%3E%3Ccircle%20cx%3D%228%22%20cy%3D%228%22%20r%3D%225.5%22%20fill%3D%22%23F2EEF8%22%20stroke%3D%22%23121316%22%20stroke-opacity%3D%22.45%22/%3E%3C/svg%3E") 8 8,auto!important}html body a,html body a *,html body button,html body button *,html body [role=button],html body label,html body .svc:not(.is-open),html body .svc:not(.is-open) *{cursor:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%2218.5%22%20fill%3D%22%23F2EEF8%22%20fill-opacity%3D%22.16%22%20stroke%3D%22%23F2EEF8%22%20stroke-width%3D%221.5%22/%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%222.5%22%20fill%3D%22%23F2EEF8%22/%3E%3C/svg%3E") 20 20,pointer!important}html body input,html body textarea{cursor:text!important}html.wd-big,html.wd-big body,html.wd-big body *{cursor:none!important}}.wd-cursor:not(.big),.cursor:not(.big){opacity:0!important}</style>
-
+<style>/* Modo leve (GPU fraca): sem desfoque por trás dos painéis — fundos mais opacos no lugar; luz de fundo parada */
+html.wd-lite *,html.wd-lite *::before,html.wd-lite *::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}html.wd-lite .site-nav::before{background:rgba(18,19,22,.93)!important}html.wd-lite .dropdown{background:rgba(28,22,42,.97)!important}html.wd-lite .site-nav.wd-nav-open .nav-links{background:rgba(36,18,62,.97)!important}html.wd-lite .wd-contact-glass{background:rgba(18,19,22,.95)!important}html.wd-lite .wd-contact-backdrop{background:rgba(10,10,14,.55)!important}html.wd-lite .light-field-inner::before,html.wd-lite .light-field-inner::after,html.wd-lite .light-field-inner{animation:none!important}html.wd-lite .svc{--card:linear-gradient(125deg,rgba(96,37,225,.16),rgba(49,22,78,.26)),rgba(20,20,26,.94)}html.wd-lite .orb,html.wd-lite .orb2,html.wd-lite .orb::after{animation:none!important}</style>

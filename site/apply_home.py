@@ -198,11 +198,49 @@ def cursor_css(light):
             '</style>\n')
 
 
+
+# Modo leve: liga sozinho em placas de vídeo fracas (ex.: Intel HD Graphics 2000-4000) ou sem aceleração.
+# Em máquinas mais fortes nada muda.
+LITE_JS = ('<script>/* wd-lite */(function(){var lite=false;try{if(/[?&]lite=1/.test(location.search))lite=true;'
+           'if(!/[?&]lite=0/.test(location.search)){var cv=document.createElement("canvas"),g=cv.getContext("webgl");'
+           'var e=g&&g.getExtension("WEBGL_debug_renderer_info"),r=e?String(g.getParameter(e.UNMASKED_RENDERER_WEBGL)):"";'
+           'if(!g||/SwiftShader|llvmpipe|softpipe|Basic Render|Intel\\(R\\) (HD Graphics( [2-5]\\d{3})?|Q?G\\d+)\\b|GMA/i.test(r))lite=true;'
+           'var lc=g&&g.getExtension("WEBGL_lose_context");lc&&lc.loseContext();'
+           'if((navigator.hardwareConcurrency||8)<=2)lite=true;}}catch(x){}'
+           'if(lite)document.documentElement.classList.add("wd-lite");window.WD_LITE=lite;})();</script>\n')
+def lite_css(light):
+    if light:
+        nav, dd, mob, glass = 'rgba(255,255,255,.96)', 'rgba(255,255,255,.98)', 'rgba(255,255,255,.98)', 'rgba(255,255,255,.97)'
+    else:
+        nav, dd, mob, glass = 'rgba(18,19,22,.93)', 'rgba(28,22,42,.97)', 'rgba(36,18,62,.97)', 'rgba(18,19,22,.95)'
+    return ('<style>/* Modo leve (GPU fraca): sem desfoque por trás dos painéis — fundos mais opacos no lugar; luz de fundo parada */\n'
+            'html.wd-lite *,html.wd-lite *::before,html.wd-lite *::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}'
+            f'html.wd-lite .site-nav::before{{background:{nav}!important}}'
+            f'html.wd-lite .dropdown{{background:{dd}!important}}'
+            f'html.wd-lite .site-nav.wd-nav-open .nav-links{{background:{mob}!important}}'
+            f'html.wd-lite .wd-contact-glass{{background:{glass}!important}}'
+            'html.wd-lite .wd-contact-backdrop{background:rgba(10,10,14,.55)!important}'
+            'html.wd-lite .light-field-inner::before,html.wd-lite .light-field-inner::after,html.wd-lite .light-field-inner{animation:none!important}'
+            'html.wd-lite .svc{--card:linear-gradient(125deg,rgba(96,37,225,.16),rgba(49,22,78,.26)),rgba(20,20,26,.94)}'
+            'html.wd-lite .orb,html.wd-lite .orb2,html.wd-lite .orb::after{animation:none!important}'
+            '</style>\n')
+def add_lite(t):
+    if '/* wd-lite */' in t:
+        return t
+    light = 'data-theme="light"' in t
+    if '<head>' in t:
+        i = t.index('<head>') + len('<head>')
+        t = t[:i] + '\n' + LITE_JS + t[i:]
+    else:
+        t = ('' if 'charset=' in t[:400] else '<meta charset="utf-8">\n') + LITE_JS + t
+    return t.rstrip() + '\n' + lite_css(light)
+
 def link_pages(t):
     for a, b in PERF:
         t = t.replace(a, b)
     if 'cursor_css_done' not in t:
         t = t.rstrip() + '\n<!-- cursor_css_done -->' + cursor_css('data-theme="light"' in t) + '\n'
+    t = add_lite(t)
     P = PAGES
     for a, b in [('https://workdigital-hero-preview.onrender.com/#wd-explore', P['solucoes']),
                  ('https://workdigital-hero-preview.onrender.com/', P['home']),

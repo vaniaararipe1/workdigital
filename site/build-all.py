@@ -110,6 +110,8 @@ t = sub1(t, '.svc .icon svg{width:20px;height:20px;stroke:var(--fg);stroke-width
 # "Ver nossos works" leva para a página de cases
 t = sub1(t, '<a class="see" href="#top">', '<a class="see" href="' + PAGES['cases'] + '" target="_top">')
 # desempenho do fluido: densidade de pixels 1.25 (era 1.5), 12 iterações de pressão (eram 20), pausa quando a bola está escondida pelo rodapé
+# modo leve (GPU fraca): sem a simulação de fluido; ficam a bola em CSS e as palavras com gradiente
+t = sub1(t, "  const cv=document.getElementById('fluid'), ref=", "  if(document.documentElement.classList.contains('wd-lite')){document.getElementById('fluid').remove();return;}\n  const cv=document.getElementById('fluid'), ref=")
 t = sub1(t, 'dpr=Math.min(devicePixelRatio||1,1.5);', 'dpr=Math.min(devicePixelRatio||1,1.25);')
 t = sub1(t, 'for(let i=0;i<20;i++){T(pPres', 'for(let i=0;i<12;i++){T(pPres')
 t = sub1(t, 'function frame(now){', "function frame(now){if(bg.style.opacity==='0'){prev=now;requestAnimationFrame(frame);return;}")

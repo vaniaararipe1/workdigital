@@ -208,18 +208,3 @@ body .payoff{padding-bottom:40px}
 
 /* Quadradinhos das setas com cantos mais arredondados. */
 #wd-explore .wd-explore-arrow,#wd-blog .wd-blog-arrow{border-radius:16px!important}
-
-/* Soluções lado a lado: coluna da imagem com largura fixa (47,5%, entre 380 e 640px — mesmo tamanho de antes em 1440px); a imagem 9:11 ocupa a coluna */
-@media(min-width:1200px){
-#wd-explore .wd-explore-layout .wd-explore-body{grid-template-columns:minmax(0,1fr) clamp(380px,47.5%,640px)!important;align-items:stretch!important}
-#wd-explore .wd-explore-photo{width:auto!important;height:auto!important;aspect-ratio:auto!important;padding:20px!important;display:flex;align-items:center}
-#wd-explore .wd-explore-photo .wd-explore-media{top:20px!important;left:20px!important;width:calc(100% - 40px)!important;height:auto!important;aspect-ratio:9/11}
-#wd-explore .wd-explore-photo .wd-explore-media.is-visible{position:relative!important;top:auto!important;left:auto!important;width:100%!important}
-}
-
-/* Soluções empilhado (até 1199px): imagem centralizada com no máximo 520px de largura */
-@media(max-width:1199px){
-#wd-explore .wd-explore-photo .wd-explore-media{left:50%!important;right:auto!important;width:min(calc(100% - 40px),520px)!important;transform:translateX(-50%)}
-#wd-explore .wd-explore-photo .wd-explore-media.is-visible{left:auto!important;transform:none;margin:0 auto}
-#wd-explore .wd-explore-photo{height:auto!important;aspect-ratio:auto!important}
-}

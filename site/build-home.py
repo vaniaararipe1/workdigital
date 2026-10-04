@@ -52,11 +52,15 @@ t=t.replace(a,'this.renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1
 # desempenho (home): desenho alternativo das partículas (canvas 2D, usado quando a GPU não está disponível)
 # 40% das partículas, 1.5x maiores (mesma cobertura visual) e densidade de pixels até 1.5
 for a,b in [('function resize(){const r=art.getBoundingClientRect();width=r.width;height=r.height;const d=devicePixelRatio||1;',
-             'function resize(){const r=art.getBoundingClientRect();width=r.width;height=r.height;const d=Math.min(devicePixelRatio||1,1.5);'),
-            ('  const count=PARTICLE_COUNT;\n', '  const count=Math.round(PARTICLE_COUNT*.4);\n'),
-            ('phase:random()*6.283,size:.75+random()*.5});', 'phase:random()*6.283,size:(.75+random()*.5)*1.5});')]:
+             'function resize(){const r=art.getBoundingClientRect();width=r.width;height=r.height;const d=Math.min(devicePixelRatio||1,window.WD_LITE?1:1.5);'),
+            ('  const count=PARTICLE_COUNT;\n', '  const count=Math.round(PARTICLE_COUNT*(window.WD_LITE?.2:.4));\n'),
+            ('phase:random()*6.283,size:.75+random()*.5});', 'phase:random()*6.283,size:(.75+random()*.5)*(window.WD_LITE?2.1:1.5)});')]:
     assert t.count(a)==1, a[:60]
     t=t.replace(a,b)
+# modo leve: desenho alternativo a ~30 quadros por segundo
+a='raf=0;if(!ready||!visible||document.hidden||art.classList.contains("has-native-particles"))return;\n'
+assert t.count(a)==1
+t=t.replace(a,a+'  if(window.WD_LITE&&last&&stamp-last<30&&!reduced.matches){raf=requestAnimationFrame(draw);return;}\n')
 t=link_pages(t)
 # ---- carregamento em conexões lentas ----
 import re, subprocess
@@ -79,7 +83,8 @@ x='experience=new Gse(host);await experience.init();'
 assert app.count(x)==1
 app=app.replace(x,x+"try{const dev=experience.renderer&&experience.renderer.backend&&experience.renderer.backend.device;if(dev&&dev.lost)dev.lost.then(()=>{try{experience.render(false)}catch(e){}host.remove();art.classList.remove('has-native-particles');art.dispatchEvent(new Event('nativeparticlesfailed'));});}catch(e){}")
 open(OUT+'/app.js','w').write(app)
-t=t[:i]+'<script type="module" src="./app.js"></script>'+t[j+len('</script>'):]
+# o código 3D só é baixado quando o navegador tem WebGPU de verdade (sem isso ele não roda e o desenho alternativo assume)
+t=t[:i]+'<script>(async()=>{try{if(!window.WD_LITE&&navigator.gpu&&!matchMedia("(prefers-reduced-motion: reduce)").matches&&await navigator.gpu.requestAdapter()){const s=document.createElement("script");s.type="module";s.src="./app.js";document.head.append(s);}}catch(e){}})();</script>'+t[j+len('</script>'):]
 open(OUT+'/home.html','w').write(t)
 # Soluções da home (telas entre 980 e 1199px): imagem com no máximo 520px e sem medidas antigas da versão larga
 js=open(H+'/wd-revision.js').read()
