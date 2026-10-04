@@ -81,20 +81,20 @@ def cases(t, out):
     return t
 
 def home(t, out):
-    # Imagem ocupa o card inteiro: usa as artes dos cases (grande / médio / pequeno),
-    # que têm o formato de cada card. Ordem do DOM: Bacio, Linea, STW, CBPq.
+    # Layout original da home (Bacio alto, Linea larga, STW e CBPq quadrados).
+    # As artes -home já vêm no tamanho exato de cada card: preenchem o card sem recorte.
     hs = DATA['home']
-    byslug = {c['slug']: c for c in DATA['cases']}
-    cs = [byslug[h['slug'].replace('-home', '')] for h in hs]
-    copy_files(out, [c['slug'] for c in cs])
+    man = {m['arquivos']['webp']['arquivo'][:-5]: m for m in json.load(open(os.path.join(SRC, 'manifesto-thumbs.json')))['home']}
+    copy_files(out, [h['slug'] for h in hs])
     i = t.index('<a class="wd-works-card"'); j = t.rindex('<a class="wd-works-card"'); j = t.index('</a>', j) + 4
     cards = re.findall(r'<a class="wd-works-card".*?</a>', t[i:j], flags=re.S)
     assert len(cards) == 4
     new = []
-    for c, h, cs_ in zip(cards, hs, cs):
-        w, hh = DIM[SIZE[cs_['formato']]]
+    for c, h in zip(cards, hs):
+        w, hh = man[h['slug']]['poster_px']
+        c = c.replace('<a class="wd-works-card"', f'<a class="wd-works-card" style="--wd-ar:{w} / {hh}"', 1)
         c = re.sub(r'<h3>.*?</h3>', f'<h3>{h["titulo"]}</h3>', c, count=1, flags=re.S)
-        c = re.sub(r'<div class="wd-works-media">.*?</div>', f'<div class="wd-works-media" data-thumb="{cs_["slug"]}" data-w="{w}" data-h="{hh}"><div class="vm"></div></div>', c, count=1, flags=re.S)
+        c = re.sub(r'<div class="wd-works-media">.*?</div>', f'<div class="wd-works-media" data-thumb="{h["slug"]}" data-w="{w}" data-h="{hh}"><div class="vm"></div></div>', c, count=1, flags=re.S)
         c = re.sub(r'<p class="wd-works-description">.*?</p>', f'<p class="wd-works-description">{h["descricao"]}</p>', c, count=1, flags=re.S)
         new.append(c)
     t = t[:i] + '\n   '.join(new) + t[j:]
@@ -111,20 +111,37 @@ document.querySelectorAll(".wd-works-card").forEach(card => {
 });
 '''
 
-# A seção Works define o CSS mais abaixo no documento, por isso os seletores levam .wd-works-section
+# A seção Works define o CSS mais abaixo no documento, por isso os seletores levam .wd-works-section.
+# Grade original: as alturas vêm da proporção das artes (Linea e os quadrados têm a mesma altura,
+# e o Bacio ocupa as duas linhas), então a imagem cobre o card sem recorte visível.
 HOME_CSS = r'''
-.wd-works-section .wd-works-grid{display:flex;flex-wrap:wrap;gap:20px;grid-template-rows:none}
-.wd-works-section .wd-works-card:nth-child(n){grid-column:auto;grid-row:auto;min-height:0;aspect-ratio:var(--wd-ar);background:#1d0f36;color:#fff}
-.wd-works-section .wd-works-card:nth-child(1){--wd-ar:2400/1125;order:1;width:calc((100% - 20px) * 2.1333 / 2.9333)}
-.wd-works-section .wd-works-card:nth-child(3){--wd-ar:1200/1500;order:2;width:calc((100% - 20px) * .8 / 2.9333)}
-.wd-works-section .wd-works-card:nth-child(2){--wd-ar:1600/1200;order:3;width:calc((100% - 20px) / 2)}
-.wd-works-section .wd-works-card:nth-child(4){--wd-ar:1600/1200;order:4;width:calc((100% - 20px) / 2)}
+.wd-works-section .wd-works-grid{grid-template-rows:auto auto}
+.wd-works-section .wd-works-card:nth-child(n){min-height:0;background:#1d0f36;color:#fff}
+.wd-works-section .wd-works-card:nth-child(n):not(:first-child){aspect-ratio:var(--wd-ar)}
 .wd-works-section .wd-works-card:nth-child(n) .wd-works-media{position:absolute;inset:0;align-self:stretch;justify-self:stretch;height:auto;z-index:0;max-width:none;width:auto;aspect-ratio:auto;border:0;border-radius:inherit;background:#1d0f36}
-.wd-works-section .wd-works-card::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;border-radius:inherit;background:linear-gradient(180deg,rgba(20,8,40,.78) 0%,rgba(20,8,40,0) 30%,rgba(20,8,40,0) 58%,rgba(20,8,40,.88) 100%)}
+.wd-works-section .wd-works-card::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;border-radius:inherit;background:linear-gradient(180deg,rgba(20,8,40,.62) 0%,rgba(20,8,40,0) 22%,rgba(20,8,40,0) 62%,rgba(20,8,40,.86) 100%)}
 .wd-works-section .wd-works-dots{display:none}
 .wd-works-section .wd-works-card h3{color:#fff;text-shadow:0 2px 18px rgba(10,4,24,.45)}
 .wd-works-section .wd-works-card:nth-child(n) .wd-works-description{color:#ece8f5;max-width:34ch;text-shadow:0 1px 12px rgba(10,4,24,.5)}
 .wd-works-card:hover .wd-works-media .vm,.wd-works-card:focus-visible .wd-works-media .vm{transform:scale(1.045)}
 @media (max-width:1180px){.wd-works-section .wd-works-card:nth-child(n){padding:26px}.wd-works-section .wd-works-card h3{font-size:30px}.wd-works-section .wd-works-card:nth-child(n) .wd-works-description{font-size:15px}}
-@media (max-width:899px){.wd-works-section .wd-works-card:nth-child(n){width:100%;padding:24px 20px}}
+/* 2 colunas: mesma ideia — Bacio alto à esquerda, STW e CBPq empilhados à direita, Linea larga embaixo */
+@media (max-width:991px){
+ .wd-works-section .wd-works-grid{grid-template-rows:auto auto auto}
+ .wd-works-section .wd-works-card:nth-child(1){grid-column:1;grid-row:1 / span 2}
+ .wd-works-section .wd-works-card:nth-child(3){grid-column:2;grid-row:1}
+ .wd-works-section .wd-works-card:nth-child(4){grid-column:2;grid-row:2}
+ .wd-works-section .wd-works-card:nth-child(2){grid-column:1 / span 2;grid-row:3}
+}
+/* 1 coluna: cada card na proporção da própria arte */
+@media (max-width:599px){
+ .wd-works-section .wd-works-grid{grid-template-columns:minmax(0,1fr);grid-template-rows:none}
+ .wd-works-section .wd-works-card:nth-child(n){grid-column:1;grid-row:auto;aspect-ratio:var(--wd-ar);padding:22px 20px}
+ .wd-works-section .wd-works-card:nth-child(1){max-height:none}
+ .wd-works-section .wd-works-card:nth-child(n):nth-child(2){aspect-ratio:auto;padding:0;gap:0;justify-content:flex-start}
+ .wd-works-section .wd-works-card:nth-child(n):nth-child(2) .wd-works-media{flex-shrink:0;position:relative;inset:auto;order:-1;aspect-ratio:var(--wd-ar);border-radius:0}
+ .wd-works-section .wd-works-card:nth-child(2) h3{position:absolute;top:18px;left:20px}
+ .wd-works-section .wd-works-card:nth-child(2)::after{background:linear-gradient(180deg,rgba(20,8,40,.62) 0%,rgba(20,8,40,0) 30%)}
+ .wd-works-section .wd-works-card:nth-child(2) .wd-works-description{padding:18px 20px 22px}
+}
 '''

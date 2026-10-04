@@ -1,0 +1,812 @@
+{
+  "drive": {
+    "pasta": "thumbs-work-digital",
+    "folder_id": "157p_FFaG6D5v8hYXS-xcr6IrE18Cvv9u",
+    "url": "https://drive.google.com/drive/folders/157p_FFaG6D5v8hYXS-xcr6IrE18Cvv9u"
+  },
+  "regras": {
+    "video_attrs": [
+      "muted",
+      "loop",
+      "playsinline",
+      "preload=none"
+    ],
+    "ordem_fontes": [
+      "webm",
+      "mp4"
+    ],
+    "play": "somente no hover; ao sair pause + currentTime=0",
+    "zoom_e_ver_case": "feitos pelo site",
+    "border_radius_container": "16px (site)",
+    "object_fit": "cover, center",
+    "area_segura": "conteudo importante em ~60% largura x ~70% altura centralizados",
+    "mobile_aspect": "4/3.4 (<900px)",
+    "visao_filtrada_aspect": "4/3",
+    "reduced_motion": "somente poster",
+    "sem_audio": true,
+    "home": "arte ocupa o card inteiro (object-fit: cover sem recorte, pois o arquivo já tem o tamanho exato do card); título/descrição do site ficam por cima, na faixa superior (~20%) e inferior (~25%)"
+  },
+  "home": [
+    {
+      "ordem": 1,
+      "slug_case": "bacio-di-latte",
+      "titulo": "Bacio di Latte",
+      "descricao": "Site com a doçura e a sofisticação da gelateria italiana.",
+      "formato": "vertical (ocupa 2 linhas, à esquerda)",
+      "poster_px": [
+        840,
+        1600
+      ],
+      "video_px": [
+        840,
+        1600
+      ],
+      "duracao_s": 4,
+      "arquivos": {
+        "webp": {
+          "arquivo": "bacio-di-latte-home.webp",
+          "kb": 74
+        },
+        "webm": {
+          "arquivo": "bacio-di-latte-home.webm",
+          "kb": 387
+        },
+        "mp4": {
+          "arquivo": "bacio-di-latte-home.mp4",
+          "kb": 463
+        }
+      },
+      "fps": 30,
+      "preenche_card_inteiro": true
+    },
+    {
+      "ordem": 2,
+      "slug_case": "linea-alimentos",
+      "titulo": "Linea Alimentos",
+      "descricao": "Site e loja virtual para a marca de alimentos zero açúcar.",
+      "formato": "horizontal (em cima, à direita)",
+      "poster_px": [
+        1700,
+        776
+      ],
+      "video_px": [
+        1700,
+        776
+      ],
+      "duracao_s": 4,
+      "arquivos": {
+        "webp": {
+          "arquivo": "linea-alimentos-home.webp",
+          "kb": 75
+        },
+        "webm": {
+          "arquivo": "linea-alimentos-home.webm",
+          "kb": 386
+        },
+        "mp4": {
+          "arquivo": "linea-alimentos-home.mp4",
+          "kb": 465
+        }
+      },
+      "fps": 30,
+      "preenche_card_inteiro": true
+    },
+    {
+      "ordem": 3,
+      "slug_case": "stw-brasil",
+      "titulo": "STW Brasil",
+      "descricao": "Presença digital para segurança da informação e perícia digital.",
+      "formato": "quadrado (embaixo, à direita)",
+      "poster_px": [
+        840,
+        788
+      ],
+      "video_px": [
+        840,
+        788
+      ],
+      "duracao_s": 4,
+      "arquivos": {
+        "webp": {
+          "arquivo": "stw-brasil-home.webp",
+          "kb": 55
+        },
+        "webm": {
+          "arquivo": "stw-brasil-home.webm",
+          "kb": 375
+        },
+        "mp4": {
+          "arquivo": "stw-brasil-home.mp4",
+          "kb": 464
+        }
+      },
+      "fps": 30,
+      "preenche_card_inteiro": true
+    },
+    {
+      "ordem": 4,
+      "slug_case": "cbpq",
+      "titulo": "CBPq",
+      "descricao": "Portal da Confederação Brasileira de Paraquedismo.",
+      "formato": "quadrado (embaixo, à direita)",
+      "poster_px": [
+        840,
+        788
+      ],
+      "video_px": [
+        840,
+        788
+      ],
+      "duracao_s": 4,
+      "arquivos": {
+        "webp": {
+          "arquivo": "cbpq-home.webp",
+          "kb": 45
+        },
+        "webm": {
+          "arquivo": "cbpq-home.webm",
+          "kb": 378
+        },
+        "mp4": {
+          "arquivo": "cbpq-home.mp4",
+          "kb": 459
+        }
+      },
+      "fps": 30,
+      "preenche_card_inteiro": true
+    }
+  ],
+  "cases": [
+    {
+      "ordem": 1,
+      "slug": "bacio-di-latte",
+      "cliente": "Bacio di Latte",
+      "frase": "Site com a doçura e a sofisticação da gelateria italiana.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "Conteúdo visual"
+      ],
+      "formato": "grande",
+      "grid": {
+        "aspect": "16/7.5",
+        "span": 12,
+        "poster": [
+          2400,
+          1125
+        ],
+        "video": [
+          1600,
+          750
+        ]
+      },
+      "duracao_s": 6,
+      "link": "https://baciodilatte.com.br",
+      "link_status": "confirmar",
+      "arquivos": {
+        "webp": {
+          "arquivo": "bacio-di-latte.webp",
+          "kb": 194
+        },
+        "webm": {
+          "arquivo": "bacio-di-latte.webm",
+          "kb": 1585
+        },
+        "mp4": {
+          "arquivo": "bacio-di-latte.mp4",
+          "kb": 1884
+        }
+      }
+    },
+    {
+      "ordem": 2,
+      "slug": "linea-alimentos",
+      "cliente": "Linea Alimentos",
+      "frase": "Site e loja virtual para a marca de alimentos zero açúcar.",
+      "servicos": [
+        "UI/UX Design",
+        "E-commerce",
+        "Desenvolvimento de site"
+      ],
+      "formato": "medio",
+      "grid": {
+        "aspect": "4/3",
+        "span": 6,
+        "poster": [
+          1600,
+          1200
+        ],
+        "video": [
+          1200,
+          900
+        ]
+      },
+      "duracao_s": 6,
+      "link": "https://lineaalimentos.com.br",
+      "link_status": "confirmar",
+      "arquivos": {
+        "webp": {
+          "arquivo": "linea-alimentos.webp",
+          "kb": 160
+        },
+        "webm": {
+          "arquivo": "linea-alimentos.webm",
+          "kb": 1028
+        },
+        "mp4": {
+          "arquivo": "linea-alimentos.mp4",
+          "kb": 1227
+        }
+      }
+    },
+    {
+      "ordem": 3,
+      "slug": "cbpq",
+      "cliente": "CBPq",
+      "frase": "Portal da Confederação Brasileira de Paraquedismo, com área do atleta e transparência.",
+      "servicos": [
+        "UI/UX Design",
+        "Portal institucional",
+        "Área do atleta"
+      ],
+      "formato": "medio",
+      "grid": {
+        "aspect": "4/3",
+        "span": 6,
+        "poster": [
+          1600,
+          1200
+        ],
+        "video": [
+          1200,
+          900
+        ]
+      },
+      "duracao_s": 6,
+      "link": "https://cbpq.org.br",
+      "link_status": "confirmar",
+      "arquivos": {
+        "webp": {
+          "arquivo": "cbpq.webp",
+          "kb": 136
+        },
+        "webm": {
+          "arquivo": "cbpq.webm",
+          "kb": 1038
+        },
+        "mp4": {
+          "arquivo": "cbpq.mp4",
+          "kb": 1235
+        }
+      }
+    },
+    {
+      "ordem": 4,
+      "slug": "stw-brasil",
+      "cliente": "STW Brasil",
+      "frase": "Site para empresa de segurança da informação e perícia digital.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "SEO"
+      ],
+      "formato": "pequeno",
+      "grid": {
+        "aspect": "4/5",
+        "span": 4,
+        "poster": [
+          1200,
+          1500
+        ],
+        "video": [
+          960,
+          1200
+        ]
+      },
+      "duracao_s": 6,
+      "link": null,
+      "link_status": "preencher",
+      "arquivos": {
+        "webp": {
+          "arquivo": "stw-brasil.webp",
+          "kb": 139
+        },
+        "webm": {
+          "arquivo": "stw-brasil.webm",
+          "kb": 1052
+        },
+        "mp4": {
+          "arquivo": "stw-brasil.mp4",
+          "kb": 1248
+        }
+      }
+    },
+    {
+      "ordem": 5,
+      "slug": "agencia-jaya",
+      "cliente": "Agência Jaya",
+      "frase": "Site institucional para agência de marketing e comunicação.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site"
+      ],
+      "formato": "pequeno",
+      "grid": {
+        "aspect": "4/5",
+        "span": 4,
+        "poster": [
+          1200,
+          1500
+        ],
+        "video": [
+          960,
+          1200
+        ]
+      },
+      "duracao_s": 6,
+      "link": null,
+      "link_status": "preencher",
+      "arquivos": {
+        "webp": {
+          "arquivo": "agencia-jaya.webp",
+          "kb": 92
+        },
+        "webm": {
+          "arquivo": "agencia-jaya.webm",
+          "kb": 1041
+        },
+        "mp4": {
+          "arquivo": "agencia-jaya.mp4",
+          "kb": 1221
+        }
+      }
+    },
+    {
+      "ordem": 6,
+      "slug": "genera",
+      "cliente": "Genera",
+      "frase": "Experiência interativa para explorar culturas e lendas pelo mundo.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "Experiência interativa"
+      ],
+      "formato": "pequeno",
+      "grid": {
+        "aspect": "4/5",
+        "span": 4,
+        "poster": [
+          1200,
+          1500
+        ],
+        "video": [
+          960,
+          1200
+        ]
+      },
+      "duracao_s": 6,
+      "link": null,
+      "link_status": "preencher",
+      "arquivos": {
+        "webp": {
+          "arquivo": "genera.webp",
+          "kb": 85
+        },
+        "webm": {
+          "arquivo": "genera.webm",
+          "kb": 1045
+        },
+        "mp4": {
+          "arquivo": "genera.mp4",
+          "kb": 1234
+        }
+      }
+    },
+    {
+      "ordem": 7,
+      "slug": "instituto-ricco-porto",
+      "cliente": "Instituto Ricco Porto",
+      "frase": "Site para instituto de formação em estética e terapias corporais.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "SEO"
+      ],
+      "formato": "grande",
+      "grid": {
+        "aspect": "16/7.5",
+        "span": 12,
+        "poster": [
+          2400,
+          1125
+        ],
+        "video": [
+          1600,
+          750
+        ]
+      },
+      "duracao_s": 6,
+      "link": null,
+      "link_status": "preencher",
+      "arquivos": {
+        "webp": {
+          "arquivo": "instituto-ricco-porto.webp",
+          "kb": 213
+        },
+        "webm": {
+          "arquivo": "instituto-ricco-porto.webm",
+          "kb": 1590
+        },
+        "mp4": {
+          "arquivo": "instituto-ricco-porto.mp4",
+          "kb": 1890
+        }
+      }
+    },
+    {
+      "ordem": 8,
+      "slug": "instituto-long-tao",
+      "cliente": "Instituto Long Tao",
+      "frase": "Site com cursos, EAD e terapias da medicina tradicional chinesa.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "Plataforma EAD"
+      ],
+      "formato": "medio",
+      "grid": {
+        "aspect": "4/3",
+        "span": 6,
+        "poster": [
+          1600,
+          1200
+        ],
+        "video": [
+          1200,
+          900
+        ]
+      },
+      "duracao_s": 6,
+      "link": null,
+      "link_status": "preencher",
+      "arquivos": {
+        "webp": {
+          "arquivo": "instituto-long-tao.webp",
+          "kb": 185
+        },
+        "webm": {
+          "arquivo": "instituto-long-tao.webm",
+          "kb": 1050
+        },
+        "mp4": {
+          "arquivo": "instituto-long-tao.mp4",
+          "kb": 1245
+        }
+      }
+    },
+    {
+      "ordem": 9,
+      "slug": "ideale-treinamentos",
+      "cliente": "Ideale Treinamentos",
+      "frase": "Site para empresa de treinamentos e desenvolvimento humano.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site"
+      ],
+      "formato": "medio",
+      "grid": {
+        "aspect": "4/3",
+        "span": 6,
+        "poster": [
+          1600,
+          1200
+        ],
+        "video": [
+          1200,
+          900
+        ]
+      },
+      "duracao_s": 6,
+      "link": null,
+      "link_status": "preencher",
+      "arquivos": {
+        "webp": {
+          "arquivo": "ideale-treinamentos.webp",
+          "kb": 130
+        },
+        "webm": {
+          "arquivo": "ideale-treinamentos.webm",
+          "kb": 1048
+        },
+        "mp4": {
+          "arquivo": "ideale-treinamentos.mp4",
+          "kb": 1241
+        }
+      }
+    },
+    {
+      "ordem": 10,
+      "slug": "droneng",
+      "cliente": "Droneng",
+      "frase": "Site para empresa de engenharia e topografia com drones.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site"
+      ],
+      "formato": "pequeno",
+      "grid": {
+        "aspect": "4/5",
+        "span": 4,
+        "poster": [
+          1200,
+          1500
+        ],
+        "video": [
+          960,
+          1200
+        ]
+      },
+      "duracao_s": 6,
+      "link": null,
+      "link_status": "preencher",
+      "arquivos": {
+        "webp": {
+          "arquivo": "droneng.webp",
+          "kb": 193
+        },
+        "webm": {
+          "arquivo": "droneng.webm",
+          "kb": 1043
+        },
+        "mp4": {
+          "arquivo": "droneng.mp4",
+          "kb": 1236
+        }
+      }
+    },
+    {
+      "ordem": 11,
+      "slug": "loren-andrade",
+      "cliente": "Loren Andrade",
+      "frase": "Site para médica especialista em geriatria.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "SEO"
+      ],
+      "formato": "pequeno",
+      "grid": {
+        "aspect": "4/5",
+        "span": 4,
+        "poster": [
+          1200,
+          1500
+        ],
+        "video": [
+          960,
+          1200
+        ]
+      },
+      "duracao_s": 6,
+      "link": null,
+      "link_status": "preencher",
+      "arquivos": {
+        "webp": {
+          "arquivo": "loren-andrade.webp",
+          "kb": 96
+        },
+        "webm": {
+          "arquivo": "loren-andrade.webm",
+          "kb": 1023
+        },
+        "mp4": {
+          "arquivo": "loren-andrade.mp4",
+          "kb": 1234
+        }
+      }
+    },
+    {
+      "ordem": 12,
+      "slug": "ogg",
+      "cliente": "OGG",
+      "frase": "Site e blog sobre gamificação educacional e corporativa.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "Blog"
+      ],
+      "formato": "pequeno",
+      "grid": {
+        "aspect": "4/5",
+        "span": 4,
+        "poster": [
+          1200,
+          1500
+        ],
+        "video": [
+          960,
+          1200
+        ]
+      },
+      "duracao_s": 6,
+      "link": null,
+      "link_status": "preencher",
+      "arquivos": {
+        "webp": {
+          "arquivo": "ogg.webp",
+          "kb": 175
+        },
+        "webm": {
+          "arquivo": "ogg.webm",
+          "kb": 1019
+        },
+        "mp4": {
+          "arquivo": "ogg.mp4",
+          "kb": 1238
+        }
+      }
+    },
+    {
+      "ordem": 13,
+      "slug": "oliva-pizzaria",
+      "cliente": "Ôliva Pizzaria",
+      "frase": "Site para pizzaria artesanal romana e napoletana.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "Cardápio digital"
+      ],
+      "formato": "grande",
+      "grid": {
+        "aspect": "16/7.5",
+        "span": 12,
+        "poster": [
+          2400,
+          1125
+        ],
+        "video": [
+          1600,
+          750
+        ]
+      },
+      "duracao_s": 6,
+      "link": null,
+      "link_status": "preencher",
+      "arquivos": {
+        "webp": {
+          "arquivo": "oliva-pizzaria.webp",
+          "kb": 257
+        },
+        "webm": {
+          "arquivo": "oliva-pizzaria.webm",
+          "kb": 1600
+        },
+        "mp4": {
+          "arquivo": "oliva-pizzaria.mp4",
+          "kb": 1882
+        }
+      }
+    },
+    {
+      "ordem": 14,
+      "slug": "marka-contabilidade",
+      "cliente": "Marka Contabilidade",
+      "frase": "Site para escritório de contabilidade que vai além dos números.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site"
+      ],
+      "formato": "medio",
+      "grid": {
+        "aspect": "4/3",
+        "span": 6,
+        "poster": [
+          1600,
+          1200
+        ],
+        "video": [
+          1200,
+          900
+        ]
+      },
+      "duracao_s": 6,
+      "link": null,
+      "link_status": "preencher",
+      "arquivos": {
+        "webp": {
+          "arquivo": "marka-contabilidade.webp",
+          "kb": 60
+        },
+        "webm": {
+          "arquivo": "marka-contabilidade.webm",
+          "kb": 1032
+        },
+        "mp4": {
+          "arquivo": "marka-contabilidade.mp4",
+          "kb": 1226
+        }
+      }
+    },
+    {
+      "ordem": 15,
+      "slug": "berti-promocional",
+      "cliente": "Berti Promocional",
+      "frase": "Site para fabricante de embalagens e materiais promocionais.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "Catálogo"
+      ],
+      "formato": "medio",
+      "grid": {
+        "aspect": "4/3",
+        "span": 6,
+        "poster": [
+          1600,
+          1200
+        ],
+        "video": [
+          1200,
+          900
+        ]
+      },
+      "duracao_s": 6,
+      "link": null,
+      "link_status": "preencher",
+      "arquivos": {
+        "webp": {
+          "arquivo": "berti-promocional.webp",
+          "kb": 129
+        },
+        "webm": {
+          "arquivo": "berti-promocional.webm",
+          "kb": 1025
+        },
+        "mp4": {
+          "arquivo": "berti-promocional.mp4",
+          "kb": 1233
+        }
+      }
+    },
+    {
+      "ordem": 16,
+      "slug": "instituto-nossa-senhora-da-vitoria",
+      "cliente": "Instituto Nossa Senhora da Vitória",
+      "frase": "Site para instituto de educação e gestão em saúde.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site"
+      ],
+      "formato": "pequeno",
+      "grid": {
+        "aspect": "4/5",
+        "span": 4,
+        "poster": [
+          1200,
+          1500
+        ],
+        "video": [
+          960,
+          1200
+        ]
+      },
+      "duracao_s": 6,
+      "link": null,
+      "link_status": "preencher",
+      "arquivos": {
+        "webp": {
+          "arquivo": "instituto-nossa-senhora-da-vitoria.webp",
+          "kb": 131
+        },
+        "webm": {
+          "arquivo": "instituto-nossa-senhora-da-vitoria.webm",
+          "kb": 1036
+        },
+        "mp4": {
+          "arquivo": "instituto-nossa-senhora-da-vitoria.mp4",
+          "kb": 1239
+        }
+      }
+    }
+  ]
+}
