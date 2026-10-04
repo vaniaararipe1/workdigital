@@ -209,7 +209,11 @@ LITE_JS = ('<script>/* wd-lite */(function(){var lite=false;try{if(/[?&]lite=1/.
            'if(!g||/SwiftShader|llvmpipe|softpipe|Basic Render|Intel\\(R\\) (HD Graphics( [2-5]\\d{3})?|Q?G\\d+)\\b|GMA/i.test(r))lite=true;'
            'var lc=g&&g.getExtension("WEBGL_lose_context");lc&&lc.loseContext();'
            'if((navigator.hardwareConcurrency||8)<=2)lite=true;}}catch(x){}'
-           'if(lite)document.documentElement.classList.add("wd-lite");window.WD_LITE=lite;})();</script>\n')
+           'if(lite)document.documentElement.classList.add("wd-lite");window.WD_LITE=lite;})();'
+           # toda página abre no topo (o navegador não restaura uma posição antiga de rolagem), exceto quando o link aponta para uma seção (#)
+           '(function(){try{if(!location.hash){history.scrollRestoration="manual";var top=function(){scrollTo(0,0)};top();addEventListener("DOMContentLoaded",top,{once:true});addEventListener("load",function(){requestAnimationFrame(top)},{once:true});}}catch(e){}'
+           # item do menu da própria página (e logo que aponta para a própria página) sobe suavemente até o topo
+           'document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest(".site-nav a[href=\'#\'],.site-nav a[href=\'#topo\'],.site-nav a[href=\'#top\'],.site-nav a[href=\'#hero\']");if(!a)return;e.preventDefault();scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});try{history.replaceState(null,"",location.pathname+location.search)}catch(x){}});})();</script>\n')
 def lite_css(light):
     if light:
         nav, dd, mob, glass = 'rgba(255,255,255,.96)', 'rgba(255,255,255,.98)', 'rgba(255,255,255,.98)', 'rgba(255,255,255,.97)'

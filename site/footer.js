@@ -72,9 +72,9 @@
     .wd-footer-socials{gap:8px}
     .wd-footer-social{width:40px;height:40px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#F7F6FB;transition:background .3s,color .3s,border-color .3s,transform .3s}
     .wd-footer-social svg{width:18px;height:18px}
-    .wd-footer-social:hover,.wd-footer-social:focus-visible{background:linear-gradient(135deg,#6025E1,#C00252);border-color:transparent;color:#fff;transform:translateY(-2px)}
+    .wd-footer-social:hover,.wd-footer-social:focus-visible{background:linear-gradient(135deg,#6025E1,#C00252) border-box;border-color:transparent;color:#fff;transform:translateY(-2px)}
     :host([data-theme="light"]) .wd-footer-social{border-color:rgba(23,19,31,.14);background:rgba(255,255,255,.55);color:#2B2533}
-    :host([data-theme="light"]) .wd-footer-social:hover,:host([data-theme="light"]) .wd-footer-social:focus-visible{background:linear-gradient(135deg,#6025E1,#C00252);border-color:transparent;color:#fff}
+    :host([data-theme="light"]) .wd-footer-social:hover,:host([data-theme="light"]) .wd-footer-social:focus-visible{background:linear-gradient(135deg,#6025E1,#C00252) border-box;border-color:transparent;color:#fff}
   `;
   const ICONS = {
     instagram: '<rect x="11" y="11" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="20" cy="20" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="25.6" cy="14.5" r="1.2" fill="currentColor"/>',

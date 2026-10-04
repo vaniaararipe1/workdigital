@@ -38,7 +38,7 @@ CSS = '''
 .share .sh-list{display:flex;gap:8px;flex-wrap:wrap}
 .share .sh-btn{position:relative;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid rgba(23,19,31,.14);background:rgba(255,255,255,.55);color:#2B2533;padding:0;cursor:pointer;text-decoration:none!important;transition:background .3s,color .3s,border-color .3s,transform .3s}
 .share .sh-btn svg{width:18px;height:18px}
-.share .sh-btn:hover,.share .sh-btn:focus-visible{background:linear-gradient(135deg,#6025E1,#C00252);border-color:transparent;color:#fff;transform:translateY(-2px)}
+.share .sh-btn:hover,.share .sh-btn:focus-visible{background:linear-gradient(135deg,#6025E1,#C00252) border-box;border-color:transparent;color:#fff;transform:translateY(-2px)}
 .share .sh-btn:focus-visible{outline:2px solid #6025E1;outline-offset:3px}
 .share .sh-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);white-space:nowrap;padding:6px 10px;border-radius:8px;background:#17131F;color:#fff;font:500 12px/1 var(--display);opacity:0;pointer-events:none;transition:opacity .2s}
 .share .sh-tip.on{opacity:1}
