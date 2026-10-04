@@ -119,3 +119,28 @@
  form.addEventListener('submit',async e=>{e.preventDefault();if(sending||!validate())return;sending=true;submit.disabled=true;submit.setAttribute('aria-label','Enviando mensagem');form.setAttribute('aria-busy','true');submit.innerHTML='<svg class="wd-contact-spinner" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/><path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" stroke-width="2"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur=".75s" repeatCount="indefinite"/></path></svg>';const thisSession=session;try{await enviarFormulario(Object.fromEntries(new FormData(form)));if(isOpen&&session===thisSession){form.reset();growIdea();showResult(true)}}catch(error){if(isOpen&&session===thisSession)showResult(false,error)}finally{sending=false;form.removeAttribute('aria-busy');submit.removeAttribute('aria-label')}});
  window.WorkDigitalContact={abrirContato,fecharContato,enviarFormulario};
 })();
+
+/* Popup de contato sempre inteiro na tela: se o conteúdo passar da altura disponível, ele é reduzido proporcionalmente. */
+(() => {
+ function boxEl(){return document.querySelector('.wd-contact');}
+ let busy=false;
+ function fit(){
+  const box=boxEl();if(!box||box.dataset.open!=='true')return;
+  box.style.setProperty('--wd-fit','1');
+  let s=1;
+  for(let i=0;i<4;i++){
+   const avail=box.clientHeight,need=box.scrollHeight;
+   if(!avail||need<=avail+1)break;
+   s=Math.max(.55,s*avail/need*.995);box.style.setProperty('--wd-fit',s.toFixed(3));
+  }
+ }
+ function req(){if(busy)return;busy=true;requestAnimationFrame(()=>{busy=false;fit();});}
+ function watch(){
+  const box=boxEl();if(!box){setTimeout(watch,300);return;}
+  new MutationObserver(req).observe(box,{attributes:true,attributeFilter:['class','data-open','style']});
+  new ResizeObserver(req).observe(box);
+  box.addEventListener('input',req);
+  addEventListener('resize',req,{passive:true});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watch,{once:true});else watch();
+})();

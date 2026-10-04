@@ -7,7 +7,11 @@ os.makedirs(OUT + '/img', exist_ok=True); os.makedirs(OUT + '/ativos-externos', 
 from apply_home import FOOTER_TEXT
 for f in ['footer.js', 'contact.js', 'contact.css', 'whatsapp.js', 'wd-revision.js', 'wd-revision.css']:
     shutil.copy(f'{HOMEF}/{f}', f'{OUT}/{f}')
+import contact_fit; contact_fit.apply(OUT)
 ft = open(f'{OUT}/footer.js').read()
+# o CTA do rodapé abre o popup de contato (sem link para a página de contato antiga)
+assert "contact: 'https://workdigital.art.br/contato/'" in ft
+ft = ft.replace("contact: 'https://workdigital.art.br/contato/'", "contact: '#contato'")
 for a, c in FOOTER_TEXT:
     assert a in ft; ft = ft.replace(a, c)
 LIGHT = '''
@@ -16,6 +20,7 @@ LIGHT = '''
     :host([data-theme="light"]) .wd-footer-social:hover,:host([data-theme="light"]) .wd-footer-social:focus-visible{color:#6025E1;background:rgba(96,37,225,.08)}
     :host([data-theme="light"]) .wd-footer-rights-brand:hover{color:#17131F}
     :host([data-theme="light"]) a:focus-visible{outline-color:#6025E1}
+    :host([data-theme="light"]) .wd-footer-title{color:#4A4458}
     .wd-footer-cta{min-height:76px;padding:24px 44px;gap:24px;font-size:18px}
     .wd-footer-cta svg{width:18px;height:18px}
     @media(max-width:600px){.wd-footer-cta{min-height:62px;padding:20px 30px;font-size:16px}}
@@ -57,7 +62,7 @@ for a, b in [('top:calc(12vh + 5.5vw)', 'top:calc(12vh + 64px + 5.5vw)'), ('.wor
 t = sub1(t, "tctx.fillText(el.textContent.toUpperCase(),", "const g=tctx.createLinearGradient(rc.left*dpr,0,rc.right*dpr,0);g.addColorStop(0,'#FFFFFF');g.addColorStop(.45,'#EDE4FF');g.addColorStop(1,'#F7C9EC');tctx.fillStyle=g;\n      tctx.fillText(el.textContent.toUpperCase(),")
 t = sub1(t, "const x=rc.left*dpr,y=rc.top*dpr,w=rc.width*dpr,hh=rc.height*dpr;tctx.fillRect", "const x=rc.left*dpr,y=rc.top*dpr,w=rc.width*dpr,hh=rc.height*dpr;tctx.fillStyle='#EDE4FF';tctx.fillRect")
 t = sub1(t, "vec3 tc=mix(vec3(.85,.83,.89),dark,a);", "vec3 tc=mix(texture2D(tx2,fc/res).rgb,dark,a);")
-t = sub1(t, ".words .w1{position:absolute;", ".words .w1,.words .w2{background:linear-gradient(90deg,#FFFFFF 0%,#EDE4FF 45%,#F7C9EC 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}\n.words .w1{position:absolute;")
+t = sub1(t, ".words .w1{position:absolute;", ".words .w1,.words .w2{background:linear-gradient(90deg,#FFFFFF 0%,#EDE4FF 45%,#F7C9EC 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;padding:.18em 0;margin-top:-.18em}\n.words .w1{position:absolute;")
 t = sub1(t, ".words .plus::before,.words .plus::after{content:\"\";position:absolute;background:#d9d3e4;", ".words .plus::before,.words .plus::after{content:\"\";position:absolute;background:#EDE4FF;")
 # rodapé fluido: a bola e as palavras somem suavemente quando o rodapé chega
 t = sub1(t, "document.fonts && document.fonts.ready.then(layout);\n", "document.fonts && document.fonts.ready.then(layout);\n"
@@ -219,6 +224,8 @@ t = sub1(t, '<ul class="cats rv" id="cats" aria-label="Categorias"></ul>',
 t = re.sub(r"const srch=document\.getElementById\('srch'\).*?(?=// Reveal)",
            "const q=document.getElementById('q');\nq.addEventListener('input',()=>{term=q.value.trim().toLowerCase(); apply();});\n\n", t, count=1, flags=re.S)
 t = sub1(t, 'const link=p=>p.href?`href="${p.href}" target="_blank" rel="noopener"`:\'href="#"\';', 'const link=p=>`href="' + PAGES['post'] + '" target="_top"`;')
+import blog_post_fix
+t = blog_post_fix.blog(t)
 t = apply(t, active='Blog', dark=False,
           header_re=r'<header class="hd" id="hd">.*?</header>\n\n<div class="drawer".*?</div>\n',
           remove_res=[r'<footer class="ft" id="contato">.*?</footer>\n', r'<a class="wa".*?</a>\n'],
@@ -240,6 +247,7 @@ for a, b in [('<a class="chip" href="#">', f'<a class="chip" href="{PAGES["blog"
              ('<a class="all" href="#">', f'<a class="all" href="{PAGES["blog"]}">')]:
     t = sub1(t, a, b)
 t = t.replace('<a class="card rv" href="#">', f'<a class="card rv" href="{PAGES["post"]}">')
+t = blog_post_fix.post(t, OUT)
 t = apply(t, active='Blog', dark=False,
           header_re=r'<header class="hd" id="hd">.*?</header>\n\n<div class="drawer".*?</div>\n',
           remove_res=[r'<footer class="ft" id="contato">.*?</footer>\n', r'<a class="wa".*?</a>\n'],

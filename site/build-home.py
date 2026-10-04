@@ -73,6 +73,20 @@ blk=t[i:j]; assert blk.count('<article class="wd-works-card">')==4 and blk.count
 blk=blk.replace('<article class="wd-works-card">','<a class="wd-works-card" href="'+_P['case']+'" target="_top">').replace('</article>','</a>')
 t=t[:i]+blk+t[j:]
 t=t.replace('</head>','<style>a.wd-works-card{color:inherit;text-decoration:none}a.wd-works-card:first-child{color:#24123e}</style>\n</head>',1)
+# logo e "Home" na própria home levam ao topo (antes iam para #hero, que fica no meio do topo da página); ao chegar na home, começa no topo
+t=t.replace('</body>',"""<script>
+(function(){
+  try{if(!location.hash){history.scrollRestoration='manual';scrollTo(0,0);}}catch(e){}
+  document.querySelectorAll('a[href="#hero"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();
+    const top=()=>scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});top();
+    try{history.replaceState(null,'',location.pathname+location.search);}catch(x){}}));
+})();
+</script>
+</body>""",1)
+# nenhum link para a página de contato antiga: todos os CTAs abrem o popup de contato
+t=t.replace(' data-wd-explore-url="https://workdigital.art.br/contato/"','')
+t=t.replace('href="https://workdigital.art.br/contato/"','href="#contato"')
+assert 'workdigital.art.br/contato' not in t
 t=link_pages(t)
 # ---- carregamento em conexões lentas ----
 import re, subprocess

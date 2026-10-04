@@ -47,7 +47,7 @@ FOOTER_TEXT = [('Como podemos te ajudar?', 'Tem um projeto em mente?'), ('ENTRE 
 POSITIVE_LOGO = './img/logo-work-digital-positivo.svg'
 POSITIVE_CSS = """<style>
 /* Versão positiva (páginas claras): menu, painel de contato e rodapé em tons claros */
-.site-nav{border-color:rgba(23,19,31,.10);box-shadow:0 18px 55px rgba(23,19,31,.10)}
+.site-nav{border-color:transparent;box-shadow:0 18px 55px rgba(23,19,31,.10)}
 .site-nav::before{background:rgba(255,255,255,.74)}
 .nav-item,.nav-link,.nav-trigger{color:#17131F}
 .dropdown{background:rgba(255,255,255,.86)!important;border-color:rgba(23,19,31,.10)!important;box-shadow:0 22px 60px rgba(23,19,31,.14)!important}
@@ -196,7 +196,7 @@ def cursor_css(light):
             'html body input,html body textarea{cursor:text!important}'
             'html.wd-big,html.wd-big body,html.wd-big body *{cursor:none!important}}'
             '.wd-cursor:not(.big),.cursor:not(.big){opacity:0!important}'
-            '.wd-cursor.big,.cursor.big{background:linear-gradient(135deg,#6025E1,#C00252)!important;color:#fff!important}'
+            '.wd-cursor.big,.cursor.big{background:linear-gradient(135deg,#6025E1,#C00252)!important;color:#fff!important;box-shadow:none!important;border:0!important;outline:0!important}'
             '</style>\n')
 
 
@@ -226,15 +226,20 @@ def lite_css(light):
             'html.wd-lite .svc{--card:linear-gradient(125deg,rgba(96,37,225,.16),rgba(49,22,78,.26)),rgba(20,20,26,.94)}'
             'html.wd-lite .orb,html.wd-lite .orb2,html.wd-lite .orb::after{animation:none!important}'
             '</style>\n')
+# favicon: mascote da Work; escuro quando o navegador está claro e claro quando está escuro (automático, pelo próprio SVG)
+import base64 as _b64
+FAVICON = ('<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,'
+           + _b64.b64encode(open(__import__('os').path.join(__import__('os').path.dirname(__file__), 'favicon.svg'), 'rb').read()).decode() + '">\n')
 def add_lite(t):
     if '/* wd-lite */' in t:
         return t
+    t = re.sub(r'<link[^>]*rel="(?:shortcut )?icon"[^>]*>\\n?', '', t)
     light = 'data-theme="light"' in t
     if '<head>' in t:
         i = t.index('<head>') + len('<head>')
-        t = t[:i] + '\n' + LITE_JS + t[i:]
+        t = t[:i] + '\n' + FAVICON + LITE_JS + t[i:]
     else:
-        t = ('' if 'charset=' in t[:400] else '<meta charset="utf-8">\n') + LITE_JS + t
+        t = ('' if 'charset=' in t[:400] else '<meta charset="utf-8">\n') + FAVICON + LITE_JS + t
     return t.rstrip() + '\n' + lite_css(light)
 
 def link_pages(t):

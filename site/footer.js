@@ -10,7 +10,7 @@
   const CONFIG = {
     logo: new URL('img/logo-work-digital.svg', source).href,
     home: 'https://claude.ai/artifact/K3DaWGpPSDzZs2TZpjwHjw',
-    contact: 'https://workdigital.art.br/contato/',
+    contact: '#contato',
     instagram: 'https://www.instagram.com/workdigitalbr/',
     linkedin: 'https://www.linkedin.com/company/workdigitalbr',
     facebook: 'https://www.facebook.com/workdigital.global',
@@ -63,6 +63,7 @@
     :host([data-theme="light"]) .wd-footer-social:hover,:host([data-theme="light"]) .wd-footer-social:focus-visible{color:#6025E1;background:rgba(96,37,225,.08)}
     :host([data-theme="light"]) .wd-footer-rights-brand:hover{color:#17131F}
     :host([data-theme="light"]) a:focus-visible{outline-color:#6025E1}
+    :host([data-theme="light"]) .wd-footer-title{color:#4A4458}
     .wd-footer-cta{min-height:76px;padding:24px 44px;gap:24px;font-size:18px}
     .wd-footer-cta svg{width:18px;height:18px}
     @media(max-width:600px){.wd-footer-cta{min-height:62px;padding:20px 30px;font-size:16px}}
