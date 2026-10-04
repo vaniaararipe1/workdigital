@@ -157,6 +157,12 @@ TICK_OLD = '(function tick(){x+=(mx-x)*.18;y+=(my-y)*.18;c.style.transform=`tran
 TICK_NEW = '(function tick(){const dx=mx-x,dy=my-y;if(Math.abs(dx)+Math.abs(dy)>.1){x+=dx*.18;y+=dy*.18;c.style.transform=`translate(${x}px,${y}px)`;}requestAnimationFrame(tick);})();'
 PERF = [  # desempenho: aplicado em todas as páginas
     (TICK_OLD, TICK_NEW),
+    # o círculo com texto (VER CASE / ABRIR / LER) esconde o cursor do sistema só enquanto aparece
+    ("c.classList.toggle('big',!!label);", "c.classList.toggle('big',!!label);document.documentElement.classList.toggle('wd-big',!!label);"),
+    ('grid.addEventListener("mouseover", e => cursor.classList.toggle("big", !!e.target.closest("[data-cursor]")));',
+     'grid.addEventListener("mouseover", e => { const on = !!e.target.closest("[data-cursor]"); cursor.classList.toggle("big", on); document.documentElement.classList.toggle("wd-big", on); });'),
+    ('grid.addEventListener("mouseleave", () => cursor.classList.remove("big"));',
+     'grid.addEventListener("mouseleave", () => { cursor.classList.remove("big"); document.documentElement.classList.remove("wd-big"); });'),
     # cursor acompanha o mouse na hora (sem o atraso de 18% por quadro)
     ("addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});",
      "addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;c.style.transform=`translate(${mx}px,${my}px)`;},{passive:true});"),
@@ -173,9 +179,30 @@ PERF = [  # desempenho: aplicado em todas as páginas
 ]
 
 
+def _svg_cursor(svg):
+    from urllib.parse import quote
+    return 'url("data:image/svg+xml,' + quote(svg) + '")'
+DOT_DARK = _svg_cursor('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><circle cx="8" cy="8" r="5.5" fill="#F2EEF8" stroke="#121316" stroke-opacity=".45"/></svg>')
+RING_DARK = _svg_cursor('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><circle cx="20" cy="20" r="18.5" fill="#F2EEF8" fill-opacity=".16" stroke="#F2EEF8" stroke-width="1.5"/><circle cx="20" cy="20" r="2.5" fill="#F2EEF8"/></svg>')
+DOT_LIGHT = _svg_cursor('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><circle cx="8" cy="8" r="5.5" fill="#17131F" stroke="#fff" stroke-opacity=".7"/></svg>')
+RING_LIGHT = _svg_cursor('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><circle cx="20" cy="20" r="18.5" fill="#6025E1" fill-opacity=".10" stroke="#17131F" stroke-width="1.5"/><circle cx="20" cy="20" r="2.5" fill="#17131F"/></svg>')
+def cursor_css(light):
+    dot, ring = (DOT_LIGHT, RING_LIGHT) if light else (DOT_DARK, RING_DARK)
+    return ('<style>/* Cursor desenhado pelo sistema (sem atraso). O círculo com texto continua só sobre os cards. */\n'
+            '@media (hover:hover) and (pointer:fine){'
+            f'html,html body,html body *{{cursor:{dot} 8 8,auto!important}}'
+            f'html body a,html body a *,html body button,html body button *,html body [role=button],html body label,html body .svc:not(.is-open),html body .svc:not(.is-open) *{{cursor:{ring} 20 20,pointer!important}}'
+            'html body input,html body textarea{cursor:text!important}'
+            'html.wd-big,html.wd-big body,html.wd-big body *{cursor:none!important}}'
+            '.wd-cursor:not(.big),.cursor:not(.big){opacity:0!important}'
+            '</style>\n')
+
+
 def link_pages(t):
     for a, b in PERF:
         t = t.replace(a, b)
+    if 'cursor_css_done' not in t:
+        t = t.rstrip() + '\n<!-- cursor_css_done -->' + cursor_css('data-theme="light"' in t) + '\n'
     P = PAGES
     for a, b in [('https://workdigital-hero-preview.onrender.com/#wd-explore', P['solucoes']),
                  ('https://workdigital-hero-preview.onrender.com/', P['home']),

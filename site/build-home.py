@@ -60,19 +60,25 @@ for a,b in [('function resize(){const r=art.getBoundingClientRect();width=r.widt
 t=link_pages(t)
 # ---- carregamento em conexões lentas ----
 import re, subprocess
-# 1) arte das partículas: PNG embutido (957 KB em base64) -> arquivo WebP separado (268 KB)
+# 1) arte das partículas: PNG embutido (957 KB em base64) -> WebP embutido (358 KB em base64)
 m=re.search(r'data:image/png;base64,([A-Za-z0-9+/=]{100000,})',t); assert m
 import base64 as _b64
 open('/tmp/_pa.png','wb').write(_b64.b64decode(m.group(1)))
 subprocess.run(['ffmpeg','-loglevel','error','-y','-i','/tmp/_pa.png','-c:v','libwebp','-quality','88','-compression_level','6',OUT+'/media/particle-art.webp'],check=True)
-t=t[:m.start()]+'./media/particle-art.webp'+t[m.end():]
+# fica embutida (data URI) para o canvas poder ler as cores — arquivo separado bloqueia a leitura (canvas 'tainted')
+t=t[:m.start()]+'data:image/webp;base64,'+_b64.b64encode(open(OUT+'/media/particle-art.webp','rb').read()).decode()+t[m.end():]
 # 2) vídeos de Soluções só baixam quando a seção aparece (o script da seção já dá play no vídeo visível)
 n0=t.count('<video class="wd-explore-video" autoplay muted loop playsinline preload="metadata"')
 assert n0==3
 t=t.replace('<video class="wd-explore-video" autoplay muted loop playsinline preload="metadata"','<video class="wd-explore-video" muted loop playsinline preload="none"')
 # 3) código 3D (1,4 MB) em arquivo separado: o HTML aparece antes e o código fica em cache
 i=t.index('<script type="module">'); j=t.index('</script>',i)
-open(OUT+'/app.js','w').write(t[i+len('<script type="module">'):j])
+app=t[i+len('<script type="module">'):j]
+# se a GPU for perdida no meio da animação, o desenho alternativo assume (antes a esfera congelava)
+x='experience=new Gse(host);await experience.init();'
+assert app.count(x)==1
+app=app.replace(x,x+"try{const dev=experience.renderer&&experience.renderer.backend&&experience.renderer.backend.device;if(dev&&dev.lost)dev.lost.then(()=>{try{experience.render(false)}catch(e){}host.remove();art.classList.remove('has-native-particles');art.dispatchEvent(new Event('nativeparticlesfailed'));});}catch(e){}")
+open(OUT+'/app.js','w').write(app)
 t=t[:i]+'<script type="module" src="./app.js"></script>'+t[j+len('</script>'):]
 open(OUT+'/home.html','w').write(t)
 # Soluções da home (telas entre 980 e 1199px): imagem com no máximo 520px e sem medidas antigas da versão larga

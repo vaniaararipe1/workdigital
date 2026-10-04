@@ -510,7 +510,7 @@ document.fonts && document.fonts.ready.then(layout);
   addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;c.style.transform=`translate(${mx}px,${my}px)`;},{passive:true});
   document.addEventListener('mouseover',e=>{
     let label=null; for(const [sel,txt] of LABELS){ if(e.target.closest(sel)){label=txt;break;} }
-    c.classList.toggle('big',!!label); if(label) lb.textContent=label;
+    c.classList.toggle('big',!!label);document.documentElement.classList.toggle('wd-big',!!label); if(label) lb.textContent=label;
     c.classList.toggle('link',!label && !!e.target.closest('a,button'));
   });
   document.addEventListener('mouseleave',()=>{c.classList.remove('big','link');});
@@ -519,3 +519,6 @@ document.fonts && document.fonts.ready.then(layout);
 </script>
 <script src="./footer.js" defer></script>
 <script src="./wd-revision.js" defer></script>
+<!-- cursor_css_done --><style>/* Cursor desenhado pelo sistema (sem atraso). O círculo com texto continua só sobre os cards. */
+@media (hover:hover) and (pointer:fine){html,html body,html body *{cursor:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2216%22%20height%3D%2216%22%3E%3Ccircle%20cx%3D%228%22%20cy%3D%228%22%20r%3D%225.5%22%20fill%3D%22%23F2EEF8%22%20stroke%3D%22%23121316%22%20stroke-opacity%3D%22.45%22/%3E%3C/svg%3E") 8 8,auto!important}html body a,html body a *,html body button,html body button *,html body [role=button],html body label,html body .svc:not(.is-open),html body .svc:not(.is-open) *{cursor:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%2218.5%22%20fill%3D%22%23F2EEF8%22%20fill-opacity%3D%22.16%22%20stroke%3D%22%23F2EEF8%22%20stroke-width%3D%221.5%22/%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%222.5%22%20fill%3D%22%23F2EEF8%22/%3E%3C/svg%3E") 20 20,pointer!important}html body input,html body textarea{cursor:text!important}html.wd-big,html.wd-big body,html.wd-big body *{cursor:none!important}}.wd-cursor:not(.big),.cursor:not(.big){opacity:0!important}</style>
+

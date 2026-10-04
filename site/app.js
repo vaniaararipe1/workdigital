@@ -460,7 +460,7 @@ ${e.tab}if ( ${h} ) {
  try{
   if(!await navigator.gpu.requestAdapter())return;
   const host=document.createElement('div');host.className='native-particles';art.append(host);
-  experience=new Gse(host);await experience.init();
+  experience=new Gse(host);await experience.init();try{const dev=experience.renderer&&experience.renderer.backend&&experience.renderer.backend.device;if(dev&&dev.lost)dev.lost.then(()=>{try{experience.render(false)}catch(e){}host.remove();art.classList.remove('has-native-particles');art.dispatchEvent(new Event('nativeparticlesfailed'));});}catch(e){}
   const resize=()=>experience.resize(host.clientWidth,host.clientHeight);
   resize();new ResizeObserver(resize).observe(host);addEventListener('resize',resize,{passive:true});
   const firstUpdate=experience.update;

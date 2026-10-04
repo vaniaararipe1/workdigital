@@ -403,8 +403,8 @@ const cursor = document.getElementById("cursor"); let cx = mx, cy = my;
 if (fine && !reduce) {
   cursor.hidden = false; document.body.classList.add("has-cursor");
   addEventListener("mousemove", e => { mx = e.clientX; my = e.clientY; });
-  grid.addEventListener("mouseover", e => cursor.classList.toggle("big", !!e.target.closest("[data-cursor]")));
-  grid.addEventListener("mouseleave", () => cursor.classList.remove("big"));
+  grid.addEventListener("mouseover", e => { const on = !!e.target.closest("[data-cursor]"); cursor.classList.toggle("big", on); document.documentElement.classList.toggle("wd-big", on); });
+  grid.addEventListener("mouseleave", () => { cursor.classList.remove("big"); document.documentElement.classList.remove("wd-big"); });
   (function tick() { cx = mx; cy = my; fx += (mx - fx) * 0.12; fy += (my - fy) * 0.12;
     cursor.style.transform = `translate(${cx}px, ${cy}px)`; floater.style.left = fx + "px"; floater.style.top = fy + "px"; requestAnimationFrame(tick); })();
 } else if (fine) {
@@ -418,3 +418,6 @@ document.fonts && document.fonts.ready.then(() => projects.forEach(p => p.card.q
 </script>
 <script src="./footer.js" defer></script>
 <script src="./wd-revision.js" defer></script>
+<!-- cursor_css_done --><style>/* Cursor desenhado pelo sistema (sem atraso). O círculo com texto continua só sobre os cards. */
+@media (hover:hover) and (pointer:fine){html,html body,html body *{cursor:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2216%22%20height%3D%2216%22%3E%3Ccircle%20cx%3D%228%22%20cy%3D%228%22%20r%3D%225.5%22%20fill%3D%22%23F2EEF8%22%20stroke%3D%22%23121316%22%20stroke-opacity%3D%22.45%22/%3E%3C/svg%3E") 8 8,auto!important}html body a,html body a *,html body button,html body button *,html body [role=button],html body label,html body .svc:not(.is-open),html body .svc:not(.is-open) *{cursor:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%2218.5%22%20fill%3D%22%23F2EEF8%22%20fill-opacity%3D%22.16%22%20stroke%3D%22%23F2EEF8%22%20stroke-width%3D%221.5%22/%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%222.5%22%20fill%3D%22%23F2EEF8%22/%3E%3C/svg%3E") 20 20,pointer!important}html body input,html body textarea{cursor:text!important}html.wd-big,html.wd-big body,html.wd-big body *{cursor:none!important}}.wd-cursor:not(.big),.cursor:not(.big){opacity:0!important}</style>
+
