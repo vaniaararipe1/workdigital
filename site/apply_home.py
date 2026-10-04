@@ -234,6 +234,12 @@ def lite_css(light):
 import base64 as _b64
 FAVICON = ('<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,'
            + _b64.b64encode(open(__import__('os').path.join(__import__('os').path.dirname(__file__), 'favicon.svg'), 'rb').read()).decode() + '">\n')
+RESP_CSS = ('<style>/* Responsivo (todas as páginas) */\n'
+  # nenhuma página rola para os lados, mesmo que um elemento decorativo passe alguns pixels da tela
+  'html,body{overflow-x:clip}'
+  # menu entre 981 e 1180px: logo | links | ações, sem os links encostarem no seletor de idioma
+  '@media(min-width:981px) and (max-width:1180px){.site-header .site-nav{grid-template-columns:auto minmax(0,1fr) auto;gap:16px}.site-header .nav-links{gap:clamp(14px,2.1vw,28px)}.site-header .wd-nav-actions{gap:14px}}'
+  '</style>\n')
 def add_lite(t):
     if '/* wd-lite */' in t:
         return t
@@ -244,6 +250,8 @@ def add_lite(t):
         t = t[:i] + '\n' + FAVICON + LITE_JS + t[i:]
     else:
         t = ('' if 'charset=' in t[:400] else '<meta charset="utf-8">\n') + FAVICON + LITE_JS + t
+    return t.rstrip() + '\n' + lite_css(light) + RESP_CSS
+    # (não usado)
     return t.rstrip() + '\n' + lite_css(light)
 
 def link_pages(t):

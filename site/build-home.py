@@ -145,6 +145,15 @@ css+='''
 }
 '''
 css+='''
+/* Transformação digital no celular: o globo fica abaixo do texto (antes ficava por trás do parágrafo e prejudicava a leitura) */
+@media(max-width:768px){
+ .wd-tr-card{padding-bottom:250px}
+ .wd-tr-content{min-height:0!important}
+ .wd-tr-globe{top:auto!important;bottom:-190px;left:50%!important;height:440px!important;transform:translateX(-32%)!important}
+ .wd-tr-glow{top:auto!important;bottom:-360px;left:50%!important;height:780px!important;transform:translateX(-46%)!important}
+}
+'''
+css+='''
 /* Soluções empilhado (até 1199px): imagem centralizada com no máximo 520px de largura */
 @media(max-width:1199px){
 #wd-explore .wd-explore-photo .wd-explore-media{left:50%!important;right:auto!important;width:min(calc(100% - 40px),520px)!important;transform:translateX(-50%)}

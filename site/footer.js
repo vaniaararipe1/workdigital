@@ -68,6 +68,7 @@
     .wd-footer-cta svg{width:18px;height:18px}
     @media(max-width:600px){.wd-footer-cta{min-height:62px;padding:20px 30px;font-size:16px}}
     .wd-footer-rights{flex-wrap:nowrap;white-space:nowrap}
+    @media(min-width:992px) and (max-width:1240px){.wd-footer-inner{grid-template-columns:minmax(300px,1fr) auto}.wd-footer-title{font-size:clamp(38px,4vw,52px)}}
     @media(max-width:360px){.wd-footer-rights{font-size:12px;gap:8px}}
     .wd-footer-socials{gap:8px}
     .wd-footer-social{width:40px;height:40px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#F7F6FB;transition:background .3s,color .3s,border-color .3s,transform .3s}

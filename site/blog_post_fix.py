@@ -6,6 +6,7 @@ def sub1(t, a, b):
     return t.replace(a, b)
 
 def blog(t):
+    t = sub1(t, '.pag .hide-sm{display:none}', '.pag .hide-sm{display:none}\n@media(max-width:420px){.pag{gap:2px;flex-wrap:wrap}.pag a,.pag span{min-width:38px;height:40px;padding:0 4px}}')
     # cor de destaque (hover dos títulos dos posts etc.): roxo da Work
     t = sub1(t, '--accent:#7C5CFF;', '--accent:#6025E1;')
     t = sub1(t, '<title>Blog Work Digital</title>', '<title>Blog da Work</title>')
@@ -77,6 +78,7 @@ JS = '''<script>
 '''
 ARROW = '<svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M12.0641 1.14239L.499 12.7061M1.9673.7061h9.5726c.53 0 .9591.4291.9591.9605v9.5712" stroke="currentColor" stroke-width="1.41181"/></svg>'
 def post(t, out):
+    t = sub1(t, '.all:hover svg{transform:translateX(3px)}', '.all:hover svg{transform:translateX(3px)}\n@media(max-width:520px){.hd2{flex-wrap:wrap;align-items:flex-start;row-gap:10px}}')
     t = sub1(t, '--accent:#7C5CFF;', '--accent:#6025E1;')
     shutil.copy(out + '/media/servico-blog.jpg', out + '/img/servico-blog.jpg')
     # compartilhar no início (abaixo do autor) e no fim (antes do CTA)
