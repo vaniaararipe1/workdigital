@@ -75,6 +75,8 @@ POSITIVE_CSS = """<style>
 .wd-contact .wd-contact-input[aria-invalid="true"]::placeholder,.wd-contact-field-error{color:#C9184A}
 .wd-contact-privacy,.wd-contact-result-text,.wd-contact-result-note{color:#6B6578}
 .wd-contact-privacy a{color:#17131F}
+wd-cursor-fix{}
+.wd-cursor:not(.big){background:#17131F;box-shadow:0 0 0 1px rgba(255,255,255,.6)}
 wd-footer{--wd-footer-icon-cutout:#F4F3EC;border-top:1px solid rgba(23,19,31,.10)}
 </style>
 """
@@ -155,6 +157,14 @@ TICK_OLD = '(function tick(){x+=(mx-x)*.18;y+=(my-y)*.18;c.style.transform=`tran
 TICK_NEW = '(function tick(){const dx=mx-x,dy=my-y;if(Math.abs(dx)+Math.abs(dy)>.1){x+=dx*.18;y+=dy*.18;c.style.transform=`translate(${x}px,${y}px)`;}requestAnimationFrame(tick);})();'
 PERF = [  # desempenho: aplicado em todas as páginas
     (TICK_OLD, TICK_NEW),
+    # fundo de luz desenhado em 1/4 do tamanho e ampliado 4x (degradê suave: visual igual, 16x menos pixels para a GPU)
+    ('.light-field-inner::before{content:"";position:absolute;inset:-20%;background:',
+     '.light-field-inner::before{content:"";position:absolute;left:-20%;top:-20%;width:35%;height:35%;transform-origin:0 0;transform:scale(4);background:'),
+    ('@keyframes lightFieldDrift{from{transform:translate3d(-4%,-3%,0) scale(1)}to{transform:translate3d(5%,4%,0) scale(1.10)}}',
+     '@keyframes lightFieldDrift{from{transform:scale(4) translate3d(-4%,-3%,0) scale(1)}to{transform:scale(4) translate3d(5%,4%,0) scale(1.10)}}'),
+    # cursor sem modo de mistura (mix-blend-mode obriga a recompor a página inteira a cada movimento)
+    ('background:#F2EEF8;mix-blend-mode:difference;', 'background:#F2EEF8;box-shadow:0 0 0 1px rgba(18,19,22,.35);'),
+    ('background: var(--fg); mix-blend-mode: difference;', 'background: var(--fg); box-shadow: 0 0 0 1px rgba(11,11,12,.35);'),
 ]
 
 

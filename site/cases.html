@@ -90,7 +90,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .floater canvas { width: 100%; height: 100%; display: block; }
 
 /* Custom cursor */
-.cursor { position: fixed; left: 0; top: 0; z-index: 2147483000; pointer-events: none; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--fg); mix-blend-mode: difference; transition: width 0.4s var(--ease), height 0.4s var(--ease), margin 0.4s var(--ease), background 0.3s; display: grid; place-items: center; }
+.cursor { position: fixed; left: 0; top: 0; z-index: 2147483000; pointer-events: none; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--fg); box-shadow: 0 0 0 1px rgba(11,11,12,.35); transition: width 0.4s var(--ease), height 0.4s var(--ease), margin 0.4s var(--ease), background 0.3s; display: grid; place-items: center; }
 .cursor b { font: 500 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-fg); opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
 .cursor.big { width: 96px; height: 96px; margin: -48px 0 0 -48px; background: var(--accent); mix-blend-mode: normal; }
 .cursor.big b { opacity: 1; }
@@ -190,14 +190,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 body{isolation:isolate}
 .light-field{position:fixed;inset:0;z-index:-1;pointer-events:none}
 .light-field-inner{position:absolute;inset:0;height:100%;overflow:hidden;background:#121316}
-.light-field-inner::before{content:"";position:absolute;inset:-20%;background:
+.light-field-inner::before{content:"";position:absolute;left:-20%;top:-20%;width:35%;height:35%;transform-origin:0 0;transform:scale(4);background:
  radial-gradient(ellipse at 24% 42%,rgba(96,37,225,.92),transparent 44%),
  radial-gradient(ellipse at 78% 60%,rgba(237,72,151,.82),transparent 40%),
  radial-gradient(ellipse at 60% 84%,rgba(4,205,143,.32),transparent 34%),
  radial-gradient(ellipse at 42% 68%,rgba(150,72,253,.48),transparent 45%);
  animation:lightFieldDrift 22s ease-in-out infinite alternate;will-change:transform}
 .light-field-inner::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 24%,rgba(18,19,22,.26),transparent 63%)}
-@keyframes lightFieldDrift{from{transform:translate3d(-4%,-3%,0) scale(1)}to{transform:translate3d(5%,4%,0) scale(1.10)}}
+@keyframes lightFieldDrift{from{transform:scale(4) translate3d(-4%,-3%,0) scale(1)}to{transform:scale(4) translate3d(5%,4%,0) scale(1.10)}}
 
 @media(prefers-reduced-motion:reduce){.light-field-inner::before{animation:none}}
 .hero{padding-top:clamp(150px,14vw,200px)!important}

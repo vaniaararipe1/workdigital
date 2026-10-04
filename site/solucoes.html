@@ -125,7 +125,7 @@ footer{position:relative;z-index:1;background:linear-gradient(180deg,rgba(20,16,
 @media (prefers-reduced-motion:reduce){.orb,.orb2{animation:none}*{transition:none!important;animation:none!important}}
 
 /* Custom cursor (same as the Works page): small dot that follows the mouse; grows on links, shows a label on key items */
-.wd-cursor{position:fixed;left:0;top:0;z-index:2147483000;pointer-events:none;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#F2EEF8;mix-blend-mode:difference;
+.wd-cursor{position:fixed;left:0;top:0;z-index:2147483000;pointer-events:none;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#F2EEF8;box-shadow:0 0 0 1px rgba(18,19,22,.35);
   transition:width .4s cubic-bezier(.22,1,.36,1),height .4s cubic-bezier(.22,1,.36,1),margin .4s cubic-bezier(.22,1,.36,1),background .3s;display:grid;place-items:center}
 .wd-cursor b{font:500 11px/1 "Space Grotesk",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#fff;opacity:0;transition:opacity .2s;white-space:nowrap}
 .wd-cursor.link{width:40px;height:40px;margin:-20px 0 0 -20px}
@@ -181,14 +181,14 @@ body{margin:0}
 body{isolation:isolate}
 .light-field{position:fixed;inset:0;z-index:-1;pointer-events:none}
 .light-field-inner{position:absolute;inset:0;height:100%;overflow:hidden;background:#121316}
-.light-field-inner::before{content:"";position:absolute;inset:-20%;background:
+.light-field-inner::before{content:"";position:absolute;left:-20%;top:-20%;width:35%;height:35%;transform-origin:0 0;transform:scale(4);background:
  radial-gradient(ellipse at 24% 42%,rgba(96,37,225,.92),transparent 44%),
  radial-gradient(ellipse at 78% 60%,rgba(237,72,151,.82),transparent 40%),
  radial-gradient(ellipse at 60% 84%,rgba(4,205,143,.32),transparent 34%),
  radial-gradient(ellipse at 42% 68%,rgba(150,72,253,.48),transparent 45%);
  animation:lightFieldDrift 22s ease-in-out infinite alternate;will-change:transform}
 .light-field-inner::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 24%,rgba(18,19,22,.26),transparent 63%)}
-@keyframes lightFieldDrift{from{transform:translate3d(-4%,-3%,0) scale(1)}to{transform:translate3d(5%,4%,0) scale(1.10)}}
+@keyframes lightFieldDrift{from{transform:scale(4) translate3d(-4%,-3%,0) scale(1)}to{transform:scale(4) translate3d(5%,4%,0) scale(1.10)}}
 @media(prefers-reduced-motion:reduce){.light-field-inner::before{animation:none}}
 wd-footer{position:relative;z-index:1}
 .bgfx{transition:opacity .2s linear}
