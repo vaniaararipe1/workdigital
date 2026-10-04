@@ -128,7 +128,17 @@ open(OUT + '/solucoes.html', 'w').write(link_pages(t))
 # ---------- Case interna ----------
 t = open('case-work-digital.html').read()
 t = sub1(t, 'body{background:var(--bg);', 'html{background:#121316}body{background:transparent;')
-t = sub1(t, '<a class="pill dark" href="#top">Vamos conversar', '<a class="pill dark" href="https://workdigital.art.br/contato/">Vamos conversar')
+# cabeçalho do case: no lugar de som / "Vamos conversar" / menu, o CTA "Solicitar proposta" do site todo (abre o popup de contato)
+import re as _re
+t, _n = _re.subn(r'  <div class="right">.*?\n  </div>\n', '  <div class="right">\n    <button class="nav-cta wd-cta" data-wd-contact type="button">SOLICITAR PROPOSTA <span>↗</span></button>\n  </div>\n', t, count=1, flags=_re.S); assert _n == 1
+# sem o aviso de prévia; logo da Work no lugar do texto
+# "Ver projeto no ar" com o CTA padrão da Work (mesmo da seção Transformação digital da home)
+t = sub1(t, '<a class="pill light cta" href="#top"><span class="dot"></span> Ver projeto no ar</a>',
+         '<a class="wd-work-cta wd-cta cta" href="#top"><span>VER PROJETO NO AR</span><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M12.0641 1.14239L.499 12.7061M1.9673.7061h9.5726c.53 0 .9591.4291.9591.9605v9.5712" stroke="currentColor" stroke-width="1.41181"/></svg></a>')
+# sem o bloco "Links"
+t = sub1(t, '            <h2>Links</h2>\n            <ul><li><a href="#top">Site no ar</a></li><li><a href="#top">Instagram</a></li></ul>\n', '')
+t = sub1(t, '            <div class="note">Prévia · textos e imagens de exemplo</div>\n', '')
+t = sub1(t, 'aria-label="Work Digital, início">Work Digital</a>', 'aria-label="Work Digital, início"><img src="./ativos-externos/logo-work-digital-branco-criacao-de-site-sp.svg" alt="Work Digital"></a>')
 for a, b in [('<a class="logo" href="#top"', f'<a class="logo" href="{PAGES["home"]}"'), ('<a class="pill light back" href="#top">', f'<a class="pill light back" href="{PAGES["cases"]}">')]:
     t = sub1(t, a, b)
 t = apply(t, active='Works', keep_header=True, hidden_home_header=True,
@@ -139,6 +149,20 @@ t = apply(t, active='Works', keep_header=True, hidden_home_header=True,
 .site-header.wd-contact-header-open{opacity:1;visibility:visible}
 .hd{transition:opacity .3s}
 body:has(.site-header.wd-contact-header-open) .hd{opacity:0;pointer-events:none}
+.hd .nav-cta{display:inline-flex!important}
+.wd-work-cta{display:inline-flex;align-items:center;justify-content:center;gap:16px;width:max-content;max-width:100%;min-height:54px;padding:14px 20px;border:0;text-decoration:none;color:#fff;font-size:14px;line-height:1;white-space:nowrap;text-transform:uppercase;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0%;transition:background-position .6s ease,color .2s ease}
+.wd-work-cta:hover,.wd-work-cta:focus-visible{background-position:0% 0%;color:#24123e}
+.wd-work-cta svg{width:14px;height:14px;flex:0 0 14px}
+.hd .logo img{display:block;width:142px;height:auto}
+@media(max-width:900px){.intro .cta{margin-bottom:36px}}
+@media(max-width:600px){.hd .logo img{width:120px}}
+/* Voltar: vidro escuro com borda (estilo do menu), para não competir com o "Solicitar proposta" */
+.hd .pill.light.back{background:rgba(18,19,22,.58);color:#F7F6FB;border:1px solid rgba(189,164,255,.28);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%)}
+.hd .pill.light.back:hover{background:rgba(96,37,225,.42);border-color:rgba(189,164,255,.5)}
+html.wd-lite .hd .pill.light.back{background:rgba(18,19,22,.93)}
+@media(max-width:600px){.hd .nav-cta{height:42px;padding:0 14px;font-size:11px;letter-spacing:.06em}}
+/* galeria: as imagens ficam entre o cabeçalho e o fim da tela (antes encostavam nos botões em telas baixas) */
+@media (min-width:901px){.track{padding-top:96px;padding-bottom:28px}.intro{padding-top:0}.m.full{align-self:flex-start;height:100vh;height:100svh;margin-top:-96px}}
 ''')
 open(OUT + '/case-interna.html', 'w').write(link_pages(t))
 
@@ -186,9 +210,12 @@ print('ok')
 
 # ---------- Cases (já com o menu/fundo/rodapé; remove o bloco final que agora está no rodapé) ----------
 t = open('cases-site/cases.html').read()
+import cases_fix
+t = cases_fix.fix(t, OUT + '/img')
 t = t.replace(' filter:blur(42px);animation:lightFieldDrift', ' animation:lightFieldDrift').replace('@media(max-width:760px){.light-field-inner::before{filter:blur(28px)}}', '')
 t, n = re.subn(r'  <section class="cta wrap" id="contato".*?</section>\n', '', t, count=1, flags=re.S); assert n == 1
 t, n = re.subn(r'/\* ---------- Copy e-mail ---------- \*/\n.*?\n\};\n', '', t, count=1, flags=re.S); assert n == 1
+t = t.replace('r.href = "#case-" + p.slug;', 'r.href = "' + PAGES['case'] + '"; r.target = "_top";')
 t = sub1(t, 'a.href = "#case-" + p.slug;', 'a.href = "' + PAGES['case'] + '"; a.target = "_top";')
 open(OUT + '/cases.html', 'w').write(link_pages(t))
 print('cases ok')

@@ -61,6 +61,13 @@ for a,b in [('function resize(){const r=art.getBoundingClientRect();width=r.widt
 a='raf=0;if(!ready||!visible||document.hidden||art.classList.contains("has-native-particles"))return;\n'
 assert t.count(a)==1
 t=t.replace(a,a+'  if(window.WD_LITE&&last&&stamp-last<30&&!reduced.matches){raf=requestAnimationFrame(draw);return;}\n')
+# Works da home: cada card abre a página interna do case (por enquanto a mesma para todos)
+from apply_home import PAGES as _P
+i=t.index('<article class="wd-works-card">');j=t.rindex('<article class="wd-works-card">');j=t.index('</article>',j)+len('</article>')
+blk=t[i:j]; assert blk.count('<article class="wd-works-card">')==4 and blk.count('</article>')==4
+blk=blk.replace('<article class="wd-works-card">','<a class="wd-works-card" href="'+_P['case']+'" target="_top">').replace('</article>','</a>')
+t=t[:i]+blk+t[j:]
+t=t.replace('</head>','<style>a.wd-works-card{color:inherit;text-decoration:none}a.wd-works-card:first-child{color:#24123e}</style>\n</head>',1)
 t=link_pages(t)
 # ---- carregamento em conexões lentas ----
 import re, subprocess

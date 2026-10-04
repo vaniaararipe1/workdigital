@@ -10,13 +10,14 @@
 :root {
   --bg: #0B0B0C;
   --surface: #151518;
-  --fg: #F2F0EB;
-  --muted: #8F8D96;
-  --line: rgba(242, 240, 235, 0.14);
-  --accent: #3D5AFE;
+  --fg: #F7F6FB;
+  --muted: #CBB6FF;
+  --line: rgba(203, 182, 255, 0.18);
+  --accent: #6025E1;
   --accent-fg: #FFFFFF;
-  --display: "Inter Tight", "Helvetica Neue", Arial, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --display: "Space Grotesk", Arial, sans-serif;
+  --text: "Nunito", system-ui, sans-serif;
+  --mono: "Space Grotesk", Arial, sans-serif;
   --gutter: clamp(16px, 4vw, 56px);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   color-scheme: dark;
@@ -203,6 +204,34 @@ body{isolation:isolate}
 
 @media(prefers-reduced-motion:reduce){.light-field-inner::before{animation:none}}
 .hero{padding-top:clamp(150px,14vw,200px)!important}
+
+/* ---- Works: fontes Space Grotesk (títulos) e Nunito (descritivos), paleta da Work, sem cinza ---- */
+body{font-family:var(--text)}
+.hero h1,.meta h2,.row .name,.num strong,.mono,.section-head{font-family:var(--display)}
+.hero h1{font-weight:500;letter-spacing:-.04167em;line-height:.92}
+.hero h1 .line>span{--wd-line-from:#6025e1;--wd-line-to:#cbb6ff;padding-bottom:.06em}
+@supports ((background-clip:text) or (-webkit-background-clip:text)){
+ .hero h1 .line>span,.num strong{background:linear-gradient(90deg,var(--wd-line-from),var(--wd-line-to));background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+}
+.hero h1 sup{color:#04CD8F;-webkit-text-fill-color:#04CD8F;font-family:var(--display)}
+.hero-sub p{font-family:var(--text);color:#F7F6FB}
+.meta h2{font-weight:500;color:#F7F6FB}
+.desc{font-family:var(--text);color:#EFE7FF;margin-top:-4px}
+.svc{color:#CBB6FF}
+.svc span+span::before{color:#04CD8F}
+.media{border-radius:16px}
+.media .tag::before{background:#04CD8F}
+.cursor.big{background:linear-gradient(135deg,#6025E1,#C00252)}
+.section-head{color:#CBB6FF;justify-content:center;text-align:center;letter-spacing:.2em}
+.clients{border-top:0}
+.marquee-track{gap:0;animation-duration:40s;align-items:center}
+.marquee-logo{display:flex;align-items:center;justify-content:center;flex:0 0 220px;height:56px;padding-right:70px}
+.marquee-logo img{display:block;max-width:150px;max-height:56px;width:auto;height:auto;object-fit:contain}
+.num{border-top:1px solid var(--line)}
+.num strong{--wd-line-from:#6025e1;--wd-line-to:#cbb6ff;font-weight:500;padding-bottom:.06em}
+.num strong em{color:inherit;-webkit-text-fill-color:inherit}
+.num span{color:#EFE7FF;font-family:var(--text);text-transform:none;letter-spacing:0;font-size:16px}
+@media(prefers-reduced-motion:reduce){.hero h1 .line>span,.num strong{--wd-line-from:#efe7ff!important;--wd-line-to:#f5c3d8!important}}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./wd-revision.css">
@@ -237,29 +266,21 @@ body{isolation:isolate}
 
 <main id="topo">
   <section class="hero wrap" aria-labelledby="titulo">
-    <div class="hero-eyebrow mono"><span>Work Digital / Trabalhos</span><span>2023 — 2026</span></div>
-    <h1 id="titulo"><span class="line"><span>Trabalhos<sup id="count">(12)</sup></span></span></h1>
+    <h1 id="titulo"><span class="line"><span>Works<sup id="count">(12)</sup></span></span></h1>
     <div class="hero-sub"><p>Uma seleção de marcas, sites e campanhas que tiramos do papel, para negócios que querem ser lembrados e encontrados.</p></div>
   </section>
 
   <section class="wrap" id="trabalhos" aria-label="Projetos">
-    <div class="bar">
-      <div class="filters" id="filters" role="group" aria-label="Filtrar por categoria"></div>
-      <div class="views" role="group" aria-label="Modo de visualização">
-        <button class="chip" id="v-grid" aria-pressed="true">Grid</button>
-        <button class="chip" id="v-list" aria-pressed="false">Lista</button>
-      </div>
-    </div>
     <div class="grid" id="grid"></div>
     <div class="list" id="list" hidden></div>
   </section>
 
   <section class="clients" id="clientes" aria-labelledby="cl-t">
-    <div class="wrap section-head mono"><span id="cl-t">Marcas que confiam na gente</span><span>Exemplos</span></div>
+    <div class="wrap section-head mono"><span id="cl-t">Marcas que confiam na gente</span></div>
     <div class="marquee"><div class="marquee-track" id="marquee"></div></div>
     <div class="wrap numbers">
       <div class="num"><strong><em>+</em>120</strong><span class="mono">Projetos entregues</span></div>
-      <div class="num"><strong>8<em>a</em></strong><span class="mono">De estrada</span></div>
+      <div class="num"><strong>6 anos</strong><span class="mono">De estrada</span></div>
       <div class="num"><strong><em>+</em>40</strong><span class="mono">Marcas atendidas</span></div>
     </div>
   </section>
@@ -272,18 +293,18 @@ body{isolation:isolate}
 
 <script>
 const projects = [
-  { slug: "vice-versa", client: "Vice Versa Estamparia", title: "Rebranding e site para uma estamparia de 40 anos", services: ["Branding", "Website"], year: 2026, size: "large", art: "type", pal: ["#0091FE", "#141414", "#F7F4EC"] },
-  { slug: "mare-alta", client: "Maré Alta Surf Co.", title: "Identidade e campanha de verão", services: ["Branding", "Conteúdo"], year: 2025, size: "medium", art: "waves", pal: ["#0E5E6F", "#F2C14E", "#F7F1E3"] },
-  { slug: "lumen", client: "Clínica Lumen", title: "Site com agendamento online", services: ["Website", "Performance"], year: 2025, size: "medium", art: "rings", pal: ["#E9E4F5", "#6B4EFF", "#1C1830"], offset: true },
-  { slug: "serra-fria", client: "Cervejaria Serra Fria", title: "Rótulos e motion de lançamento", services: ["Branding", "Motion/3D"], year: 2025, size: "small", art: "bars", pal: ["#1F2A24", "#E8A13A", "#C4D6C0"] },
-  { slug: "pago", client: "Pagô", title: "Site 3D para fintech", services: ["Website", "Motion/3D"], year: 2025, size: "small", art: "blob", pal: ["#101018", "#3D5AFE", "#00E0B8"] },
-  { slug: "arena-nordeste", client: "Arena Nordeste", title: "Conteúdo e mídia para temporada", services: ["Conteúdo", "Performance"], year: 2024, size: "small", art: "dots", pal: ["#D7263D", "#1B1B1E", "#F4F4F2"] },
-  { slug: "orla", client: "Orla Arquitetura", title: "Portfolio imersivo com navegação em 3D", services: ["Website", "Motion/3D"], year: 2024, size: "large", art: "grid", pal: ["#E7E2D8", "#2B2B2B", "#B5523B"] },
-  { slug: "tropeiro", client: "Café Tropeiro", title: "Marca, embalagem e social", services: ["Branding", "Conteúdo"], year: 2024, size: "medium", art: "rings", pal: ["#5A3825", "#F0D9B5", "#2E1D12"] },
-  { slug: "volt", client: "Volt Mobilidade", title: "Landing pages e mídia paga", services: ["Performance", "Website"], year: 2024, size: "medium", art: "bars", pal: ["#C6FF3D", "#0F1112", "#2A2F33"], offset: true },
-  { slug: "raizes", client: "Instituto Raízes", title: "Identidade para ONG educacional", services: ["Branding"], year: 2023, size: "small", art: "type", pal: ["#2F6B3A", "#F3EFE2", "#E07A2E"] },
-  { slug: "eixo", client: "Studio Eixo", title: "Calendário editorial e anúncios", services: ["Conteúdo", "Performance"], year: 2023, size: "small", art: "waves", pal: ["#F4D6CC", "#3A2E39", "#E85D75"] },
-  { slug: "mercado-vila", client: "Mercado Vila", title: "E-commerce e sistema de marca", services: ["Website", "Branding"], year: 2023, size: "small", art: "dots", pal: ["#FFB000", "#2D1E2F", "#F7EFE5"] }
+  { slug: "vice-versa", client: "Vice Versa Estamparia", title: "Rebranding e site para uma estamparia de 40 anos", services: ["Branding", "Website"], year: 2026, size: "large", art: "type", pal: ["#6025E1", "#121316", "#EFE7FF"] },
+  { slug: "mare-alta", client: "Maré Alta Surf Co.", title: "Identidade e campanha de verão", services: ["Branding", "Conteúdo"], year: 2025, size: "medium", art: "waves", pal: ["#24123E", "#04CD8F", "#EFE7FF"] },
+  { slug: "lumen", client: "Clínica Lumen", title: "Site com agendamento online", services: ["Website", "Performance"], year: 2025, size: "medium", art: "rings", pal: ["#EFE7FF", "#6025E1", "#24123E"], offset: true },
+  { slug: "serra-fria", client: "Cervejaria Serra Fria", title: "Rótulos e motion de lançamento", services: ["Branding", "Motion/3D"], year: 2025, size: "small", art: "bars", pal: ["#121316", "#C00252", "#CBB6FF"] },
+  { slug: "pago", client: "Pagô", title: "Site 3D para fintech", services: ["Website", "Motion/3D"], year: 2025, size: "small", art: "blob", pal: ["#121316", "#6025E1", "#04CD8F"] },
+  { slug: "arena-nordeste", client: "Arena Nordeste", title: "Conteúdo e mídia para temporada", services: ["Conteúdo", "Performance"], year: 2024, size: "small", art: "dots", pal: ["#C00252", "#121316", "#F7F6FB"] },
+  { slug: "orla", client: "Orla Arquitetura", title: "Portfolio imersivo com navegação em 3D", services: ["Website", "Motion/3D"], year: 2024, size: "large", art: "grid", pal: ["#EFE7FF", "#24123E", "#ED4897"] },
+  { slug: "tropeiro", client: "Café Tropeiro", title: "Marca, embalagem e social", services: ["Branding", "Conteúdo"], year: 2024, size: "medium", art: "rings", pal: ["#34165B", "#F5C3D8", "#121316"] },
+  { slug: "volt", client: "Volt Mobilidade", title: "Landing pages e mídia paga", services: ["Performance", "Website"], year: 2024, size: "medium", art: "bars", pal: ["#04CD8F", "#121316", "#24123E"], offset: true },
+  { slug: "raizes", client: "Instituto Raízes", title: "Identidade para ONG educacional", services: ["Branding"], year: 2023, size: "small", art: "type", pal: ["#24123E", "#EFE7FF", "#ED4897"] },
+  { slug: "eixo", client: "Studio Eixo", title: "Calendário editorial e anúncios", services: ["Conteúdo", "Performance"], year: 2023, size: "small", art: "waves", pal: ["#F5C3D8", "#34165B", "#6025E1"] },
+  { slug: "mercado-vila", client: "Mercado Vila", title: "E-commerce e sistema de marca", services: ["Website", "Branding"], year: 2023, size: "small", art: "dots", pal: ["#CBB6FF", "#24123E", "#04CD8F"] }
 ];
 const cats = ["Todos", "Branding", "Website", "Motion/3D", "Conteúdo", "Performance"];
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -297,7 +318,7 @@ function draw(ctx, w, h, t, p) {
   const m = Math.min(w, h);
   if (p.art === "type") {
     const word = p.client.split(" ")[0].toUpperCase();
-    ctx.font = `800 ${h * 0.62}px "Inter Tight", Arial, sans-serif`;
+    ctx.font = `800 ${h * 0.62}px "Space Grotesk", Arial, sans-serif`;
     ctx.textBaseline = "middle";
     const tw = ctx.measureText(word).width; const x0 = -((t * 40) % (tw + w * 0.2));
     for (let k = 0; k < 3; k++) { ctx.fillStyle = k === 1 ? c : b; ctx.fillText(word, x0 + k * (tw + w * 0.2), h * 0.5 + (k === 1 ? 0 : 0)); }
@@ -345,52 +366,25 @@ function mountCanvas(canvas, p) {
 }
 
 /* ---------- Render ---------- */
-const grid = document.getElementById("grid"), list = document.getElementById("list"), filters = document.getElementById("filters");
-cats.forEach((c, i) => {
-  const n = c === "Todos" ? projects.length : projects.filter(p => p.services.includes(c)).length;
-  const b = document.createElement("button"); b.className = "chip"; b.dataset.cat = c; b.setAttribute("aria-pressed", i === 0);
-  b.innerHTML = `${c}<sup>${n}</sup>`; filters.appendChild(b);
-});
+const grid = document.getElementById("grid"), list = document.getElementById("list");
 const svc = p => p.services.map(s => `<span>${s}</span>`).join("");
 projects.forEach(p => {
   const a = document.createElement("a");
   a.className = `card ${p.size}${p.offset ? " offset" : ""}`; a.href = "https://claude.ai/artifact/3Fh9si9SLB3sa15y3GoaKC"; a.target = "_top"; a.dataset.cursor = "1";
   a.innerHTML = `<div class="media"><canvas></canvas><span class="tag mono">Preview</span></div>
-    <div class="meta"><h2>${p.client}</h2><span class="yr mono">${p.year}</span></div>
+    <div class="meta"><h2>${p.client}</h2></div>
     <p class="desc">${p.title}</p><div class="svc mono">${svc(p)}</div>`;
-  a.setAttribute("aria-label", `${p.client}: ${p.title}, ${p.services.join(", ")}, ${p.year}`);
+  a.setAttribute("aria-label", `${p.client}: ${p.title}, ${p.services.join(", ")}`);
   grid.appendChild(a);
   const ctl = mountCanvas(a.querySelector("canvas"), p);
   a.addEventListener("mouseenter", ctl.play); a.addEventListener("mouseleave", ctl.stop);
   a.addEventListener("focus", ctl.play); a.addEventListener("blur", ctl.stop);
   p.card = a;
-  const r = document.createElement("a"); r.className = "row"; r.href = "#case-" + p.slug;
-  r.innerHTML = `<span class="name">${p.client}</span><span class="svc mono">${svc(p)}</span><span class="yr mono">${p.year}</span><span class="arrow" aria-hidden="true">→</span>`;
+  const r = document.createElement("a"); r.className = "row"; r.href = "https://claude.ai/artifact/3Fh9si9SLB3sa15y3GoaKC"; r.target = "_top";
+  r.innerHTML = `<span class="name">${p.client}</span><span class="svc mono">${svc(p)}</span><span class="arrow" aria-hidden="true">→</span>`;
   r.dataset.slug = p.slug; list.appendChild(r); p.row = r;
 });
-document.getElementById("marquee").innerHTML = [...projects, ...projects].map(p => `<span>${p.client}</span>`).join("");
-
-/* ---------- Filters ---------- */
-let current = "Todos";
-filters.addEventListener("click", e => {
-  const b = e.target.closest(".chip"); if (!b || b.dataset.cat === current) return;
-  current = b.dataset.cat;
-  filters.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", x === b));
-  const show = p => current === "Todos" || p.services.includes(current);
-  projects.forEach(p => p.card.classList.add("out"));
-  setTimeout(() => {
-    grid.classList.toggle("filtered", current !== "Todos");
-    projects.forEach(p => { p.card.hidden = !show(p); p.row.hidden = !show(p); });
-    requestAnimationFrame(() => projects.forEach((p, i) => setTimeout(() => p.card.classList.remove("out"), reduce ? 0 : i * 40)));
-  }, reduce ? 0 : 280);
-  document.getElementById("count").textContent = `(${projects.filter(show).length})`;
-});
-
-/* ---------- Grid / list ---------- */
-const vg = document.getElementById("v-grid"), vl = document.getElementById("v-list");
-function setView(v) { grid.hidden = v !== "grid"; list.hidden = v !== "list"; vg.setAttribute("aria-pressed", v === "grid"); vl.setAttribute("aria-pressed", v === "list"); try { localStorage.setItem("wd-view", v); } catch (e) {} }
-vg.onclick = () => setView("grid"); vl.onclick = () => setView("list");
-try { if (localStorage.getItem("wd-view") === "list") setView("list"); } catch (e) {}
+document.getElementById("marquee").innerHTML = '<span class="marquee-logo"><img src="./img/cliente-bacio-di-latte.png" alt="Bacio di Latte" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-dasa.png" alt="Dasa" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-confedera-o-brasileira-de-paraquedismo.png" alt="Confederação Brasileira de Paraquedismo" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-fiamm-latin-america.png" alt="Fiamm Latin America" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-linea-alimentos.png" alt="Linea Alimentos" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-bacio-di-latte.png" alt="Bacio di Latte" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-dasa.png" alt="Dasa" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-confedera-o-brasileira-de-paraquedismo.png" alt="Confederação Brasileira de Paraquedismo" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-fiamm-latin-america.png" alt="Fiamm Latin America" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-linea-alimentos.png" alt="Linea Alimentos" loading="lazy" decoding="async"></span>' + '<span class="marquee-logo"><img src="./img/cliente-bacio-di-latte.png" aria-hidden="true" alt="Bacio di Latte" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-dasa.png" aria-hidden="true" alt="Dasa" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-confedera-o-brasileira-de-paraquedismo.png" aria-hidden="true" alt="Confederação Brasileira de Paraquedismo" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-fiamm-latin-america.png" aria-hidden="true" alt="Fiamm Latin America" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-linea-alimentos.png" aria-hidden="true" alt="Linea Alimentos" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-bacio-di-latte.png" aria-hidden="true" alt="Bacio di Latte" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-dasa.png" aria-hidden="true" alt="Dasa" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-confedera-o-brasileira-de-paraquedismo.png" aria-hidden="true" alt="Confederação Brasileira de Paraquedismo" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-fiamm-latin-america.png" aria-hidden="true" alt="Fiamm Latin America" loading="lazy" decoding="async"></span><span class="marquee-logo"><img src="./img/cliente-linea-alimentos.png" aria-hidden="true" alt="Linea Alimentos" loading="lazy" decoding="async"></span>';
 
 /* ---------- Floating preview in list ---------- */
 const floater = document.getElementById("floater"); const fctl = mountCanvas(floater.querySelector("canvas"), projects[0]);
@@ -414,6 +408,22 @@ if (fine && !reduce) {
 }
 
 
+
+
+/* ---------- Gradiente das frases grandes (mesmo efeito da home) ---------- */
+(function(){
+  const mix=(a,b,p)=>`rgb(${a.map((v,i)=>Math.round(v+(b[i]-v)*p)).join(',')})`;
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  const paint=(el,p)=>{el.style.setProperty('--wd-line-from',mix([96,37,225],[239,231,255],p));el.style.setProperty('--wd-line-to',mix([203,182,255],[245,195,216],p));};
+  const title=document.querySelector('.hero h1 .line>span'), nums=[...document.querySelectorAll('.num strong')];
+  if(reduce){paint(title,1);nums.forEach(n=>paint(n,1));return;}
+  const t0=performance.now()+350;
+  (function intro(now){const p=clamp((now-t0)/1600);paint(title,p*p*(3-2*p));if(p<1)requestAnimationFrame(intro);})(t0);
+  let queued=false;
+  function update(){queued=false;nums.forEach((n,i)=>{const r=n.getBoundingClientRect();paint(n,clamp((innerHeight*.85-r.top)/Math.max(1,innerHeight*.35)*1.3-i*.3));});}
+  addEventListener('scroll',()=>{if(!queued){queued=true;requestAnimationFrame(update);}},{passive:true});
+  update();
+})();
 
 /* Redraw once fonts arrive so the type-based thumbnails use the display face */
 document.fonts && document.fonts.ready.then(() => projects.forEach(p => p.card.querySelector("canvas").dispatchEvent(new Event("redraw"))));

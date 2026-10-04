@@ -202,6 +202,20 @@ wd-footer{position:relative;z-index:1}
 .site-header.wd-contact-header-open{opacity:1;visibility:visible}
 .hd{transition:opacity .3s}
 body:has(.site-header.wd-contact-header-open) .hd{opacity:0;pointer-events:none}
+.hd .nav-cta{display:inline-flex!important}
+.wd-work-cta{display:inline-flex;align-items:center;justify-content:center;gap:16px;width:max-content;max-width:100%;min-height:54px;padding:14px 20px;border:0;text-decoration:none;color:#fff;font-size:14px;line-height:1;white-space:nowrap;text-transform:uppercase;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0%;transition:background-position .6s ease,color .2s ease}
+.wd-work-cta:hover,.wd-work-cta:focus-visible{background-position:0% 0%;color:#24123e}
+.wd-work-cta svg{width:14px;height:14px;flex:0 0 14px}
+.hd .logo img{display:block;width:142px;height:auto}
+@media(max-width:900px){.intro .cta{margin-bottom:36px}}
+@media(max-width:600px){.hd .logo img{width:120px}}
+/* Voltar: vidro escuro com borda (estilo do menu), para não competir com o "Solicitar proposta" */
+.hd .pill.light.back{background:rgba(18,19,22,.58);color:#F7F6FB;border:1px solid rgba(189,164,255,.28);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%)}
+.hd .pill.light.back:hover{background:rgba(96,37,225,.42);border-color:rgba(189,164,255,.5)}
+html.wd-lite .hd .pill.light.back{background:rgba(18,19,22,.93)}
+@media(max-width:600px){.hd .nav-cta{height:42px;padding:0 14px;font-size:11px;letter-spacing:.06em}}
+/* galeria: as imagens ficam entre o cabeçalho e o fim da tela (antes encostavam nos botões em telas baixas) */
+@media (min-width:901px){.track{padding-top:96px;padding-bottom:28px}.intro{padding-top:0}.m.full{align-self:flex-start;height:100vh;height:100svh;margin-top:-96px}}
 
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
@@ -214,12 +228,10 @@ button:where(:not(.wd-cta)){font-family:inherit;font-weight:inherit;letter-spaci
 
 
 <header class="hd">
-  <a class="logo" href="https://claude.ai/artifact/K3DaWGpPSDzZs2TZpjwHjw" aria-label="Work Digital, início" target="_top">Work Digital</a>
+  <a class="logo" href="https://claude.ai/artifact/K3DaWGpPSDzZs2TZpjwHjw" aria-label="Work Digital, início" target="_top"><img src="./ativos-externos/logo-work-digital-branco-criacao-de-site-sp.svg" alt="Work Digital"></a>
   <a class="pill light back" href="https://claude.ai/artifact/JRyLZxgMsFFUnvkSMXaiZ1" target="_top">← Voltar</a>
   <div class="right">
-    <button class="circle" aria-label="Som"><i></i></button>
-    <a class="pill dark" href="https://workdigital.art.br/contato/">Vamos conversar <span class="dot"></span></a>
-    <button class="pill light" aria-label="Abrir menu">Menu <span class="dot"></span><span class="dot" style="margin-left:-6px"></span></button>
+    <button class="nav-cta wd-cta" data-wd-contact type="button">SOLICITAR PROPOSTA <span>↗</span></button>
   </div>
 </header>
 
@@ -257,14 +269,11 @@ button:where(:not(.wd-cta)){font-family:inherit;font-weight:inherit;letter-spaci
           <div>
             <p>A Vice Versa estampa uniformes desde 1985 e precisava de um site à altura do que entrega: claro para quem compra no atacado e fácil de atualizar pela própria equipe.</p>
             <p>Separamos as linhas <a href="#top">universitária</a>, <a href="#top">profissional</a> e <a href="#top">escolar</a>, criamos um pedido de orçamento por categoria e um painel simples para a equipe trocar fotos e preços sem depender de ninguém.</p>
-            <a class="pill light cta" href="#top"><span class="dot"></span> Ver projeto no ar</a>
-            <div class="note">Prévia · textos e imagens de exemplo</div>
+            <a class="wd-work-cta wd-cta cta" href="#top"><span>VER PROJETO NO AR</span><svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M12.0641 1.14239L.499 12.7061M1.9673.7061h9.5726c.53 0 .9591.4291.9591.9605v9.5712" stroke="currentColor" stroke-width="1.41181"/></svg></a>
           </div>
           <div>
             <h2>Serviços</h2>
             <ul><li>Estratégia</li><li>UX e UI design</li><li>Desenvolvimento web</li><li>Conteúdo</li><li>SEO</li></ul>
-            <h2>Links</h2>
-            <ul><li><a href="#top">Site no ar</a></li><li><a href="#top">Instagram</a></li></ul>
           </div>
         </div>
 
