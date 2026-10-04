@@ -183,9 +183,10 @@ def _svg_cursor(svg):
     from urllib.parse import quote
     return 'url("data:image/svg+xml,' + quote(svg) + '")'
 DOT_DARK = _svg_cursor('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><circle cx="8" cy="8" r="5.5" fill="#F2EEF8" stroke="#121316" stroke-opacity=".45"/></svg>')
-RING_DARK = _svg_cursor('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><circle cx="20" cy="20" r="18.5" fill="#F2EEF8" fill-opacity=".16" stroke="#F2EEF8" stroke-width="1.5"/><circle cx="20" cy="20" r="2.5" fill="#F2EEF8"/></svg>')
+# anel sobre links: gradiente da Work (roxo #6025E1 -> vinho #C00252), o mesmo do círculo "Ver case"
+RING_DARK = _svg_cursor('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6025E1"/><stop offset="1" stop-color="#C00252"/></linearGradient></defs><circle cx="20" cy="20" r="19.3" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1"/><circle cx="20" cy="20" r="17.8" fill="url(#g)" fill-opacity=".45" stroke="url(#g)" stroke-width="2"/><circle cx="20" cy="20" r="3" fill="#F7F6FB"/></svg>')
 DOT_LIGHT = _svg_cursor('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><circle cx="8" cy="8" r="5.5" fill="#17131F" stroke="#fff" stroke-opacity=".7"/></svg>')
-RING_LIGHT = _svg_cursor('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><circle cx="20" cy="20" r="18.5" fill="#6025E1" fill-opacity=".10" stroke="#17131F" stroke-width="1.5"/><circle cx="20" cy="20" r="2.5" fill="#17131F"/></svg>')
+RING_LIGHT = _svg_cursor('<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6025E1"/><stop offset="1" stop-color="#C00252"/></linearGradient></defs><circle cx="20" cy="20" r="18.5" fill="url(#g)" fill-opacity=".28" stroke="url(#g)" stroke-width="2"/><circle cx="20" cy="20" r="3" fill="url(#g)"/></svg>')
 def cursor_css(light):
     dot, ring = (DOT_LIGHT, RING_LIGHT) if light else (DOT_DARK, RING_DARK)
     return ('<style>/* Cursor desenhado pelo sistema (sem atraso). O círculo com texto continua só sobre os cards. */\n'
@@ -195,6 +196,7 @@ def cursor_css(light):
             'html body input,html body textarea{cursor:text!important}'
             'html.wd-big,html.wd-big body,html.wd-big body *{cursor:none!important}}'
             '.wd-cursor:not(.big),.cursor:not(.big){opacity:0!important}'
+            '.wd-cursor.big,.cursor.big{background:linear-gradient(135deg,#6025E1,#C00252)!important;color:#fff!important}'
             '</style>\n')
 
 
