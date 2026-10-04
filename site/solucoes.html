@@ -248,15 +248,9 @@ button:where(:not(.wd-cta)){font-family:inherit;font-weight:inherit;letter-spaci
 <div class="wd-cursor" id="wdCursor" aria-hidden="true" hidden><b></b></div>
 <script>
 const SERVICES = [
-  { id:'sites', name:'Criação de Sites', teaser:'Sites profissionais, rápidos e fáceis de atualizar.', blocks:[
-    ['Sites sob medida para o seu negócio','Sites profissionais, personalizados, otimizados e de fácil gerenciamento, tornando o seu negócio visível para milhares de clientes e valorizando sua marca.'],
-    ['Pensados para aparecer no Google','Estrutura, velocidade e conteúdo preparados para buscas desde o primeiro dia, para que o cliente encontre você antes do concorrente.'] ]},
-  { id:'blogs', name:'Criação de Blogs', teaser:'Conteúdo que constrói audiência e autoridade.', blocks:[
-    ['Marketing de conteúdo de verdade','Criação de blogs profissionais para sua marca acessar todo o poder do marketing de conteúdo. Construa sua audiência na web e seja autoridade em sua área de atuação.'],
-    ['Fácil de publicar, fácil de ler','Um painel simples para a sua equipe publicar artigos, com leitura confortável no celular e páginas que convidam o leitor a seguir para o seu site.'] ]},
-  { id:'landing', name:'Landing Pages', teaser:'Páginas que convertem visitantes em clientes.', blocks:[
-    ['Conquiste no primeiro clique','Atrair não é o suficiente. É preciso conquistar seu visitante no momento em que ele chega à sua página de vendas. Criamos landing pages que convertem e alavancam seus resultados.'],
-    ['Prontas para campanhas','Integração com formulários, WhatsApp e ferramentas de anúncios, para medir cada contato e investir onde dá resultado.'] ]},
+  { id:'sites', name:'Criação de Sites', teaser:'Sites profissionais, rápidos e fáceis de atualizar.', blocks:[["Criamos sites de alta performance", "Você já sabe que precisa estar na internet. Na web é possível atrair, converter, fidelizar e fortalecer a sua marca. Para isso, ter um bom site é fundamental."], ["", "Nós criamos sites de alta performance, mas você sabe o que isso quer dizer? Quer dizer que utilizamos as melhores ferramentas e práticas para que o seu investimento nos meios digitais traga resultados efetivos ao seu negócio."], ["", "Desenvolvemos seu site para que ele seja um aliado estratégico de seus objetivos, aproveitando todo o potencial da internet."]]},
+  { id:'blogs', name:'Criação de Blogs', teaser:'Conteúdo que constrói audiência e autoridade.', blocks:[["Criação de blogs e portais de conteúdo", "O blog é uma ferramenta poderosa para consolidar sua presença online, atrair visitantes, criar autoridade e desenvolver relacionamentos. Nele você pode compartilhar conteúdos relevantes à sua audiência, gerando valor e transformação antes mesmo de vender seus produtos ou serviços!"], ["", "Na nova era digital, ser capaz de contar histórias e dividir informações e conhecimentos é essencial para dar alma à sua marca. O blog é ideal para isso. Se ele não faz parte de sua estratégia de marketing digital, é hora de repensar. Realizamos a criação de blogs utilizando práticas e ferramentas que permitem explorar todo o potencial dessa solução."]]},
+  { id:'landing', name:'Landing Pages', teaser:'Páginas que convertem visitantes em clientes.', blocks:[["Criação de landing pages que VENDEM!", "Então você fez um anúncio online. Investiu tempo e dinheiro para que sua campanha fosse um sucesso. Logo começou a notar que o número de visitantes aumentou, e muito!"], ["", "Mas, mesmo aumentando o número de visitas, seus resultados permaneceram iguais. Onde está o problema? As chances de que seja em sua landing page são grandes. Landing pages são páginas criadas com um único objetivo: converter os visitantes em clientes ou leads. Ou seja, trazer resultados para o seu negócio."], ["", "Na Work Digital, a criação de landing pages une as melhores práticas de user experience e marketing digital para atingir seus objetivos."]]},
   { id:'lojas', name:'Lojas Virtuais', teaser:'E-commerce de alta performance, focado em vender.', blocks:[
     ['Venda todos os dias, a qualquer hora','Lojas virtuais rápidas e seguras, com catálogo organizado, pagamento facilitado e uma jornada de compra pensada para o cliente chegar até o fim.'],
     ['Gestão sem complicação','Controle de produtos, estoque e pedidos em um só lugar, com relatórios para entender o que vende mais.'] ]}
@@ -270,7 +264,7 @@ SERVICES.forEach(s=>{
   const el=document.createElement('article'); el.className='svc'; el.dataset.id=s.id;
   el.innerHTML=`<canvas class="dots" aria-hidden="true"></canvas><div class="head"><div class="titles"><span class="big">${s.name}</span><span class="teaser">${s.teaser}</span><span class="small">${s.name}</span></div>
     <button class="icon" aria-label="Abrir ${s.name}"><span aria-hidden="true">+</span></button></div>
-    <div class="content">${s.blocks.map(([h,p])=>`<h3>${h}</h3><p>${p}</p>`).join('')}<a class="see" href="https://claude.ai/artifact/JRyLZxgMsFFUnvkSMXaiZ1" target="_top">Ver nossos works <span aria-hidden="true">→</span></a></div>`;
+    <div class="content">${s.blocks.map(([h,p])=>(h?`<h3>${h}</h3>`:'')+`<p>${p}</p>`).join('')}<a class="see" href="https://claude.ai/artifact/JRyLZxgMsFFUnvkSMXaiZ1" target="_top">Ver nossos works <span aria-hidden="true">→</span></a></div>`;
   el.addEventListener('click',e=>{
     if(el.classList.contains('is-open')){ if(e.target.closest('.icon')) openService(order[1]); return; }
     openService(s.id);

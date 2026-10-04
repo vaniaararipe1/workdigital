@@ -67,6 +67,8 @@ def sub1(t, a, b):
 
 # ---------- Soluções ----------
 t = open('solucoes-work-digital.html').read()
+import sol_content
+t = sol_content.apply(t)
 t = sub1(t, 'body{background:var(--bg);', 'html{background:#121316}body{background:transparent;')
 # palavras abaixo do menu (o menu da home é mais alto que o antigo)
 for a, b in [('top:calc(12vh + 5.5vw)', 'top:calc(12vh + 64px + 5.5vw)'), ('.words .w1{position:absolute;left:3.5vw;top:12vh;', '.words .w1{position:absolute;left:3.5vw;top:calc(12vh + 64px);'),
