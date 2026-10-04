@@ -208,3 +208,10 @@ body .payoff{padding-bottom:40px}
 
 /* Quadradinhos das setas com cantos mais arredondados. */
 #wd-explore .wd-explore-arrow,#wd-blog .wd-blog-arrow{border-radius:16px!important}
+
+/* Soluções empilhado (até 1199px): imagem centralizada com no máximo 520px de largura */
+@media(max-width:1199px){
+#wd-explore .wd-explore-photo .wd-explore-media{left:50%!important;right:auto!important;width:min(calc(100% - 40px),520px)!important;transform:translateX(-50%)}
+#wd-explore .wd-explore-photo .wd-explore-media.is-visible{left:auto!important;transform:none;margin:0 auto}
+#wd-explore .wd-explore-photo{height:auto!important;aspect-ratio:auto!important}
+}

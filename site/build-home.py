@@ -59,6 +59,22 @@ for a,b in [('function resize(){const r=art.getBoundingClientRect();width=r.widt
     t=t.replace(a,b)
 t=link_pages(t)
 open(OUT+'/home.html','w').write(t)
+# Soluções da home (telas entre 980 e 1199px): imagem com no máximo 520px e sem medidas antigas da versão larga
+js=open(H+'/wd-revision.js').read()
+a="function resize(){if(stacked.matches)return;"
+assert a in js
+js=js.replace(a,"function resize(){if(stacked.matches){['--wd-panel-height','--wd-media-height','--wd-media-width'].forEach(p=>body.style.removeProperty(p));return;}")
+open(OUT+'/wd-revision.js','w').write(js)
+css=open(H+'/wd-revision.css').read()
+css+='''
+/* Soluções empilhado (até 1199px): imagem centralizada com no máximo 520px de largura */
+@media(max-width:1199px){
+#wd-explore .wd-explore-photo .wd-explore-media{left:50%!important;right:auto!important;width:min(calc(100% - 40px),520px)!important;transform:translateX(-50%)}
+#wd-explore .wd-explore-photo .wd-explore-media.is-visible{left:auto!important;transform:none;margin:0 auto}
+#wd-explore .wd-explore-photo{height:auto!important;aspect-ratio:auto!important}
+}
+'''
+open(OUT+'/wd-revision.css','w').write(css)
 os.makedirs(OUT+'/media',exist_ok=True)
 for f in os.listdir(H+'/media'): shutil.copy(H+'/media/'+f, OUT+'/media/'+f)
 for f in os.listdir(H+'/ativos-externos'): shutil.copy(H+'/ativos-externos/'+f, OUT+'/ativos-externos/'+f)
