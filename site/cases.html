@@ -68,7 +68,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .card.medium .media { aspect-ratio: 4 / 3; }
 .grid.filtered .media { aspect-ratio: 4 / 3; }
 .media canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; transition: transform 1.1s var(--ease); }
-.card:hover .media canvas, .card:focus-visible .media canvas { transform: scale(1.045); }
+.card:hover .media .vm, .card:focus-visible .media .vm { transform: scale(1.045); }
 .media .tag { position: absolute; left: 14px; top: 14px; background: rgba(11, 11, 12, 0.6); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); padding: 6px 10px; border-radius: 999px; font-size: 10px; display: flex; align-items: center; gap: 6px; opacity: 0; transition: opacity 0.3s; }
 .media .tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #ff4d4d; }
 .card:hover .media .tag { opacity: 1; }
@@ -262,6 +262,13 @@ body{font-family:var(--text)}
 .num strong em{color:inherit;-webkit-text-fill-color:inherit}
 .num span{color:#EFE7FF;font-family:var(--text);text-transform:none;letter-spacing:0;font-size:16px}
 @media(prefers-reduced-motion:reduce){.hero h1 .line>span,.num strong{--wd-line-from:#efe7ff!important;--wd-line-to:#f5c3d8!important}}
+
+/* Thumbs: pôster + vídeo no hover (o vídeo aparece por cima com fade quando começa a tocar) */
+.vm{position:absolute;inset:0;overflow:hidden;transition:transform 1.1s cubic-bezier(.22,1,.36,1)}
+.vm img,.vm video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+.vm video{opacity:0;transition:opacity .2s ease}
+.vm.vm-on video{opacity:1}
+.floater .vm{position:absolute}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./wd-revision.css">
@@ -297,7 +304,7 @@ body{font-family:var(--text)}
 <main id="topo">
   <section class="hero wrap" aria-labelledby="titulo">
     <div class="cfx" aria-hidden="true"><div class="orb" id="corbRef"></div><canvas class="fluid" id="cfluid"></canvas></div>
-    <h1 id="titulo"><span class="line"><span>Works<sup id="count">(12)</sup></span></span></h1>
+    <h1 id="titulo"><span class="line"><span>Works<sup id="count">(16)</sup></span></span></h1>
     <div class="hero-sub"><p>Uma seleção de marcas, sites e campanhas que tiramos do papel, para negócios que querem ser lembrados e encontrados.</p></div>
   </section>
 
@@ -326,79 +333,36 @@ body{font-family:var(--text)}
 
 
 <div class="cursor" id="cursor" aria-hidden="true" hidden><b>Ver case</b></div>
-<div class="floater" id="floater" aria-hidden="true"><canvas></canvas></div>
+<div class="floater" id="floater" aria-hidden="true"><div class="vm"></div></div>
 
 <script>
-const projects = [
-  { slug: "vice-versa", client: "Vice Versa Estamparia", title: "Rebranding e site para uma estamparia de 40 anos", services: ["Branding", "Website"], year: 2026, size: "large", art: "type", pal: ["#6025E1", "#121316", "#EFE7FF"] },
-  { slug: "mare-alta", client: "Maré Alta Surf Co.", title: "Identidade e campanha de verão", services: ["Branding", "Conteúdo"], year: 2025, size: "medium", art: "waves", pal: ["#24123E", "#04CD8F", "#EFE7FF"] },
-  { slug: "lumen", client: "Clínica Lumen", title: "Site com agendamento online", services: ["Website", "Performance"], year: 2025, size: "medium", art: "rings", pal: ["#EFE7FF", "#6025E1", "#24123E"], offset: true },
-  { slug: "serra-fria", client: "Cervejaria Serra Fria", title: "Rótulos e motion de lançamento", services: ["Branding", "Motion/3D"], year: 2025, size: "small", art: "bars", pal: ["#121316", "#C00252", "#CBB6FF"] },
-  { slug: "pago", client: "Pagô", title: "Site 3D para fintech", services: ["Website", "Motion/3D"], year: 2025, size: "small", art: "blob", pal: ["#121316", "#6025E1", "#04CD8F"] },
-  { slug: "arena-nordeste", client: "Arena Nordeste", title: "Conteúdo e mídia para temporada", services: ["Conteúdo", "Performance"], year: 2024, size: "small", art: "dots", pal: ["#C00252", "#121316", "#F7F6FB"] },
-  { slug: "orla", client: "Orla Arquitetura", title: "Portfolio imersivo com navegação em 3D", services: ["Website", "Motion/3D"], year: 2024, size: "large", art: "grid", pal: ["#EFE7FF", "#24123E", "#ED4897"] },
-  { slug: "tropeiro", client: "Café Tropeiro", title: "Marca, embalagem e social", services: ["Branding", "Conteúdo"], year: 2024, size: "medium", art: "rings", pal: ["#34165B", "#F5C3D8", "#121316"] },
-  { slug: "volt", client: "Volt Mobilidade", title: "Landing pages e mídia paga", services: ["Performance", "Website"], year: 2024, size: "medium", art: "bars", pal: ["#04CD8F", "#121316", "#24123E"], offset: true },
-  { slug: "raizes", client: "Instituto Raízes", title: "Identidade para ONG educacional", services: ["Branding"], year: 2023, size: "small", art: "type", pal: ["#24123E", "#EFE7FF", "#ED4897"] },
-  { slug: "eixo", client: "Studio Eixo", title: "Calendário editorial e anúncios", services: ["Conteúdo", "Performance"], year: 2023, size: "small", art: "waves", pal: ["#F5C3D8", "#34165B", "#6025E1"] },
-  { slug: "mercado-vila", client: "Mercado Vila", title: "E-commerce e sistema de marca", services: ["Website", "Branding"], year: 2023, size: "small", art: "dots", pal: ["#CBB6FF", "#24123E", "#04CD8F"] }
-];
+const projects = [{"slug": "bacio-di-latte", "client": "Bacio di Latte", "title": "Site com a doçura e a sofisticação da gelateria italiana.", "services": ["UI/UX Design", "Desenvolvimento de site", "Conteúdo visual"], "size": "large", "offset": false, "w": 2400, "h": 1125, "link": "https://baciodilatte.com.br"}, {"slug": "linea-alimentos", "client": "Linea Alimentos", "title": "Site e loja virtual para a marca de alimentos zero açúcar.", "services": ["UI/UX Design", "E-commerce", "Desenvolvimento de site"], "size": "medium", "offset": false, "w": 1600, "h": 1200, "link": "https://lineaalimentos.com.br"}, {"slug": "cbpq", "client": "CBPq", "title": "Portal da Confederação Brasileira de Paraquedismo, com área do atleta e transparência.", "services": ["UI/UX Design", "Portal institucional", "Área do atleta"], "size": "medium", "offset": true, "w": 1600, "h": 1200, "link": "https://cbpq.org.br"}, {"slug": "stw-brasil", "client": "STW Brasil", "title": "Site para empresa de segurança da informação e perícia digital.", "services": ["UI/UX Design", "Desenvolvimento de site", "SEO"], "size": "small", "offset": false, "w": 1200, "h": 1500, "link": ""}, {"slug": "agencia-jaya", "client": "Agência Jaya", "title": "Site institucional para agência de marketing e comunicação.", "services": ["UI/UX Design", "Desenvolvimento de site"], "size": "small", "offset": false, "w": 1200, "h": 1500, "link": ""}, {"slug": "genera", "client": "Genera", "title": "Experiência interativa para explorar culturas e lendas pelo mundo.", "services": ["UI/UX Design", "Desenvolvimento de site", "Experiência interativa"], "size": "small", "offset": false, "w": 1200, "h": 1500, "link": ""}, {"slug": "instituto-ricco-porto", "client": "Instituto Ricco Porto", "title": "Site para instituto de formação em estética e terapias corporais.", "services": ["UI/UX Design", "Desenvolvimento de site", "SEO"], "size": "large", "offset": false, "w": 2400, "h": 1125, "link": ""}, {"slug": "instituto-long-tao", "client": "Instituto Long Tao", "title": "Site com cursos, EAD e terapias da medicina tradicional chinesa.", "services": ["UI/UX Design", "Desenvolvimento de site", "Plataforma EAD"], "size": "medium", "offset": false, "w": 1600, "h": 1200, "link": ""}, {"slug": "ideale-treinamentos", "client": "Ideale Treinamentos", "title": "Site para empresa de treinamentos e desenvolvimento humano.", "services": ["UI/UX Design", "Desenvolvimento de site"], "size": "medium", "offset": true, "w": 1600, "h": 1200, "link": ""}, {"slug": "droneng", "client": "Droneng", "title": "Site para empresa de engenharia e topografia com drones.", "services": ["UI/UX Design", "Desenvolvimento de site"], "size": "small", "offset": false, "w": 1200, "h": 1500, "link": ""}, {"slug": "loren-andrade", "client": "Loren Andrade", "title": "Site para médica especialista em geriatria.", "services": ["UI/UX Design", "Desenvolvimento de site", "SEO"], "size": "small", "offset": false, "w": 1200, "h": 1500, "link": ""}, {"slug": "ogg", "client": "OGG", "title": "Site e blog sobre gamificação educacional e corporativa.", "services": ["UI/UX Design", "Desenvolvimento de site", "Blog"], "size": "small", "offset": false, "w": 1200, "h": 1500, "link": ""}, {"slug": "oliva-pizzaria", "client": "Ôliva Pizzaria", "title": "Site para pizzaria artesanal romana e napoletana.", "services": ["UI/UX Design", "Desenvolvimento de site", "Cardápio digital"], "size": "large", "offset": false, "w": 2400, "h": 1125, "link": ""}, {"slug": "marka-contabilidade", "client": "Marka Contabilidade", "title": "Site para escritório de contabilidade que vai além dos números.", "services": ["UI/UX Design", "Desenvolvimento de site"], "size": "medium", "offset": false, "w": 1600, "h": 1200, "link": ""}, {"slug": "berti-promocional", "client": "Berti Promocional", "title": "Site para fabricante de embalagens e materiais promocionais.", "services": ["UI/UX Design", "Desenvolvimento de site", "Catálogo"], "size": "medium", "offset": true, "w": 1600, "h": 1200, "link": ""}, {"slug": "instituto-nossa-senhora-da-vitoria", "client": "Instituto Nossa Senhora da Vitória", "title": "Site para instituto de educação e gestão em saúde.", "services": ["UI/UX Design", "Desenvolvimento de site"], "size": "small", "offset": false, "w": 1200, "h": 1500, "link": ""}];
 const cats = ["Todos", "Branding", "Website", "Motion/3D", "Conteúdo", "Performance"];
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
 
-/* ---------- Generative thumbnails (stand-in for case images/video) ---------- */
-function rand(seed) { let s = 0; for (const c of seed) s = (s * 31 + c.charCodeAt(0)) >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
-function draw(ctx, w, h, t, p) {
-  const [a, b, c] = p.pal; const r = rand(p.slug);
-  ctx.fillStyle = a; ctx.fillRect(0, 0, w, h);
-  const m = Math.min(w, h);
-  if (p.art === "type") {
-    const word = p.client.split(" ")[0].toUpperCase();
-    ctx.font = `800 ${h * 0.62}px "Space Grotesk", Arial, sans-serif`;
-    ctx.textBaseline = "middle";
-    const tw = ctx.measureText(word).width; const x0 = -((t * 40) % (tw + w * 0.2));
-    for (let k = 0; k < 3; k++) { ctx.fillStyle = k === 1 ? c : b; ctx.fillText(word, x0 + k * (tw + w * 0.2), h * 0.5 + (k === 1 ? 0 : 0)); }
-    ctx.fillStyle = c; ctx.beginPath(); ctx.arc(w * 0.82, h * 0.22, m * 0.09 * (1 + 0.15 * Math.sin(t * 2)), 0, 7); ctx.fill();
-  } else if (p.art === "waves") {
-    ctx.lineWidth = Math.max(2, m * 0.012);
-    for (let i = 0; i < 18; i++) { ctx.strokeStyle = i % 3 === 0 ? b : c; ctx.beginPath();
-      for (let x = 0; x <= w; x += 8) { const y = h * (i / 17) + Math.sin(x / w * 6 + t * 1.4 + i * 0.5) * m * 0.05; x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); }
-    ctx.fillStyle = b; ctx.beginPath(); ctx.arc(w * 0.7, h * 0.4 + Math.sin(t) * 8, m * 0.2, 0, 7); ctx.fill();
-  } else if (p.art === "rings") {
-    const cx = w * (0.4 + r() * 0.2), cy = h * 0.5;
-    for (let i = 14; i > 0; i--) { ctx.fillStyle = i % 2 ? b : a; ctx.beginPath(); ctx.arc(cx + Math.sin(t + i * 0.3) * i * 1.6, cy, i * m * 0.055, 0, 7); ctx.fill(); }
-    ctx.fillStyle = c; ctx.fillRect(0, h * 0.86, w, h * 0.14);
-  } else if (p.art === "bars") {
-    const n = 14, bw = w / n;
-    for (let i = 0; i < n; i++) { const v = 0.25 + 0.6 * (0.5 + 0.5 * Math.sin(i * 0.7 + t * 1.8 + r() * 2)); ctx.fillStyle = i % 4 === 0 ? c : b; ctx.fillRect(i * bw + bw * 0.12, h * (1 - v), bw * 0.76, h * v); }
-  } else if (p.art === "blob") {
-    for (let i = 0; i < 4; i++) { const x = w * (0.3 + 0.4 * (0.5 + 0.5 * Math.sin(t * 0.7 + i * 1.7))), y = h * (0.3 + 0.4 * (0.5 + 0.5 * Math.cos(t * 0.9 + i * 2.1)));
-      const g = ctx.createRadialGradient(x, y, 0, x, y, m * 0.6); g.addColorStop(0, i % 2 ? b : c); g.addColorStop(1, "transparent"); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h); }
-    ctx.strokeStyle = "rgba(255,255,255,.18)"; ctx.lineWidth = 1;
-    for (let x = 0; x < w; x += m / 10) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
-  } else if (p.art === "dots") {
-    const s = m / 9;
-    for (let y = s / 2; y < h; y += s) for (let x = s / 2; x < w; x += s) { const d = Math.hypot(x - w / 2, y - h / 2) / m; const rr = s * 0.42 * (0.5 + 0.5 * Math.sin(d * 9 - t * 2.4));
-      ctx.fillStyle = d < 0.3 ? b : c; ctx.beginPath(); ctx.arc(x, y, Math.max(1, rr), 0, 7); ctx.fill(); }
-  } else if (p.art === "grid") {
-    const cols = 6, rows = 3, cw = w / cols, ch = h / rows;
-    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) { const ph = Math.sin(t * 1.2 + i * 0.6 + j * 1.1);
-      ctx.fillStyle = (i + j) % 3 === 0 ? c : b; const ins = cw * 0.1 + Math.max(0, ph) * cw * 0.12;
-      if ((i * 7 + j * 3) % 4 === 0) { ctx.beginPath(); ctx.arc(i * cw + cw / 2, j * ch + ch / 2, Math.min(cw, ch) / 2 - ins, 0, 7); ctx.fill(); }
-      else ctx.fillRect(i * cw + ins, j * ch + ins, cw - ins * 2, ch - ins * 2); }
+
+const WD_CAN_PLAY = matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches && !window.WD_LITE;
+function wdThumb(box, slug, w, h) {
+  box.innerHTML = `<img class="vm-poster" src="./thumbs/${slug}.webp" width="${w}" height="${h}" alt="" loading="lazy" decoding="async">`;
+  let video = null, loaded = false, want = false;
+  function load() {
+    if (loaded || !WD_CAN_PLAY) return; loaded = true;
+    video = document.createElement("video");
+    video.className = "vm-video"; video.muted = true; video.loop = true; video.playsInline = true; video.preload = "none";
+    video.setAttribute("muted", ""); video.setAttribute("playsinline", ""); video.setAttribute("aria-hidden", "true");
+    video.poster = `./thumbs/${slug}.webp`;
+    video.innerHTML = `<source src="./thumbs/${slug}.webm" type="video/webm"><source src="./thumbs/${slug}.mp4" type="video/mp4">`;
+    box.appendChild(video);
   }
-}
-function mountCanvas(canvas, p) {
-  const ctx = canvas.getContext("2d"); let raf = 0, t0 = 0, t = 0, run = false;
-  const size = () => { const d = Math.min(devicePixelRatio || 1, 2); const { width, height } = canvas.getBoundingClientRect(); if (!width) return; canvas.width = width * d; canvas.height = height * d; ctx.setTransform(d, 0, 0, d, 0, 0); draw(ctx, width, height, t, p); };
-  const loop = (now) => { if (!t0) t0 = now - t * 1000; t = (now - t0) / 1000; const { width, height } = canvas.getBoundingClientRect(); draw(ctx, width, height, t, p); if (run) raf = requestAnimationFrame(loop); };
-  new ResizeObserver(size).observe(canvas);
-  canvas.addEventListener("redraw", size);
+  if (WD_CAN_PLAY && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { load(); io.disconnect(); } }, { rootMargin: "200px" });
+    io.observe(box);
+  }
   return {
-    play() { if (reduce || run) return; run = true; t0 = 0; raf = requestAnimationFrame(loop); },
-    stop() { run = false; cancelAnimationFrame(raf); },
-    set(np) { p = np; t = 0; size(); }
+    play() { if (!WD_CAN_PLAY) return; want = true; load(); const p = video.play(); if (p) p.then(() => { if (want) box.classList.add("vm-on"); }).catch(() => {}); },
+    stop() { want = false; box.classList.remove("vm-on"); if (video) { video.pause(); try { video.currentTime = 0; } catch (e) {} } },
+    set(nslug, nw, nh) { this.stop(); slug = nslug; w = nw; h = nh; loaded = false; video = null; box.innerHTML = `<img class="vm-poster" src="./thumbs/${slug}.webp" alt="" decoding="async">`; }
   };
 }
 
@@ -408,12 +372,12 @@ const svc = p => p.services.map(s => `<span>${s}</span>`).join("");
 projects.forEach(p => {
   const a = document.createElement("a");
   a.className = `card ${p.size}${p.offset ? " offset" : ""}`; a.href = "https://claude.ai/artifact/3Fh9si9SLB3sa15y3GoaKC"; a.target = "_top"; a.dataset.cursor = "1";
-  a.innerHTML = `<div class="media"><canvas></canvas><span class="tag mono">Preview</span></div>
+  a.innerHTML = `<div class="media"><div class="vm"></div></div>
     <div class="meta"><h2>${p.client}</h2></div>
     <p class="desc">${p.title}</p><div class="svc mono">${svc(p)}</div>`;
   a.setAttribute("aria-label", `${p.client}: ${p.title}, ${p.services.join(", ")}`);
   grid.appendChild(a);
-  const ctl = mountCanvas(a.querySelector("canvas"), p);
+  const ctl = wdThumb(a.querySelector(".vm"), p.slug, p.w, p.h);
   a.addEventListener("mouseenter", ctl.play); a.addEventListener("mouseleave", ctl.stop);
   a.addEventListener("focus", ctl.play); a.addEventListener("blur", ctl.stop);
   p.card = a;
@@ -430,10 +394,10 @@ vg.onclick = () => setView("grid"); vl.onclick = () => setView("list");
 
 
 /* ---------- Floating preview in list ---------- */
-const floater = document.getElementById("floater"); const fctl = mountCanvas(floater.querySelector("canvas"), projects[0]);
+const floater = document.getElementById("floater"); const fctl = wdThumb(floater.querySelector(".vm"), projects[0].slug, projects[0].w, projects[0].h);
 let mx = innerWidth / 2, my = innerHeight / 2, fx = mx, fy = my;
 if (fine) {
-  list.addEventListener("mouseover", e => { const r = e.target.closest(".row"); if (!r) return; fctl.set(projects.find(p => p.slug === r.dataset.slug)); fctl.play(); floater.classList.add("on"); });
+  list.addEventListener("mouseover", e => { const r = e.target.closest(".row"); if (!r) return; const pr = projects.find(p => p.slug === r.dataset.slug); fctl.set(pr.slug, pr.w, pr.h); fctl.play(); floater.classList.add("on"); });
   list.addEventListener("mouseleave", () => { floater.classList.remove("on"); fctl.stop(); });
 }
 
@@ -467,8 +431,6 @@ if (fine && !reduce) {
   update();
 })();
 
-/* Redraw once fonts arrive so the type-based thumbnails use the display face */
-document.fonts && document.fonts.ready.then(() => projects.forEach(p => p.card.querySelector("canvas").dispatchEvent(new Event("redraw"))));
 </script>
 <script src="./footer.js" defer></script>
 <script src="./wd-revision.js" defer></script>

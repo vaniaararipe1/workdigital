@@ -87,6 +87,8 @@ t=t.replace('</body>',"""<script>
 t=t.replace(' data-wd-explore-url="https://workdigital.art.br/contato/"','')
 t=t.replace('href="https://workdigital.art.br/contato/"','href="#contato"')
 assert 'workdigital.art.br/contato' not in t
+import thumbs_apply
+t=thumbs_apply.home(t,OUT)
 t=link_pages(t)
 # ---- carregamento em conexões lentas ----
 import re, subprocess

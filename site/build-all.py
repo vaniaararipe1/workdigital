@@ -284,6 +284,8 @@ print('ok')
 t = open('cases-site/cases.html').read()
 import cases_fix
 t = cases_fix.fix(t, OUT + '/img', open(OUT + '/solucoes.html').read())
+import thumbs_apply
+t = thumbs_apply.cases(t, OUT)
 t = t.replace(' filter:blur(42px);animation:lightFieldDrift', ' animation:lightFieldDrift').replace('@media(max-width:760px){.light-field-inner::before{filter:blur(28px)}}', '')
 t, n = re.subn(r'  <section class="cta wrap" id="contato".*?</section>\n', '', t, count=1, flags=re.S); assert n == 1
 t, n = re.subn(r'/\* ---------- Copy e-mail ---------- \*/\n.*?\n\};\n', '', t, count=1, flags=re.S); assert n == 1
