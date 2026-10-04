@@ -57,6 +57,11 @@ for a,b in [('function resize(){const r=art.getBoundingClientRect();width=r.widt
             ('phase:random()*6.283,size:.75+random()*.5});', 'phase:random()*6.283,size:(.75+random()*.5)*(window.WD_LITE?2.1:1.5)});')]:
     assert t.count(a)==1, a[:60]
     t=t.replace(a,b)
+# modo leve (GPU fraca): sem partículas na home, como na referência (auros.global) — nem animação nem imagem parada
+a=" const art=document.querySelector('.particle-art'),image=art.querySelector('img');\n"
+assert t.count(a)==1
+t=t.replace(a," const art=document.querySelector('.particle-art'),image=art.querySelector('img');\n if(window.WD_LITE){art.remove();return;}\n")
+t=t.replace('</head>','<style>html.wd-lite .particle-art{display:none!important}</style>\n</head>',1)
 # modo leve: desenho alternativo a ~30 quadros por segundo
 a='raf=0;if(!ready||!visible||document.hidden||art.classList.contains("has-native-particles"))return;\n'
 assert t.count(a)==1
