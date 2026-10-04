@@ -194,7 +194,7 @@ body:has(.site-header.wd-contact-header-open) .hd{opacity:0;pointer-events:none}
 .hd .logo.on-light .logo-neg{opacity:0}
 .hd .logo.on-light .logo-pos{opacity:1}
 .hd.over-footer{opacity:0!important;visibility:hidden;transition:opacity .3s ease,visibility 0s .3s}
-@media(max-width:900px){.intro .cta{margin-bottom:36px}}
+@media(max-width:900px){.intro .cta{margin-bottom:36px}.track{height:auto}}
 @media(max-width:600px){.hd .logo img{width:120px}}
 /* Voltar: vidro escuro com borda (estilo do menu), para não competir com o "Solicitar proposta" */
 .hd .pill.light.back{background:rgba(18,19,22,.58);color:#F7F6FB;border:1px solid rgba(189,164,255,.28);backdrop-filter:blur(22px) saturate(155%);-webkit-backdrop-filter:blur(22px) saturate(155%)}
@@ -204,6 +204,8 @@ html.wd-lite .hd .pill.light.back{background:rgba(18,19,22,.93)}
 /* galeria: as imagens ficam entre o cabeçalho e o fim da tela (antes encostavam nos botões em telas baixas) */
 @media (min-width:901px){.track{padding-top:96px;padding-bottom:28px}.intro{padding-top:0}.m.full{align-self:flex-start;height:100vh;height:100svh;margin-top:-96px}}
 ''')
+import case_lightbox
+t = case_lightbox.apply(t)
 open(OUT + '/case-interna.html', 'w').write(link_pages(t))
 
 # ---------- Blog (claro) ----------
