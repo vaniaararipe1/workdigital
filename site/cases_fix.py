@@ -16,7 +16,7 @@ def client_logos(out_img):
     assert len(logos) == 5, logos
     return logos
 
-def fix(t, out_img):
+def fix(t, out_img, sol=None):
     logos = client_logos(out_img)
     # ---- cores e fontes ----
     t = sub1(t, '  --muted: #8F8D96;\n', '  --muted: #CBB6FF;\n')
@@ -47,7 +47,7 @@ body{font-family:var(--text)}
 .views{border-color:var(--line)}
 .views .chip{font-family:var(--display);color:#EFE7FF;font-weight:500}
 .views .chip:hover{color:#fff}
-.views .chip[aria-pressed="true"]{background:#6025E1;color:#fff;border-color:#6025E1}
+.views .chip[aria-pressed="true"]{background:#04CD8F;color:#121316;border-color:#04CD8F}
 .row{border-color:var(--line)}
 @media(min-width:901px){.row{grid-template-columns:1.4fr 1.6fr 40px}}
 .row .name{font-weight:500;color:#F7F6FB}
@@ -90,6 +90,9 @@ body{font-family:var(--text)}
     t, n = re.subn(r'cats\.forEach\(\(c, i\) => \{.*?\n\}\);\n', '', t, count=1, flags=re.S); assert n == 1
     t = sub1(t, ', filters = document.getElementById("filters");', ';')
     t, n = re.subn(r'/\* ---------- Filters ---------- \*/.*?(?=/\* ---------- Grid / list)', '', t, count=1, flags=re.S); assert n == 1
+    # abre sempre em Grid (não lembra a última escolha)
+    t = sub1(t, 'try { if (localStorage.getItem("wd-view") === "list") setView("list"); } catch (e) {}', '')
+    t = sub1(t, ' try { localStorage.setItem("wd-view", v); } catch (e) {}', '')
     # ---- carrossel com os logos dos clientes (os mesmos da home) ----
     group = ''.join(f'<span class="marquee-logo"><img src="./img/{f}" alt="{a}" loading="lazy" decoding="async"></span>' for f, a in logos)
     t = sub1(t, 'document.getElementById("marquee").innerHTML = [...projects, ...projects].map(p => `<span>${p.client}</span>`).join("");',
@@ -111,4 +114,10 @@ body{font-family:var(--text)}
 })();
 '''
     t = sub1(t, '/* Redraw once fonts arrive', js + '\n/* Redraw once fonts arrive')
+    # círculo de fluido da página Soluções, à direita do título
+    import cases_orb
+    t = sub1(t, '.hero{padding-top:clamp(150px,14vw,200px)!important}\n', '.hero{padding-top:clamp(150px,14vw,200px)!important}\n' + cases_orb.CSS)
+    t = sub1(t, '<section class="hero wrap" aria-labelledby="titulo">\n', '<section class="hero wrap" aria-labelledby="titulo">\n    ' + cases_orb.HTML)
+    if sol:
+        t = t.rstrip() + '\n' + cases_orb.orb_js(sol)
     return t

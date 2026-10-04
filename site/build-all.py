@@ -19,6 +19,8 @@ LIGHT = '''
     .wd-footer-cta{min-height:76px;padding:24px 44px;gap:24px;font-size:18px}
     .wd-footer-cta svg{width:18px;height:18px}
     @media(max-width:600px){.wd-footer-cta{min-height:62px;padding:20px 30px;font-size:16px}}
+    .wd-footer-rights{flex-wrap:nowrap;white-space:nowrap}
+    @media(max-width:360px){.wd-footer-rights{font-size:12px;gap:8px}}
   `;'''
 assert ft.count('\n  `;') == 1
 ft = ft.replace('\n  `;', LIGHT, 1)
@@ -128,9 +130,9 @@ open(OUT + '/solucoes.html', 'w').write(link_pages(t))
 # ---------- Case interna ----------
 t = open('case-work-digital.html').read()
 t = sub1(t, 'body{background:var(--bg);', 'html{background:#121316}body{background:transparent;')
-# cabeçalho do case: no lugar de som / "Vamos conversar" / menu, o CTA "Solicitar proposta" do site todo (abre o popup de contato)
+# cabeçalho do case: sem os botões de som / "Vamos conversar" / menu (só logo e Voltar)
 import re as _re
-t, _n = _re.subn(r'  <div class="right">.*?\n  </div>\n', '  <div class="right">\n    <button class="nav-cta wd-cta" data-wd-contact type="button">SOLICITAR PROPOSTA <span>↗</span></button>\n  </div>\n', t, count=1, flags=_re.S); assert _n == 1
+t, _n = _re.subn(r'  <div class="right">.*?\n  </div>\n', '', t, count=1, flags=_re.S); assert _n == 1
 # sem o aviso de prévia; logo da Work no lugar do texto
 # "Ver projeto no ar" com o CTA padrão da Work (mesmo da seção Transformação digital da home)
 t = sub1(t, '<a class="pill light cta" href="#top"><span class="dot"></span> Ver projeto no ar</a>',
@@ -253,7 +255,7 @@ print('ok')
 # ---------- Cases (já com o menu/fundo/rodapé; remove o bloco final que agora está no rodapé) ----------
 t = open('cases-site/cases.html').read()
 import cases_fix
-t = cases_fix.fix(t, OUT + '/img')
+t = cases_fix.fix(t, OUT + '/img', open(OUT + '/solucoes.html').read())
 t = t.replace(' filter:blur(42px);animation:lightFieldDrift', ' animation:lightFieldDrift').replace('@media(max-width:760px){.light-field-inner::before{filter:blur(28px)}}', '')
 t, n = re.subn(r'  <section class="cta wrap" id="contato".*?</section>\n', '', t, count=1, flags=re.S); assert n == 1
 t, n = re.subn(r'/\* ---------- Copy e-mail ---------- \*/\n.*?\n\};\n', '', t, count=1, flags=re.S); assert n == 1

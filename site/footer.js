@@ -66,6 +66,8 @@
     .wd-footer-cta{min-height:76px;padding:24px 44px;gap:24px;font-size:18px}
     .wd-footer-cta svg{width:18px;height:18px}
     @media(max-width:600px){.wd-footer-cta{min-height:62px;padding:20px 30px;font-size:16px}}
+    .wd-footer-rights{flex-wrap:nowrap;white-space:nowrap}
+    @media(max-width:360px){.wd-footer-rights{font-size:12px;gap:8px}}
   `;
   const ICONS = {
     instagram: '<rect x="11" y="11" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="20" cy="20" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="25.6" cy="14.5" r="1.2" fill="currentColor"/>',
