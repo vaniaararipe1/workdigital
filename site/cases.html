@@ -440,10 +440,9 @@ if (fine && !reduce) {
   const paint=(el,p)=>{el.style.setProperty('--wd-line-from',mix([96,37,225],[239,231,255],p));el.style.setProperty('--wd-line-to',mix([203,182,255],[245,195,216],p));};
   const title=document.querySelector('.hero h1 .line>span'), nums=[...document.querySelectorAll('.num strong')];
   if(reduce){paint(title,1);nums.forEach(n=>paint(n,1));return;}
-  const t0=performance.now()+350;
-  (function intro(now){const p=clamp((now-t0)/1600);paint(title,p*p*(3-2*p));if(p<1)requestAnimationFrame(intro);})(t0);
   let queued=false;
-  function update(){queued=false;nums.forEach((n,i)=>{const r=n.getBoundingClientRect();paint(n,clamp((innerHeight*.85-r.top)/Math.max(1,innerHeight*.35)*1.3-i*.3));});}
+  // "Works": mesmo efeito dos números — a cor vai do roxo ao lilás claro conforme a página rola
+  function update(){queued=false;paint(title,clamp(scrollY/Math.max(1,innerHeight*.45)));nums.forEach((n,i)=>{const r=n.getBoundingClientRect();paint(n,clamp((innerHeight*.85-r.top)/Math.max(1,innerHeight*.35)*1.3-i*.3));});}
   addEventListener('scroll',()=>{if(!queued){queued=true;requestAnimationFrame(update);}},{passive:true});
   update();
 })();
