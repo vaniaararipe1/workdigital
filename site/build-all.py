@@ -63,7 +63,38 @@ t = sub1(t, "document.fonts && document.fonts.ready.then(layout);\n", "document.
          "const r=ft.getBoundingClientRect();const p=Math.min(1,Math.max(0,(innerHeight-r.top)/(Math.min(r.height,innerHeight)*.8)));bgfx.style.opacity=String(1-p);}"
          "addEventListener('scroll',fade,{passive:true});addEventListener('resize',fade);setTimeout(fade,500);})();\n")
 # cards no padrão da home: raio 32px e as cores dos cards da home (#29134d; hover #301258 → #4b247e)
-t = sub1(t, '--card:rgba(34,30,40,.94); --card-hover:rgba(44,38,54,.96);', '--card:rgba(41,19,77,.94); --card-hover:linear-gradient(0deg,#301258,#4b247e);')
+# retângulos com as cores e efeitos do retângulo da seção Soluções da home (.wd-explore-layout + campo de pontos)
+t = sub1(t, '--card:rgba(34,30,40,.94); --card-hover:rgba(44,38,54,.96);', '--card:linear-gradient(125deg,rgba(96,37,225,.12),rgba(49,22,78,.2)),rgba(18,19,22,.66); --card-hover:var(--card);')
+t = sub1(t, '.svc{position:absolute;border-radius:8px;background:var(--card);backdrop-filter:blur(10px);overflow:hidden;',
+         '.svc{position:absolute;border-radius:8px;background:var(--card);backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);overflow:hidden;isolation:isolate;border:1px solid rgba(189,164,255,.13);transition:box-shadow .7s cubic-bezier(.4,0,.2,1);')
+t = sub1(t, 'height .7s var(--ease),background .3s}', 'height .7s var(--ease),background .3s,box-shadow .7s cubic-bezier(.4,0,.2,1)}')
+t = sub1(t, '.svc:not(.is-open){cursor:pointer}', '''.svc:not(.is-open){cursor:pointer}
+/* hover dos boxes de Soluções da home */
+.svc::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;background:linear-gradient(135deg,rgba(124,92,255,.38) 0%,rgba(183,155,255,.22) 45%,rgba(255,143,203,.20) 100%);box-shadow:inset 0 0 0 1px rgba(214,198,255,.35);opacity:0;transition:opacity .7s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.svc:hover::before,.svc:focus-within::before,.svc.is-open::before{opacity:1}
+.svc:hover,.svc.is-open{box-shadow:0 20px 60px -20px rgba(124,92,255,.55)}
+.svc .dots{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;border-radius:inherit}
+.svc .head,.svc .content{position:relative;z-index:1}
+@media(prefers-reduced-motion:reduce){.svc,.svc::before{transition:none}}''')
+t = sub1(t, "el.innerHTML=`<div class=\"head\">", "el.innerHTML=`<canvas class=\"dots\" aria-hidden=\"true\"></canvas><div class=\"head\">")
+# campo de pontos da home (mesmos valores), um por retângulo
+t = sub1(t, "\nlayout();\n", '''
+document.querySelectorAll('.svc').forEach(panel=>{
+ const canvas=panel.querySelector('.dots'),ctx=canvas.getContext('2d'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ let width=0,height=0,frame=0,active=false,x=-200,y=-200,strength=0;
+ function draw(){frame=0;strength+=(Number(active)-strength)*.12;ctx.clearRect(0,0,width,height);ctx.fillStyle='#bda4ff';
+  for(let py=12;py<height;py+=22)for(let px=12;px<width;px+=22){const dx=px-x,dy=py-y,distance=Math.hypot(dx,dy);
+   const influence=Math.exp(-distance*distance/(90*90))*strength,shift=influence*10/(distance||1);
+   ctx.globalAlpha=.09+influence*.35;ctx.beginPath();ctx.arc(px+dx*shift,py+dy*shift,.8+influence*.7,0,Math.PI*2);ctx.fill();}
+  ctx.globalAlpha=1;if(!reduced.matches&&(active||strength>.002))frame=requestAnimationFrame(draw);}
+ function request(){if(!frame)frame=requestAnimationFrame(draw)}
+ function resize(){const r=panel.getBoundingClientRect();width=r.width;height=r.height;const d=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(width*d);canvas.height=Math.round(height*d);ctx.setTransform(d,0,0,d,0,0);request()}
+ panel.addEventListener('pointermove',e=>{if(reduced.matches||e.pointerType==='touch')return;const r=panel.getBoundingClientRect();x=e.clientX-r.left;y=e.clientY-r.top;active=true;request()},{passive:true});
+ panel.addEventListener('pointerleave',()=>{active=false;request()},{passive:true});
+ new ResizeObserver(resize).observe(panel);resize();
+});
+layout();
+''')
 t = sub1(t, '.svc{position:absolute;border-radius:8px;', '.svc{position:absolute;border-radius:var(--wd-panel-radius,32px);')
 # cards e "SOLUÇÕES + WORK" alinhados com o retângulo do menu (mesma largura máxima e margens do menu)
 t = sub1(t, '.board{position:relative;max-width:1640px;margin:0 auto 18vh;padding:0 clamp(16px,4.5vw,96px)}',

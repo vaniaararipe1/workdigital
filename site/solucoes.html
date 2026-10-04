@@ -6,7 +6,7 @@
 <style>
 /* Layout: OFF+BRAND-style services page — fixed glossy orb + giant "SOLUÇÕES + WORK" behind, two-column card board on top (open service left, sticky; other services right), bottom-right menu button. Single dark look by choice. */
 :root{
-  --bg:#141019; --card:rgba(41,19,77,.94); --card-hover:linear-gradient(0deg,#301258,#4b247e); --line:rgba(255,255,255,.10);
+  --bg:#141019; --card:linear-gradient(125deg,rgba(96,37,225,.12),rgba(49,22,78,.2)),rgba(18,19,22,.66); --card-hover:var(--card); --line:rgba(255,255,255,.10);
   --fg:#EFEAF6; --muted:#BDB4CC; --accent:#C4A8FF; --pink:#FF8FCB;
   --display:"Space Grotesk","Helvetica Neue",Arial,sans-serif;
   --body:"Nunito",system-ui,sans-serif;
@@ -61,9 +61,16 @@ main{position:relative;z-index:1}
 .intro-space{height:calc(52vh + 64px)}
 .board{position:relative;width:min(calc(100% - 2 * var(--wd-layout-gutter,3vw)),1440px);margin:0 auto 18vh;padding:0}
 .stage{position:relative;transition:height .7s var(--ease)}
-.svc{position:absolute;border-radius:var(--wd-panel-radius,32px);background:var(--card);backdrop-filter:blur(10px);overflow:hidden;
-  transition:left .7s var(--ease),top .7s var(--ease),width .7s var(--ease),height .7s var(--ease),background .3s}
+.svc{position:absolute;border-radius:var(--wd-panel-radius,32px);background:var(--card);backdrop-filter:blur(22px) saturate(140%);-webkit-backdrop-filter:blur(22px) saturate(140%);overflow:hidden;isolation:isolate;border:1px solid rgba(189,164,255,.13);transition:box-shadow .7s cubic-bezier(.4,0,.2,1);
+  transition:left .7s var(--ease),top .7s var(--ease),width .7s var(--ease),height .7s var(--ease),background .3s,box-shadow .7s cubic-bezier(.4,0,.2,1)}
 .svc:not(.is-open){cursor:pointer}
+/* hover dos boxes de Soluções da home */
+.svc::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;background:linear-gradient(135deg,rgba(124,92,255,.38) 0%,rgba(183,155,255,.22) 45%,rgba(255,143,203,.20) 100%);box-shadow:inset 0 0 0 1px rgba(214,198,255,.35);opacity:0;transition:opacity .7s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.svc:hover::before,.svc:focus-within::before,.svc.is-open::before{opacity:1}
+.svc:hover,.svc.is-open{box-shadow:0 20px 60px -20px rgba(124,92,255,.55)}
+.svc .dots{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;border-radius:inherit}
+.svc .head,.svc .content{position:relative;z-index:1}
+@media(prefers-reduced-motion:reduce){.svc,.svc::before{transition:none}}
 .svc:not(.is-open):hover{background:var(--card-hover)}
 .svc .head{position:relative;display:flex;justify-content:space-between;align-items:flex-start;padding:clamp(22px,2.4vw,40px);padding-bottom:0}
 .svc .titles{position:relative;flex:1;min-width:0}
@@ -259,7 +266,7 @@ const plusSvg='<svg viewBox="0 0 24 24" fill="none"><path d="M12 4v16M4 12h16"/>
 const els={};
 SERVICES.forEach(s=>{
   const el=document.createElement('article'); el.className='svc'; el.dataset.id=s.id;
-  el.innerHTML=`<div class="head"><div class="titles"><span class="big">${s.name}</span><span class="teaser">${s.teaser}</span><span class="small">${s.name}</span></div>
+  el.innerHTML=`<canvas class="dots" aria-hidden="true"></canvas><div class="head"><div class="titles"><span class="big">${s.name}</span><span class="teaser">${s.teaser}</span><span class="small">${s.name}</span></div>
     <button class="icon" aria-label="Abrir ${s.name}"><span aria-hidden="true">+</span></button></div>
     <div class="content">${s.blocks.map(([h,p])=>`<h3>${h}</h3><p>${p}</p>`).join('')}<a class="see" href="https://claude.ai/artifact/JRyLZxgMsFFUnvkSMXaiZ1" target="_top">Ver nossos works <span aria-hidden="true">→</span></a></div>`;
   el.addEventListener('click',e=>{
@@ -298,6 +305,20 @@ function openService(id){
   layout();
   if(innerWidth<=900) stage.scrollIntoView({behavior:'smooth',block:'start'});
 }
+document.querySelectorAll('.svc').forEach(panel=>{
+ const canvas=panel.querySelector('.dots'),ctx=canvas.getContext('2d'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ let width=0,height=0,frame=0,active=false,x=-200,y=-200,strength=0;
+ function draw(){frame=0;strength+=(Number(active)-strength)*.12;ctx.clearRect(0,0,width,height);ctx.fillStyle='#bda4ff';
+  for(let py=12;py<height;py+=22)for(let px=12;px<width;px+=22){const dx=px-x,dy=py-y,distance=Math.hypot(dx,dy);
+   const influence=Math.exp(-distance*distance/(90*90))*strength,shift=influence*10/(distance||1);
+   ctx.globalAlpha=.09+influence*.35;ctx.beginPath();ctx.arc(px+dx*shift,py+dy*shift,.8+influence*.7,0,Math.PI*2);ctx.fill();}
+  ctx.globalAlpha=1;if(!reduced.matches&&(active||strength>.002))frame=requestAnimationFrame(draw);}
+ function request(){if(!frame)frame=requestAnimationFrame(draw)}
+ function resize(){const r=panel.getBoundingClientRect();width=r.width;height=r.height;const d=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(width*d);canvas.height=Math.round(height*d);ctx.setTransform(d,0,0,d,0,0);request()}
+ panel.addEventListener('pointermove',e=>{if(reduced.matches||e.pointerType==='touch')return;const r=panel.getBoundingClientRect();x=e.clientX-r.left;y=e.clientY-r.top;active=true;request()},{passive:true});
+ panel.addEventListener('pointerleave',()=>{active=false;request()},{passive:true});
+ new ResizeObserver(resize).observe(panel);resize();
+});
 layout();
 addEventListener('resize',layout);
 document.fonts && document.fonts.ready.then(layout);
