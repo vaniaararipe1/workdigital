@@ -63,9 +63,19 @@ open(OUT+'/home.html','w').write(t)
 js=open(H+'/wd-revision.js').read()
 a="function resize(){if(stacked.matches)return;"
 assert a in js
-js=js.replace(a,"function resize(){if(stacked.matches){['--wd-panel-height','--wd-media-height','--wd-media-width'].forEach(p=>body.style.removeProperty(p));return;}")
+# o tamanho da imagem não depende mais da altura da lista (evita o ciclo que fazia a imagem crescer sem parar)
+js=js.replace(a,"function resize(){['--wd-panel-height','--wd-media-height','--wd-media-width'].forEach(p=>body.style.removeProperty(p));return;")
 open(OUT+'/wd-revision.js','w').write(js)
 css=open(H+'/wd-revision.css').read()
+css+='''
+/* Soluções lado a lado: coluna da imagem com largura fixa (42%, entre 380 e 600px); a imagem 9:11 ocupa a coluna */
+@media(min-width:1200px){
+#wd-explore .wd-explore-layout .wd-explore-body{grid-template-columns:minmax(0,1fr) clamp(380px,42%,600px)!important;align-items:stretch!important}
+#wd-explore .wd-explore-photo{width:auto!important;height:auto!important;aspect-ratio:auto!important;padding:20px!important;display:flex;align-items:center}
+#wd-explore .wd-explore-photo .wd-explore-media{top:20px!important;left:20px!important;width:calc(100% - 40px)!important;height:auto!important;aspect-ratio:9/11}
+#wd-explore .wd-explore-photo .wd-explore-media.is-visible{position:relative!important;top:auto!important;left:auto!important;width:100%!important}
+}
+'''
 css+='''
 /* Soluções empilhado (até 1199px): imagem centralizada com no máximo 520px de largura */
 @media(max-width:1199px){
