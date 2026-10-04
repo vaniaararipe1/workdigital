@@ -26,7 +26,7 @@ ft = ft.replace(x, "root.querySelector('.wd-footer-logo').src=(this.dataset.them
 ft = ft.replace("home: 'https://workdigital.art.br/',", "home: '" + PAGES['home'] + "',")
 y = "root.querySelector('.wd-footer-rights-brand').href=home;"
 assert y in ft
-ft = ft.replace(y, y + "root.querySelectorAll('.wd-footer-home,.wd-footer-rights-brand').forEach(a=>{a.target='_blank';a.rel='noopener';});")
+ft = ft.replace(y, y + "root.querySelectorAll('.wd-footer-home,.wd-footer-rights-brand').forEach(a=>{a.target='_top';});")
 open(f'{OUT}/footer.js', 'w').write(ft)
 shutil.copy(f'{HOMEF}/img/logo-work-digital.svg', f'{OUT}/img/')
 logo = open(f'{HOMEF}/img/logo-work-digital.svg').read()
@@ -88,7 +88,7 @@ t = sub1(t, '<ul class="cats rv" id="cats" aria-label="Categorias"></ul>',
          '<input id="q" type="search" placeholder="Buscar artigos" aria-label="Buscar artigos"></label>')
 t = re.sub(r"const srch=document\.getElementById\('srch'\).*?(?=// Reveal)",
            "const q=document.getElementById('q');\nq.addEventListener('input',()=>{term=q.value.trim().toLowerCase(); apply();});\n\n", t, count=1, flags=re.S)
-t = sub1(t, 'const link=p=>p.href?`href="${p.href}" target="_blank" rel="noopener"`:\'href="#"\';', 'const link=p=>`href="' + PAGES['post'] + '" target="_blank" rel="noopener"`;')
+t = sub1(t, 'const link=p=>p.href?`href="${p.href}" target="_blank" rel="noopener"`:\'href="#"\';', 'const link=p=>`href="' + PAGES['post'] + '" target="_top"`;')
 t = apply(t, active='Blog', dark=False,
           header_re=r'<header class="hd" id="hd">.*?</header>\n\n<div class="drawer".*?</div>\n',
           remove_res=[r'<footer class="ft" id="contato">.*?</footer>\n', r'<a class="wa".*?</a>\n'],
@@ -126,6 +126,6 @@ print('ok')
 t = open('cases-site/cases.html').read()
 t, n = re.subn(r'  <section class="cta wrap" id="contato".*?</section>\n', '', t, count=1, flags=re.S); assert n == 1
 t, n = re.subn(r'/\* ---------- Copy e-mail ---------- \*/\n.*?\n\};\n', '', t, count=1, flags=re.S); assert n == 1
-t = sub1(t, 'a.href = "#case-" + p.slug;', 'a.href = "' + PAGES['case'] + '"; a.target = "_blank"; a.rel = "noopener";')
+t = sub1(t, 'a.href = "#case-" + p.slug;', 'a.href = "' + PAGES['case'] + '"; a.target = "_top";')
 open(OUT + '/cases.html', 'w').write(link_pages(t))
 print('cases ok')

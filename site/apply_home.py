@@ -159,11 +159,11 @@ def link_pages(t):
                  ('https://workdigital.art.br/como-potencializar-a-sua-marca-com-o-blog-marketing/', P['post']),
                  ('<a class="nav-link" href="#wd-explore">', f'<a class="nav-link" href="{P["solucoes"]}">')]:
         t = t.replace(a, b)
-    # cada prévia é uma página separada: os links entre elas abrem a página correspondente
+    # cada prévia é uma página separada: os links abrem a página correspondente na mesma aba (_top sai do quadro da prévia)
     def tgt(m):
         tag = m.group(0)
         if 'target=' in tag:
-            return re.sub(r'target="[^"]*"', 'target="_blank"', tag)
-        return tag[:-1] + ' target="_blank" rel="noopener">'
+            return re.sub(r'target="[^"]*"', 'target="_top"', tag)
+        return tag[:-1] + ' target="_top">'
     t = re.sub(r'<a [^>]*href="https://claude\.ai/artifact/[^"]+"[^>]*>', tgt, t)
     return t

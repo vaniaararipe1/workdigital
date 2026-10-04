@@ -292,13 +292,13 @@ wd-footer{--wd-footer-icon-cutout:#F4F3EC!important;border-top:1px solid rgba(23
 
 <header class="site-header">
   <nav class="site-nav" aria-label="Navegação principal">
-    <a class="brand" href="https://claude.ai/artifact/K3DaWGpPSDzZs2TZpjwHjw" aria-label="Work Digital — Home" target="_blank" rel="noopener">
+    <a class="brand" href="https://claude.ai/artifact/K3DaWGpPSDzZs2TZpjwHjw" aria-label="Work Digital — Home" target="_top">
       <img src="./img/logo-work-digital-positivo.svg" alt="Work Digital">
     </a>
     <div class="nav-links">
-      <a class="nav-link" href="https://claude.ai/artifact/K3DaWGpPSDzZs2TZpjwHjw" target="_blank" rel="noopener">Home</a>
-      <a class="nav-link" href="https://claude.ai/artifact/Y2eQb4LZVTwWfbNdqz7nbi" target="_blank" rel="noopener">Soluções</a>
-      <a class="nav-link" href="https://claude.ai/artifact/JRyLZxgMsFFUnvkSMXaiZ1" target="_blank" rel="noopener">Works</a>
+      <a class="nav-link" href="https://claude.ai/artifact/K3DaWGpPSDzZs2TZpjwHjw" target="_top">Home</a>
+      <a class="nav-link" href="https://claude.ai/artifact/Y2eQb4LZVTwWfbNdqz7nbi" target="_top">Soluções</a>
+      <a class="nav-link" href="https://claude.ai/artifact/JRyLZxgMsFFUnvkSMXaiZ1" target="_top">Works</a>
       <a class="nav-link" href="#" aria-current="page">Blog</a>
     </div>
     <div class="wd-nav-actions">
@@ -367,7 +367,7 @@ const POSTS = [
 const clock='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.6V8l2.3 1.4"/></svg>';
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const meta=p=>`<div class="meta"><span class="tag">${p.cat}</span><span class="dot"></span><span>${p.date}</span><span class="dot"></span><span>${clock}${p.min} min de leitura</span></div>`;
-const link=p=>`href="https://claude.ai/artifact/FtXL4pXoAfAXYYKwcxV1w8" target="_blank" rel="noopener"`;
+const link=p=>`href="https://claude.ai/artifact/FtXL4pXoAfAXYYKwcxV1w8" target="_top"`;
 
 document.getElementById('cats').innerHTML=CATS.map((c,i)=>`<li><button type="button" aria-pressed="${i===0}">${c}</button></li>`).join('');
 const feat=document.getElementById('feat');
