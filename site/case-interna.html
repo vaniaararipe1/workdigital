@@ -196,6 +196,11 @@ body{isolation:isolate}
 @media(max-width:760px){.light-field-inner::before{filter:blur(28px)}}
 @media(prefers-reduced-motion:reduce){.light-field-inner::before{animation:none}}
 wd-footer{position:relative;z-index:1}
+/* Menu da home só como base do painel de contato (o menu antigo continua visível) */
+.site-header{opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+.site-header.wd-contact-header-open{opacity:1;visibility:visible}
+.hd{transition:opacity .3s}
+body:has(.site-header.wd-contact-header-open) .hd{opacity:0;pointer-events:none}
 
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
@@ -218,6 +223,30 @@ button:where(:not(.wd-cta)){font-family:inherit;font-weight:inherit;letter-spaci
 </header>
 
 <div class="light-field" aria-hidden="true"><div class="light-field-inner"></div></div>
+<header class="site-header">
+  <nav class="site-nav" aria-label="Navegação principal">
+    <a class="brand" href="https://claude.ai/artifact/K3DaWGpPSDzZs2TZpjwHjw" aria-label="Work Digital — Home" target="_top">
+      <img src="./ativos-externos/logo-work-digital-branco-criacao-de-site-sp.svg" alt="Work Digital">
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="https://claude.ai/artifact/K3DaWGpPSDzZs2TZpjwHjw" target="_top">Home</a>
+      <a class="nav-link" href="https://claude.ai/artifact/Y2eQb4LZVTwWfbNdqz7nbi" target="_top">Soluções</a>
+      <a class="nav-link" href="#" aria-current="page">Works</a>
+      <a class="nav-link" href="https://claude.ai/artifact/2p828J4i2F3ekJZAnydNYc" target="_top">Blog</a>
+    </div>
+    <div class="wd-nav-actions">
+      <div class="nav-item wd-language">
+        <button class="nav-trigger wd-language-trigger wd-cta" type="button" aria-label="Idioma do site: Português" aria-haspopup="true" aria-expanded="false" aria-controls="wd-language-dropdown"><svg class="wd-language-globe" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><ellipse cx="12" cy="12" rx="4" ry="9" stroke="currentColor" stroke-width="1.5"/><path d="M3 12h18" stroke="currentColor" stroke-width="1.5"/></svg>PT<svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.25 6 7.75l3.5-3.5" stroke="currentColor" stroke-width="1.2"/></svg></button>
+        <div class="dropdown" id="wd-language-dropdown">
+          <a href="https://workdigital.art.br/" lang="pt-BR" aria-current="true"><span class="drop-copy"><strong>Português</strong></span></a>
+          <a href="https://workdigital.art.br/en/" lang="en"><span class="drop-copy"><strong>English</strong></span></a>
+        </div>
+      </div>
+      <button class="nav-cta wd-cta" data-wd-contact type="button">SOLICITAR PROPOSTA <span>↗</span></button>
+      <button class="mobile-toggle" type="button" aria-label="Abrir menu"><i></i></button>
+    </div>
+  </nav>
+</header>
 <main id="top">
   <section class="hs" id="hs">
     <div class="stick">

@@ -6,7 +6,7 @@
 <style>
 /* Layout: OFF+BRAND-style services page — fixed glossy orb + giant "SOLUÇÕES + WORK" behind, two-column card board on top (open service left, sticky; other services right), bottom-right menu button. Single dark look by choice. */
 :root{
-  --bg:#141019; --card:rgba(34,30,40,.94); --card-hover:rgba(44,38,54,.96); --line:rgba(255,255,255,.10);
+  --bg:#141019; --card:rgba(41,19,77,.94); --card-hover:linear-gradient(0deg,#301258,#4b247e); --line:rgba(255,255,255,.10);
   --fg:#EFEAF6; --muted:#BDB4CC; --accent:#C4A8FF; --pink:#FF8FCB;
   --display:"Space Grotesk","Helvetica Neue",Arial,sans-serif;
   --body:"Nunito",system-ui,sans-serif;
@@ -38,11 +38,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   background:radial-gradient(circle at 40% 40%,rgba(255,143,203,.55),rgba(124,92,255,.25) 45%,transparent 70%);filter:blur(30px);animation:drift2 22s ease-in-out infinite alternate}
 @keyframes drift{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(6vw,4vh) rotate(25deg)}100%{transform:translate(-3vw,8vh) rotate(-15deg)}}
 @keyframes drift2{to{transform:translate(-8vw,-6vh)}}
-.words{position:absolute;inset:0;font:300 clamp(80px,15vw,250px)/.86 var(--display);letter-spacing:-.04em;text-transform:uppercase}
+.words{position:absolute;inset:0;font:300 clamp(48px,15vw,250px)/.86 var(--display);letter-spacing:-.04em;text-transform:uppercase}
 .words .w1,.words .w2{background:linear-gradient(90deg,#FFFFFF 0%,#EDE4FF 45%,#F7C9EC 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.words .w1{position:absolute;left:3.5vw;top:calc(12vh + 64px);color:#d9d3e4}
-.words .w2{position:absolute;right:4vw;top:calc(12vh + 64px + .9em);color:#d9d3e4}
-.words .plus{position:absolute;left:44vw;top:calc(12vh + 64px + 1em);width:.62em;height:.62em;font-size:clamp(80px,15vw,250px)}
+.words .w1{position:absolute;left:max(var(--wd-layout-gutter,3vw),calc((100% - 1440px) / 2));margin-left:-.045em;top:calc(12vh + 64px);color:#d9d3e4}
+.words .w2{position:absolute;right:max(var(--wd-layout-gutter,3vw),calc((100% - 1440px) / 2));margin-right:-.02em;top:calc(12vh + 64px + .9em);color:#d9d3e4}
+.words .plus{position:absolute;left:44vw;top:calc(12vh + 64px + 1em);width:.62em;height:.62em;font-size:clamp(48px,15vw,250px)}
 .words .plus::before,.words .plus::after{content:"";position:absolute;background:#EDE4FF;left:50%;top:50%;transform:translate(-50%,-50%)}
 .words .plus::before{width:100%;height:.12em}.words .plus::after{width:.12em;height:100%}
 
@@ -59,9 +59,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* Board */
 main{position:relative;z-index:1}
 .intro-space{height:calc(52vh + 64px)}
-.board{position:relative;max-width:1640px;margin:0 auto 18vh;padding:0 clamp(16px,4.5vw,96px)}
+.board{position:relative;width:min(calc(100% - 2 * var(--wd-layout-gutter,3vw)),1440px);margin:0 auto 18vh;padding:0}
 .stage{position:relative;transition:height .7s var(--ease)}
-.svc{position:absolute;border-radius:8px;background:var(--card);backdrop-filter:blur(10px);overflow:hidden;
+.svc{position:absolute;border-radius:var(--wd-panel-radius,32px);background:var(--card);backdrop-filter:blur(10px);overflow:hidden;
   transition:left .7s var(--ease),top .7s var(--ease),width .7s var(--ease),height .7s var(--ease),background .3s}
 .svc:not(.is-open){cursor:pointer}
 .svc:not(.is-open):hover{background:var(--card-hover)}
@@ -74,7 +74,7 @@ main{position:relative;z-index:1}
 .svc.is-open .small{position:relative;top:0;display:block}
 .svc.is-open .small{opacity:1;transform:none;transition-delay:.25s}
 .svc .icon{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:50%;transition:transform .6s var(--ease),background .2s}
-.svc .icon svg{width:20px;height:20px;stroke:var(--fg);stroke-width:1.6}
+.svc .icon{width:56px;height:56px;margin:-8px -8px 0 0}.svc .icon span{display:block;font:300 56px/1 var(--display);color:var(--fg);transform:translateY(-.04em)}
 .svc:not(.is-open):hover .icon{transform:rotate(90deg)}
 .svc.is-open .icon{transform:rotate(45deg)}
 .svc.is-open .icon:hover{background:rgba(255,255,255,.08)}
@@ -260,8 +260,8 @@ const els={};
 SERVICES.forEach(s=>{
   const el=document.createElement('article'); el.className='svc'; el.dataset.id=s.id;
   el.innerHTML=`<div class="head"><div class="titles"><span class="big">${s.name}</span><span class="teaser">${s.teaser}</span><span class="small">${s.name}</span></div>
-    <button class="icon" aria-label="Abrir ${s.name}">${plusSvg}</button></div>
-    <div class="content">${s.blocks.map(([h,p])=>`<h3>${h}</h3><p>${p}</p>`).join('')}<a class="see" href="#top">Ver nossos works <span aria-hidden="true">→</span></a></div>`;
+    <button class="icon" aria-label="Abrir ${s.name}"><span aria-hidden="true">+</span></button></div>
+    <div class="content">${s.blocks.map(([h,p])=>`<h3>${h}</h3><p>${p}</p>`).join('')}<a class="see" href="https://claude.ai/artifact/JRyLZxgMsFFUnvkSMXaiZ1" target="_top">Ver nossos works <span aria-hidden="true">→</span></a></div>`;
   el.addEventListener('click',e=>{
     if(el.classList.contains('is-open')){ if(e.target.closest('.icon')) openService(order[1]); return; }
     openService(s.id);

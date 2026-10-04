@@ -16,6 +16,9 @@ LIGHT = '''
     :host([data-theme="light"]) .wd-footer-social:hover,:host([data-theme="light"]) .wd-footer-social:focus-visible{color:#6025E1;background:rgba(96,37,225,.08)}
     :host([data-theme="light"]) .wd-footer-rights-brand:hover{color:#17131F}
     :host([data-theme="light"]) a:focus-visible{outline-color:#6025E1}
+    .wd-footer-cta{min-height:76px;padding:24px 44px;gap:24px;font-size:18px}
+    .wd-footer-cta svg{width:18px;height:18px}
+    @media(max-width:600px){.wd-footer-cta{min-height:62px;padding:20px 30px;font-size:16px}}
   `;'''
 assert ft.count('\n  `;') == 1
 ft = ft.replace('\n  `;', LIGHT, 1)
@@ -59,6 +62,22 @@ t = sub1(t, "document.fonts && document.fonts.ready.then(layout);\n", "document.
          "(function(){const bgfx=document.querySelector('.bgfx');function fade(){const ft=document.querySelector('wd-footer');if(!ft)return;"
          "const r=ft.getBoundingClientRect();const p=Math.min(1,Math.max(0,(innerHeight-r.top)/(Math.min(r.height,innerHeight)*.8)));bgfx.style.opacity=String(1-p);}"
          "addEventListener('scroll',fade,{passive:true});addEventListener('resize',fade);setTimeout(fade,500);})();\n")
+# cards no padrão da home: raio 32px e as cores dos cards da home (#29134d; hover #301258 → #4b247e)
+t = sub1(t, '--card:rgba(34,30,40,.94); --card-hover:rgba(44,38,54,.96);', '--card:rgba(41,19,77,.94); --card-hover:linear-gradient(0deg,#301258,#4b247e);')
+t = sub1(t, '.svc{position:absolute;border-radius:8px;', '.svc{position:absolute;border-radius:var(--wd-panel-radius,32px);')
+# cards e "SOLUÇÕES + WORK" alinhados com o retângulo do menu (mesma largura máxima e margens do menu)
+t = sub1(t, '.board{position:relative;max-width:1640px;margin:0 auto 18vh;padding:0 clamp(16px,4.5vw,96px)}',
+         '.board{position:relative;width:min(calc(100% - 2 * var(--wd-layout-gutter,3vw)),1440px);margin:0 auto 18vh;padding:0}')
+t = sub1(t, '.words .w1{position:absolute;left:3.5vw;', '.words .w1{position:absolute;left:max(var(--wd-layout-gutter,3vw),calc((100% - 1440px) / 2));margin-left:-.045em;')
+t = sub1(t, '.words .w2{position:absolute;right:4vw;', '.words .w2{position:absolute;right:max(var(--wd-layout-gutter,3vw),calc((100% - 1440px) / 2));margin-right:-.02em;')
+t = sub1(t, '.words{position:absolute;inset:0;font:300 clamp(80px,15vw,250px)/.86 var(--display);', '.words{position:absolute;inset:0;font:300 clamp(48px,15vw,250px)/.86 var(--display);')
+t = sub1(t, 'width:.62em;height:.62em;font-size:clamp(80px,15vw,250px)}', 'width:.62em;height:.62em;font-size:clamp(48px,15vw,250px)}')
+# "+" dos cards maior, em Space Grotesk
+t = sub1(t, '<button class="icon" aria-label="Abrir ${s.name}">${plusSvg}</button>', '<button class="icon" aria-label="Abrir ${s.name}"><span aria-hidden="true">+</span></button>')
+t = sub1(t, '.svc .icon svg{width:20px;height:20px;stroke:var(--fg);stroke-width:1.6}',
+         '.svc .icon{width:56px;height:56px;margin:-8px -8px 0 0}.svc .icon span{display:block;font:300 56px/1 var(--display);color:var(--fg);transform:translateY(-.04em)}')
+# "Ver nossos works" leva para a página de cases
+t = sub1(t, '<a class="see" href="#top">', '<a class="see" href="' + PAGES['cases'] + '" target="_top">')
 t = sub1(t, "const menu=document.getElementById('menu'), mb=document.getElementById('menuBtn');\n"
             "mb.addEventListener('click',()=>{const on=menu.classList.toggle('on'); mb.setAttribute('aria-expanded',on);});\n"
             "menu.addEventListener('click',()=>{menu.classList.remove('on');mb.setAttribute('aria-expanded',false);});\n"
@@ -75,9 +94,15 @@ t = sub1(t, 'body{background:var(--bg);', 'html{background:#121316}body{backgrou
 t = sub1(t, '<a class="pill dark" href="#top">Vamos conversar', '<a class="pill dark" href="https://workdigital.art.br/contato/">Vamos conversar')
 for a, b in [('<a class="logo" href="#top"', f'<a class="logo" href="{PAGES["home"]}"'), ('<a class="pill light back" href="#top">', f'<a class="pill light back" href="{PAGES["cases"]}">')]:
     t = sub1(t, a, b)
-t = apply(t, active='Works', keep_header=True,
+t = apply(t, active='Works', keep_header=True, hidden_home_header=True,
           remove_res=[r'<a class="wa".*?</a>\n'],
-          extra_css='wd-footer{position:relative;z-index:1}\n')
+          extra_css='''wd-footer{position:relative;z-index:1}
+/* Menu da home só como base do painel de contato (o menu antigo continua visível) */
+.site-header{opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+.site-header.wd-contact-header-open{opacity:1;visibility:visible}
+.hd{transition:opacity .3s}
+body:has(.site-header.wd-contact-header-open) .hd{opacity:0;pointer-events:none}
+''')
 open(OUT + '/case-interna.html', 'w').write(link_pages(t))
 
 # ---------- Blog (claro) ----------

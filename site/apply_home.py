@@ -103,7 +103,7 @@ def header(active):
     return h
 
 
-def apply(t, *, active, dark=True, band=False, keep_header=False, extra_css='', header_re=None, remove_res=(), footer_slot=None):
+def apply(t, *, active, dark=True, band=False, keep_header=False, hidden_home_header=False, extra_css='', header_re=None, remove_res=(), footer_slot=None):
     """dark=True: fixed light field behind the page. dark=False: page keeps its light background and
     the home footer goes in a dark band (footer_slot = text after which the band is inserted)."""
     css = 'body{margin:0}\n:root{--purple:#6025E1;--green:#04CD8F;--wine:#C00252}\n/* MENU (copiado da home) */\n' + HEADER_CSS + '\n'
@@ -117,6 +117,8 @@ def apply(t, *, active, dark=True, band=False, keep_header=False, extra_css='', 
     new_header = ('<div class="light-field" aria-hidden="true"><div class="light-field-inner"></div></div>\n' if dark else '') + header(active)
     if keep_header:
         t = t.replace('<main', new_header.split('\n')[0] + '\n<main', 1) if dark else t
+        if hidden_home_header:
+            t = t.replace('<main', header(active) + '\n<main', 1)
     else:
         t, n = re.subn(header_re, lambda m: new_header + '\n', t, count=1, flags=re.S)
         assert n == 1, 'header not found'
