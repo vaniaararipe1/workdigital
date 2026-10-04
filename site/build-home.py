@@ -103,7 +103,15 @@ js=open(H+'/wd-revision.js').read()
 a="function resize(){if(stacked.matches)return;"
 assert a in js
 # o tamanho da imagem não depende mais da altura da lista (evita o ciclo que fazia a imagem crescer sem parar)
-js=js.replace(a,"function resize(){['--wd-panel-height','--wd-media-height','--wd-media-width'].forEach(p=>body.style.removeProperty(p));return;")
+# mesma regra da home original (imagem com a altura da lista, proporção 9:11), mas calculada em poucos passos e com limite
+# de 50% da largura — na original o cálculo entrava em ciclo em telas como 1242px e a imagem crescia sem parar
+js=js.replace(a,"function resize(){['--wd-panel-height','--wd-media-height','--wd-media-width'].forEach(p=>body.style.removeProperty(p));"
+  "if(stacked.matches){body.style.removeProperty('--wd-photo-col');return;}"
+  "const bw=body.getBoundingClientRect().width;if(!bw)return;"
+  "let col=parseFloat(body.style.getPropertyValue('--wd-photo-col'))||Math.min(640,Math.max(380,bw*.475));"
+  "for(let i=0;i<10;i++){body.style.setProperty('--wd-photo-col',col+'px');list.style.alignSelf='start';const h=list.getBoundingClientRect().height;list.style.alignSelf='';"
+  "const next=Math.min(bw*.5,Math.max(380,(h-40)*9/11+40));if(Math.abs(next-col)<1){col=next;break;}col+=(next-col)*.7;}"
+  "body.style.setProperty('--wd-photo-col',col.toFixed(1)+'px');return;")
 # o primeiro vídeo só começa a baixar quando a seção Soluções aparece na tela
 assert js.count(' resize();show(0);')==1
 js=js.replace(' resize();show(0);'," resize();if(media[0])media[0].classList.add('is-visible');")
@@ -112,17 +120,21 @@ css=open(H+'/wd-revision.css').read()
 css+='''
 /* Soluções lado a lado: coluna da imagem com largura fixa (47,5%, entre 380 e 640px — mesmo tamanho de antes em 1440px); a imagem 9:11 ocupa a coluna */
 @media(min-width:1200px){
-#wd-explore .wd-explore-layout .wd-explore-body{grid-template-columns:minmax(0,1fr) clamp(380px,47.5%,640px)!important;align-items:stretch!important}
-#wd-explore .wd-explore-photo{width:auto!important;height:auto!important;aspect-ratio:auto!important;padding:20px!important;display:flex;align-items:center}
+#wd-explore .wd-explore-layout .wd-explore-body{grid-template-columns:minmax(0,1fr) var(--wd-photo-col,clamp(380px,47.5%,640px))!important;align-items:stretch!important}
+#wd-explore .wd-explore-photo{width:auto!important;height:auto!important;aspect-ratio:auto!important;padding:20px!important;display:flex;align-items:flex-start}
 #wd-explore .wd-explore-photo .wd-explore-media{top:20px!important;left:20px!important;width:calc(100% - 40px)!important;height:auto!important;aspect-ratio:9/11}
 #wd-explore .wd-explore-photo .wd-explore-media.is-visible{position:relative!important;top:auto!important;left:auto!important;width:100%!important}
+/* a imagem ocupa a altura toda da coluna (igual à original); se a lista for mais alta que 9:11 permite, o vídeo é cortado nas laterais */
+#wd-explore .wd-explore-photo{align-items:stretch}
+#wd-explore .wd-explore-photo .wd-explore-media{bottom:20px!important;aspect-ratio:auto!important;min-height:0}
+#wd-explore .wd-explore-photo .wd-explore-media.is-visible{bottom:auto!important;height:auto!important;align-self:stretch}
 }
 '''
 css+='''
 /* Soluções empilhado (até 1199px): imagem centralizada com no máximo 520px de largura */
 @media(max-width:1199px){
 #wd-explore .wd-explore-photo .wd-explore-media{left:50%!important;right:auto!important;width:min(calc(100% - 40px),520px)!important;transform:translateX(-50%)}
-#wd-explore .wd-explore-photo .wd-explore-media.is-visible{left:auto!important;transform:none;margin:0 auto}
+#wd-explore .wd-explore-photo .wd-explore-media.is-visible{left:auto!important;transform:none;margin:0 auto;width:min(100%,520px)!important}
 #wd-explore .wd-explore-photo{height:auto!important;aspect-ratio:auto!important}
 }
 '''
