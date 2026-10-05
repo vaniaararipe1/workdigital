@@ -22,7 +22,10 @@ def copy_files(out, slugs):
 # Se o navegador recusar o vídeo, usa a versão em imagem animada ({slug}.anim.webp).
 # wdTilt: inclinação 3D que segue o mouse, com reflexo de luz.
 MEDIA_JS = r'''
-const WD_CAN_PLAY = matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+// Vale para qualquer computador com mouse (inclusive notebooks com tela de toque).
+// A animação só começa por ação do visitante (passar o mouse), por isso não depende do "movimento reduzido" do sistema.
+const WD_CAN_PLAY = matchMedia("(any-hover: hover)").matches || matchMedia("(any-pointer: fine)").matches;
+const wdMouse = e => !e || e.pointerType !== "touch";
 function wdThumb(box, slug, w, h) {
   let video = null, anim = null, loaded = false, failed = false, want = false;
   const poster = () => `<img class="vm-poster" src="./thumbs/${slug}.webp" width="${w}" height="${h}" alt="" loading="lazy" decoding="async"><i class="vm-load" aria-hidden="true"></i>`;
@@ -68,8 +71,8 @@ function wdTilt(el, max) {
   const glare = document.createElement("span"); glare.className = "wd-glare"; glare.setAttribute("aria-hidden", "true"); el.appendChild(glare);
   const apply = () => { raf = 0; el.style.setProperty("--mx", (x * 100).toFixed(1) + "%"); el.style.setProperty("--my", (y * 100).toFixed(1) + "%");
     el.style.transform = `perspective(1100px) rotateX(${((.5 - y) * max).toFixed(2)}deg) rotateY(${((x - .5) * max).toFixed(2)}deg) scale(1.012)`; };
-  el.addEventListener("pointerenter", () => { el.classList.add("wd-tilting"); });
-  el.addEventListener("pointermove", e => { const r = el.getBoundingClientRect(); x = (e.clientX - r.left) / r.width; y = (e.clientY - r.top) / r.height; if (!raf) raf = requestAnimationFrame(apply); });
+  el.addEventListener("pointerenter", e => { if (wdMouse(e)) el.classList.add("wd-tilting"); });
+  el.addEventListener("pointermove", e => { if (!wdMouse(e)) return; const r = el.getBoundingClientRect(); x = (e.clientX - r.left) / r.width; y = (e.clientY - r.top) / r.height; if (!raf) raf = requestAnimationFrame(apply); });
   el.addEventListener("pointerleave", () => { cancelAnimationFrame(raf); raf = 0; el.classList.remove("wd-tilting"); el.style.transform = ""; });
 }'''
 
@@ -88,7 +91,6 @@ MEDIA_CSS = '''
 .wd-tilt-host.wd-tilting{transition:transform .12s linear}
 .wd-glare{position:absolute;inset:0;z-index:4;pointer-events:none;border-radius:inherit;opacity:0;transition:opacity .4s ease;mix-blend-mode:soft-light;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.55),rgba(203,182,255,.18) 28%,transparent 60%)}
 .wd-tilting .wd-glare{opacity:1}
-@media (prefers-reduced-motion:reduce){.wd-tilt-host{transform:none!important}.wd-glare{display:none}}
 '''
 
 def cases(t, out):
@@ -108,6 +110,7 @@ def cases(t, out):
     i = t.index('/* ---------- Generative thumbnails'); j = t.index('/* ---------- Render ---------- */', i)
     t = t[:i] + MEDIA_JS + '\n' + t[j:]
     t = sub1(t, '<div class="media"><canvas></canvas><span class="tag mono">Preview</span></div>', '<div class="media"><div class="vm"></div></div>')
+    t = sub1(t, 'a.addEventListener("mouseenter", ctl.play); a.addEventListener("mouseleave", ctl.stop);', 'a.addEventListener("pointerenter", e => { if (wdMouse(e)) ctl.play(); }); a.addEventListener("pointerleave", ctl.stop);')
     t = sub1(t, 'const ctl = mountCanvas(a.querySelector("canvas"), p);', 'const ctl = wdThumb(a.querySelector(".vm"), p.slug, p.w, p.h); const tm = a.querySelector(".media"); tm.classList.add("wd-tilt-host"); wdTilt(tm, 6);')
     t = sub1(t, '<div class="floater" id="floater" aria-hidden="true"><canvas></canvas></div>', '<div class="floater" id="floater" aria-hidden="true"><div class="vm"></div></div>')
     t = sub1(t, 'const fctl = mountCanvas(floater.querySelector("canvas"), projects[0]);', 'const fctl = wdThumb(floater.querySelector(".vm"), projects[0].slug, projects[0].w, projects[0].h); floater.style.aspectRatio = projects[0].w + " / " + projects[0].h;')
@@ -147,7 +150,7 @@ document.querySelectorAll(".wd-works-card").forEach(card => {
   const m = card.querySelector(".wd-works-media"); if (!m) return;
   const ctl = wdThumb(m.querySelector(".vm"), m.dataset.thumb, +m.dataset.w, +m.dataset.h);
   card.classList.add("wd-tilt-host"); wdTilt(card, 5);
-  card.addEventListener("mouseenter", ctl.play); card.addEventListener("mouseleave", ctl.stop);
+  card.addEventListener("pointerenter", e => { if (wdMouse(e)) ctl.play(); }); card.addEventListener("pointerleave", ctl.stop);
   card.addEventListener("focus", ctl.play); card.addEventListener("blur", ctl.stop);
 });
 '''

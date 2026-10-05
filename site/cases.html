@@ -277,7 +277,6 @@ body{font-family:var(--text)}
 .wd-tilt-host.wd-tilting{transition:transform .12s linear}
 .wd-glare{position:absolute;inset:0;z-index:4;pointer-events:none;border-radius:inherit;opacity:0;transition:opacity .4s ease;mix-blend-mode:soft-light;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.55),rgba(203,182,255,.18) 28%,transparent 60%)}
 .wd-tilting .wd-glare{opacity:1}
-@media (prefers-reduced-motion:reduce){.wd-tilt-host{transform:none!important}.wd-glare{display:none}}
 .floater .vm{position:absolute}
 /* cada card mantém o formato da arte em qualquer tela (sem corte) */
 .grid .card .media{aspect-ratio:4/5}.grid .card.large .media{aspect-ratio:16/7.5}.grid .card.medium .media{aspect-ratio:4/3}
@@ -354,7 +353,10 @@ const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
 
 
-const WD_CAN_PLAY = matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches;
+// Vale para qualquer computador com mouse (inclusive notebooks com tela de toque).
+// A animação só começa por ação do visitante (passar o mouse), por isso não depende do "movimento reduzido" do sistema.
+const WD_CAN_PLAY = matchMedia("(any-hover: hover)").matches || matchMedia("(any-pointer: fine)").matches;
+const wdMouse = e => !e || e.pointerType !== "touch";
 function wdThumb(box, slug, w, h) {
   let video = null, anim = null, loaded = false, failed = false, want = false;
   const poster = () => `<img class="vm-poster" src="./thumbs/${slug}.webp" width="${w}" height="${h}" alt="" loading="lazy" decoding="async"><i class="vm-load" aria-hidden="true"></i>`;
@@ -400,8 +402,8 @@ function wdTilt(el, max) {
   const glare = document.createElement("span"); glare.className = "wd-glare"; glare.setAttribute("aria-hidden", "true"); el.appendChild(glare);
   const apply = () => { raf = 0; el.style.setProperty("--mx", (x * 100).toFixed(1) + "%"); el.style.setProperty("--my", (y * 100).toFixed(1) + "%");
     el.style.transform = `perspective(1100px) rotateX(${((.5 - y) * max).toFixed(2)}deg) rotateY(${((x - .5) * max).toFixed(2)}deg) scale(1.012)`; };
-  el.addEventListener("pointerenter", () => { el.classList.add("wd-tilting"); });
-  el.addEventListener("pointermove", e => { const r = el.getBoundingClientRect(); x = (e.clientX - r.left) / r.width; y = (e.clientY - r.top) / r.height; if (!raf) raf = requestAnimationFrame(apply); });
+  el.addEventListener("pointerenter", e => { if (wdMouse(e)) el.classList.add("wd-tilting"); });
+  el.addEventListener("pointermove", e => { if (!wdMouse(e)) return; const r = el.getBoundingClientRect(); x = (e.clientX - r.left) / r.width; y = (e.clientY - r.top) / r.height; if (!raf) raf = requestAnimationFrame(apply); });
   el.addEventListener("pointerleave", () => { cancelAnimationFrame(raf); raf = 0; el.classList.remove("wd-tilting"); el.style.transform = ""; });
 }
 /* ---------- Render ---------- */
@@ -416,7 +418,7 @@ projects.forEach(p => {
   a.setAttribute("aria-label", `${p.client}: ${p.title}, ${p.services.join(", ")}`);
   grid.appendChild(a);
   const ctl = wdThumb(a.querySelector(".vm"), p.slug, p.w, p.h); const tm = a.querySelector(".media"); tm.classList.add("wd-tilt-host"); wdTilt(tm, 6);
-  a.addEventListener("mouseenter", ctl.play); a.addEventListener("mouseleave", ctl.stop);
+  a.addEventListener("pointerenter", e => { if (wdMouse(e)) ctl.play(); }); a.addEventListener("pointerleave", ctl.stop);
   a.addEventListener("focus", ctl.play); a.addEventListener("blur", ctl.stop);
   p.card = a;
   const r = document.createElement("a"); r.className = "row"; r.href = "https://claude.ai/artifact/3Fh9si9SLB3sa15y3GoaKC"; r.target = "_top";
