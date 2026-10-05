@@ -234,6 +234,9 @@ html.wd-lite .hd .pill.light.back{background:rgba(18,19,22,.93)}
 ''')
 import case_lightbox
 t = case_lightbox.apply(t)
+import cases_pages
+t = cases_pages.apply(t, OUT)
+t = cases_pages.lightbox(t)
 open(OUT + '/case-interna.html', 'w').write(link_pages(t))
 
 # ---------- Blog (claro) ----------
@@ -293,8 +296,8 @@ t = thumbs_apply.cases(t, OUT)
 t = t.replace(' filter:blur(42px);animation:lightFieldDrift', ' animation:lightFieldDrift').replace('@media(max-width:760px){.light-field-inner::before{filter:blur(28px)}}', '')
 t, n = re.subn(r'  <section class="cta wrap" id="contato".*?</section>\n', '', t, count=1, flags=re.S); assert n == 1
 t, n = re.subn(r'/\* ---------- Copy e-mail ---------- \*/\n.*?\n\};\n', '', t, count=1, flags=re.S); assert n == 1
-t = t.replace('r.href = "#case-" + p.slug;', 'r.href = "' + PAGES['case'] + '"; r.target = "_top";')
-t = sub1(t, 'a.href = "#case-" + p.slug;', 'a.href = "' + PAGES['case'] + '"; a.target = "_top";')
+t = t.replace('r.href = "#case-" + p.slug;', 'r.href = "' + PAGES['case'] + '#" + p.slug; r.target = "_top";')
+t = sub1(t, 'a.href = "#case-" + p.slug;', 'a.href = "' + PAGES['case'] + '#" + p.slug; a.target = "_top";')
 open(OUT + '/cases.html', 'w').write(link_pages(t))
 print('cases ok')
 

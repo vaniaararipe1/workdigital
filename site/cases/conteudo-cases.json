@@ -1,0 +1,746 @@
+{
+  "cases": [
+    {
+      "ordem": 1,
+      "slug": "bacio-di-latte",
+      "titulo": "Bacio di Latte",
+      "p1": "A Bacio di Latte é uma gelateria de inspiração italiana e queria um site com a mesma delicadeza das lojas: bonito, leve e que desse vontade de provar cada sabor.",
+      "p2": "Criamos um site com fotos em destaque, cardápio de gelatos com filtros (sem lactose, sem glúten, zero açúcar, vegano), área de fidelidade e um atalho para encontrar a loja mais perto.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "Conteúdo visual"
+      ],
+      "link": "https://baciodilatte.com.br",
+      "link_status": "mostrar",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "Textura",
+        "04-pagina": "Cardápio de gelatos"
+      },
+      "frase_conceito": "Sabor que se vê",
+      "paleta": [
+        "#7C3C23",
+        "#ECBD94",
+        "#C7907B",
+        "#F7EEE7"
+      ],
+      "alt": {
+        "01-home": "Home do site da Bacio di Latte com duas casquinhas de gelato e o título \"gelatos!\"",
+        "02-key-visual": "Duas mãos segurando casquinhas de gelato de chocolate e de creme com avelã sobre fundo creme",
+        "03-detalhe": "Close da textura cremosa de gelato de avelã com lascas de chocolate",
+        "04-pagina": "Página de gelatos com categorias de casquinha e filtros por tipo de sabor, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do site da Bacio di Latte",
+        "06-conceito": "Arte com ondas de creme e caramelo e a frase \"Sabor que se vê\"",
+        "07-paleta": "Paleta de cores da Bacio di Latte: marrom chocolate, caramelo, rosado e creme"
+      },
+      "seo_title": "Bacio di Latte | Case de site | Work Digital",
+      "seo_description": "Site da gelateria Bacio di Latte criado pela Work Digital: cardápio de gelatos com filtros, área de fidelidade e localizador de lojas.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "\"Gelateria de inspiração italiana\": confirmar se é a melhor forma de apresentar a marca.",
+        "O layout original tinha texto provisório (lorem ipsum) no destaque da home e nas novidades; ele foi removido das artes.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    },
+    {
+      "ordem": 2,
+      "slug": "linea-alimentos",
+      "titulo": "Linea Alimentos",
+      "p1": "A Linea é uma marca de alimentos zero açúcar e precisava de um site que apresentasse toda a linha de produtos e ainda vendesse direto para o consumidor.",
+      "p2": "Desenhamos o site institucional, com produtos, receitas, blog e onde comprar, e a loja virtual com vitrine por categoria, filtros e carrinho, tudo com a leveza da marca.",
+      "servicos": [
+        "UI/UX Design",
+        "E-commerce",
+        "Desenvolvimento de site"
+      ],
+      "link": "https://lineaalimentos.com.br",
+      "link_status": "mostrar",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "Adoçante",
+        "04-pagina": "Loja virtual"
+      },
+      "frase_conceito": "Uma vida mais leve",
+      "paleta": [
+        "#0C4E7E",
+        "#FFA02D",
+        "#092C3D",
+        "#FAF8F8"
+      ],
+      "alt": {
+        "01-home": "Home do site da Linea com a campanha #desafiolinea e a assinatura \"o sabor de uma vida mais leve\"",
+        "02-key-visual": "Mesa de café da manhã com granola, frutas, suco e cookies, cortada por uma fita de seda azul-marinho",
+        "03-detalhe": "Close de cristais de adoçante e cubos sobre fundo azul-marinho",
+        "04-pagina": "Loja virtual da Linea com banner, categorias e produtos em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do site da Linea",
+        "06-conceito": "Arte com fita azul-marinho sobre nuvens e a frase \"Uma vida mais leve\"",
+        "07-paleta": "Paleta de cores da Linea: azul, laranja, azul-marinho e off-white"
+      },
+      "seo_title": "Linea Alimentos | Case de site e e-commerce | Work Digital",
+      "seo_description": "Site institucional e loja virtual da Linea Alimentos, marca zero açúcar, criados pela Work Digital: produtos, receitas e compra online.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Na loja virtual do layout, os preços (R$ 33,33) eram provisórios; a arte da página foi recortada acima dos preços.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    },
+    {
+      "ordem": 3,
+      "slug": "cbpq",
+      "titulo": "CBPq",
+      "p1": "A Confederação Brasileira de Paraquedismo atende atletas, clubes e federações e precisava de um portal que reunisse informação, serviços e transparência num só lugar.",
+      "p2": "Criamos um portal com acesso rápido à consulta de licença e ao cadastro, área do atleta, portal da transparência, boletins, notícias e agenda de eventos.",
+      "servicos": [
+        "UI/UX Design",
+        "Portal institucional",
+        "Área do atleta"
+      ],
+      "link": "https://cbpq.org.br",
+      "link_status": "mostrar",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "Velame",
+        "04-pagina": "Fontes de informação"
+      },
+      "frase_conceito": "Um portal para quem salta",
+      "paleta": [
+        "#02629A",
+        "#00AA3F",
+        "#0F1018",
+        "#FDFDFD"
+      ],
+      "alt": {
+        "01-home": "Home do portal da CBPq com foto de paraquedistas em queda livre e o destaque do canal de contato",
+        "02-key-visual": "Paraquedista em queda livre sobre um mar de nuvens com céu azul e sol",
+        "03-detalhe": "Velame de paraquedas colorido em azul, branco, verde e amarelo visto de baixo",
+        "04-pagina": "Seção de fontes de informação da CBPq com portal da transparência e estatísticas de atletas",
+        "05-mobile": "Celular mostrando a versão mobile do portal da CBPq",
+        "06-conceito": "Céu azul com nuvens e a frase \"Um portal para quem salta\"",
+        "07-paleta": "Paleta de cores da CBPq: azul, verde, preto e branco"
+      },
+      "seo_title": "CBPq | Case de portal institucional | Work Digital",
+      "seo_description": "Portal da Confederação Brasileira de Paraquedismo criado pela Work Digital: consulta de licença, área do atleta, transparência e notícias.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Não havia arquivo de página interna; o bloco 4 mostra a seção \"Fontes de Informações\" da home. Se tiver a tela de uma página interna, trocamos.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da CBPq."
+      ]
+    },
+    {
+      "ordem": 4,
+      "slug": "stw-brasil",
+      "titulo": "STW Brasil",
+      "p1": "A STW Brasil trabalha com gestão de tecnologia, segurança da informação e investigação cibernética e precisava de um site que passasse a mesma confiança do seu trabalho.",
+      "p2": "Criamos um site escuro e tecnológico, com destaque para as perícias digitais e a LGPD, a vitrine de clientes e espaço para materiais gratuitos.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "SEO"
+      ],
+      "link": null,
+      "link_status": "preencher",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "Tecnologia",
+        "04-pagina": "Perícias digitais"
+      },
+      "frase_conceito": "Dados protegidos, provas sólidas",
+      "paleta": [
+        "#E86A27",
+        "#030102",
+        "#0D0D1F",
+        "#FEFEFE"
+      ],
+      "alt": {
+        "01-home": "Home do site da STW Brasil com o título sobre soluções em segurança da informação em fundo escuro e laranja",
+        "02-key-visual": "Mão segurando um cadeado digital laranja brilhante sobre fundo preto",
+        "03-detalhe": "Close de placa de circuito com trilhas laranja iluminadas e um chip",
+        "04-pagina": "Seções sobre o grupo STW Brasil e as perícias digitais, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do site da STW Brasil",
+        "06-conceito": "Fundo preto com linhas de dados laranja e a frase \"Dados protegidos, provas sólidas\"",
+        "07-paleta": "Paleta de cores da STW Brasil: laranja, preto, azul quase preto e branco"
+      },
+      "seo_title": "STW Brasil | Case de site | Work Digital",
+      "seo_description": "Site da STW Brasil, empresa de segurança da informação e perícia digital, criado pela Work Digital com foco em confiança e conteúdo.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Link do site: preencher.",
+        "O site do cliente cita \"quase 20 anos\" no topo e \"mais de 20 anos\" na seção seguinte. Os textos do case não citam o número.",
+        "Não havia arquivo de página interna; o bloco 4 mostra as seções do grupo e das perícias digitais da home.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA."
+      ]
+    },
+    {
+      "ordem": 5,
+      "slug": "agencia-jaya",
+      "titulo": "Agência Jaya",
+      "p1": "A Jaya é uma agência de marketing digital e precisava de um site que apresentasse seus serviços com clareza e levasse o visitante direto para a conversa com um especialista.",
+      "p2": "Criamos um site direto ao ponto, com uma página para cada serviço (anúncios, leads, conteúdo, branding, SEO e sites), chamadas para orçamento e atalho para o WhatsApp.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site"
+      ],
+      "link": null,
+      "link_status": "preencher",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "Planejamento",
+        "04-pagina": "Anúncios patrocinados"
+      },
+      "frase_conceito": "Do clique ao cliente",
+      "paleta": [
+        "#FD5353",
+        "#2E2726",
+        "#0AAD64",
+        "#FEFEFE"
+      ],
+      "alt": {
+        "01-home": "Home do site da Agência Jaya com a grade de serviços em vermelho-coral e branco",
+        "02-key-visual": "Notebook, celular com gráficos, megafone, post-its e café sobre fundo vermelho-coral",
+        "03-detalhe": "Post-its coloridos, caneta vermelha e esboço de gráfico sobre mesa branca",
+        "04-pagina": "Página de anúncios patrocinados da Jaya com chamada para orçamento, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do site da Agência Jaya",
+        "06-conceito": "Fundo vermelho-coral com formas geométricas e a frase \"Do clique ao cliente\"",
+        "07-paleta": "Paleta de cores da Jaya: vermelho-coral, grafite, verde e branco"
+      },
+      "seo_title": "Agência Jaya | Case de site | Work Digital",
+      "seo_description": "Site da Agência Jaya criado pela Work Digital: serviços de marketing digital organizados por página e contato rápido com especialista.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Link do site: preencher.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    },
+    {
+      "ordem": 6,
+      "slug": "genera",
+      "titulo": "Genera",
+      "p1": "A Genera queria uma experiência interativa que convidasse o público a explorar o folclore de diferentes culturas e, de quebra, a pensar na própria ancestralidade.",
+      "p2": "Criamos uma experiência interativa com mapa-múndi: o visitante escolhe o continente e a região para começar e ainda pode sugerir novos lugares para a viagem.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "Experiência interativa"
+      ],
+      "link": null,
+      "link_status": "preencher",
+      "legendas": {
+        "01-home": "Mapa interativo",
+        "03-detalhe": "Bússola",
+        "04-pagina": "Lendas pelo mundo"
+      },
+      "frase_conceito": "O mundo contado em lendas",
+      "paleta": [
+        "#7F205B",
+        "#D18E6A",
+        "#BA82B0",
+        "#EDEDED"
+      ],
+      "alt": {
+        "01-home": "Mapa-múndi interativo da Genera com a escolha de regiões das Américas",
+        "02-key-visual": "Ilustração de um mapa fantástico com dragão, serpente marinha, fênix e floresta encantada",
+        "03-detalhe": "Bússola antiga sobre um mapa envelhecido, em tons quentes",
+        "04-pagina": "Página \"Explore culturas através das lendas pelo mundo\" com personagens do folclore, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile da experiência da Genera",
+        "06-conceito": "Círculos translúcidos coloridos sobre fundo claro e a frase \"O mundo contado em lendas\"",
+        "07-paleta": "Paleta de cores da Genera: vinho, laranja, lilás e cinza-claro"
+      },
+      "seo_title": "Genera | Case de experiência interativa | Work Digital",
+      "seo_description": "Experiência interativa criada pela Work Digital para a Genera: um mapa-múndi para explorar lendas e culturas pelo mundo.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Link do site: preencher.",
+        "Não havia outra página interna; o bloco 4 mostra a página de abertura \"Explore culturas através das lendas pelo mundo\".",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    },
+    {
+      "ordem": 7,
+      "slug": "instituto-ricco-porto",
+      "titulo": "Instituto Ricco Porto",
+      "p1": "O Instituto Ricco Porto é uma clínica escola de estética e terapias corporais e precisava de um site que apresentasse seus cursos, métodos e estrutura com clareza.",
+      "p2": "Organizamos os cursos nacionais, internacionais e online, os métodos exclusivos, a loja virtual e o canal no YouTube, com navegação simples e chamadas claras.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "SEO"
+      ],
+      "link": null,
+      "link_status": "preencher",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "Microagulhamento",
+        "04-pagina": "Sobre nós"
+      },
+      "frase_conceito": "Da técnica à carreira",
+      "paleta": [
+        "#193D5C",
+        "#F6BD04",
+        "#06A2B8",
+        "#151413"
+      ],
+      "alt": {
+        "01-home": "Home do site do Instituto Ricco Porto com o destaque \"Microagulhamento TOP\" em fundo azul",
+        "02-key-visual": "Esteticista fazendo um tratamento facial em uma cliente em clínica clara e moderna",
+        "03-detalhe": "Caneta de microagulhamento, frasco de sérum e discos de algodão sobre fundo azul-marinho",
+        "04-pagina": "Página Sobre nós do Instituto Ricco Porto com texto institucional e fotos, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do site do Instituto Ricco Porto",
+        "06-conceito": "Fundo azul-marinho com onda dourada e a frase \"Da técnica à carreira\"",
+        "07-paleta": "Paleta de cores do Instituto Ricco Porto: azul-marinho, amarelo, azul-turquesa e preto"
+      },
+      "seo_title": "Instituto Ricco Porto | Case de site | Work Digital",
+      "seo_description": "Site do Instituto Ricco Porto, clínica escola de estética, criado pela Work Digital: cursos, métodos exclusivos e loja virtual.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Link do site: preencher.",
+        "A home do layout mostra os menus suspensos abertos; foi mantida assim no bloco 1.",
+        "Na página Sobre nós, os textos de Missão, Visão e Valores eram provisórios; a arte foi recortada acima deles.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    },
+    {
+      "ordem": 8,
+      "slug": "instituto-long-tao",
+      "titulo": "Instituto Long Tao",
+      "p1": "O Instituto Long Tao trabalha com cursos, pós-graduação e terapias da medicina tradicional chinesa e precisava de um site que reunisse tudo isso de forma clara.",
+      "p2": "Criamos um site com destaque para cursos e pós-graduações, área do aluno com EAD, terapias integrativas, in company e a estrutura do instituto, com notícias e depoimentos.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site",
+        "Plataforma EAD"
+      ],
+      "link": null,
+      "link_status": "preencher",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "Medicina chinesa",
+        "04-pagina": "Estrutura e terapias"
+      },
+      "frase_conceito": "Seu caminho para a sabedoria",
+      "paleta": [
+        "#9C0E0D",
+        "#589C38",
+        "#580301",
+        "#FAFAFA"
+      ],
+      "alt": {
+        "01-home": "Home do site do Instituto Long Tao com banner de pós-graduação em acupuntura e atalhos para cursos e terapias",
+        "02-key-visual": "Sessão de acupuntura com agulhas nas costas de um paciente em ambiente tranquilo e tons de vermelho",
+        "03-detalhe": "Agulhas de acupuntura e ervas medicinais secas em tigelas sobre bandeja vermelha",
+        "04-pagina": "Seção da estrutura do Instituto Long Tao e das terapias integrativas, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do site do Instituto Long Tao",
+        "06-conceito": "Fundo vermelho com bambu em nanquim, sol dourado e a frase \"Seu caminho para a sabedoria\"",
+        "07-paleta": "Paleta de cores do Instituto Long Tao: vermelho, verde, vinho escuro e branco"
+      },
+      "seo_title": "Instituto Long Tao | Case de site e EAD | Work Digital",
+      "seo_description": "Site do Instituto Long Tao criado pela Work Digital: cursos e pós de medicina tradicional chinesa, EAD, terapias integrativas e in company.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Link do site: preencher.",
+        "Não havia arquivo de página interna; o bloco 4 mostra as seções de estrutura e terapias da home.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    },
+    {
+      "ordem": 9,
+      "slug": "ideale-treinamentos",
+      "titulo": "Ideale Treinamentos",
+      "p1": "A Ideale Treinamentos cria soluções de aprendizagem para empresas e precisava de um site que apresentasse seus serviços e sua metodologia com a mesma energia da marca.",
+      "p2": "Criamos um site com as soluções em destaque (vídeos para treinamentos, conteúdo para e-learning e apresentações), uma área para a metodologia BOIA, blog e cadastro para novidades.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site"
+      ],
+      "link": null,
+      "link_status": "preencher",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "E-learning",
+        "04-pagina": "Metodologia BOIA"
+      },
+      "frase_conceito": "Educar para evoluir",
+      "paleta": [
+        "#FC6500",
+        "#413C39",
+        "#062546",
+        "#F6F6F6"
+      ],
+      "alt": {
+        "01-home": "Home do site da Ideale Treinamentos com a chamada \"A força criativa em benefício do aprendizado\" sobre foto de equipe",
+        "02-key-visual": "Equipe jovem reunida em volta de uma mesa com notebooks e post-its laranja durante um treinamento",
+        "03-detalhe": "Mãos fazendo anotações em um caderno ao lado de um notebook, com post-its e caneta laranja",
+        "04-pagina": "Seção da metodologia BOIA com boia salva-vidas laranja, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do site da Ideale Treinamentos",
+        "06-conceito": "Boia salva-vidas laranja pendurada em parede laranja com a frase \"Educar para evoluir\"",
+        "07-paleta": "Paleta de cores da Ideale Treinamentos: laranja, grafite, azul-marinho e cinza-claro"
+      },
+      "seo_title": "Ideale Treinamentos | Case de site | Work Digital",
+      "seo_description": "Site da Ideale Treinamentos criado pela Work Digital: soluções de aprendizagem para empresas, metodologia BOIA, blog e cadastro para novidades.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Link do site: preencher.",
+        "Os cards de serviços e os posts do blog no layout tinham texto provisório; a tela mobile mostra só os títulos e o blog não aparece.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    },
+    {
+      "ordem": 10,
+      "slug": "droneng",
+      "titulo": "DronEng",
+      "p1": "A DronEng é especializada em capacitação com drones para engenharia e precisava de um site que organizasse seus cursos, eventos e materiais em um só lugar.",
+      "p2": "Estruturamos o site em torno dos formatos de curso (ao vivo, presenciais e online), com destaque para eventos e webinars, materiais educativos, clientes e blog.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site"
+      ],
+      "link": null,
+      "link_status": "preencher",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "Drones",
+        "04-pagina": "Cursos online"
+      },
+      "frase_conceito": "Engenharia vista de cima",
+      "paleta": [
+        "#011A39",
+        "#001883",
+        "#00BAE3",
+        "#FF301B"
+      ],
+      "alt": {
+        "01-home": "Home do site da DronEng com drone visto de cima e chamada para curso de topografia com drones",
+        "02-key-visual": "Drone branco sobrevoando uma cidade iluminada à noite em tons de azul",
+        "03-detalhe": "Detalhe da câmera e das hélices de um drone branco com luz azul",
+        "04-pagina": "Seção de cursos online e materiais educativos da DronEng, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do site da DronEng",
+        "06-conceito": "Vista aérea de cidade em tons de azul com a frase \"Engenharia vista de cima\"",
+        "07-paleta": "Paleta de cores da DronEng: azul-noite, azul royal, ciano e vermelho"
+      },
+      "seo_title": "DronEng | Case de site | Work Digital",
+      "seo_description": "Site da DronEng criado pela Work Digital: cursos de drones para engenharia ao vivo, presenciais e online, eventos, materiais e blog.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Link do site: preencher.",
+        "O depoimento do layout tinha texto provisório e não foi usado.",
+        "O arquivo da home tem baixa resolução; o bloco 1 foi ampliado a partir dele.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    },
+    {
+      "ordem": 11,
+      "slug": "loren-andrade",
+      "titulo": "Dra. Loren Andrade",
+      "p1": "A Dra. Loren Andrade é médica geriatra e precisava de um site que transmitisse acolhimento e facilitasse o agendamento de consultas.",
+      "p2": "Criamos um site claro e humano, com as especialidades (geriatria e cardiogeriatria), as formas de atendimento (presencial, domiciliar e online), a formação da médica e atalhos para o WhatsApp.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site"
+      ],
+      "link": null,
+      "link_status": "preencher",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "Cuidado",
+        "04-pagina": "Atenção especial"
+      },
+      "frase_conceito": "Saúde com empatia",
+      "paleta": [
+        "#008A80",
+        "#00D0B9",
+        "#395F72",
+        "#FFFFFF"
+      ],
+      "alt": {
+        "01-home": "Home do site da Dra. Loren Andrade com a chamada \"Especialidade em Geriatria\" e foto da médica",
+        "02-key-visual": "Mãos jovens segurando com cuidado as mãos de uma senhora em consultório claro",
+        "03-detalhe": "Estetoscópio e flor de lótus branca sobre tecido verde-água",
+        "04-pagina": "Seções \"Atenção especial que você merece\" e apresentação da Dra. Loren Andrade, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do site da Dra. Loren Andrade",
+        "06-conceito": "Flor de lótus branca sobre água verde-água com a frase \"Saúde com empatia\"",
+        "07-paleta": "Paleta de cores da Dra. Loren Andrade: verde-petróleo, verde-água, azul-acinzentado e branco"
+      },
+      "seo_title": "Dra. Loren Andrade | Case de site | Work Digital",
+      "seo_description": "Site da Dra. Loren Andrade criado pela Work Digital: geriatria e cardiogeriatria, atendimento presencial, domiciliar e online e agendamento fácil.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Link do site: preencher.",
+        "As imagens de IA não retratam a médica.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    },
+    {
+      "ordem": 12,
+      "slug": "ogg",
+      "titulo": "OGG",
+      "p1": "A OGG desenvolve metodologias gamificadas para educação e empresas e precisava de um blog para compartilhar conteúdo sobre gamificação e jogos de empresas.",
+      "p2": "Criamos um blog de leitura confortável, com captação de e-mails no topo, busca e atalhos por tema: metodologias, educação corporativa, soluções acadêmicas, ferramentas EAD, inovação e conceitos.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de blog"
+      ],
+      "link": null,
+      "link_status": "preencher",
+      "legendas": {
+        "01-home": "Home do blog",
+        "03-detalhe": "Jogos de empresas",
+        "04-pagina": "Artigos"
+      },
+      "frase_conceito": "Gamificação que ensina",
+      "paleta": [
+        "#FF7800",
+        "#01094E",
+        "#3B3F66",
+        "#F2F8FF"
+      ],
+      "alt": {
+        "01-home": "Home do blog da OGG com a chamada sobre gamificação educacional e corporativa e formulário de e-mail",
+        "02-key-visual": "Equipe de trabalho jogando um jogo de tabuleiro de estratégia em volta de uma mesa",
+        "03-detalhe": "Dados e peões laranja sobre tabuleiro azul-marinho",
+        "04-pagina": "Lista de artigos do blog da OGG com atalhos por tema em laranja, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do blog da OGG",
+        "06-conceito": "Peão laranja iluminado sobre fundo azul-marinho com a frase \"Gamificação que ensina\"",
+        "07-paleta": "Paleta de cores da OGG: laranja, azul-marinho, azul-acinzentado e azul-claro"
+      },
+      "seo_title": "OGG | Case de blog | Work Digital",
+      "seo_description": "Blog da OGG criado pela Work Digital: conteúdo sobre gamificação educacional e corporativa, jogos de empresas e captação de e-mails.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Link do site: preencher.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    },
+    {
+      "ordem": 13,
+      "slug": "oliva-pizzaria",
+      "titulo": "Ôliva Pizzaria",
+      "p1": "A Ôliva é uma pizzaria familiar e artesanal da zona sul de São Paulo e precisava de um site com o mesmo clima acolhedor da casa.",
+      "p2": "Criamos um site escuro e saboroso, com o cardápio de pizzas e bebidas, o happy hour, depoimentos, delivery e a localização, com fotos que valorizam o forno à lenha.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site"
+      ],
+      "link": null,
+      "link_status": "preencher",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "Pizza napoletana",
+        "04-pagina": "Cardápio e happy hour"
+      },
+      "frase_conceito": "Pizza artesanal",
+      "paleta": [
+        "#1F1819",
+        "#FFA237",
+        "#4B3417",
+        "#FFFFFF"
+      ],
+      "alt": {
+        "01-home": "Home do site da Ôliva Pizzaria com a chamada \"Pizza Artesanal Romana & Napoletana\" sobre fundo escuro",
+        "02-key-visual": "Pizza napoletana entrando em forno à lenha com chamas, em ambiente rústico e escuro",
+        "03-detalhe": "Borda de pizza napoletana com manjericão, mozzarella e tomate sobre fundo escuro",
+        "04-pagina": "Seções de cardápio, happy hour e depoimentos da Ôliva, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do site da Ôliva Pizzaria",
+        "06-conceito": "Brasas e chamas sobre fundo escuro com a frase \"Pizza artesanal\"",
+        "07-paleta": "Paleta de cores da Ôliva Pizzaria: preto café, laranja, marrom e branco"
+      },
+      "seo_title": "Ôliva Pizzaria | Case de site | Work Digital",
+      "seo_description": "Site da Ôliva Pizzaria criado pela Work Digital: pizza artesanal romana e napoletana, cardápio, happy hour, delivery e localização.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Link do site: preencher.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    },
+    {
+      "ordem": 14,
+      "slug": "marka-contabilidade",
+      "titulo": "Marka Contabilidade",
+      "p1": "A Marka é um escritório de contabilidade e precisava de um site que mostrasse seus serviços com clareza e facilitasse abrir empresa ou trocar de contador.",
+      "p2": "Criamos um site direto, com duas jornadas principais (abrir empresa e trocar de contador), os seis serviços, o passo a passo do processo, depoimentos, perguntas frequentes e atalho para o WhatsApp.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site"
+      ],
+      "link": null,
+      "link_status": "preencher",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "Planejamento",
+        "04-pagina": "Entenda o processo"
+      },
+      "frase_conceito": "Muito além da contabilidade",
+      "paleta": [
+        "#FFC500",
+        "#000000",
+        "#201E1F",
+        "#F3F3F3"
+      ],
+      "alt": {
+        "01-home": "Home do site da Marka Contabilidade com a chamada \"Muito além da contabilidade\" e botões para abrir empresa e trocar de contador",
+        "02-key-visual": "Mesa de escritório com notebook, calculadora e documentos em ambiente escuro com detalhes amarelos",
+        "03-detalhe": "Caneta amarela sobre planilhas ao lado de uma calculadora preta",
+        "04-pagina": "Seção \"Entenda o processo\" com as etapas para abrir uma empresa, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do site da Marka Contabilidade",
+        "06-conceito": "Blocos amarelos em forma de escada sobre fundo preto com a frase \"Muito além da contabilidade\"",
+        "07-paleta": "Paleta de cores da Marka Contabilidade: amarelo, preto, grafite e cinza-claro"
+      },
+      "seo_title": "Marka Contabilidade | Case de site | Work Digital",
+      "seo_description": "Site da Marka Contabilidade criado pela Work Digital: abertura de empresa, troca de contador, serviços contábeis e atendimento pelo WhatsApp.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Link do site: preencher.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    },
+    {
+      "ordem": 15,
+      "slug": "berti-promocional",
+      "titulo": "Berti Promocional",
+      "p1": "A Berti produz materiais de ponto de venda, displays e brindes e precisava de um site que apresentasse sua linha de produtos e facilitasse pedidos de orçamento.",
+      "p2": "Criamos um site vibrante, com os produtos em destaque (bobinas de forração, bumpings, stoppers, wobblers, clip strips e réguas de gôndola), diferenciais da empresa e chamadas para orçamento.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site"
+      ],
+      "link": null,
+      "link_status": "preencher",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "Impressão",
+        "04-pagina": "Produtos em destaque"
+      },
+      "frase_conceito": "Fabricação própria",
+      "paleta": [
+        "#FF8800",
+        "#000000",
+        "#FF2D00",
+        "#F1BB27"
+      ],
+      "alt": {
+        "01-home": "Home do site da Berti Promocional com banner de bobina de forração sobre fundo laranja",
+        "02-key-visual": "Corredor de supermercado com materiais promocionais laranja e amarelos nas prateleiras",
+        "03-detalhe": "Máquina de impressão flexográfica rodando filme plástico com estampa laranja",
+        "04-pagina": "Linha de produtos em destaque da Berti Promocional, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do site da Berti Promocional",
+        "06-conceito": "Rolo de fita impressa sobre fundo laranja com a frase \"Fabricação própria\"",
+        "07-paleta": "Paleta de cores da Berti Promocional: laranja, preto, vermelho e amarelo"
+      },
+      "seo_title": "Berti Promocional | Case de site | Work Digital",
+      "seo_description": "Site da Berti Promocional criado pela Work Digital: materiais de PDV, displays e brindes, com linha de produtos e pedidos de orçamento.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Link do site: preencher.",
+        "Os cards de Materiais de PDV, Displays e Brindes do layout tinham texto provisório e não foram usados.",
+        "O arquivo da home tem baixa resolução; o bloco 1 foi ampliado a partir dele.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    },
+    {
+      "ordem": 16,
+      "slug": "instituto-nossa-senhora-da-vitoria",
+      "titulo": "Instituto Nossa Senhora da Vitória",
+      "p1": "O INSV é um instituto de gestão em saúde e precisava de um site institucional que reunisse serviços, transparência, oportunidades e notícias.",
+      "p2": "Criamos um site claro e confiável, com área de notícias, gestão de pessoas e editais, cotações, transparência e os endereços das unidades em cada estado.",
+      "servicos": [
+        "UI/UX Design",
+        "Desenvolvimento de site"
+      ],
+      "link": null,
+      "link_status": "preencher",
+      "legendas": {
+        "01-home": "Home",
+        "03-detalhe": "Gestão",
+        "04-pagina": "Últimas notícias"
+      },
+      "frase_conceito": "Gestão em saúde",
+      "paleta": [
+        "#005E26",
+        "#044985",
+        "#0C84A4",
+        "#F3F7FA"
+      ],
+      "alt": {
+        "01-home": "Home do site do INSV com a chamada \"Experiência: Gestão em Saúde\" e foto de profissional sorrindo",
+        "02-key-visual": "Profissional de saúde de costas caminhando por corredor de hospital claro com tablet",
+        "03-detalhe": "Estetoscópio verde ao lado de tablet com gráficos sobre mesa branca",
+        "04-pagina": "Quadro de últimas notícias do INSV, em tela de navegador",
+        "05-mobile": "Celular mostrando a versão mobile do site do INSV",
+        "06-conceito": "Mãos unidas com sobreposição verde e azul e a frase \"Gestão em saúde\"",
+        "07-paleta": "Paleta de cores do INSV: verde, azul, azul-petróleo e cinza-claro"
+      },
+      "seo_title": "Instituto Nossa Senhora da Vitória | Case de site | Work Digital",
+      "seo_description": "Site do INSV criado pela Work Digital: gestão em saúde, notícias, gestão de pessoas, editais, transparência e unidades.",
+      "videos": {
+        "01-home": false,
+        "05-mobile": true
+      },
+      "confirmar": [
+        "Link do site: preencher.",
+        "A coluna \"Política de proteção de dados\" do layout tinha texto provisório e não foi usada.",
+        "As notícias da tela são as do layout; confirmar se pode publicar.",
+        "A tela mobile é uma recriação a partir do layout desktop do projeto (não havia tela mobile nos arquivos).",
+        "Key visual, detalhe e fundo do conceito são imagens ilustrativas geradas por IA, não fotos da marca."
+      ]
+    }
+  ]
+}

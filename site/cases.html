@@ -422,7 +422,7 @@ const grid = document.getElementById("grid"), list = document.getElementById("li
 const svc = p => p.services.map(s => `<span>${s}</span>`).join("");
 projects.forEach(p => {
   const a = document.createElement("a");
-  a.className = `card ${p.size}${p.offset ? " offset" : ""}`; a.href = "https://claude.ai/artifact/3Fh9si9SLB3sa15y3GoaKC"; a.target = "_top"; a.dataset.cursor = "1";
+  a.className = `card ${p.size}${p.offset ? " offset" : ""}`; a.href = "https://claude.ai/artifact/3Fh9si9SLB3sa15y3GoaKC#" + p.slug; a.target = "_top"; a.dataset.cursor = "1";
   a.innerHTML = `<div class="media"><div class="vm"></div></div>
     <div class="meta"><h2>${p.client}</h2></div>
     <p class="desc">${p.title}</p><div class="svc mono">${svc(p)}</div>`;
@@ -432,7 +432,7 @@ projects.forEach(p => {
   a.addEventListener("pointerenter", e => { if (wdMouse(e)) ctl.play(); }); a.addEventListener("pointerleave", ctl.stop);
   a.addEventListener("focus", ctl.play); a.addEventListener("blur", ctl.stop);
   p.card = a;
-  const r = document.createElement("a"); r.className = "row"; r.href = "https://claude.ai/artifact/3Fh9si9SLB3sa15y3GoaKC"; r.target = "_top";
+  const r = document.createElement("a"); r.className = "row"; r.href = "https://claude.ai/artifact/3Fh9si9SLB3sa15y3GoaKC#" + p.slug; r.target = "_top";
   r.innerHTML = `<span class="name">${p.client}</span><span class="svc mono">${svc(p)}</span><span class="arrow" aria-hidden="true">→</span>`;
   r.dataset.slug = p.slug; list.appendChild(r); p.row = r;
 });

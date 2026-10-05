@@ -136,6 +136,9 @@ def home(t, out):
     for c, h in zip(cards, hs):
         w, hh = man[h['slug']]['poster_px']
         c = c.replace('<a class="wd-works-card"', f'<a class="wd-works-card" style="--wd-ar:{w} / {hh}"', 1)
+        # cada card abre a página interna do seu case
+        c = re.sub(r'href="[^"]*"', 'href="https://claude.ai/artifact/3Fh9si9SLB3sa15y3GoaKC#' + h['slug'].replace('-home', '') + '" target="_top"', c, count=1)
+        c = c.replace('target="_top" target="_top"', 'target="_top"')
         c = re.sub(r'<h3>.*?</h3>', f'<h3>{h["titulo"]}</h3>', c, count=1, flags=re.S)
         c = re.sub(r'<div class="wd-works-media">.*?</div>', f'<div class="wd-works-media" data-thumb="{h["slug"]}" data-w="{w}" data-h="{hh}"><div class="vm"></div></div>', c, count=1, flags=re.S)
         c = re.sub(r'<p class="wd-works-description">.*?</p>', f'<p class="wd-works-description">{h["descricao"]}</p>', c, count=1, flags=re.S)
