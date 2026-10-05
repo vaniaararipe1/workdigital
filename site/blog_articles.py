@@ -4,6 +4,10 @@ DIR = os.path.dirname(os.path.abspath(__file__))
 ART = os.path.join(DIR, 'blog-artigos')
 IMGS = os.path.join(DIR, 'blogimg')
 POST_URL = 'https://claude.ai/artifact/FtXL4pXoAfAXYYKwcxV1w8'
+# cada artigo tem a sua própria página publicada (título, descrição e prévia próprios); sem endereço ainda, cai em post#slug
+URLS_FILE = os.path.join(DIR, 'post-urls.json')
+URLS = json.load(open(URLS_FILE)) if os.path.exists(URLS_FILE) else {}
+purl = lambda slug: URLS.get(slug) or POST_URL + '#' + slug
 MES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
 
 # slug, categoria, data (retroativa), imagem: chave existente do blog (p1..p8) ou None (foto nova em img/blog/{slug}.jpg)
@@ -115,7 +119,7 @@ def blog(t):
                   'href': 'https://workdigital.art.br/6-motivos-que-mostram-a-importancia-de-ter-um-site-para-o-seu-negocio/'})
     t = t.replace(m.group(0), 'const IMG = ' + js_str(img) + ';', 1)
     t, n = re.subn(r'const POSTS = \[.*?\n\];', lambda _: 'const POSTS = ' + js_str(posts) + ';', t, count=1, flags=re.S); assert n == 1
-    t, n = re.subn(r'const link=p=>[^\n]*', lambda _: 'const link=p=>p.slug?`href="' + POST_URL + '#${p.slug}" target="_top"`:p.href?`href="${p.href}" target="_blank" rel="noopener"`:`href="' + POST_URL + '" target="_top"`;', t, count=1); assert n == 1
+    t, n = re.subn(r'const link=p=>[^\n]*', lambda _: 'const PURL=' + js_str(URLS) + ';const link=p=>p.slug?`href="${PURL[p.slug]||"' + POST_URL + '#"+p.slug}" target="_top"`:p.href?`href="${p.href}" target="_blank" rel="noopener"`:`href="' + POST_URL + '" target="_top"`;', t, count=1); assert n == 1
     t = t.replace('</style>', PAG_CSS + '</style>', 1)
     t, n = re.subn(r'<nav class="pag".*?</nav>', '<nav class="pag" id="pag" aria-label="Paginação"></nav><p class="wd-sr" id="pag-live" aria-live="polite"></p>', t, count=1, flags=re.S); assert n == 1
     t, n = re.subn(r'// Filtro por categoria \+ busca\n.*?(?=// Reveal)', lambda _: PAG_JS, t, count=1, flags=re.S); assert n == 1
@@ -129,7 +133,8 @@ window.WD_POSTS=__DATA__;
   const D=window.WD_POSTS, BASE="__URL__";
   const $=s=>document.querySelector(s), esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const body=document.getElementById('body'), rel=$('.rel .cards');
-  const card=p=>`<a class="card rv in" href="#${p.slug}"><div class="im"><img src="${p.img}" alt="" loading="lazy"></div><p class="d">Publicado em ${p.date}</p><h3>${esc(p.title)}</h3><div class="by"><span class="au"><span class="av" aria-hidden="true">W</span>Equipe Work Digital</span><span class="rt">${p.min} min</span></div></a>`;
+  const U=D.urls||{}, href=p=>U[p.slug]?`href="${U[p.slug]}" target="_top"`:`href="#${p.slug}"`;
+  const card=p=>`<a class="card rv in" ${href(p)}><div class="im"><img src="${p.img}" alt="" loading="lazy"></div><p class="d">Publicado em ${p.date}</p><h3>${esc(p.title)}</h3><div class="by"><span class="au"><span class="av" aria-hidden="true">W</span>Equipe Work Digital</span><span class="rt">${p.min} min</span></div></a>`;
   function related(slug,cat){
     const all=D.list.filter(p=>p.slug!==slug), same=all.filter(p=>p.cat===cat), rest=all.filter(p=>p.cat!==cat);
     rel.innerHTML=[...same,...rest].slice(0,3).map(card).join('');
@@ -150,7 +155,7 @@ window.WD_POSTS=__DATA__;
       {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":SITE+"/"},{"@type":"ListItem","position":2,"name":"Blog","item":SITE+"/blog/"},{"@type":"ListItem","position":3,"name":p.title,"item":url}]}]});
   }
   function render(first){
-    const s=location.hash.slice(1), p=D.list.find(x=>x.slug===s);
+    const s=location.hash.slice(1)||window.WD_POST_DEFAULT||'', p=D.list.find(x=>x.slug===s);
     if(!p){related('','Negócios');return;}
     seo(p);
     const chip=$('.ph .top .chip'); chip.textContent=p.cat;
@@ -160,7 +165,7 @@ window.WD_POSTS=__DATA__;
     const end=body.querySelector('.share-end');
     while(body.firstChild&&body.firstChild!==end) body.firstChild.remove();
     end.insertAdjacentHTML('beforebegin','<p class="lead">'+esc(p.lead)+'</p>'+p.body);
-    document.querySelectorAll('.share').forEach(b=>b.dataset.url=encodeURIComponent(BASE+'#'+p.slug));
+    document.querySelectorAll('.share').forEach(b=>b.dataset.url=encodeURIComponent(U[p.slug]||BASE+'#'+p.slug));
     document.title=p.title+' - Work Digital';
     related(p.slug,p.cat);
     document.querySelectorAll('.ph .rv,.hero-img.rv').forEach(el=>el.classList.add('in'));
@@ -181,6 +186,7 @@ def post(t, out):
     arts = load(blog_img)
     copy_images(out)
     data = {'list': [{k: a[k] for k in ('slug', 'cat', 'date', 'iso', 'min', 'img', 'alt', 'title', 'dek', 'excerpt', 'lead', 'body')} for a in arts]}
+    data['urls'] = URLS
     js = RENDER_JS.replace('__DATA__', js_str(data)).replace('__URL__', POST_URL)
     import a11y_seo as AS
     if 'rel="canonical"' not in t:
@@ -228,7 +234,7 @@ def home(t, out):
             raw = base64.b64decode(src.split(',', 1)[1]); fn = 'img/foto-' + hashlib.md5(raw).hexdigest()[:10] + '.jpg'
             open(os.path.join(out, fn), 'wb').write(raw); src = './' + fn
         items.append(f'''      <article class="wd-blog-item">
-        <a class="wd-blog-link" href="{POST_URL}#{a['slug']}" target="_top">
+        <a class="wd-blog-link" href="{purl(a['slug'])}" target="_top">
           <img class="wd-blog-image" loading="lazy" decoding="async" width="900" height="500" src="{src}" alt="{H.escape(a['alt'] or a['title'])}">
           <div class="wd-blog-content">
             <h3 class="wd-blog-article-title">{H.escape(a['title'])}</h3>
