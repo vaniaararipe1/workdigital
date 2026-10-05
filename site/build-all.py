@@ -320,4 +320,6 @@ import gtm; gtm.run(OUT)
 
 import a11y_seo; a11y_seo.run(OUT)
 
+import seo_extras; seo_extras.run(OUT)
+
 import post_pages; post_pages.run(OUT)
