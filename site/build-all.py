@@ -150,6 +150,7 @@ t = apply(t, active='Soluções', header_re=r'<header class="hd">.*?</header>\n'
           remove_res=[r'<footer id="contato">.*?</footer>\n', r'<nav class="menu" id="menu".*?</nav>\n',
                       r'<a class="wa".*?</a>\n', r'<button class="menu-btn".*?</button>\n'],
           extra_css='wd-footer{position:relative;z-index:1}\n.bgfx{transition:opacity .2s linear}\n')
+import pricing; t = pricing.apply(t)
 open(OUT + '/solucoes.html', 'w').write(link_pages(t))
 
 # ---------- Case interna ----------
