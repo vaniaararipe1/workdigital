@@ -306,3 +306,5 @@ for name in ['blog', 'post']:
 print('fotos ok')
 
 import pointer_fix; pointer_fix.run(OUT)
+
+import titles; titles.run(OUT)

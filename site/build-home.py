@@ -170,3 +170,5 @@ for f in os.listdir(H+'/ativos-externos'): shutil.copy(H+'/ativos-externos/'+f, 
 print(len(t)); print(sorted(set(re.findall(r'(?:src|href|poster)="(\./[^"]+)"',t))))
 
 import pointer_fix; pointer_fix.run(OUT)
+
+import titles; titles.run(OUT)
