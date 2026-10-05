@@ -89,6 +89,7 @@ t=t.replace('href="https://workdigital.art.br/contato/"','href="#contato"')
 assert 'workdigital.art.br/contato' not in t
 import thumbs_apply
 t=thumbs_apply.home(t,OUT)
+import blog_articles; t=blog_articles.home(t,OUT)
 t=link_pages(t)
 # ---- carregamento em conexões lentas ----
 import re, subprocess
@@ -172,3 +173,5 @@ print(len(t)); print(sorted(set(re.findall(r'(?:src|href|poster)="(\./[^"]+)"',t
 import pointer_fix; pointer_fix.run(OUT)
 
 import titles; titles.run(OUT)
+
+import gtm; gtm.run(OUT)

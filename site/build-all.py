@@ -247,6 +247,8 @@ t = re.sub(r"const srch=document\.getElementById\('srch'\).*?(?=// Reveal)",
 t = sub1(t, 'const link=p=>p.href?`href="${p.href}" target="_blank" rel="noopener"`:\'href="#"\';', 'const link=p=>`href="' + PAGES['post'] + '" target="_top"`;')
 import blog_post_fix
 t = blog_post_fix.blog(t)
+import blog_articles
+t = blog_articles.blog(t)
 t = apply(t, active='Blog', dark=False,
           header_re=r'<header class="hd" id="hd">.*?</header>\n\n<div class="drawer".*?</div>\n',
           remove_res=[r'<footer class="ft" id="contato">.*?</footer>\n', r'<a class="wa".*?</a>\n'],
@@ -269,6 +271,7 @@ for a, b in [('<a class="chip" href="#">', f'<a class="chip" href="{PAGES["blog"
     t = sub1(t, a, b)
 t = t.replace('<a class="card rv" href="#">', f'<a class="card rv" href="{PAGES["post"]}">')
 t = blog_post_fix.post(t, OUT)
+t = blog_articles.post(t, OUT)
 t = apply(t, active='Blog', dark=False,
           header_re=r'<header class="hd" id="hd">.*?</header>\n\n<div class="drawer".*?</div>\n',
           remove_res=[r'<footer class="ft" id="contato">.*?</footer>\n', r'<a class="wa".*?</a>\n'],
@@ -309,3 +312,5 @@ print('fotos ok')
 import pointer_fix; pointer_fix.run(OUT)
 
 import titles; titles.run(OUT)
+
+import gtm; gtm.run(OUT)
