@@ -100,6 +100,15 @@ def blog(t):
         k = a['slug'] if a['img'].startswith('./img/blog/') else next(x for x, v in blog_img.items() if v == a['img'])
         img[k] = a['img']
         posts.append({'cat': a['cat'], 'date': a['date'], 'min': a['min'], 'img': k, 'title': a['title'], 'slug': a['slug']})
+    # destaque = artigo mais recente; o destaque antigo (blog marketing, 2022) entra na lista e abre a página padrão do post
+    arts_sorted = sorted(arts, key=lambda a: a['iso'], reverse=True)
+    top = arts_sorted[0]
+    posts = [x for x in posts if x['slug'] != top['slug']]
+    featured = {'cat': top['cat'], 'date': top['date'], 'min': top['min'], 'img': next(x for x in img if img[x] == top['img']),
+                'title': top['title'], 'excerpt': top['excerpt'], 'slug': top['slug']}
+    t, n = re.subn(r'const FEATURED = \{.*?\n\};', lambda _: 'const FEATURED = ' + js_str(featured) + ';', t, count=1, flags=re.S); assert n == 1
+    posts.append({'real': True, 'cat': 'Negócios', 'date': '7 jun 2022', 'min': 4, 'img': 'feat',
+                  'title': 'Como potencializar a sua marca com o blog marketing'})
     posts.append({'real': True, 'cat': 'Negócios', 'date': '16 mai 2022', 'min': 6, 'img': 'p9',
                   'title': '6 motivos que mostram a importância de ter um site para o seu negócio',
                   'href': 'https://workdigital.art.br/6-motivos-que-mostram-a-importancia-de-ter-um-site-para-o-seu-negocio/'})
