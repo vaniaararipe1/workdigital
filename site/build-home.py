@@ -168,3 +168,5 @@ os.makedirs(OUT+'/media',exist_ok=True)
 for f in os.listdir(H+'/media'): shutil.copy(H+'/media/'+f, OUT+'/media/'+f)
 for f in os.listdir(H+'/ativos-externos'): shutil.copy(H+'/ativos-externos/'+f, OUT+'/ativos-externos/'+f)
 print(len(t)); print(sorted(set(re.findall(r'(?:src|href|poster)="(\./[^"]+)"',t))))
+
+import pointer_fix; pointer_fix.run(OUT)

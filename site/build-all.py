@@ -304,3 +304,5 @@ for name in ['blog', 'post']:
     t = re.sub(r'data:image/(jpeg|jpg);base64,([A-Za-z0-9+/=]+)', ext, t)
     open(p, 'w').write(t)
 print('fotos ok')
+
+import pointer_fix; pointer_fix.run(OUT)
