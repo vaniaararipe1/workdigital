@@ -2,7 +2,7 @@
 import html, os, re
 FIXOS = {
     'home.html': 'Work Digital - Criação de Sites Profissionais',
-    'solucoes.html': 'Work Digital — Soluções para o seu negócio',
+    'solucoes.html': 'Work Digital - Soluções para o seu negócio',
     'cases.html': 'Work Digital - Cases da Work',
     'blog.html': 'Work Digital - Blog da Work',
 }
