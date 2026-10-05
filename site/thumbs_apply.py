@@ -12,43 +12,83 @@ def sub1(t, a, b):
 def copy_files(out, slugs):
     os.makedirs(out + '/thumbs', exist_ok=True)
     for s in slugs:
-        for ext in ('webp', 'mp4', 'webm'):
+        for ext in ('webp', 'mp4', 'webm', 'anim.webp'):
             f = f'{SRC}/{s}.{ext}'
             if os.path.exists(f):
                 shutil.copy(f, f'{out}/thumbs/{s}.{ext}')
 
-# JS comum: liga pôster + vídeo num container; vídeo só carrega/toca com mouse (nunca no celular, modo leve ou movimento reduzido)
+# JS comum: pôster + versão animada no hover (só com mouse; nunca no celular nem com movimento reduzido).
+# O vídeo começa a carregar quando o card chega perto da tela, para tocar sem espera no hover.
+# Se o navegador recusar o vídeo, usa a versão em imagem animada ({slug}.anim.webp).
+# wdTilt: inclinação 3D que segue o mouse, com reflexo de luz.
 MEDIA_JS = r'''
 const WD_CAN_PLAY = matchMedia("(hover: hover) and (pointer: fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches;
 function wdThumb(box, slug, w, h) {
-  box.innerHTML = `<img class="vm-poster" src="./thumbs/${slug}.webp" width="${w}" height="${h}" alt="" loading="lazy" decoding="async">`;
-  let video = null, loaded = false, want = false;
-  function load() {
+  let video = null, anim = null, loaded = false, failed = false, want = false;
+  const poster = () => `<img class="vm-poster" src="./thumbs/${slug}.webp" width="${w}" height="${h}" alt="" loading="lazy" decoding="async"><i class="vm-load" aria-hidden="true"></i>`;
+  box.innerHTML = poster();
+  function useAnim() {
+    if (failed) return; failed = true;
+    if (video) { video.remove(); video = null; }
+    anim = document.createElement("img"); anim.className = "vm-anim"; anim.alt = ""; anim.setAttribute("aria-hidden", "true"); anim.decoding = "async";
+    anim.addEventListener("load", () => { if (want) box.classList.add("vm-on"); box.classList.remove("vm-wait"); });
+    box.appendChild(anim);
+    if (want) anim.src = `./thumbs/${slug}.anim.webp`;
+  }
+  function load(eager) {
     if (loaded || !WD_CAN_PLAY) return; loaded = true;
     video = document.createElement("video");
-    video.className = "vm-video"; video.muted = true; video.loop = true; video.playsInline = true; video.preload = "none";
+    video.className = "vm-video"; video.muted = true; video.loop = true; video.playsInline = true; video.preload = eager ? "auto" : "metadata";
     video.setAttribute("muted", ""); video.setAttribute("playsinline", ""); video.setAttribute("aria-hidden", "true");
-    video.poster = `./thumbs/${slug}.webp`;
     video.innerHTML = `<source src="./thumbs/${slug}.webm" type="video/webm"><source src="./thumbs/${slug}.mp4" type="video/mp4">`;
+    const last = video.lastElementChild;
+    last.addEventListener("error", useAnim); video.addEventListener("error", useAnim);
+    video.addEventListener("playing", () => { if (want) box.classList.add("vm-on"); box.classList.remove("vm-wait"); });
     box.appendChild(video);
   }
   if (WD_CAN_PLAY && "IntersectionObserver" in window) {
-    const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { load(); io.disconnect(); } }, { rootMargin: "200px" });
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { load(false); io.disconnect(); } }, { rootMargin: "300px" });
     io.observe(box);
   }
-  return {
-    play() { if (!WD_CAN_PLAY) return; want = true; load(); const p = video.play(); if (p) p.then(() => { if (want) box.classList.add("vm-on"); }).catch(() => {}); },
-    stop() { want = false; box.classList.remove("vm-on"); if (video) { video.pause(); try { video.currentTime = 0; } catch (e) {} } },
-    set(nslug, nw, nh) { this.stop(); slug = nslug; w = nw; h = nh; loaded = false; video = null; box.innerHTML = `<img class="vm-poster" src="./thumbs/${slug}.webp" alt="" decoding="async">`; }
+  const api = {
+    play() {
+      if (!WD_CAN_PLAY) return; want = true; load(true);
+      if (failed) { box.classList.add("vm-wait"); if (anim.src) { anim.src = ""; } anim.src = `./thumbs/${slug}.anim.webp`; if (anim.complete && anim.naturalWidth) box.classList.add("vm-on"); return; }
+      box.classList.add("vm-wait"); video.preload = "auto";
+      const p = video.play(); if (p) p.catch(e => { if (e && e.name === "NotSupportedError") { useAnim(); api.play(); } });
+    },
+    stop() { want = false; box.classList.remove("vm-on", "vm-wait"); if (video) { video.pause(); try { video.currentTime = 0; } catch (e) {} } },
+    set(nslug, nw, nh) { api.stop(); slug = nslug; w = nw; h = nh; loaded = false; failed = false; video = null; anim = null; box.innerHTML = poster(); }
   };
+  return api;
 }
-'''
+function wdTilt(el, max) {
+  if (!WD_CAN_PLAY) return;
+  max = max || 5; let raf = 0, x = .5, y = .5;
+  const glare = document.createElement("span"); glare.className = "wd-glare"; glare.setAttribute("aria-hidden", "true"); el.appendChild(glare);
+  const apply = () => { raf = 0; el.style.setProperty("--mx", (x * 100).toFixed(1) + "%"); el.style.setProperty("--my", (y * 100).toFixed(1) + "%");
+    el.style.transform = `perspective(1100px) rotateX(${((.5 - y) * max).toFixed(2)}deg) rotateY(${((x - .5) * max).toFixed(2)}deg) scale(1.012)`; };
+  el.addEventListener("pointerenter", () => { el.classList.add("wd-tilting"); });
+  el.addEventListener("pointermove", e => { const r = el.getBoundingClientRect(); x = (e.clientX - r.left) / r.width; y = (e.clientY - r.top) / r.height; if (!raf) raf = requestAnimationFrame(apply); });
+  el.addEventListener("pointerleave", () => { cancelAnimationFrame(raf); raf = 0; el.classList.remove("wd-tilting"); el.style.transform = ""; });
+}'''
+
 MEDIA_CSS = '''
-/* Thumbs: pôster + vídeo no hover (o vídeo aparece por cima com fade quando começa a tocar) */
+/* Thumbs: pôster + versão animada no hover (aparece com fade quando começa a tocar) */
 .vm{position:absolute;inset:0;overflow:hidden;transition:transform 1.1s cubic-bezier(.22,1,.36,1)}
 .vm img,.vm video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
-.vm video{opacity:0;transition:opacity .2s ease}
-.vm.vm-on video{opacity:1}
+.vm video,.vm .vm-anim{opacity:0;transition:opacity .25s ease}
+.vm.vm-on video,.vm.vm-on .vm-anim{opacity:1}
+/* enquanto a animação carrega: brilho que percorre a base do card */
+.vm .vm-load{position:absolute;left:0;right:0;bottom:0;height:2px;z-index:3;opacity:0;pointer-events:none;background:linear-gradient(90deg,transparent,#cbb6ff,#f5c3d8,transparent);background-size:40% 100%;background-repeat:no-repeat}
+.vm.vm-wait:not(.vm-on) .vm-load{opacity:1;animation:vmLoad 1s linear infinite}
+@keyframes vmLoad{from{background-position:-40% 0}to{background-position:140% 0}}
+/* inclinação 3D + reflexo de luz que segue o mouse */
+.wd-tilt-host{transform-style:preserve-3d;will-change:transform;transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.wd-tilt-host.wd-tilting{transition:transform .12s linear}
+.wd-glare{position:absolute;inset:0;z-index:4;pointer-events:none;border-radius:inherit;opacity:0;transition:opacity .4s ease;mix-blend-mode:soft-light;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.55),rgba(203,182,255,.18) 28%,transparent 60%)}
+.wd-tilting .wd-glare{opacity:1}
+@media (prefers-reduced-motion:reduce){.wd-tilt-host{transform:none!important}.wd-glare{display:none}}
 '''
 
 def cases(t, out):
@@ -68,7 +108,7 @@ def cases(t, out):
     i = t.index('/* ---------- Generative thumbnails'); j = t.index('/* ---------- Render ---------- */', i)
     t = t[:i] + MEDIA_JS + '\n' + t[j:]
     t = sub1(t, '<div class="media"><canvas></canvas><span class="tag mono">Preview</span></div>', '<div class="media"><div class="vm"></div></div>')
-    t = sub1(t, 'const ctl = mountCanvas(a.querySelector("canvas"), p);', 'const ctl = wdThumb(a.querySelector(".vm"), p.slug, p.w, p.h);')
+    t = sub1(t, 'const ctl = mountCanvas(a.querySelector("canvas"), p);', 'const ctl = wdThumb(a.querySelector(".vm"), p.slug, p.w, p.h); const tm = a.querySelector(".media"); tm.classList.add("wd-tilt-host"); wdTilt(tm, 6);')
     t = sub1(t, '<div class="floater" id="floater" aria-hidden="true"><canvas></canvas></div>', '<div class="floater" id="floater" aria-hidden="true"><div class="vm"></div></div>')
     t = sub1(t, 'const fctl = mountCanvas(floater.querySelector("canvas"), projects[0]);', 'const fctl = wdThumb(floater.querySelector(".vm"), projects[0].slug, projects[0].w, projects[0].h); floater.style.aspectRatio = projects[0].w + " / " + projects[0].h;')
     t = sub1(t, 'fctl.set(projects.find(p => p.slug === r.dataset.slug)); fctl.play();', 'const pr = projects.find(p => p.slug === r.dataset.slug); floater.style.aspectRatio = pr.w + " / " + pr.h; fctl.set(pr.slug, pr.w, pr.h); fctl.play();')
@@ -106,6 +146,7 @@ HOME_JS = r'''
 document.querySelectorAll(".wd-works-card").forEach(card => {
   const m = card.querySelector(".wd-works-media"); if (!m) return;
   const ctl = wdThumb(m.querySelector(".vm"), m.dataset.thumb, +m.dataset.w, +m.dataset.h);
+  card.classList.add("wd-tilt-host"); wdTilt(card, 5);
   card.addEventListener("mouseenter", ctl.play); card.addEventListener("mouseleave", ctl.stop);
   card.addEventListener("focus", ctl.play); card.addEventListener("blur", ctl.stop);
 });
@@ -124,6 +165,9 @@ HOME_CSS = r'''
 .wd-works-section .wd-works-card h3{color:#fff;text-shadow:0 2px 18px rgba(10,4,24,.45)}
 .wd-works-section .wd-works-card:nth-child(n) .wd-works-description{color:#ece8f5;max-width:34ch;text-shadow:0 1px 12px rgba(10,4,24,.5)}
 .wd-works-card:hover .wd-works-media .vm,.wd-works-card:focus-visible .wd-works-media .vm{transform:scale(1.045)}
+.wd-works-section .wd-works-card.wd-tilt-host.wd-works-visible,.wd-works-section .wd-works-card.wd-tilt-host:not(.wd-works-entering){transition:transform .6s cubic-bezier(.22,1,.36,1),opacity .8s}
+.wd-works-section .wd-works-card.wd-tilt-host.wd-tilting{transition:transform .12s linear}
+.wd-works-section .wd-works-card .wd-glare{z-index:3}
 @media (max-width:1180px){.wd-works-section .wd-works-card:nth-child(n){padding:26px}.wd-works-section .wd-works-card h3{font-size:30px}.wd-works-section .wd-works-card:nth-child(n) .wd-works-description{font-size:15px}}
 /* 2 colunas: mesma ideia — Bacio alto à esquerda, STW e CBPq empilhados à direita, Linea larga embaixo */
 @media (max-width:991px){
