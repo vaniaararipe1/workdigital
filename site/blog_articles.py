@@ -59,6 +59,7 @@ def js_str(o):
     return json.dumps(o, ensure_ascii=False).replace('</', '<\\/')
 
 # ---------------- Listagem ----------------
+PAG_CSS = '.pag button{min-width:44px;height:44px;padding:0 6px;display:grid;place-items:center;border:0;border-radius:12px;background:transparent;color:inherit;font:500 16px/1 var(--display);cursor:pointer;transition:background .25s}.pag button:hover{background:#fff}.pag button[aria-current]{background:var(--ink);color:#fff}.pag button.off{opacity:.3;cursor:default}'
 PAG_JS = r'''
 // Filtro por categoria + busca + paginação (8 artigos por página)
 let cat="Todos", term="", page=1; const PER=8;
@@ -74,12 +75,12 @@ function apply(){
   document.getElementById('empty').hidden=ok.length>0||match(feat);
   if(pages<2){pag.hidden=true;return;}
   pag.hidden=false;
-  let h=`<a href="#" data-p="${page-1}" class="${page===1?'off':''}" aria-label="Página anterior">${arr('M10 3 5 8l5 5')}</a>`;
-  for(let i=1;i<=pages;i++) h+=`<a href="#" data-p="${i}"${i===page?' aria-current="page"':''}>${i}</a>`;
-  h+=`<a href="#" data-p="${page+1}" class="${page===pages?'off':''}" aria-label="Próxima página">${arr('m6 3 5 5-5 5')}</a>`;
-  pag.innerHTML=h;
+  let h=`<button type="button" data-p="${page-1}" class="${page===1?'off':''}" aria-label="Página anterior"${page===1?' disabled':''}>${arr('M10 3 5 8l5 5')}</button>`;
+  for(let i=1;i<=pages;i++) h+=`<button type="button" data-p="${i}" aria-label="Página ${i}"${i===page?' aria-current="page"':''}>${i}</button>`;
+  h+=`<button type="button" data-p="${page+1}" class="${page===pages?'off':''}" aria-label="Próxima página"${page===pages?' disabled':''}>${arr('m6 3 5 5-5 5')}</button>`;
+  pag.innerHTML=h; const live=document.getElementById('pag-live'); if(live) live.textContent='Página '+page+' de '+pages;
 }
-pag.addEventListener('click',e=>{const a=e.target.closest('a[data-p]');if(!a)return;e.preventDefault();page=+a.dataset.p;apply();document.querySelector('.hero .rule').scrollIntoView({behavior:'smooth',block:'start'});});
+pag.addEventListener('click',e=>{const a=e.target.closest('button[data-p]');if(!a||a.disabled)return;page=+a.dataset.p;apply();document.querySelector('.hero .rule').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});const f=document.querySelector('#list .row:not([hidden]) a');f&&f.focus({preventScroll:true});});
 document.getElementById('cats').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   document.querySelectorAll('#cats button').forEach(x=>x.setAttribute('aria-pressed',x===b)); cat=b.textContent; page=1; apply();
@@ -115,7 +116,8 @@ def blog(t):
     t = t.replace(m.group(0), 'const IMG = ' + js_str(img) + ';', 1)
     t, n = re.subn(r'const POSTS = \[.*?\n\];', lambda _: 'const POSTS = ' + js_str(posts) + ';', t, count=1, flags=re.S); assert n == 1
     t, n = re.subn(r'const link=p=>[^\n]*', lambda _: 'const link=p=>p.slug?`href="' + POST_URL + '#${p.slug}" target="_top"`:p.href?`href="${p.href}" target="_blank" rel="noopener"`:`href="' + POST_URL + '" target="_top"`;', t, count=1); assert n == 1
-    t, n = re.subn(r'<nav class="pag".*?</nav>', '<nav class="pag" id="pag" aria-label="Paginação"></nav>', t, count=1, flags=re.S); assert n == 1
+    t = t.replace('</style>', PAG_CSS + '</style>', 1)
+    t, n = re.subn(r'<nav class="pag".*?</nav>', '<nav class="pag" id="pag" aria-label="Paginação"></nav><p class="wd-sr" id="pag-live" aria-live="polite"></p>', t, count=1, flags=re.S); assert n == 1
     t, n = re.subn(r'// Filtro por categoria \+ busca\n.*?(?=// Reveal)', lambda _: PAG_JS, t, count=1, flags=re.S); assert n == 1
     return t
 
@@ -132,9 +134,25 @@ window.WD_POSTS=__DATA__;
     const all=D.list.filter(p=>p.slug!==slug), same=all.filter(p=>p.cat===cat), rest=all.filter(p=>p.cat!==cat);
     rel.innerHTML=[...same,...rest].slice(0,3).map(card).join('');
   }
+
+  const SITE="https://workdigital.art.br";
+  function setMeta(sel,attr,key,val){let m=document.head.querySelector(sel);if(!m){m=document.createElement('meta');m.setAttribute(attr,key);document.head.append(m);}m.setAttribute('content',val);}
+  function seo(p){
+    const url=SITE+'/blog/'+p.slug+'/', img=SITE+'/img/blog/'+p.slug+'.jpg', t=p.title+' - Work Digital';
+    setMeta('meta[name="description"]','name','description',p.excerpt);
+    let c=document.head.querySelector('link[rel="canonical"]');if(!c){c=document.createElement('link');c.rel='canonical';document.head.append(c);}c.href=url;
+    [['og:type','article'],['og:url',url],['og:title',t],['og:description',p.excerpt],['og:image',img]].forEach(([k,v])=>setMeta('meta[property="'+k+'"]','property',k,v));
+    [['twitter:title',t],['twitter:description',p.excerpt],['twitter:image',img]].forEach(([k,v])=>setMeta('meta[name="'+k+'"]','name',k,v));
+    let s=document.getElementById('wd-ld-post');if(!s){s=document.createElement('script');s.type='application/ld+json';s.id='wd-ld-post';document.head.append(s);}
+    s.textContent=JSON.stringify({"@context":"https://schema.org","@graph":[
+      {"@type":"BlogPosting","headline":p.title,"description":p.excerpt,"image":img,"datePublished":p.iso,"inLanguage":"pt-BR","articleSection":p.cat,"url":url,"mainEntityOfPage":url,
+       "author":{"@type":"Organization","name":"Equipe Work Digital","url":SITE+"/"},"publisher":{"@type":"Organization","name":"Work Digital","logo":{"@type":"ImageObject","url":SITE+"/ativos-externos/logo-work-digital-branco-criacao-de-site-sp.svg"}}},
+      {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":SITE+"/"},{"@type":"ListItem","position":2,"name":"Blog","item":SITE+"/blog/"},{"@type":"ListItem","position":3,"name":p.title,"item":url}]}]});
+  }
   function render(first){
     const s=location.hash.slice(1), p=D.list.find(x=>x.slug===s);
     if(!p){related('','Negócios');return;}
+    seo(p);
     const chip=$('.ph .top .chip'); chip.textContent=p.cat;
     $('.ph .top span').textContent='Publicado em '+p.date;
     $('.ph h1').textContent=p.title; $('.ph .dek').textContent=p.dek; $('.ph .by .rt').textContent=p.min+' min';
@@ -162,8 +180,21 @@ def post(t, out):
     blog_img = json.loads(re.search(r'const IMG = (\{.*?\});', built).group(1))
     arts = load(blog_img)
     copy_images(out)
-    data = {'list': [{k: a[k] for k in ('slug', 'cat', 'date', 'min', 'img', 'alt', 'title', 'dek', 'lead', 'body')} for a in arts]}
+    data = {'list': [{k: a[k] for k in ('slug', 'cat', 'date', 'iso', 'min', 'img', 'alt', 'title', 'dek', 'excerpt', 'lead', 'body')} for a in arts]}
     js = RENDER_JS.replace('__DATA__', js_str(data)).replace('__URL__', POST_URL)
+    import a11y_seo as AS
+    if 'rel="canonical"' not in t:
+        title = re.search(r'<title>([^<]*)</title>', t).group(1)
+        dek = H.unescape(re.sub(r'<[^>]+>', '', re.search(r'<p class="dek[^"]*">(.*?)</p>', t, re.S).group(1))).strip()
+        url = AS.SITE + '/blog/como-potencializar-a-sua-marca-com-o-blog-marketing/'
+        block = AS.meta_block(title, dek, '/blog/como-potencializar-a-sua-marca-com-o-blog-marketing/', 'article', AS.SITE + '/img/foto-3dbce2d9fa.jpg').replace('og:type" content="article"', 'og:type" content="article"')
+        block += AS.ld({'@context': 'https://schema.org', '@graph': [
+            {'@type': 'BlogPosting', 'headline': 'Como potencializar a sua marca com o blog marketing', 'description': dek, 'datePublished': '2022-06-07',
+             'inLanguage': 'pt-BR', 'url': url, 'mainEntityOfPage': url, 'image': AS.SITE + '/img/foto-3dbce2d9fa.jpg',
+             'author': {'@type': 'Organization', 'name': 'Equipe Work Digital', 'url': AS.SITE + '/'},
+             'publisher': {'@type': 'Organization', 'name': 'Work Digital', 'logo': {'@type': 'ImageObject', 'url': AS.LOGO}}}]}).replace('<script ', '<script id="wd-ld-post" ', 1) + '\n'
+        block = block.replace(AS.SITE, AS.TOKEN)
+        t = re.sub(r'(<title>[^<]*</title>)', lambda m: m.group(1) + '\n' + block, t, count=1)
     t = t.replace('</main>', '</main>\n' + js, 1)
     # compartilhar: refeito a cada troca de artigo, lendo o endereço na hora do clique
     t = t.replace("(function(){\n  const title=document.querySelector('.ph h1')?.textContent.trim()||document.title;",

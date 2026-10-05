@@ -93,15 +93,43 @@ window.WD_CASES=__DATA__;
     setMeta('meta[property="og:title"]','property',c.seo_title);
     setMeta('meta[property="og:description"]','property',c.seo_description);
     setMeta('meta[property="og:image"]','property',c.og_image);
+    setMeta('meta[property="og:url"]','property',c.url);
+    setMeta('meta[name="twitter:title"]','name',c.seo_title);
+    setMeta('meta[name="twitter:description"]','name',c.seo_description);
+    setMeta('meta[name="twitter:image"]','name',c.og_image);
+    const can=document.head.querySelector('link[rel="canonical"]'); can&&can.setAttribute('href',c.url);
+    const ld=document.getElementById('wd-case-ld'); ld&&(ld.textContent=JSON.stringify(c.ld));
     videos();window.wdLbRefresh&&wdLbRefresh();
     if(!first){scrollTo(0,0);dispatchEvent(new Event('resize'));}
   }
+  // teclado (desktop): o item focado entra na tela, rolando a página até ele
+  track.addEventListener('focusin',e=>{
+    if(matchMedia('(max-width:900px)').matches)return;
+    const hs=document.getElementById('hs'), st=hs&&hs.querySelector('.stick'); if(!hs)return;
+    if(st)st.scrollLeft=0;
+    const r=e.target.getBoundingClientRect(), x=r.left-track.getBoundingClientRect().left;
+    const dist=Math.max(0,track.scrollWidth-innerWidth), want=Math.min(dist,Math.max(0,x+r.width/2-innerWidth/2));
+    scrollTo({top:hs.getBoundingClientRect().top+scrollY+want,behavior:'auto'});
+  });
   window.wdGoCase=s=>{if(location.hash.slice(1)===s){show(s,false);}else location.hash=s;};
   show(location.hash.slice(1),true);
   addEventListener('hashchange',()=>show(location.hash.slice(1),false));
 })();
 </script>
 '''
+
+SITE = 'https://workdigital.art.br'
+og = lambda c: SITE + f'/cases/{c["slug"]}/01-home.webp'
+def case_ld(c):
+    url = SITE + f'/cases/{c["slug"]}/'
+    return {'@context': 'https://schema.org', '@graph': [
+        {'@type': 'CreativeWork', '@id': url + '#case', 'name': c['seo_title'], 'headline': c['seo_title'],
+         'description': c['seo_description'], 'url': url, 'image': og(c), 'inLanguage': 'pt-BR',
+         'about': c['titulo'], 'creator': {'@type': 'Organization', 'name': 'Work Digital', 'url': SITE + '/'}},
+        {'@type': 'BreadcrumbList', 'itemListElement': [
+            {'@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': SITE + '/'},
+            {'@type': 'ListItem', 'position': 2, 'name': 'Cases', 'item': SITE + '/cases/'},
+            {'@type': 'ListItem', 'position': 3, 'name': c['titulo'], 'item': url}]}]}
 
 def apply(t, out):
     # artes: cópia exata (sem recompressão)
@@ -115,14 +143,14 @@ def apply(t, out):
     t, n = re.subn(r'(<div class="track" id="track">).*?(</a>)(\s*</div>\s*</div>\s*</section>)',
                    lambda m: m.group(1) + '\n        ' + fragment(first) + m.group(3), t, count=1, flags=re.S)
     assert n == 1
-    head = (f'<meta name="description" content="{e(first["seo_description"])}">\n'
-            f'<meta property="og:title" content="{e(first["seo_title"])}">\n'
-            f'<meta property="og:description" content="{e(first["seo_description"])}">\n'
-            f'<meta property="og:image" content="./cases/{first["slug"]}/01-home.webp">\n')
+    import a11y_seo as AS
+    head = AS.meta_block(first['seo_title'], first['seo_description'], f'/cases/{first["slug"]}/', 'article', og(first)) + \
+        AS.ld(case_ld(first)).replace('<script ', '<script id="wd-case-ld" ', 1) + '\n'
+    head = head.replace(AS.SITE, AS.TOKEN)
     t = re.sub(r'(<title>[^<]*</title>)', lambda m: '<title>' + e(first['seo_title']) + '</title>\n' + head, t, count=1)
     data = {'list': [{'slug': c['slug'], 'seo_title': c['seo_title'], 'seo_description': c['seo_description'],
-                      'og_image': f'./cases/{c["slug"]}/01-home.webp', 'html': fragment(c)} for c in DATA]}
-    js = JS.replace('__DATA__', json.dumps(data, ensure_ascii=False).replace('</', '<\\/'))
+                      'og_image': og(c), 'url': SITE + f'/cases/{c["slug"]}/', 'ld': case_ld(c), 'html': fragment(c)} for c in DATA]}
+    js = JS.replace('__DATA__', json.dumps(data, ensure_ascii=False).replace('</', '<\\/').replace(SITE, '__WD_SITE__'))
     t = t.replace('</style>', CSS.replace('<style>', '').replace('</style>\n', '') + '</style>', 1)
     t = t.replace('</main>', '</main>\n' + js, 1)
     # "Próximo case": ao fim do loader, abre o próximo case
@@ -143,7 +171,6 @@ def lightbox(t):
     b = "el.classList.add('case-lb-item');"
     assert t.count(b) == 1
     t = t.replace(b, "el.classList.add('case-lb-item');const cv=el.querySelector('video');if(cv){const ov=src.querySelector('video');cv.querySelectorAll('source').forEach(s=>{if(s.dataset.src)s.src=s.dataset.src;});cv.muted=true;cv.loop=true;cv.playsInline=true;if(!(matchMedia('(prefers-reduced-motion: reduce)').matches||document.documentElement.classList.contains('wd-lite'))){cv.preload='auto';cv.load();try{cv.currentTime=ov?ov.currentTime:0;}catch(x){}const p=cv.play();p&&p.catch(()=>{});}}")
-    return t
     c = """  items.forEach((m,i)=>{
     m.setAttribute('role','button');m.tabIndex=0;m.setAttribute('aria-label','Ver imagem '+(i+1)+' em tela cheia');
     m.addEventListener('click',()=>open(i));

@@ -317,3 +317,5 @@ import pointer_fix; pointer_fix.run(OUT)
 import titles; titles.run(OUT)
 
 import gtm; gtm.run(OUT)
+
+import a11y_seo; a11y_seo.run(OUT)
