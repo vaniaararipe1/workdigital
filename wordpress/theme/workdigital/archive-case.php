@@ -307,7 +307,6 @@ body{font-family:var(--text)}
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 <a class="wd-skip" href="#topo">Pular para o conteúdo</a>
-<button class="wd-pause" type="button" aria-pressed="false" data-wd-pause><svg class="off" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="3.5" height="12" rx="1" fill="currentColor"/></svg><svg class="on" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg><span class="t"><span class="off">Pausar animações</span><span class="on">Retomar animações</span></span></button>
 <div class="light-field" aria-hidden="true"><div class="light-field-inner"></div></div>
 <header class="site-header">
   <nav class="site-nav" aria-label="Navegação principal">
@@ -681,20 +680,6 @@ if (fine && !reduce) {
 html.wd-lite *,html.wd-lite *::before,html.wd-lite *::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}html.wd-lite .site-nav::before{background:rgba(18,19,22,.93)!important}html.wd-lite .dropdown{background:rgba(28,22,42,.97)!important}html.wd-lite .site-nav.wd-nav-open .nav-links{background:rgba(36,18,62,.97)!important}html.wd-lite .wd-contact-glass{background:rgba(18,19,22,.95)!important}html.wd-lite .wd-contact-backdrop{background:rgba(10,10,14,.55)!important}html.wd-lite .light-field-inner::before,html.wd-lite .light-field-inner::after,html.wd-lite .light-field-inner{animation:none!important}html.wd-lite .svc{--card:linear-gradient(125deg,rgba(96,37,225,.16),rgba(49,22,78,.26)),rgba(20,20,26,.94)}html.wd-lite .orb,html.wd-lite .orb2,html.wd-lite .orb::after{animation:none!important}</style>
 <style>/* Responsivo (todas as páginas) */
 html,body{overflow-x:clip}@media(min-width:981px) and (max-width:1180px){.site-header .site-nav{grid-template-columns:auto minmax(0,1fr) auto;gap:16px}.site-header .nav-links{gap:clamp(14px,2.1vw,28px)}.site-header .wd-nav-actions{gap:14px}}</style>
-<script>
-/* Pausar animações (WCAG 2.2.2): para animações em CSS, esconde as animações em canvas e pausa os vídeos automáticos */
-(function(){
-  const root=document.documentElement, btn=document.querySelector('[data-wd-pause]');
-  let on=false; try{on=localStorage.getItem('wdPaused')==='1';}catch(e){}
-  const auto=v=>!v.classList.contains('vm-video')&&!v.closest('.case-lb');
-  function apply(){root.classList.toggle('wd-paused',on);btn&&btn.setAttribute('aria-pressed',String(on));
-    if(on)document.querySelectorAll('video').forEach(v=>{if(auto(v))v.pause();});}
-  document.addEventListener('play',e=>{if(on&&e.target.tagName==='VIDEO'&&auto(e.target))e.target.pause();},true);
-  btn&&btn.addEventListener('click',()=>{on=!on;try{localStorage.setItem('wdPaused',on?'1':'0');}catch(e){}apply();});
-  window.wdIsPaused=()=>on;
-  apply();
-})();
-</script>
 <?php wp_footer(); ?>
 </body>
 </html>

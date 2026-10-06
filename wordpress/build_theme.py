@@ -60,8 +60,11 @@ def split(t):
         head, body = t[:i], t[i:]
     return head, body
 
+# sem o botão "Pausar animações" (pedido da Work); quem prefere menos movimento continua atendido pelo ajuste do sistema
+NO_PAUSE = [r'<button class="wd-pause"[^>]*>.*?</button>\s*', r'<script>\s*/\* Pausar animações.*?</script>\s*']
+
 def clean(t):
-    for p in STRIP: t = re.sub(p, '', t, flags=re.S)
+    for p in STRIP + NO_PAUSE: t = re.sub(p, '', t, flags=re.S)
     return t
 
 def paths(t):

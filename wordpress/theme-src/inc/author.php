@@ -48,7 +48,40 @@ function wd_bio_user() {
 function wd_bio_url() { return wd_url('bio/'); }
 function wd_user_img($user, $key, $size = 'medium') {
     $id = (int) get_user_meta($user->ID, $key, true);
-    return $id ? wp_get_attachment_image_url($id, $size) : '';
+    if ($id) return wp_get_attachment_image_url($id, $size);
+    // sem foto própria: usa a foto do Gravatar (pelo e-mail do usuário)
+    if ($key === 'wd_foto') return get_avatar_url($user, ['size' => $size === 'thumbnail' ? 96 : 480, 'default' => 'mp']);
+    return '';
+}
+
+// perfil público do Gravatar (nome, "sobre", cargo e redes), guardado por 12 horas
+function wd_gravatar_profile($user) {
+    if (!$user || !$user->user_email) return [];
+    $hash = hash('sha256', strtolower(trim($user->user_email)));
+    $k = 'wd_grav_' . substr($hash, 0, 20);
+    $p = get_transient($k);
+    if ($p === false) {
+        $r = wp_remote_get('https://api.gravatar.com/v3/profiles/' . $hash, ['timeout' => 5]);
+        $p = (!is_wp_error($r) && wp_remote_retrieve_response_code($r) === 200) ? (json_decode(wp_remote_retrieve_body($r), true) ?: []) : [];
+        set_transient($k, $p, $p ? 12 * HOUR_IN_SECONDS : HOUR_IN_SECONDS);
+    }
+    return $p;
+}
+// dados da bio: o que estiver preenchido no WordPress vale; o que faltar vem do Gravatar
+function wd_bio_data($user) {
+    $g = wd_gravatar_profile($user);
+    $links = array_values(array_filter([get_user_meta($user->ID, 'wd_linkedin', true), get_user_meta($user->ID, 'wd_instagram', true)]));
+    $named = [];
+    if (get_user_meta($user->ID, 'wd_linkedin', true)) $named['LinkedIn'] = get_user_meta($user->ID, 'wd_linkedin', true);
+    if (get_user_meta($user->ID, 'wd_instagram', true)) $named['Instagram'] = get_user_meta($user->ID, 'wd_instagram', true);
+    foreach ($g['verified_accounts'] ?? [] as $a) if (!empty($a['url']) && !in_array($a['url'], $links, true)) $named[$a['service_label'] ?? $a['service_type'] ?? 'Perfil'] = $a['url'];
+    foreach ($g['links'] ?? [] as $l) if (!empty($l['url'])) $named[$l['label'] ?? 'Site'] = $l['url'];
+    return [
+        'name' => $user->display_name,
+        'cargo' => get_user_meta($user->ID, 'wd_cargo', true) ?: trim(($g['job_title'] ?? '') . (!empty($g['company']) ? ' · ' . $g['company'] : '')),
+        'bio' => get_the_author_meta('description', $user->ID) ?: ($g['description'] ?? ''),
+        'links' => $named,
+    ];
 }
 
 // arquivo de autor (/author/...) leva para a bio: o site tem uma única autoria

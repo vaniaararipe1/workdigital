@@ -32,7 +32,18 @@ Aparência › Temas › Adicionar novo › Enviar tema › `workdigital-tema.zi
 
 ## 4. Conteúdo (cases, artigos, páginas e configurações)
 
-Com acesso SSH e WP-CLI na hospedagem, a partir da pasta do WordPress:
+**Sem SSH (pela internet):** com o tema ativo, crie uma senha de aplicativo (Usuários › Seu perfil ›
+Senhas de aplicativo) e rode, a partir do repositório:
+
+```bash
+WD_SENHA_APP='senha de aplicativo' python3 wordpress/enviar.py https://workdigital.art.br seu-login
+```
+
+O script instala e ativa o Yoast, envia os 246 arquivos para a Biblioteca de mídia, cria as páginas, os 22 artigos
+e os 16 cases, e configura os endereços e o Yoast. Leva uns 5 minutos. Se cair no meio, rode de novo: continua de onde parou.
+Ao terminar, apague a senha de aplicativo.
+
+**Com SSH e WP-CLI**, a partir da pasta do WordPress:
 
 ```bash
 WD_BASE=/caminho/do/repositorio WD_AUTOR=seu-login wp eval-file /caminho/do/repositorio/wordpress/importar.php
@@ -48,11 +59,11 @@ Sem SSH: peça à hospedagem para rodar o comando acima (é uma vez só).
 
 ## 5. Depois da importação
 
-1. **Configurações › Links permanentes**: estrutura personalizada `/blog/%postname%/`, base das categorias
-   `blog/categoria`. Salve (isso também atualiza os endereços dos cases, `/cases/nome-do-case/`).
-2. **Usuários › Seu perfil**: nome de exibição, "Informações biográficas" (texto da bio), cargo, foto,
-   assinatura manuscrita (opcional), LinkedIn e Instagram. Foto e assinatura: suba a imagem na Biblioteca de mídia
-   e cole o número (ID) do arquivo.
+1. **Configurações › Links permanentes**: só clique em Salvar (o envio já define `/blog/%postname%/`; salvar
+   garante o arquivo .htaccess da hospedagem).
+2. **Bio**: a foto vem do **Gravatar** do e-mail do seu usuário. Se os campos do WordPress estiverem vazios,
+   o texto "sobre", o cargo e as redes também vêm do seu perfil público no Gravatar. O que for preenchido em
+   Usuários › Seu perfil (nome de exibição, Informações biográficas, cargo, LinkedIn, Instagram, assinatura) tem prioridade.
 3. **Páginas › Política de privacidade**: revise o texto e publique. O aviso de cookies passa a mostrar o link.
 4. **Configurações › Geral**: e-mail que recebe as propostas.
 5. **Google Tag Manager**: o contêiner GTM-592RCDK9 já está no tema, com o Modo de Consentimento
@@ -85,7 +96,7 @@ A home mostra sempre os 3 artigos mais recentes.
 - Mesmo visual das páginas aprovadas (o tema é gerado a partir delas).
 - SEO: Yoast + dados estruturados próprios (planos e FAQ em Soluções, CreativeWork nos cases, ProfilePage na bio).
 - Redirecionamentos 301 das 64 URLs do site atual (as `/en/` vão para a home com 302 até a versão em inglês).
-- Acessibilidade: "Pular para o conteúdo", foco visível, "Pausar animações", títulos em ordem.
+- Acessibilidade: "Pular para o conteúdo", foco visível, títulos em ordem, animações reduzidas para quem pede menos movimento no sistema.
 - Imagens com versões menores automáticas (qualidade 90, originais preservadas).
 - Aviso de cookies (LGPD) ligado ao Modo de Consentimento do Google.
 - Formulário "Solicitar proposta" com proteção contra robôs e limite de envios.

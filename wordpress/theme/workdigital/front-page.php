@@ -318,7 +318,6 @@ button{font:inherit}
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 <a class="wd-skip" href="#conteudo">Pular para o conteúdo</a>
-<button class="wd-pause" type="button" aria-pressed="false" data-wd-pause><svg class="off" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1" fill="currentColor"/><rect x="9.5" y="2" width="3.5" height="12" rx="1" fill="currentColor"/></svg><svg class="on" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg><span class="t"><span class="off">Pausar animações</span><span class="on">Retomar animações</span></span></button>
 <div class="light-field" aria-hidden="true"><div class="light-field-inner"></div></div>
 <header class="site-header">
   <nav class="site-nav" aria-label="Navegação principal">
@@ -1432,20 +1431,6 @@ document.querySelectorAll(".wd-works-card").forEach(card => {
   card.addEventListener("pointerenter", e => { if (wdMouse(e)) ctl.play(); }); card.addEventListener("pointerleave", ctl.stop);
   card.addEventListener("focus", ctl.play); card.addEventListener("blur", ctl.stop);
 });
-</script>
-<script>
-/* Pausar animações (WCAG 2.2.2): para animações em CSS, esconde as animações em canvas e pausa os vídeos automáticos */
-(function(){
-  const root=document.documentElement, btn=document.querySelector('[data-wd-pause]');
-  let on=false; try{on=localStorage.getItem('wdPaused')==='1';}catch(e){}
-  const auto=v=>!v.classList.contains('vm-video')&&!v.closest('.case-lb');
-  function apply(){root.classList.toggle('wd-paused',on);btn&&btn.setAttribute('aria-pressed',String(on));
-    if(on)document.querySelectorAll('video').forEach(v=>{if(auto(v))v.pause();});}
-  document.addEventListener('play',e=>{if(on&&e.target.tagName==='VIDEO'&&auto(e.target))e.target.pause();},true);
-  btn&&btn.addEventListener('click',()=>{on=!on;try{localStorage.setItem('wdPaused',on?'1':'0');}catch(e){}apply();});
-  window.wdIsPaused=()=>on;
-  apply();
-})();
 </script>
 <?php wp_footer(); ?>
 </body>

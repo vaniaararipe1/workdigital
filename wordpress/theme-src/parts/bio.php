@@ -5,20 +5,21 @@ $u = wd_bio_user();
 $photo = $u ? wd_user_img($u, 'wd_foto', 'large') : '';
 $sign = $u ? wd_user_img($u, 'wd_assinatura', 'medium') : '';
 $posts = $u ? get_posts(['author' => $u->ID, 'numberposts' => 6]) : [];
+$bio = $u ? wd_bio_data($u) : ['name' => 'Work Digital', 'cargo' => '', 'bio' => '', 'links' => []];
 ?>
   <section class="wd-bio wrap">
     <div class="wd-bio-head">
       <?php if ($photo) : ?><img class="wd-bio-photo" src="<?php echo esc_url($photo); ?>" alt="<?php echo esc_attr($u->display_name); ?>" width="320" height="320"><?php endif; ?>
       <div>
         <p class="up grad">Quem escreve</p>
-        <h1><?php echo esc_html($u ? $u->display_name : 'Work Digital'); ?></h1>
-        <?php $cargo = $u ? get_user_meta($u->ID, 'wd_cargo', true) : ''; if ($cargo) : ?><p class="wd-bio-role"><?php echo esc_html($cargo); ?></p><?php endif; ?>
+        <h1><?php echo esc_html($bio['name']); ?></h1>
+        <?php if ($bio['cargo']) : ?><p class="wd-bio-role"><?php echo esc_html($bio['cargo']); ?></p><?php endif; ?>
         <ul class="wd-bio-social">
-          <?php foreach (['wd_linkedin' => 'LinkedIn', 'wd_instagram' => 'Instagram'] as $k => $l) { $v = $u ? get_user_meta($u->ID, $k, true) : ''; if ($v) echo '<li><a href="' . esc_url($v) . '" target="_blank" rel="noopener me">' . $l . '</a></li>'; } ?>
+          <?php foreach ($bio['links'] as $l => $v) echo '<li><a href="' . esc_url($v) . '" target="_blank" rel="noopener me">' . esc_html($l) . '</a></li>'; ?>
         </ul>
       </div>
     </div>
-    <div class="wd-bio-text"><?php echo $u ? wpautop(wp_kses_post(get_the_author_meta('description', $u->ID))) : ''; ?>
+    <div class="wd-bio-text"><?php echo wpautop(wp_kses_post($bio['bio'])); ?>
       <?php if ($sign) : ?><img class="wd-bio-sign" src="<?php echo esc_url($sign); ?>" alt="Assinatura de <?php echo esc_attr($u->display_name); ?>"><?php endif; ?>
     </div>
     <?php if ($posts) : ?>
@@ -28,8 +29,8 @@ $posts = $u ? get_posts(['author' => $u->ID, 'numberposts' => 6]) : [];
   </section>
 <?php
 if ($u) {
-    $same = array_values(array_filter([get_user_meta($u->ID, 'wd_linkedin', true), get_user_meta($u->ID, 'wd_instagram', true)]));
-    wd_ld(['@context' => 'https://schema.org', '@type' => 'ProfilePage', 'mainEntity' => array_filter(['@type' => 'Person', 'name' => $u->display_name,
-        'jobTitle' => get_user_meta($u->ID, 'wd_cargo', true) ?: null, 'image' => $photo ?: null, 'sameAs' => $same ?: null,
+    $same = array_values($bio['links']);
+    wd_ld(['@context' => 'https://schema.org', '@type' => 'ProfilePage', 'mainEntity' => array_filter(['@type' => 'Person', 'name' => $bio['name'],
+        'jobTitle' => $bio['cargo'] ?: null, 'image' => $photo ?: null, 'sameAs' => $same ?: null,
         'worksFor' => ['@type' => 'Organization', 'name' => 'Work Digital', 'url' => home_url('/')]])]);
 }
