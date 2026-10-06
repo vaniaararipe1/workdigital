@@ -104,9 +104,11 @@ function wd_imp_case($c, $author_id, $files) {
 // endereços, Yoast e regras de reescrita
 function wd_imp_finish($s) {
     wd_imp_includes();
-    update_option('permalink_structure', '/blog/%postname%/');
-    update_option('category_base', 'blog/categoria');
-    update_option('tag_base', 'blog/tag');
+    global $wp_rewrite;
+    // aplica na própria requisição (só gravar a opção deixaria as regras antigas até a próxima)
+    $wp_rewrite->set_permalink_structure('/blog/%postname%/');
+    $wp_rewrite->set_category_base('blog/categoria');
+    $wp_rewrite->set_tag_base('blog/tag');
     update_option('timezone_string', 'America/Sao_Paulo');
     update_option('default_comment_status', 'closed');
     update_option('blogdescription', 'Criação de sites profissionais');
