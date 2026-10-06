@@ -57,19 +57,45 @@ if not info['yoast']:
 print('Páginas:', ok(call('POST', '/wd/v1/import/setup', json={'pages': data['pages'], 'categories': data['categories']}), 'páginas')['paginas'])
 
 # 4. arquivos
+# mapa local arquivo -> ID no WordPress (para retomar sem reenviar, inclusive o que foi pelo envio padrão da mídia)
+from urllib.parse import urlparse
+MAPF = os.path.join(ROOT, 'wordpress', 'importacao', '.ids-' + urlparse(site).netloc + '.json')
+idmap = json.load(open(MAPF)) if os.path.exists(MAPF) else {}
+MIME = {'.webp': 'image/webp', '.jpg': 'image/jpeg', '.png': 'image/png', '.mp4': 'video/mp4', '.webm': 'video/webm'}
+
+def upload_core(path, name, alt, anim):
+    # envio padrão da mídia do WordPress (corpo direto, sem formulário). WebP animado: sem gerar versões
+    # menores, porque o editor de imagens de algumas hospedagens trava nesse tipo de arquivo.
+    with open(path, 'rb') as fh: body = fh.read()
+    r = call('POST', '/wp/v2/media', params={'generate_sub_sizes': 'false'} if anim else None, data=body,
+             headers={'Content-Type': MIME[os.path.splitext(path)[1]], 'Content-Disposition': f'attachment; filename="{name}"'})
+    mid = ok(r, 'envio ' + name)['id']
+    if alt: call('POST', f'/wp/v2/media/{mid}', json={'alt_text': alt})
+    return mid
+
 cache = {}
 def media(f):
     rel = f['file']
     if rel in cache: return cache[rel]
+    if rel in idmap: cache[rel] = idmap[rel]; return idmap[rel]
     path = os.path.join(ROOT, rel)
     h = hashlib.md5(open(path, 'rb').read()).hexdigest()
     found = ok(call('GET', '/wd/v1/import/media', params={'src': rel, 'hash': h}), 'consulta ' + rel)['id']
     if not found:
         name = (os.path.basename(os.path.dirname(path)) + '-' + os.path.basename(path)) if '/cases/' in rel else os.path.basename(path)
-        with open(path, 'rb') as fh:
-            found = ok(call('POST', '/wd/v1/import/media', files={'file': (name, fh)}, data={'src': rel, 'hash': h, 'alt': f.get('alt', ''), 'name': name}), 'envio ' + rel)['id']
+        name = name.replace('.anim.webp', '-anim.webp')  # alguns filtros de hospedagem esvaziam arquivos com dois pontos no nome
+        anim = rel.endswith('.anim.webp')
+        r = None
+        if not anim:
+            with open(path, 'rb') as fh:
+                r = call('POST', '/wd/v1/import/media', files={'file': (name, fh)}, data={'src': rel, 'hash': h, 'alt': f.get('alt', ''), 'name': name})
+        if r is not None and not isinstance(r, Exception) and r.status_code < 300:
+            found = r.json()['id']
+        else:  # formulário bloqueado pelo firewall da hospedagem, ou WebP animado: usa o envio padrão
+            found = upload_core(path, name, f.get('alt', ''), anim)
         print('  enviado', rel, '->', found)
-    cache[rel] = found
+    cache[rel] = idmap[rel] = found
+    json.dump(idmap, open(MAPF, 'w'), indent=0)
     return found
 
 kw = {}
