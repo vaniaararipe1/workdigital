@@ -34,10 +34,10 @@
  const pauseTimers=new Map();
  function show(index){current=index;media.forEach((el,i)=>{const visible=i===index;clearTimeout(pauseTimers.get(el));pauseTimers.delete(el);el.classList.toggle('is-visible',visible);const v=el.querySelector('video');if(visible){if(reduced.matches)v.pause();else v.play().catch(()=>{});}else if(reduced.matches)v.pause();else pauseTimers.set(el,setTimeout(()=>{if(!el.classList.contains('is-visible'))v.pause();pauseTimers.delete(el);},900));});}
  cards.forEach((card,i)=>{card.addEventListener('mouseenter',()=>show(i));card.addEventListener('focusin',()=>show(i));card.addEventListener('mouseleave',()=>show(0));card.addEventListener('focusout',()=>show(0));});
- function resize(){if(stacked.matches)return;const h=list.getBoundingClientRect().height;const inner=Math.max(0,h-40);body.style.setProperty('--wd-panel-height',h+'px');body.style.setProperty('--wd-media-height',inner+'px');body.style.setProperty('--wd-media-width',(inner*9/11)+'px');}
+ function resize(){['--wd-panel-height','--wd-media-height','--wd-media-width'].forEach(p=>body.style.removeProperty(p));if(stacked.matches){body.style.removeProperty('--wd-photo-col');return;}const bw=body.getBoundingClientRect().width;if(!bw)return;let col=parseFloat(body.style.getPropertyValue('--wd-photo-col'))||Math.min(640,Math.max(380,bw*.475));for(let i=0;i<10;i++){body.style.setProperty('--wd-photo-col',col+'px');list.style.alignSelf='start';const h=list.getBoundingClientRect().height;list.style.alignSelf='';const next=Math.min(bw*.5,Math.max(380,(h-40)*9/11+40));if(Math.abs(next-col)<1){col=next;break;}col+=(next-col)*.7;}body.style.setProperty('--wd-photo-col',col.toFixed(1)+'px');return;const h=list.getBoundingClientRect().height;const inner=Math.max(0,h-40);body.style.setProperty('--wd-panel-height',h+'px');body.style.setProperty('--wd-media-height',inner+'px');body.style.setProperty('--wd-media-width',(inner*9/11)+'px');}
  new ResizeObserver(resize).observe(list);stacked.addEventListener('change',resize);reduced.addEventListener('change',()=>show(current));
  new IntersectionObserver(entries=>{if(entries[0].isIntersecting)show(current);else media.forEach(el=>el.querySelector('video').pause());}).observe(root);
- resize();show(0);
+ resize();if(media[0])media[0].classList.add('is-visible');
 })();
 /* MENU mobile: navegação e SOLUÇÕES com toque e teclado. */
 (() => {
