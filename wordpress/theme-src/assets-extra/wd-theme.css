@@ -1,0 +1,27 @@
+/* Peças novas do WordPress: assinatura do artigo, bio, páginas comuns e 404 (mesmo visual do blog) */
+.wd-sign{margin:40px 0 0;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.wd-sign img{max-height:64px;width:auto}
+#body .wd-sign p{margin:0;color:#4a4458}
+#body .wd-sign a{color:#6025E1;font-weight:600}
+.by a.au{color:inherit;text-decoration:none}.by a.au:hover{text-decoration:underline}
+.wd-bio,.wd-page{padding:clamp(140px,16vw,200px) 0 clamp(80px,10vw,140px);max-width:980px}
+.wd-bio-head{display:flex;gap:clamp(24px,4vw,48px);align-items:center;flex-wrap:wrap}
+.wd-bio-photo{width:clamp(140px,18vw,220px);height:clamp(140px,18vw,220px);border-radius:50%;object-fit:cover;flex:none}
+.wd-bio h1,.wd-page h1{margin:8px 0 6px;font:500 clamp(40px,5.5vw,76px)/1 var(--display,"Space Grotesk",sans-serif);letter-spacing:-.045em;color:var(--ink,#17131F)}
+.wd-bio-role{margin:0;font-size:18px;color:#4a4458}
+.wd-bio-social{list-style:none;display:flex;gap:18px;padding:0;margin:16px 0 0}
+.wd-bio-social a,.wd-404-links a,.wd-bio-posts a{color:#6025E1;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.wd-bio-text{margin:clamp(32px,4vw,56px) 0 0;font-size:18px;line-height:1.75;color:#2c2638;max-width:70ch}
+.wd-bio-sign{display:block;margin-top:24px;max-height:80px;width:auto}
+.wd-bio-h2{margin:56px 0 18px;font:500 clamp(26px,2.4vw,34px)/1.1 var(--display,"Space Grotesk",sans-serif);letter-spacing:-.03em;color:var(--ink,#17131F)}
+.wd-bio-posts{list-style:none;padding:0;margin:0;border-top:1px solid rgba(23,19,31,.1)}
+.wd-bio-posts li{border-bottom:1px solid rgba(23,19,31,.1)}
+.wd-bio-posts a{display:flex;gap:24px;padding:18px 0;text-decoration:none;color:var(--ink,#17131F);font-weight:500}
+.wd-bio-posts a span{flex:none;width:110px;color:#6b6478;font-weight:400}
+.wd-bio-posts a:hover{color:#6025E1}
+.wd-page-body{font-size:17px;line-height:1.75;color:#2c2638;max-width:72ch}
+.wd-page-body h2{margin:40px 0 12px;font:500 26px/1.2 var(--display,"Space Grotesk",sans-serif);color:var(--ink,#17131F)}
+.wd-page-body a{color:#6025E1}
+.wd-404 p{font-size:18px;color:#4a4458}
+.wd-404-links{list-style:none;display:flex;flex-wrap:wrap;gap:14px 28px;padding:0;margin:20px 0 0;font-size:18px}
+@media(max-width:600px){.wd-bio-posts a{flex-direction:column;gap:4px}}

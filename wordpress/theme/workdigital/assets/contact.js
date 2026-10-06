@@ -1,0 +1,146 @@
+/* Contato Work Digital — vidro único com o menu. Envio permanece pendente até configurar o endpoint. */
+(() => {
+ 'use strict';
+ const URL_ENVIO='';
+ const URL_PRIVACIDADE='';
+ const CONFIG={endpoint:URL_ENVIO,privacyUrl:URL_PRIVACIDADE,...window.WD_CONTACT_CONFIG};
+ const PANEL_W=477, R=32, RI=24, FIL=20;
+ const nav=document.querySelector('.site-nav'),header=nav?.closest('.site-header');let ctaMenu=nav?.querySelector('.nav-cta');
+ if(!nav||!header||!ctaMenu||document.querySelector('.wd-contact'))return;
+ // The proposal CTA is an action, never a navigation link (including middle-click).
+ if(ctaMenu.tagName==='A'){const button=document.createElement('button');for(const attr of ctaMenu.attributes)if(!['href','target','rel','onclick'].includes(attr.name))button.setAttribute(attr.name,attr.value);button.type='button';button.innerHTML=ctaMenu.innerHTML;ctaMenu.replaceWith(button);ctaMenu=button}
+ const source=new URL(document.currentScript?.src||'/contact.js',document.baseURI);
+ const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('contact.css?v=20261003-contact-minimal',source).href;document.head.append(css);
+ const font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&family=Space+Grotesk:wght@400;500;600&display=swap';document.head.append(font);
+ const animationReady=window.gsap?Promise.resolve(window.gsap):new Promise(resolve=>{const script=document.createElement('script');script.src='https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js';script.onload=()=>resolve(window.gsap);script.onerror=()=>resolve(null);document.head.append(script)});
+ document.documentElement.classList.add('wd-contact-root');
+ const stage=document.createElement('div');stage.className='wd-contact-stage';stage.setAttribute('aria-hidden','true');
+ stage.innerHTML='<svg class="wd-contact-lines" xmlns="http://www.w3.org/2000/svg"><defs><filter id="wdContactShadow" x="-20%" y="-20%" width="140%" height="160%"><feGaussianBlur stdDeviation="27"/></filter></defs><path class="wd-contact-shadow"/></svg><div class="wd-contact-glass"></div><svg class="wd-contact-lines" xmlns="http://www.w3.org/2000/svg"><path class="wd-contact-stroke"/></svg>';
+ header.insertBefore(stage,nav);const glass=stage.querySelector('.wd-contact-glass');
+ const backdrop=document.createElement('div');backdrop.className='wd-contact-backdrop';backdrop.setAttribute('aria-hidden','true');document.body.append(backdrop);
+ const box=document.createElement('section');box.id='wd-contact';box.className='wd-contact';box.dataset.open='false';box.setAttribute('aria-label','Contato Work Digital');
+ box.innerHTML=`<div class="wd-contact-body" id="wd-contact-body" inert><div class="wd-contact-heading"><p class="wd-contact-uptitle wd-uptitle wd-contact-anim">CONTATO</p><h2 class="wd-contact-title wd-contact-anim" id="wd-contact-heading">Vamos trabalhar juntos.</h2></div><form class="wd-contact-form" novalidate>
+ ${[['nome','Nome completo','text','name'],['email','E-mail','email','email'],['empresa','Empresa ou site','text','organization'],['ideia','Qual é a sua ideia?','textarea','off'],['origem','Como você conheceu a Work?','text','off']].map(([name,label,type,auto])=>`<div class="wd-contact-field wd-contact-anim"><label class="wd-contact-sr-only" for="wd-contact-${name}">${label}</label>${type==='textarea'?`<textarea class="wd-contact-input" id="wd-contact-${name}" name="${name}" rows="1" placeholder="${label}" aria-describedby="wd-contact-${name}-error"></textarea>`:`<input class="wd-contact-input" id="wd-contact-${name}" name="${name}" type="${type}" autocomplete="${auto}" placeholder="${label}" ${name==='nome'||name==='email'?'required':''} aria-describedby="wd-contact-${name}-error">`}<span class="wd-contact-field-error" id="wd-contact-${name}-error" aria-live="polite"></span></div>`).join('')}
+ <div class="wd-contact-foot wd-contact-anim"><p class="wd-contact-privacy">Ao enviar, você concorda que seus dados serão tratados de acordo com a nossa <a class="wd-contact-privacy-link" target="_blank" rel="noopener">Política de Privacidade</a></p><button class="wd-contact-submit nav-cta wd-cta" type="submit">ENVIAR <span aria-hidden="true">↗</span></button></div></form>
+ <div class="wd-contact-result" role="status" aria-live="polite" hidden><h2 class="wd-contact-result-title"></h2><p class="wd-contact-result-text"></p><p class="wd-contact-result-note" hidden></p><button class="wd-contact-close nav-cta wd-cta" type="button">FECHAR <span aria-hidden="true">✕</span></button></div></div>`;
+ document.body.append(box);
+ const body=box.querySelector('.wd-contact-body'),form=box.querySelector('form'),fields=[...box.querySelectorAll('.wd-contact-field')],foot=box.querySelector('.wd-contact-foot'),submit=box.querySelector('.wd-contact-submit'),result=box.querySelector('.wd-contact-result'),heading=box.querySelector('.wd-contact-heading'),blocks=[...box.querySelectorAll('.wd-contact-anim')];
+ const privacy=box.querySelector('.wd-contact-privacy-link');if(CONFIG.privacyUrl)privacy.href=CONFIG.privacyUrl;else{privacy.removeAttribute('target');privacy.setAttribute('aria-disabled','true');privacy.title='URL oficial da Política de Privacidade pendente de configuração'}
+ const toggle=nav.querySelector('.mobile-toggle'),links=nav.querySelector('.nav-links');
+ const mobileCTA=document.createElement('button');mobileCTA.className='wd-contact-mobile-trigger nav-cta wd-cta';mobileCTA.type='button';mobileCTA.setAttribute('data-wd-contact','');mobileCTA.innerHTML='SOLICITAR PROPOSTA <span aria-hidden="true">↗</span>';links?.append(mobileCTA);
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)'),mobile=matchMedia('(max-width:768px)');
+ const originalMarkup=ctaMenu.innerHTML,originalLabel=ctaMenu.getAttribute('aria-label'),originalWidth=ctaMenu.style.width,toggleControls=toggle?.getAttribute('aria-controls');
+ let isOpen=false,closing=false,anim=null,labelTween=null,gsapAPI=null,opener=ctaMenu,closeControl=ctaMenu,scrollY=0,bodyStyle='',inertStates=[],sending=false,requestController=null,session=0;
+ let headerRestore=[];
+ const s={W:0,H:0};animationReady.then(g=>gsapAPI=g);
+ function shapePath(n,W,H){
+  const x0=n.left,y0=n.top,x1=n.right,y1=n.bottom;
+  if(H<.01)return `M${x0+R},${y0} H${x1-R} A${R},${R} 0 0 1 ${x1},${y0+R} V${y1-R} A${R},${R} 0 0 1 ${x1-R},${y1} H${x0+R} A${R},${R} 0 0 1 ${x0},${y1-R} V${y0+R} A${R},${R} 0 0 1 ${x0+R},${y0} Z`;
+  const rb=R+(RI-R)*Math.min(1,H/60),rl=Math.min(RI,H*.4),f=Math.min(FIL,H*.5),px=x1-W,yb=y1+H;
+  return `M${x0+R},${y0} H${x1-R} A${R},${R} 0 0 1 ${x1},${y0+R} V${yb-rb} A${rb},${rb} 0 0 1 ${x1-rb},${yb} H${px+rl} A${rl},${rl} 0 0 1 ${px},${yb-rl} V${y1+f} A${f},${f} 0 0 0 ${px-f},${y1} H${x0+R} A${R},${R} 0 0 1 ${x0},${y1-R} V${y0+R} A${R},${R} 0 0 1 ${x0+R},${y0} Z`;
+ }
+ function shapePathMobile(n,H){const r0=parseFloat(getComputedStyle(nav).borderTopLeftRadius)||17,r=r0+(RI-r0)*Math.min(1,H/60),yb=n.bottom+H;return `M${n.left+r0},${n.top} H${n.right-r0} A${r0},${r0} 0 0 1 ${n.right},${n.top+r0} V${yb-r} A${r},${r} 0 0 1 ${n.right-r},${yb} H${n.left+r} A${r},${r} 0 0 1 ${n.left},${yb-r} V${n.top+r0} A${r0},${r0} 0 0 1 ${n.left+r0},${n.top} Z`}
+ function targetHeight(){const n=nav.getBoundingClientRect();return Math.max(0,mobile.matches?innerHeight-n.bottom-12:Math.min(600,innerHeight-n.bottom-24))}
+ function panelWidth(){return mobile.matches?nav.getBoundingClientRect().width:Math.min(PANEL_W,nav.getBoundingClientRect().width)}
+ function draw(){const n=nav.getBoundingClientRect(),d=mobile.matches?shapePathMobile(n,s.H):shapePath(n,s.W,s.H);glass.style.clipPath=`path("${d}")`;glass.style.webkitClipPath=`path("${d}")`;stage.querySelectorAll('path').forEach(p=>p.setAttribute('d',d));Object.assign(box.style,{left:(mobile.matches?n.left:n.right-panelWidth())+'px',top:n.bottom+'px',width:panelWidth()+'px',height:s.H+'px'});box.style.setProperty('--wd-contact-height',s.H+'px')}
+ function revealMenu(){
+  headerRestore=[];
+  for(const el of [header,nav]){
+   const style=getComputedStyle(el),rect=el.getBoundingClientRect(),props=[];
+   if(style.visibility==='hidden')props.push(['visibility','visible']);
+   if(style.display==='none')props.push(['display',el===nav?'flex':'block']);
+   if(Number(style.opacity)===0)props.push(['opacity','1']);
+   if(rect.bottom<=0&&style.transform!=='none')props.push(['transform','none']);
+   for(const [key,value] of props){headerRestore.push([el,key,el.style.getPropertyValue(key),el.style.getPropertyPriority(key)]);el.style.setProperty(key,value,'important')}
+  }
+ }
+ function restoreMenu(){headerRestore.forEach(([el,key,value,priority])=>{if(value)el.style.setProperty(key,value,priority);else el.style.removeProperty(key)});headerRestore=[]}
+ function lockPage(){scrollY=window.scrollY;bodyStyle=document.body.getAttribute('style')||'';document.body.style.position='fixed';document.body.style.top=-scrollY+'px';document.body.style.width='100%';document.body.style.overflow='hidden';const nodes=[...document.body.children].filter(el=>![box,header,backdrop].includes(el)&&!['SCRIPT','STYLE','LINK'].includes(el.tagName));nodes.push(...[...nav.querySelectorAll('a,button')].filter(el=>el!==closeControl));inertStates=nodes.map(el=>[el,el.inert]);inertStates.forEach(([el])=>el.inert=true)}
+ function unlockPage(){inertStates.forEach(([el,value])=>el.inert=value);inertStates=[];document.body.setAttribute('style',bodyStyle);window.scrollTo({top:scrollY,left:0,behavior:'instant'})}
+ function swapLabel(open){labelTween?.kill();if(open){const width=ctaMenu.getBoundingClientRect().width;if(width)ctaMenu.style.width=width+'px';ctaMenu.innerHTML='<i class="wd-contact-cta-label"></i>';const label=ctaMenu.firstElementChild;label.innerHTML=originalMarkup;const replace=()=>{ctaMenu.classList.add('wd-contact-close-trigger');label.innerHTML='<span class="wd-contact-close-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>'};if(gsapAPI&&!reduced.matches)labelTween=gsapAPI.timeline().to(label,{opacity:0,y:-4,duration:.15}).add(replace).to(label,{opacity:1,y:0,duration:.15});else replace();ctaMenu.setAttribute('aria-label','Fechar contato')}else{ctaMenu.classList.remove('wd-contact-close-trigger');ctaMenu.innerHTML=originalMarkup;ctaMenu.style.width=originalWidth;if(originalLabel===null)ctaMenu.removeAttribute('aria-label');else ctaMenu.setAttribute('aria-label',originalLabel)}}
+ function setExpanded(open){[ctaMenu,mobileCTA].forEach(el=>el.setAttribute('aria-expanded',String(open)));if(closeControl===toggle){toggle.setAttribute('aria-label',open?'Fechar contato':'Abrir menu');toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-controls',open?body.id:toggleControls||'wd-nav-links')}}
+ function resetResult(){form.hidden=false;heading.hidden=false;form.style.opacity='1';result.hidden=true;result.style.opacity='0';submit.disabled=false;submit.innerHTML='ENVIAR <span aria-hidden="true">↗</span>';sending=false}
+ function cleanup(){closing=false;box.dataset.open='false';box.classList.remove('is-on','is-opening','is-closing');box.removeAttribute('role');box.removeAttribute('aria-modal');box.removeAttribute('aria-labelledby');stage.classList.remove('is-on');nav.classList.remove('wd-contact-open');header.classList.remove('wd-contact-header-open');backdrop.classList.remove('is-on');backdrop.style.opacity='0';body.inert=true;body.style.opacity='1';body.style.transform='none';resetResult();swapLabel(false);unlockPage();restoreMenu();if(opener?.isConnected){if(opener===mobileCTA){nav.classList.add('wd-nav-open');toggle?.setAttribute('aria-expanded','true');toggle?.setAttribute('aria-label','Fechar menu')}opener.focus({preventScroll:true})}}
+ async function abrirContato(trigger=ctaMenu){
+  if(isOpen||closing)return;isOpen=true;session++;const openSession=session;opener=trigger;revealMenu();resetResult();nav.classList.remove('wd-nav-open');toggle?.setAttribute('aria-expanded','false');
+  nav.querySelectorAll('.nav-item').forEach(item=>{item.classList.remove('wd-dropdown-open','wd-solutions-open');item.classList.add('wd-dropdown-dismissed');item.querySelector('.nav-trigger')?.setAttribute('aria-expanded','false')});
+  closeControl=ctaMenu.getBoundingClientRect().width?ctaMenu:toggle;lockPage();
+  box.dataset.open='true';box.classList.add('is-opening');body.style.opacity='1';body.style.transform='none';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-labelledby','wd-contact-heading');body.inert=false;form.inert=true;setExpanded(true);closeControl?.focus({preventScroll:true});
+  const n=nav.getBoundingClientRect(),c=ctaMenu.getBoundingClientRect();s.W=mobile.matches?n.width:Math.min(panelWidth(),Math.max(80,n.right-c.left+14));s.H=0;
+  stage.classList.add('is-on');nav.classList.add('wd-contact-open');header.classList.add('wd-contact-header-open');backdrop.classList.add('is-on');draw();
+  const g=gsapAPI||await animationReady;if(!isOpen||session!==openSession)return;swapLabel(true);
+  const complete=()=>{if(!isOpen)return;box.classList.remove('is-opening');box.classList.add('is-on');form.inert=false;form.elements.nome.focus({preventScroll:true})};
+  if(!g){s.W=panelWidth();s.H=targetHeight();draw();blocks.forEach(el=>{el.style.opacity='1';el.style.transform='none'});backdrop.style.opacity='1';complete();return}
+  g.set(blocks,{opacity:0,y:10});g.to(backdrop,{opacity:1,duration:reduced.matches?.2:.4});
+  if(reduced.matches){s.W=panelWidth();s.H=targetHeight();draw();box.classList.add('is-on');anim=g.timeline({onComplete:complete}).to(blocks,{opacity:1,y:0,duration:.2});return}
+  anim=g.timeline({onComplete:complete});
+  // One continuous morph: no stop between widening and expanding vertically.
+  anim.to(s,{W:panelWidth(),H:targetHeight(),duration:mobile.matches?.8:1.05,ease:'power3.inOut',onUpdate:draw})
+      .to(blocks,{opacity:1,y:0,stagger:.055,duration:.55,ease:'power2.out'},'-=.32');
+ }
+ function fecharContato(){
+  if(!isOpen)return;closing=true;isOpen=false;session++;requestController?.abort();anim?.kill();labelTween?.kill();body.inert=true;box.classList.remove('is-opening');box.classList.add('is-closing');setExpanded(false);
+  if(!gsapAPI){s.H=0;draw();cleanup();return}
+  // Hide the content before the viewport shrinks; keep scrolling disabled throughout.
+  gsapAPI.killTweensOf([backdrop,body,...blocks]);
+  const n=nav.getBoundingClientRect(),c=ctaMenu.getBoundingClientRect(),closedWidth=mobile.matches?n.width:Math.min(panelWidth(),Math.max(80,n.right-c.left+14));
+  anim=gsapAPI.timeline({onComplete:cleanup});
+  anim.to(body,{opacity:0,y:-6,duration:reduced.matches?.18:.22,ease:'power2.out'},0)
+      .to(backdrop,{opacity:0,duration:reduced.matches?.18:.65,ease:'power2.inOut'},0);
+  if(!reduced.matches)anim.to(s,{H:0,W:closedWidth,duration:mobile.matches?.7:.85,ease:'power3.inOut',onUpdate:draw},.16);
+ }
+ [ctaMenu,mobileCTA].forEach(el=>{el.setAttribute('data-wd-contact','');el.setAttribute('aria-controls',body.id);el.setAttribute('aria-haspopup','dialog');el.setAttribute('aria-expanded','false');el.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();if(isOpen)fecharContato();else abrirContato(el)})});
+ toggle?.addEventListener('click',e=>{if(isOpen){e.preventDefault();e.stopImmediatePropagation();fecharContato()}},true);
+ backdrop.addEventListener('click',fecharContato);box.querySelector('.wd-contact-close').addEventListener('click',fecharContato);
+ document.addEventListener('pointerdown',e=>{if(isOpen&&!box.contains(e.target)&&!nav.contains(e.target))fecharContato()});
+ document.addEventListener('keydown',e=>{if(!isOpen)return;if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();fecharContato();return}if(e.key==='Tab'){const available=[closeControl,...box.querySelectorAll('button,a[href],input,textarea')].filter(el=>el&&!el.disabled&&!el.closest('[inert]')&&el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden'),first=available[0],last=available.at(-1);if(e.shiftKey&&(document.activeElement===first||!available.includes(document.activeElement))){e.preventDefault();last?.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}}},true);
+ document.addEventListener('click',e=>{
+  // composedPath reaches the footer CTA inside its shadow root as well.
+  const path=e.composedPath(),trigger=path.find(el=>el.nodeType===1&&el.hasAttribute?.('data-wd-contact'));
+  if(trigger&&trigger!==ctaMenu){e.preventDefault();abrirContato(trigger);return}
+  const link=path.find(el=>el.tagName==='A');
+  if(link&&link!==ctaMenu&&(/\/contato\/?(?:$|[?#])/.test(link.href)||link.getAttribute('href')==='#contato')){e.preventDefault();abrirContato(link)}
+ });
+ function resize(){if(!isOpen&&!closing)return;if(closing){draw();return}anim?.kill();const nextControl=ctaMenu.getBoundingClientRect().width?ctaMenu:toggle;if(nextControl!==closeControl){if(!inertStates.some(([el])=>el===closeControl))inertStates.push([closeControl,false]);closeControl.inert=true;closeControl=nextControl;closeControl.inert=false;if(closeControl!==toggle){toggle?.setAttribute('aria-label','Abrir menu');toggle?.setAttribute('aria-controls',toggleControls||'wd-nav-links');toggle?.setAttribute('aria-expanded','false')}setExpanded(true)}s.W=panelWidth();s.H=targetHeight();draw();box.classList.remove('is-opening');box.classList.add('is-on');blocks.forEach(el=>{el.style.opacity='1';el.style.transform='none'});form.inert=false;anim=null}
+ window.addEventListener('resize',resize,{passive:true});window.visualViewport?.addEventListener('resize',resize,{passive:true});
+ const observer=new ResizeObserver(()=>{if(isOpen||closing)draw()});observer.observe(nav);
+ const idea=form.elements.ideia;function growIdea(){idea.style.height='auto';const line=parseFloat(getComputedStyle(idea).lineHeight),limit=line*3+13;idea.style.height=Math.min(limit,idea.scrollHeight)+'px';idea.style.overflowY=idea.scrollHeight>limit?'auto':'hidden'}idea.addEventListener('input',growIdea);
+ function validate(){let valid=true;for(const name of ['nome','email']){const input=form.elements[name],ok=input.value.trim()!==''&&(name!=='email'||input.validity.valid);input.setAttribute('aria-invalid',String(!ok));box.querySelector('#wd-contact-'+name+'-error').textContent=ok?'':name==='nome'?'Informe seu nome completo.':'Informe um e-mail válido.';if(!ok&&valid){input.focus();valid=false}}return valid}
+ ['nome','email'].forEach(name=>form.elements[name].addEventListener('input',()=>{form.elements[name].removeAttribute('aria-invalid');box.querySelector('#wd-contact-'+name+'-error').textContent=''}));
+ async function enviarFormulario(dados){
+  if(!CONFIG.endpoint){const error=new Error('Integração de e-mail pendente. Configure URL_ENVIO em contact.js.');error.configuration=true;throw error}
+  requestController=new AbortController();const timer=setTimeout(()=>requestController.abort(),20000);
+  try{const response=await fetch(CONFIG.endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(dados),signal:requestController.signal});if(!response.ok)throw new Error('Falha ao enviar formulário');return response}finally{clearTimeout(timer);requestController=null}
+ }
+ async function showResult(success,error){const thisSession=session;
+  const reveal=()=>{if(!isOpen||thisSession!==session)return;form.hidden=true;heading.hidden=true;result.hidden=false;result.querySelector('.wd-contact-result-title').textContent=success?'Obrigado pelo contato!':'Não foi possível enviar';result.querySelector('.wd-contact-result-text').textContent=success?'Recebemos sua mensagem e nossa equipe já está analisando. Em breve entraremos em contato.':'Não foi possível enviar sua mensagem agora. Tente novamente mais tarde.';const note=result.querySelector('.wd-contact-result-note');note.hidden=!error?.configuration;note.textContent=error?.configuration?error.message:'';if(gsapAPI&&!reduced.matches)gsapAPI.to(result,{opacity:1,duration:.3});else result.style.opacity='1';result.querySelector('button').focus({preventScroll:true})};
+  if(gsapAPI&&!reduced.matches)gsapAPI.to(form,{opacity:0,duration:.25,onComplete:reveal});else reveal();
+ }
+ form.addEventListener('submit',async e=>{e.preventDefault();if(sending||!validate())return;sending=true;submit.disabled=true;submit.setAttribute('aria-label','Enviando mensagem');form.setAttribute('aria-busy','true');submit.innerHTML='<svg class="wd-contact-spinner" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity=".25"/><path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" stroke-width="2"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur=".75s" repeatCount="indefinite"/></path></svg>';const thisSession=session;try{await enviarFormulario(Object.fromEntries(new FormData(form)));if(isOpen&&session===thisSession){form.reset();growIdea();showResult(true)}}catch(error){if(isOpen&&session===thisSession)showResult(false,error)}finally{sending=false;form.removeAttribute('aria-busy');submit.removeAttribute('aria-label')}});
+ window.WorkDigitalContact={abrirContato,fecharContato,enviarFormulario};
+})();
+
+/* Popup de contato sempre inteiro na tela: se o conteúdo passar da altura disponível, ele é reduzido proporcionalmente. */
+(() => {
+ function boxEl(){return document.querySelector('.wd-contact');}
+ let busy=false;
+ function fit(){
+  const box=boxEl();if(!box||box.dataset.open!=='true')return;
+  box.style.setProperty('--wd-fit','1');
+  let s=1;
+  for(let i=0;i<4;i++){
+   const avail=box.clientHeight,need=box.scrollHeight;
+   if(!avail||need<=avail+1)break;
+   s=Math.max(.55,s*avail/need*.995);box.style.setProperty('--wd-fit',s.toFixed(3));
+  }
+ }
+ function req(){if(busy)return;busy=true;requestAnimationFrame(()=>{busy=false;fit();});}
+ function watch(){
+  const box=boxEl();if(!box){setTimeout(watch,300);return;}
+  new MutationObserver(req).observe(box,{attributes:true,attributeFilter:['class','data-open','style']});
+  new ResizeObserver(req).observe(box);
+  box.addEventListener('input',req);
+  addEventListener('resize',req,{passive:true});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watch,{once:true});else watch();
+})();

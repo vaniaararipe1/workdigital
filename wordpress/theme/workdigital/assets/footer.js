@@ -1,0 +1,148 @@
+/* Work Digital — rodapé global.
+ * Incluir em qualquer página: <script src="/footer.js" defer></script>
+ * O script insere <wd-footer> automaticamente quando ele não existe.
+ * Use data-manual no script para escolher a posição com <wd-footer>.
+ * Redes sem URL (string vazia) são removidas da interface.
+ */
+(() => {
+  const script = document.currentScript;
+  const source = new URL(script?.src || '/footer.js', document.baseURI);
+  const CONFIG = {
+    logo: new URL('img/logo-work-digital.svg', source).href,
+    home: '/',
+    contact: '#contato',
+    instagram: 'https://www.instagram.com/workdigitalbr/',
+    linkedin: 'https://www.linkedin.com/company/workdigitalbr',
+    facebook: 'https://www.facebook.com/workdigital.global',
+    whatsapp: '',
+    email: ''
+  };
+  const CSS = `
+    :host{display:block;min-width:0;scroll-margin-top:110px;color:#f7f6fb;font-family:"Space Grotesk",Arial,sans-serif}
+    *,*::before,*::after{box-sizing:border-box}
+    .wd-footer-root{background:transparent;padding:140px clamp(20px,5.3vw,84px) 80px}
+    .wd-footer-inner{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:140px 80px}
+    .wd-footer-brand{min-width:0}
+    .wd-footer-home{display:block;width:min(400px,100%);border-radius:4px}
+    .wd-footer-logo{display:block;width:100%;height:auto;aspect-ratio:4340/1340;object-fit:contain}
+    .wd-footer-description{max-width:430px;margin:28px 0 0;color:#e1d7ee;font:400 18px/1.6 "Nunito",system-ui,sans-serif;text-wrap:pretty}
+    .wd-footer-contact{display:flex;flex-direction:column;align-items:flex-end;gap:24px;min-width:0}
+    .wd-footer-title{margin:0;font-size:clamp(52px,4.5vw,72px);font-weight:400;line-height:1.3;letter-spacing:-.025em;text-align:right;white-space:nowrap}
+    .wd-footer-cta{display:flex;align-items:center;justify-content:center;gap:20px;min-height:54px;max-width:100%;padding:18px 20px;border-radius:var(--wd-cta-radius,9999px);color:#fff;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:100% 0;text-decoration:none;font-size:14px;font-family:"Space Grotesk",system-ui,sans-serif;font-weight:var(--wd-cta-weight,500);line-height:1;letter-spacing:var(--wd-cta-letter-spacing,.1em);transition:background-position 600ms ease,color 200ms ease}
+    .wd-footer-cta svg{flex:none;width:14px;height:14px}
+    .wd-footer-cta:hover,.wd-footer-cta:focus-visible{background-position:0 0;color:#2b1450}
+    .wd-footer-rights{display:flex;flex-wrap:wrap;align-items:center;align-self:center;gap:8px 16px;color:#e1d7ee;font-size:14px;line-height:1.4;margin:0}
+    .wd-footer-rights-brand{color:inherit;text-decoration:none;transition:color .2s ease}
+    .wd-footer-divider{display:inline;color:inherit}
+    .wd-footer-socials{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:16px}
+    .wd-footer-social{display:flex;justify-content:center;align-items:center;flex:none;width:44px;height:44px;color:#e1d7ee;text-decoration:none;border-radius:50%;transition:color .2s ease,background-color .2s ease}
+    .wd-footer-social svg{display:block;width:40px;height:40px}
+    .wd-footer-social:hover,.wd-footer-social:focus-visible{color:#fff;background:rgba(203,182,255,.12)}
+    .wd-footer-rights-brand:hover{color:#fff}
+    a:focus-visible{outline:2px solid #e7dcff;outline-offset:5px}
+    @media(max-width:991px){
+      .wd-footer-root{padding:80px 40px 64px}
+      .wd-footer-inner{gap:96px 40px}
+      .wd-footer-title{font-size:clamp(28px,4vw,40px)}
+      .wd-footer-rights{font-size:14px}
+      .wd-footer-socials{gap:10px}
+    }
+    @media(max-width:600px){
+      .wd-footer-root{padding:64px 20px 40px}
+      .wd-footer-inner{grid-template-columns:minmax(0,1fr);gap:40px}
+      .wd-footer-home{width:100%;max-width:400px}
+      .wd-footer-description{font-size:17px;margin-top:24px}
+      .wd-footer-contact{align-items:flex-start}
+      .wd-footer-title{text-align:left;font-size:clamp(18px,5.6vw,32px)}
+      .wd-footer-rights{font-size:13px;gap:8px 12px}
+      .wd-footer-socials{justify-content:flex-start;gap:16px}
+    }
+    @media(prefers-reduced-motion:reduce){a{transition:none!important}}
+    :host([data-theme="light"]){color:#17131F}
+    :host([data-theme="light"]) .wd-footer-description,:host([data-theme="light"]) .wd-footer-rights,:host([data-theme="light"]) .wd-footer-social{color:#4A4458}
+    :host([data-theme="light"]) .wd-footer-social:hover,:host([data-theme="light"]) .wd-footer-social:focus-visible{color:#6025E1;background:rgba(96,37,225,.08)}
+    :host([data-theme="light"]) .wd-footer-rights-brand:hover{color:#17131F}
+    :host([data-theme="light"]) a:focus-visible{outline-color:#6025E1}
+    :host([data-theme="light"]) .wd-footer-title{color:#4A4458}
+    .wd-footer-cta{min-height:76px;padding:24px 44px;gap:24px;font-size:18px}
+    .wd-footer-cta svg{width:18px;height:18px}
+    @media(max-width:600px){.wd-footer-cta{min-height:62px;padding:20px 30px;font-size:16px}}
+    .wd-footer-rights{flex-wrap:nowrap;white-space:nowrap}
+    @media(min-width:992px) and (max-width:1240px){.wd-footer-inner{grid-template-columns:minmax(300px,1fr) auto}.wd-footer-title{font-size:clamp(38px,4vw,52px)}}
+    @media(max-width:360px){.wd-footer-rights{font-size:12px;gap:8px}}
+    .wd-footer-socials{gap:8px}
+    .wd-footer-social{width:40px;height:40px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#F7F6FB;transition:background .3s,color .3s,border-color .3s,transform .3s}
+    .wd-footer-social svg{width:18px;height:18px}
+    .wd-footer-social:hover,.wd-footer-social:focus-visible{background:linear-gradient(135deg,#6025E1,#C00252) border-box;border-color:transparent;color:#fff;transform:translateY(-2px)}
+    :host([data-theme="light"]) .wd-footer-social{border-color:rgba(23,19,31,.14);background:rgba(255,255,255,.55);color:#2B2533}
+    :host([data-theme="light"]) .wd-footer-social:hover,:host([data-theme="light"]) .wd-footer-social:focus-visible{background:linear-gradient(135deg,#6025E1,#C00252) border-box;border-color:transparent;color:#fff}
+  `;
+  const ICONS = {
+    instagram: '<rect x="11" y="11" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="20" cy="20" r="4.5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="25.6" cy="14.5" r="1.2" fill="currentColor"/>',
+    linkedin: '<rect x="11" y="11" width="18" height="18" rx="1.5" fill="currentColor"/><circle cx="15" cy="15" r="1.3" fill="var(--wd-footer-icon-cutout,#301258)"/><path d="M15 18v7M19 25v-7m0 3c0-4 6-4 6 0v4" fill="none" stroke="var(--wd-footer-icon-cutout,#301258)" stroke-width="2.3"/>',
+    facebook: '<path d="M22 30V21h3l.5-4H22v-2c0-1.2.5-2 2-2h2V9.5c-.8-.1-1.8-.2-3-.2-3.5 0-5.5 2-5.5 5.8V17H14v4h3.5v9Z" fill="currentColor"/>',
+    whatsapp: '<path d="M11 29l1.5-5a9 9 0 1 1 3.5 3.5Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M16 14.5c.5-.3.9.1 1.5 1.7.3.7 0 1-.6 1.6.8 1.9 2.2 3.2 4.1 4 .6-.7.9-1.1 1.6-.7l1.7.9c.6.3.6.8.4 1.3-.4 1-1.4 1.5-2.4 1.3-4.8-.9-8.7-4.7-9-8-.1-.9.4-1.7 1.2-2.1.6-.3 1-.2 1.5 0Z" fill="currentColor"/>',
+    email: '<rect x="10" y="13" width="20" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m11 14 9 7 9-7" fill="none" stroke="currentColor" stroke-width="1.5"/>'
+  };
+  const SHARE_ICONS = {"linkedin": "<path d=\"M4.5 9h3v10h-3zM6 4.2a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6zM10 9h2.9v1.4c.4-.8 1.4-1.6 3-1.6 3.1 0 3.6 2 3.6 4.7V19h-3v-4.8c0-1.2 0-2.6-1.6-2.6s-1.9 1.2-1.9 2.5V19H10z\" fill=\"currentColor\"/>", "instagram": "<rect x=\"3.5\" y=\"3.5\" width=\"17\" height=\"17\" rx=\"5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\"/><circle cx=\"12\" cy=\"12\" r=\"4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\"/><circle cx=\"17.3\" cy=\"6.8\" r=\"1.1\" fill=\"currentColor\"/>", "facebook": "<path d=\"M13.5 20v-7h2.4l.4-2.9h-2.8V8.3c0-.8.3-1.4 1.4-1.4h1.5V4.3c-.3 0-1.1-.1-2.1-.1-2.2 0-3.6 1.3-3.6 3.7v2.2H8.3V13h2.4v7z\" fill=\"currentColor\"/>"};
+  const LABELS = {instagram:'Instagram',linkedin:'LinkedIn',facebook:'Facebook',whatsapp:'WhatsApp',email:'E-mail'};
+  const arrow = '<svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M12.065 1.142L.5 12.706M1.968 .706h9.573c.53 0 .959.429.959.961v9.571" stroke="currentColor" stroke-width="1.412"/></svg>';
+  function url(value, protocols = ['https:','http:','mailto:']) {
+    if (!value?.trim()) return null;
+    try { const u = new URL(value,document.baseURI); return protocols.includes(u.protocol) ? u.href : null; }
+    catch { return null; }
+  }
+  class WDFooter extends HTMLElement {
+    static get observedAttributes(){return ['logo','home','contact','instagram','linkedin','facebook','whatsapp','email'];}
+    constructor(){super();this.attachShadow({mode:'open'});}
+    connectedCallback(){this.render();}
+    attributeChangedCallback(){if(this.isConnected)this.render();}
+    render(){
+      const values = {...CONFIG};
+      for (const key of Object.keys(values)) if(this.hasAttribute(key)) values[key]=this.getAttribute(key);
+      this.shadowRoot.innerHTML = `<style>${CSS}</style><footer class="wd-footer-root" aria-label="Rodapé Work Digital"><div class="wd-footer-inner"><div class="wd-footer-brand"><a class="wd-footer-home"><img class="wd-footer-logo" alt="Work Digital" width="4340" height="1340" decoding="async"></a><p class="wd-footer-description">Criação de sites e lojas virtuais de alta performance e focados em conversão.</p></div><div class="wd-footer-contact"><p class="wd-footer-title">Tem um projeto em mente?</p><a class="wd-footer-cta wd-cta" data-wd-contact><span>FALE COM A GENTE</span>${arrow}</a></div><p class="wd-footer-rights"><a class="wd-footer-rights-brand">Work Digital © <span class="wd-footer-year"></span></a> <span class="wd-footer-divider" aria-hidden="true">|</span> <span>Todos os direitos reservados</span></p><nav class="wd-footer-socials" aria-label="Redes sociais e canais de contato"></nav></div></footer>`;
+      const root=this.shadowRoot;
+      const home=url(values.home,['https:','http:'])||CONFIG.home;
+      root.querySelector('.wd-footer-home').href=home;
+      root.querySelector('.wd-footer-rights-brand').href=home;root.querySelectorAll('.wd-footer-home,.wd-footer-rights-brand').forEach(a=>{a.target='_top';});
+      root.querySelector('.wd-footer-logo').src=(this.dataset.theme==='light'&&!this.hasAttribute('logo'))?new URL('img/logo-work-digital-positivo.svg',source).href:(url(values.logo,['https:','http:'])||CONFIG.logo);
+      root.querySelector('.wd-footer-cta').href=url(values.contact,['https:','http:'])||CONFIG.contact;
+      root.querySelector('.wd-footer-year').textContent=new Date().getFullYear();
+      for(const key of ['linkedin','instagram','facebook']){
+        const icon=ICONS[key];
+        if(key==='whatsapp'||key==='email')continue;
+        const href=url(values[key]);if(!href)continue;
+        const a=document.createElement('a');
+        a.className='wd-footer-social';a.href=href;a.target='_blank';a.rel='noopener';
+        a.setAttribute('aria-label',LABELS[key]);
+        a.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${SHARE_ICONS[key]}</svg>`;
+        root.querySelector('.wd-footer-socials').append(a);
+      }
+      if(!root.querySelector('.wd-footer-social'))root.querySelector('.wd-footer-socials').remove();
+    }
+  }
+  if(!customElements.get('wd-footer'))customElements.define('wd-footer',WDFooter);
+  // Fontes compartilhadas: uma única inclusão, caso a página não as carregue.
+  if(!document.querySelector('link[href*="family=Space+Grotesk"],link[href*="family=Space%20Grotesk"],link[data-wd-footer-fonts]')){
+    const link=document.createElement('link');link.rel='stylesheet';link.dataset.wdFooterFonts='';
+    link.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&family=Space+Grotesk:wght@400;500;600&display=swap';
+    document.head.append(link);
+  }
+  if(!document.querySelector('script[src*="/contact.js"]')){
+    const contact=document.createElement('script');contact.src=new URL('contact.js?v=20261003-contact-all-ctas',source).href;contact.defer=true;document.head.append(contact);
+  }
+  if(!document.querySelector('script[src*="/whatsapp.js"]')){
+    const widget=document.createElement('script');widget.src=new URL('whatsapp.js?v=20261003-contact-minimal',source).href;widget.defer=true;document.head.append(widget);
+  }
+  if(!document.querySelector('link[href*="/wd-revision.css"]')){
+    const styles=document.createElement('link');styles.rel='stylesheet';styles.href=new URL('wd-revision.css?v=20261003-contact-minimal',source).href;document.head.append(styles);
+  }
+  if(!document.querySelector('link[href*="family=Nunito"]')){
+    const font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap';document.head.append(font);
+  }
+  function mount(){
+    if(script?.hasAttribute('data-manual')||document.querySelector('wd-footer'))return;
+    const footer=document.createElement('wd-footer');footer.id='wd-footer';document.body.append(footer);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
+})();

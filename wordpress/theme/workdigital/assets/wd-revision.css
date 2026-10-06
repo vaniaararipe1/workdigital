@@ -1,0 +1,237 @@
+/* GERAL */
+:root{--wd-uptitle-gradient:linear-gradient(90deg,#FFFFFF 0%,#EDE4FF 45%,#F7C9EC 100%);--wd-description-font:"Nunito",system-ui,sans-serif;--wd-article-hover:linear-gradient(0deg,#301258,#4b247e)}
+p:not(.payoff-copy):not(.wd-transformacao-closing-text):not(.wd-works-eyebrow):not(.wd-transformacao-eyebrow):not(.wd-blog-eyebrow):not(.wd-trust-eyebrow),blockquote,.drop-copy small{font-family:var(--wd-description-font)}
+.wd-uptitle:not(.intro-title){font-family:"Space Grotesk",system-ui,sans-serif;font-size:20px;font-weight:500;line-height:1.4;letter-spacing:.2em;text-transform:uppercase}
+.wd-section-desc,.intro .wd-section-desc,#wd-works .wd-section-desc,#wd-transformacao .wd-section-desc,#wd-blog .wd-section-desc{font-family:var(--wd-description-font);font-size:18px;font-weight:400;line-height:1.6}
+.wd-uptitle{display:inline-block;background:linear-gradient(90deg,#FFFFFF 0%,#EDE4FF 45%,#F7C9EC 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;color:transparent!important}
+/* MENU */
+.wd-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.dropdown .drop-copy strong{font-size:16px}
+.dropdown .drop-copy small{font-size:15px;line-height:1.5}
+/* HEADER */
+body .payoff{padding-bottom:40px}
+#wd-explore{padding-top:40px;padding-bottom:56px}
+/* SOLUÇÕES WORK */
+#wd-explore .wd-explore-dots{display:block;width:100%;height:100%;background:none;border-radius:inherit;pointer-events:none;z-index:0}
+.wd-explore-video{display:block;width:100%;height:100%;object-fit:cover}
+.wd-explore-photo>.wd-explore-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+.wd-explore-card:hover .wd-explore-video,.wd-explore-card:focus-visible .wd-explore-video{transform:scale(1)}
+
+/* WORKS E FRASE */
+#wd-works{padding-top:56px;padding-bottom:48px}
+#wd-works .wd-works-header{max-width:1080px;margin-inline:auto}
+#wd-works .wd-works-intro{max-width:1000px;margin-inline:auto;text-wrap:balance}
+#wd-statement{min-height:0;padding-top:64px;padding-bottom:64px}
+#wd-statement .wd-statement-inner{max-width:1360px}
+/* CERTIFICAÇÕES — substituem a frase após o card. */
+.wd-certifications{width:min(1360px,calc(100% - 64px));display:grid;grid-template-columns:repeat(6,minmax(0,1fr));align-items:center;gap:40px;margin:64px auto 40px}
+.wd-certifications img{display:block;width:100%;height:42px;object-fit:contain;filter:brightness(0) invert(1);opacity:.85}
+/* CONFIANÇA */
+#wd-trust .wd-trust-card:last-child::after{display:none}
+#wd-trust .wd-trust-quote{font-family:var(--wd-description-font);font-size:16px;line-height:1.6}
+#wd-trust .wd-trust-logo-item{flex-basis:260px;width:260px;height:76px;padding-right:60px}
+#wd-trust .wd-trust-logo{max-width:200px;max-height:76px}
+@media(max-width:991px){
+ .wd-uptitle:not(.intro-title){font-size:16px}
+ .wd-section-desc,.intro .wd-section-desc,#wd-works .wd-section-desc,#wd-transformacao .wd-section-desc,#wd-blog .wd-section-desc{font-size:16px}
+ #wd-statement .wd-statement-line{white-space:normal}
+ 
+ .wd-certifications{width:calc(100% - 32px);gap:24px;margin-top:48px}
+ .wd-certifications img{height:32px}
+ 
+ #wd-trust .wd-trust-quote{font-size:16px}
+}
+@media(max-width:600px){
+ .wd-section-desc,.intro .wd-section-desc,#wd-works .wd-section-desc,#wd-transformacao .wd-section-desc,#wd-blog .wd-section-desc{font-size:15px}
+ body .payoff{padding-bottom:24px}#wd-explore{padding-top:24px;padding-bottom:32px}
+ #wd-works{padding-top:32px;padding-bottom:32px}#wd-statement{padding-top:40px;padding-bottom:40px}#wd-transformacao{padding-top:24px}
+ .wd-certifications{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 20px;margin:40px auto 24px}.wd-certifications img{height:30px}
+ #wd-trust .wd-trust-quote{font-size:15px}
+ #wd-trust .wd-trust-logo-item{flex-basis:220px;width:220px;height:66px;padding-right:40px}#wd-trust .wd-trust-logo{max-width:180px;max-height:66px}
+}
+@media(prefers-reduced-motion:reduce){.wd-explore-image>.wd-explore-video{transform:none;transition:none}}
+/* TRANSFORMAÇÃO DIGITAL — HTML/CSS fornecido pela Vânia substitui a iluminação anterior. */
+#wd-transformacao{padding-top:32px}
+@media(min-width:992px){}
+@media(min-width:769px) and (max-width:991px){}
+@media(max-width:768px){
+ #wd-transformacao{padding-top:24px}
+}
+@media(max-width:600px){}
+/* O seletor também permanece acessível no menu mobile. */
+@media(max-width:980px){
+ .site-nav.wd-nav-open .nav-links{display:flex;position:absolute;top:76px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;padding:16px;border:1px solid #bda4ff33;border-radius:16px;background:#24123edb;backdrop-filter:blur(30px)}
+ .site-nav.wd-nav-open .nav-links .nav-link,.site-nav.wd-nav-open .nav-links .nav-item,.site-nav.wd-nav-open .nav-links .nav-trigger{height:auto;min-height:44px;width:100%}
+ .site-nav.wd-nav-open .nav-links .nav-item{flex-wrap:wrap}
+ .site-nav.wd-nav-open .nav-links .dropdown{position:static;display:none;transform:none!important;opacity:1;visibility:visible;width:100%;background:transparent;box-shadow:none;border:0;backdrop-filter:none}
+ .site-nav.wd-nav-open .nav-links .nav-item.wd-solutions-open .dropdown{display:block}
+}
+@media(max-width:600px){.site-nav{gap:8px;padding-left:12px}.site-nav .brand img{width:108px}}
+@media(max-width:360px){.site-nav .brand img{width:92px}}
+/* Tablet mantém texto acima e globo abaixo; celular preserva contraste sobre o globo. */
+@media(min-width:769px) and (max-width:991px){
+}
+@media(max-width:768px){
+}
+
+/* MENU — três grupos; SOLUÇÕES e idiomas usam o mesmo componente. */
+.site-nav{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;padding-left:14px;padding-right:14px}
+.site-nav .brand{margin-right:0;justify-self:start}
+.site-nav .nav-links{justify-self:center}
+.wd-nav-actions{display:flex;align-items:center;justify-self:end;gap:24px;min-width:0}
+.wd-language .nav-trigger{display:flex;align-items:center;gap:7px}
+.wd-language .wd-language-globe{width:18px;height:18px;transform:none!important}
+.wd-language{width:auto;min-width:0}
+.wd-language .dropdown{width:max-content;min-width:120px;max-width:160px;left:auto;right:0;transform:translateY(12px) scale(.985)}
+.wd-language:hover .dropdown,.wd-language:focus-within .dropdown,.wd-language.wd-dropdown-open .dropdown{transform:translateY(0) scale(1)}
+.nav-item.wd-dropdown-open .dropdown{opacity:1;visibility:visible}
+.nav-item.wd-dropdown-dismissed .dropdown{opacity:0;visibility:hidden}
+.dropdown a:focus-visible{background:rgba(255,255,255,.075);transform:translateX(2px);outline:2px solid #bda4ff;outline-offset:-2px}
+@media(max-width:980px){
+ .site-nav{grid-template-columns:1fr auto;gap:16px}.wd-nav-actions{gap:16px}
+ .wd-language{height:64px}.wd-language .dropdown{top:62px}
+ .site-nav.wd-nav-open .nav-links .nav-item.wd-dropdown-open .dropdown{display:block}
+}
+@media(max-width:600px){.wd-nav-actions{gap:10px}.wd-language .nav-trigger{font-size:11px;letter-spacing:0;gap:4px}.wd-language .wd-language-globe{width:16px;height:16px}}
+/* SOLUÇÕES WORK — a moldura fica fora da área 9:11. */
+#wd-explore .wd-explore-body{grid-template-columns:minmax(0,1fr) auto;align-items:stretch}
+#wd-explore .wd-explore-photo{position:relative;box-sizing:border-box;width:calc(var(--wd-media-width,520px) + 40px);height:var(--wd-panel-height,auto);padding:20px;border:0;border-radius:12px;aspect-ratio:auto;background:linear-gradient(90deg,rgba(70,26,143,.72) 0%,rgba(42,17,78,.40) 60%,rgba(29,14,54,0) 100%);overflow:hidden}
+#wd-explore .wd-explore-media{position:absolute;top:20px;left:20px;height:var(--wd-media-height,600px);width:auto;aspect-ratio:9/11;box-sizing:border-box;border-radius:8px;overflow:hidden;opacity:0;visibility:hidden;transition:opacity .6s var(--wd-explore-ease);pointer-events:none}
+#wd-explore .wd-explore-media.is-visible{opacity:1;visibility:visible}
+#wd-explore .wd-explore-media .wd-explore-video{display:block;position:static;width:100%;height:100%;object-fit:cover;transform:none}
+#wd-explore .wd-explore-dots{background:none;background-image:none}
+@media(max-width:1199px){
+ #wd-explore .wd-explore-body{grid-template-columns:minmax(0,1fr)}
+ #wd-explore .wd-explore-photo{width:100%;height:auto;padding:20px;aspect-ratio:auto}
+ #wd-explore .wd-explore-media{position:absolute;inset:20px;height:auto;width:calc(100% - 40px);aspect-ratio:9/11}
+ #wd-explore .wd-explore-media.is-visible{position:relative;inset:auto;width:100%;height:auto;aspect-ratio:9/11}
+}
+@media(min-width:769px) and (max-width:991px){}
+@media(max-width:768px){}
+@media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-media{transition:none}}
+
+/* GERAL — uma tipografia para CTAs e uma escala para títulos principais. */
+:root{--wd-layout-max:1440px;--wd-layout-gutter:3vw;--wd-cta-weight:500;--wd-cta-letter-spacing:.1em}
+.wd-cta,button{font-family:"Space Grotesk",system-ui,sans-serif;font-weight:var(--wd-cta-weight);letter-spacing:var(--wd-cta-letter-spacing)}
+.wd-section-title{font-size:clamp(36px,4.34vw,64px);font-weight:500;line-height:1.05;letter-spacing:-.041em}
+/* MENU — mesma largura e margens do retângulo de Soluções Work. */
+.site-header{padding-inline:var(--wd-layout-gutter)}
+.site-nav,#wd-explore .wd-explore-layout{width:100%;max-width:var(--wd-layout-max)}
+#wd-explore{padding-inline:var(--wd-layout-gutter)}
+.wd-language .nav-trigger{width:auto;padding-inline:10px;white-space:nowrap}
+@media(max-width:991px){:root{--wd-layout-gutter:24px}}
+@media(max-width:479px){:root{--wd-layout-gutter:16px}}
+
+/* SOLUÇÕES WORK — transparência igual à esquerda, sem borda. */
+#wd-explore .wd-explore-body .wd-explore-photo{background:linear-gradient(90deg,rgba(70,26,143,.72) 0%,rgba(42,17,78,.40) 60%,rgba(29,14,54,0) 100%);border:0}
+/* TRANSFORMAÇÃO DIGITAL — substituição integral pelo CSS enviado. */
+.wd-tr-card{position:relative;overflow:hidden;isolation:isolate;width:calc(100% - 64px);max-width:1360px;height:600px;margin:0 auto;border-radius:16px;border:0;background:radial-gradient(50% 70% at 72% 55%,rgba(226,216,255,.55) 0%,rgba(190,170,255,.25) 45%,rgba(190,170,255,0) 75%),radial-gradient(60% 55% at 22% 108%,rgba(240,228,246,.55) 0%,rgba(220,205,240,.22) 45%,rgba(220,205,240,0) 75%),radial-gradient(55% 70% at 8% 10%,rgba(30,14,70,.45) 0%,rgba(30,14,70,0) 70%),linear-gradient(100deg,#3a1d86 0%,#4526a0 28%,#5a3bbd 52%,#8d76e8 76%,#cfc2ff 100%);box-shadow:0 0 160px 20px rgba(124,92,255,.25)}
+.wd-tr-glow{position:absolute;z-index:0;pointer-events:none;top:50%;left:54%;height:260%;aspect-ratio:1;transform:translate(-21%,-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(250,247,255,1) 52%,rgba(232,222,255,.85) 58%,rgba(205,188,255,.5) 68%,rgba(170,145,255,.18) 82%,rgba(170,145,255,0) 100%)}
+.wd-tr-globe{position:absolute;z-index:1;pointer-events:none;top:50%;left:54%;height:150%;aspect-ratio:1;transform:translateY(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,0) 80%,rgba(255,255,255,.55) 93%,rgba(250,247,255,1) 100%),radial-gradient(circle at 6% 50%,rgba(255,255,255,1) 0%,rgba(255,255,255,0) 24%),radial-gradient(circle at 62% 82%,rgba(252,250,255,.95) 0%,rgba(252,250,255,0) 42%),radial-gradient(circle at 48% 22%,rgba(196,176,255,.7) 0%,rgba(196,176,255,0) 55%),radial-gradient(circle at 55% 50%,#ebe4ff 0%,#ddd0ff 55%,#cfbdff 100%)}
+.wd-tr-dots{position:absolute;inset:0;border-radius:50%;-webkit-mask-image:radial-gradient(ellipse 75% 85% at 66% 50%,#000 50%,transparent 82%);mask-image:radial-gradient(ellipse 75% 85% at 66% 50%,#000 50%,transparent 82%)}
+.wd-tr-dots>svg{display:block;position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.wd-tr-content{position:relative;z-index:2;padding:0 80px;height:100%;display:flex;flex-direction:column;justify-content:center;color:#fff;max-width:560px}
+.wd-tr-content .wd-transformacao-content{width:100%;max-width:none;padding:0}
+.wd-tr-content .wd-transformacao-cta{margin-left:0}
+/* Ajustes de encaixe e leitura mantêm o responsivo atual. */
+.wd-tr-content .wd-transformacao-title{white-space:normal;text-wrap:balance}
+@media(min-width:769px) and (max-width:991px){
+ .wd-tr-card{width:calc(100% - 32px);height:auto;min-height:0;padding-bottom:420px}
+ .wd-tr-content{padding:48px 32px;height:auto;max-width:none}
+ .wd-tr-globe{height:420px;top:auto;bottom:0;left:calc(50% - 110px);transform:none}
+ .wd-tr-glow{height:728px;top:auto;bottom:-154px;left:calc(50% - 110px);transform:translateX(-21%)}
+}
+@media(max-width:768px){
+ .wd-tr-card{width:calc(100% - 32px);height:auto;min-height:600px}
+ .wd-tr-globe{height:90%;left:40%}
+ .wd-tr-glow{height:156%;left:40%}
+ 
+ .wd-tr-content{padding:48px 32px;height:auto;min-height:600px;max-width:none}
+}
+@media(max-width:600px){.wd-tr-content{padding:40px 24px}}
+
+/* GERAL — mesma escala de display, preservando os valores da frase. */
+:root{--wd-display-size:clamp(44px,6.835vw,120px)}
+.intro .intro-title,.wd-statement-title{font-size:var(--wd-display-size);line-height:1.05}
+.wd-statement-title{margin:0 auto;font-weight:500;letter-spacing:-.04167em;text-align:center;text-wrap:balance;color:#efe7ff}
+.intro .intro-block{max-width:none;width:100%}
+.intro .intro-title span{display:inline-block;white-space:nowrap}
+@media(max-width:991px){:root{--wd-display-size:clamp(44px,7.2vw,76px)}}
+@media(max-width:600px){:root{--wd-display-size:clamp(36px,9.4vw,56px)}.intro .intro-title span{white-space:normal}}
+/* SOLUÇÕES, BLOG E DEPOIMENTOS — mesmo hover, com foco equivalente. */
+#wd-explore .wd-explore-card,#wd-blog .wd-blog-link,#wd-trust .wd-trust-card{position:relative;isolation:isolate;transition:color .7s cubic-bezier(.4,0,.2,1)}
+#wd-explore .wd-explore-card::before,#wd-blog .wd-blog-link::before,#wd-trust .wd-trust-card::before{display:block;content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;background:linear-gradient(135deg,rgba(124,92,255,.38) 0%,rgba(183,155,255,.22) 45%,rgba(255,143,203,.20) 100%);opacity:0;box-shadow:0 0 0 1px rgba(214,198,255,.35),0 20px 60px -20px rgba(124,92,255,.55);transition:opacity .7s cubic-bezier(.4,0,.2,1);pointer-events:none}
+#wd-explore .wd-explore-card:hover::before,#wd-explore .wd-explore-card:focus-visible::before,#wd-explore .wd-explore-card.is-active::before,#wd-blog .wd-blog-link:hover::before,#wd-blog .wd-blog-link:focus-visible::before,#wd-trust .wd-trust-card:hover::before,#wd-trust .wd-trust-card:focus-visible::before{opacity:1}
+
+#wd-blog .wd-blog-link{overflow:visible}
+#wd-blog .wd-blog-item{transition:border-color .7s cubic-bezier(.4,0,.2,1)}
+#wd-trust .wd-trust-card::after{transition:opacity .7s cubic-bezier(.4,0,.2,1)}
+@media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-card,#wd-explore .wd-explore-card::before,#wd-blog .wd-blog-link,#wd-blog .wd-blog-link::before,#wd-blog .wd-blog-item,#wd-trust .wd-trust-card,#wd-trust .wd-trust-card::before,#wd-trust .wd-trust-card::after{transition:none}}
+
+/* CTAs completamente arredondados. */
+:root{--wd-cta-radius:9999px}
+.wd-cta{border-radius:var(--wd-cta-radius)!important}
+.wd-cta::before,.wd-cta::after{border-radius:inherit}
+
+/* Retângulos com cantos mais arredondados. */
+:root{--wd-panel-radius:32px;--wd-inner-radius:24px;--wd-media-radius:20px}
+.site-nav,#wd-explore .wd-explore-layout,.wd-works-card,.wd-tr-card,.wd-trust-panel,.wd-blog-link,.wd-blog-item{border-radius:var(--wd-panel-radius)!important}
+#wd-explore .wd-explore-list,#wd-explore .wd-explore-photo,#wd-explore .wd-explore-card,.wd-trust-card{border-radius:var(--wd-inner-radius)!important}
+#wd-explore .wd-explore-media,.wd-works-media,.wd-blog-image{border-radius:var(--wd-media-radius)!important}
+
+/* CTA alinhado à borda da imagem, descontando a moldura de 20px. */
+#wd-explore .wd-explore-header>.wd-explore-cta{margin-right:20px;max-width:calc(100% - 20px)}
+@media(max-width:991px){#wd-explore .wd-explore-header>.wd-explore-cta{margin-right:0;max-width:100%}}
+
+/* Setas seguem a paleta do hover dos CTAs. */
+#wd-blog .wd-blog-link:hover .wd-blog-arrow,
+#wd-blog .wd-blog-link:focus-visible .wd-blog-arrow{
+ background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:0% 0%;color:#24123e;
+}
+
+/* A coluna da mídia usa sua largura real para alinhar com o cabeçalho. */
+#wd-explore .wd-explore-layout .wd-explore-body{grid-template-columns:minmax(0,1fr) auto}
+@media(max-width:1199px){#wd-explore .wd-explore-layout .wd-explore-body{grid-template-columns:minmax(0,1fr)}}
+
+/* Hover dos boxes: fundo, luz e seta entram e saem sem troca brusca. */
+#wd-explore .wd-explore-arrow{position:relative;isolation:isolate;transition:color .7s cubic-bezier(.4,0,.2,1)}
+#wd-explore .wd-explore-arrow::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:linear-gradient(90deg,#e7dcff,#f5c3d8,#6025e1,#341365);background-size:280% 100%;background-position:0% 0%;opacity:0;transition:opacity .7s cubic-bezier(.4,0,.2,1)}
+#wd-explore .wd-explore-card:hover .wd-explore-arrow,#wd-explore .wd-explore-card:focus-visible .wd-explore-arrow{color:#24123e}
+#wd-explore .wd-explore-card:hover .wd-explore-arrow::before,#wd-explore .wd-explore-card:focus-visible .wd-explore-arrow::before{opacity:1}
+@media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-arrow,#wd-explore .wd-explore-arrow::before{transition:none}}
+
+/* Mídias: crossfade real, com saída visível até concluir a transição. */
+#wd-explore .wd-explore-photo .wd-explore-media{transition:opacity .9s cubic-bezier(.4,0,.2,1),visibility 0s linear .9s}
+#wd-explore .wd-explore-photo .wd-explore-media.is-visible{transition-delay:0s,0s}
+@media(prefers-reduced-motion:reduce){#wd-explore .wd-explore-photo .wd-explore-media{transition:none}}
+
+/* Quadradinhos das setas com cantos mais arredondados. */
+#wd-explore .wd-explore-arrow,#wd-blog .wd-blog-arrow{border-radius:16px!important}
+
+/* Soluções lado a lado: coluna da imagem com largura fixa (47,5%, entre 380 e 640px — mesmo tamanho de antes em 1440px); a imagem 9:11 ocupa a coluna */
+@media(min-width:1200px){
+#wd-explore .wd-explore-layout .wd-explore-body{grid-template-columns:minmax(0,1fr) var(--wd-photo-col,clamp(380px,47.5%,640px))!important;align-items:stretch!important}
+#wd-explore .wd-explore-photo{width:auto!important;height:auto!important;aspect-ratio:auto!important;padding:20px!important;display:flex;align-items:flex-start}
+#wd-explore .wd-explore-photo .wd-explore-media{top:20px!important;left:20px!important;width:calc(100% - 40px)!important;height:auto!important;aspect-ratio:9/11}
+#wd-explore .wd-explore-photo .wd-explore-media.is-visible{position:relative!important;top:auto!important;left:auto!important;width:100%!important}
+/* a imagem ocupa a altura toda da coluna (igual à original); se a lista for mais alta que 9:11 permite, o vídeo é cortado nas laterais */
+#wd-explore .wd-explore-photo{align-items:stretch}
+#wd-explore .wd-explore-photo .wd-explore-media{bottom:20px!important;aspect-ratio:auto!important;min-height:0}
+#wd-explore .wd-explore-photo .wd-explore-media.is-visible{bottom:auto!important;height:auto!important;align-self:stretch}
+}
+
+/* Transformação digital no celular: o globo fica abaixo do texto (antes ficava por trás do parágrafo e prejudicava a leitura) */
+@media(max-width:768px){
+ .wd-tr-card{padding-bottom:250px}
+ .wd-tr-content{min-height:0!important}
+ .wd-tr-globe{top:auto!important;bottom:-190px;left:50%!important;height:440px!important;transform:translateX(-32%)!important}
+ .wd-tr-glow{top:auto!important;bottom:-360px;left:50%!important;height:780px!important;transform:translateX(-46%)!important}
+}
+
+/* Soluções empilhado (até 1199px): imagem centralizada com no máximo 520px de largura */
+@media(max-width:1199px){
+#wd-explore .wd-explore-photo .wd-explore-media{left:50%!important;right:auto!important;width:min(calc(100% - 40px),520px)!important;transform:translateX(-50%)}
+#wd-explore .wd-explore-photo .wd-explore-media.is-visible{left:auto!important;transform:none;margin:0 auto;width:min(100%,520px)!important}
+#wd-explore .wd-explore-photo{height:auto!important;aspect-ratio:auto!important}
+}
