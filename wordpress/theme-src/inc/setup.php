@@ -34,15 +34,10 @@ add_action('pre_get_posts', function ($q) {
     }
 });
 
-// Imagens: qualidade alta (90), sem reduzir as originais grandes, e versões menores em WebP para telas menores
+// Imagens: qualidade alta (90) e sem reduzir as originais grandes; o JPG original é mantido (melhor para as prévias de compartilhamento)
 add_filter('wp_editor_set_quality', fn() => 90);
 add_filter('jpeg_quality', fn() => 90);
 add_filter('big_image_size_threshold', '__return_false');
-add_filter('image_editor_output_format', function ($formats) {
-    $formats['image/jpeg'] = 'image/webp';
-    $formats['image/png'] = 'image/webp';
-    return $formats;
-});
 add_action('after_setup_theme', function () {
     add_image_size('wd-card', 960, 0);
     add_image_size('wd-wide', 1600, 0);

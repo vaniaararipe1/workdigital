@@ -157,7 +157,11 @@ def fix_post(head, body):
 
 def main_swap(part):
     def f(head, body):
-        return head, sub1(r'(<main[^>]*>).*?(</main>)', r"\1\n<?php get_template_part('parts/" + part + r"'); ?>\n\2", body)
+        body = sub1(r'(<main[^>]*>).*?(</main>)', r"\1\n<?php get_template_part('parts/" + part + r"'); ?>\n\2", body)
+        # sem listagem nesta página: sai o script da listagem do blog (fica o resto: animação de entrada e cursor)
+        i = body.index('// Conteúdo: troque os artigos aqui.'); j = body.index('// Reveal', i)
+        body = body[:i] + body[j:]
+        return head, body
     return f
 
 

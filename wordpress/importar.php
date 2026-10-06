@@ -126,8 +126,10 @@ if (defined('WPSEO_VERSION')) {
     $so = get_option('wpseo_social', []);
     $so['facebook_site'] = $s['social'][1];
     $so['other_social_urls'] = [$s['social'][0], $s['social'][2]];
+    $so['og_default_image'] = get_template_directory_uri() . '/assets/media/servico-sites.jpg'; // trocar quando houver a imagem 1200x630
     update_option('wpseo_social', $so);
     WP_CLI::log('Yoast configurado.');
 }
+if (defined('WPSEO_VERSION')) WP_CLI::runcommand('yoast index --reindex --skip-confirmation', ['return' => true, 'exit_error' => false]);
 flush_rewrite_rules();
 WP_CLI::success('Importação concluída.');

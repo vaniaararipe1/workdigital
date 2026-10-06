@@ -65,3 +65,15 @@ function wd_bio_title($t) {
 }
 add_filter('wpseo_title', 'wd_bio_title');
 add_filter('pre_get_document_title', fn($t) => is_page('bio') && !wd_has_yoast() ? wd_bio_title($t) : $t, 20);
+
+// Artigos: quadro "Linha fina" (texto abaixo do título)
+add_action('add_meta_boxes_post', function () {
+    add_meta_box('wd-dek', 'Linha fina (texto abaixo do título)', function ($post) {
+        wp_nonce_field('wd_dek_save', 'wd_dek_nonce');
+        echo '<textarea name="wd_dek" style="width:100%;min-height:70px">' . esc_textarea(get_post_meta($post->ID, 'wd_dek', true)) . '</textarea><p class="description">Se ficar vazio, usa o Resumo.</p>';
+    }, 'post', 'normal', 'high');
+});
+add_action('save_post_post', function ($id) {
+    if (!isset($_POST['wd_dek_nonce']) || !wp_verify_nonce($_POST['wd_dek_nonce'], 'wd_dek_save') || !current_user_can('edit_post', $id)) return;
+    update_post_meta($id, 'wd_dek', sanitize_textarea_field(wp_unslash($_POST['wd_dek'] ?? '')));
+});
