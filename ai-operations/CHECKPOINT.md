@@ -2,6 +2,16 @@
 
 Atualizado em: 2026-10-08T23:31:00Z
 
+Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
+
+## Decisões preservadas
+
+- Vânia delegou implementação e testes internos sem aprovação por etapa.
+- Destino e motor: ChatGPT/Work. Claude Projects, Anthropic e credenciais Claude foram abandonados por decisão de 08/10/2026.
+- Sem contratação, gasto adicional, credenciais de API ou efeitos comerciais externos autorizados.
+- Os sete agentes e o Control Plane permanecem: Patrícia orquestra; Felipe comercial; Larissa lidera Brand & Marketing; Clara é especialista digital; Bruno conteúdo; Marcelo direção de arte; Gabriel UX/UI.
+- D-10 prevalece sobre D-08 para a relação Larissa/Clara. Cadastro, contratos e interface não contam como prova de runtime autônomo.
+
 ## Trabalho concluído
 
 - Reconciliado o estado atual com o Control Plane: serviço online, banco conectado, versão 2.6.0, sete agentes cadastrados e duas operações registradas.
@@ -12,6 +22,7 @@ Atualizado em: 2026-10-08T23:31:00Z
 - Endurecido o planejador da fila: ações externas classificadas exigem permissão do agente e linguagem externa sem classificação falha de forma fechada.
 - Adicionados testes para bloqueio por permissão e por ação externa não classificada.
 - Revisão nativa executada por Felipe: confirmou limites comerciais e identificou a lacuna de permissão da fila, agora corrigida.
+- Alterações remotas confirmadas na branch autorizada pelo commit `b460588cf4762d81db9c611a27ffdc29a78af108`; nenhum arquivo fora de `ai-operations/` foi modificado.
 
 ## Evidência e validação
 
