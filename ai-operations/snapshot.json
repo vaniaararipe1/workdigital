@@ -1,1 +1,376 @@
-{"health":{"ok":true,"version":"2.6.0"},"agents":[{"key":"bruno","name":"Bruno","role":"Redação, Copy & Conteúdo","status":"active"},{"key":"clara","name":"Clara","role":"Brand & Marketing Digital","status":"active"},{"key":"felipe","name":"Felipe","role":"Comercial & Aquisição B2B","status":"active"},{"key":"gabriel","name":"Gabriel","role":"UX/UI Design","status":"active"},{"key":"larissa","name":"Larissa","role":"Brand & Marketing — Liderança","status":"active"},{"key":"marcelo","name":"Marcelo","role":"Direção de Arte","status":"active"},{"key":"patricia","name":"Patrícia","role":"COO / Orquestradora","status":"active"}],"operations":[{"key":"OP-03","name":"Descoberta estratégica","status":"IN_PROGRESS","coordinator":"patricia"}],"tasks":[{"key":"TASK-002","title":"Síntese estratégica de Brand & Marketing e hipóteses de posicionamento","owner":"larissa","status":"IN_PROGRESS"},{"key":"TASK-004","title":"Preparar roteiro de entrevistas com clientes","owner":"larissa","status":"READY"}],"work_packets":[{"key":"WP-004","destination":"larissa","status":"SENT","task":"TASK-002"}]}
+{
+  "captured_at": "2026-10-08T22:28:08Z",
+  "health": {
+    "ok": true,
+    "service": "work-digital-control-plane",
+    "protocol": "MCP",
+    "status": "online",
+    "database": "connected",
+    "version": "2.6.0"
+  },
+  "agents": [
+    {
+      "key": "bruno",
+      "name": "Bruno",
+      "role": "Redação, Copy & Conteúdo",
+      "status": "active",
+      "specialty": "Redação, copywriting e conteúdo B2B/institucional/editorial, storytelling, UX Writing, SEO, arquitetura semântica, AEO e GEO",
+      "permissions": {
+        "aeo": true,
+        "geo": true,
+        "send": false,
+        "publish": false,
+        "ux_writing": true,
+        "b2b_content": true,
+        "copywriting": true,
+        "seo_content": true,
+        "draft_content": true,
+        "develop_concepts": true,
+        "editorial_content": true,
+        "propose_messaging": true,
+        "semantic_architecture": true,
+        "external_actions_require_vania_approval": true
+      }
+    },
+    {
+      "key": "clara",
+      "name": "Clara",
+      "role": "Brand & Marketing Digital",
+      "status": "active",
+      "specialty": "Brand e Marketing Digital: estratégia digital, presença e branding digital, jornada, aquisição, inbound, growth, funil e lifecycle, conteúdo e distribuição, social, LinkedIn/B2B, SEO estratégico, AEO/GEO, mídia paga estratégica, CRO, CRM, automação, ABM, analytics, performance e experimentação",
+      "permissions": {
+        "publish": false,
+        "analytics": true,
+        "cro_strategy": true,
+        "crm_marketing": true,
+        "strategic_seo": true,
+        "experimentation": true,
+        "growth_strategy": true,
+        "media_execution": false,
+        "social_strategy": true,
+        "aeo_geo_strategy": true,
+        "digital_branding": true,
+        "digital_strategy": true,
+        "abm_collaboration": true,
+        "acquisition_strategy": true,
+        "marketing_automation": true,
+        "content_distribution_strategy": true,
+        "external_actions_require_vania_approval": true
+      }
+    },
+    {
+      "key": "felipe",
+      "name": "Felipe",
+      "role": "Comercial & Aquisição B2B",
+      "status": "active",
+      "specialty": "Comercial e aquisição B2B: ICP, inteligência comercial, prospecção, LinkedIn/Sales Navigator, ABM, discovery, qualificação, pipeline, CRM, forecast, propostas, negociação, objeções, fechamento e aprendizado comercial",
+      "permissions": {
+        "abm": true,
+        "qualify": true,
+        "forecast": true,
+        "prospect": true,
+        "discovery": true,
+        "send_proposal": false,
+        "crm_commercial": true,
+        "manage_pipeline": true,
+        "sales_navigator": true,
+        "external_contact": false,
+        "manage_opportunities": true,
+        "commercial_intelligence": true,
+        "negotiate_internal_drafts": true,
+        "propose_internal_commercial_actions": true,
+        "external_actions_require_vania_approval": true
+      }
+    },
+    {
+      "key": "gabriel",
+      "name": "Gabriel",
+      "role": "UX/UI Design",
+      "status": "active",
+      "specialty": "UX/UI Design sênior: experiência, interface, Product Design, Web Design, arquitetura de informação, fluxos, wireframes, prototipagem, interação, usabilidade, acessibilidade/WCAG, responsividade, design systems, componentes, Figma, handoff e relação Design-Desenvolvimento",
+      "permissions": {
+        "publish": false,
+        "ui_design": true,
+        "ux_design": true,
+        "user_flows": true,
+        "web_design": true,
+        "prototyping": true,
+        "accessibility": true,
+        "design_systems": true,
+        "product_design": true,
+        "design_execution": true,
+        "responsive_design": true,
+        "interaction_design": true,
+        "challenge_infeasibility": true,
+        "information_architecture": true,
+        "propose_design_solutions": true,
+        "external_actions_require_vania_approval": true
+      }
+    },
+    {
+      "key": "larissa",
+      "name": "Larissa",
+      "role": "Brand & Marketing — Liderança",
+      "status": "active",
+      "specialty": "Liderança disciplinar ampla em Brand & Marketing: marca, negócio, mercado, posicionamento, proposta de valor, branding, marketing, comunicação, pesquisa, jornada, canais, digital, performance e governança estratégica",
+      "permissions": {
+        "publish": false,
+        "research": true,
+        "brand_strategy": true,
+        "media_execution": false,
+        "digital_strategy": true,
+        "branding_strategy": true,
+        "campaign_strategy": true,
+        "marketing_strategy": true,
+        "strategic_direction": true,
+        "competitive_analysis": true,
+        "review_brand_marketing": true,
+        "coordinate_brand_marketing": true,
+        "external_actions_require_vania_approval": true
+      }
+    },
+    {
+      "key": "marcelo",
+      "name": "Marcelo",
+      "role": "Direção de Arte",
+      "status": "active",
+      "specialty": "Direção de Arte sênior: conceito e direção visual, branding, design gráfico, editorial, campanhas, digital, web, UX/UI em nível de direção visual, tipografia, composição, fotografia, ilustração, motion, sistemas visuais e QA",
+      "permissions": {
+        "publish": false,
+        "guide_design": true,
+        "art_direction": true,
+        "visual_review": true,
+        "visual_systems": true,
+        "creative_concept": true,
+        "reject_low_quality_visuals": true,
+        "external_actions_require_vania_approval": true
+      }
+    },
+    {
+      "key": "patricia",
+      "name": "Patrícia",
+      "role": "COO / Orquestradora",
+      "status": "active",
+      "specialty": "Orquestração operacional, priorização, coordenação global, delegação, dependências, capacidade, checkpoints, revisão integradora e governança do fluxo",
+      "permissions": {
+        "delegate": true,
+        "coordinate": true,
+        "prioritize": true,
+        "route_work": true,
+        "approve_as_vania": false,
+        "create_work_items": true,
+        "manage_work_queue": true,
+        "manage_checkpoints": true,
+        "consolidate_results": true,
+        "create_work_packets": true,
+        "manage_dependencies": true,
+        "pause_resume_operations": true,
+        "external_actions_require_vania_approval": true
+      }
+    }
+  ],
+  "operations": [
+    {
+      "id": "df03aa5e-3b36-4ac3-b4c3-0a60674fca42",
+      "key": "OP-01",
+      "name": "Diagnóstico inicial",
+      "status": "DONE",
+      "coordinator": "patricia"
+    },
+    {
+      "id": "6a0ee0c6-7cc3-4ee2-95a6-20c99d5a3cb1",
+      "key": "OP-03",
+      "name": "Descoberta estratégica",
+      "status": "IN_PROGRESS",
+      "coordinator": "patricia"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "dfc2399b-bc25-4477-ba46-9f72e62254da",
+      "key": "TASK-001",
+      "title": "Coletar informações internas",
+      "owner": "patricia",
+      "status": "DONE",
+      "priority": 100,
+      "operation_id": "6a0ee0c6-7cc3-4ee2-95a6-20c99d5a3cb1",
+      "dependencies": [],
+      "constraints": {
+        "scope_d12": "Não perguntar sobre definição ou recorte do mercado esportivo nesta coleta; será estudado na fase de expansão (D-12).",
+        "depends_on": "Informação fornecida por Vânia",
+        "blocked_reason": "Depende de informações que somente Vânia pode fornecer",
+        "not_in_this_stage": "As respostas não foram solicitadas na etapa 5 da sincronização",
+        "objective_history": "Objective original (2026-09-26): Obter de Vânia as informações ainda necessárias sobre receita, origem dos clientes, capacidade de entrega, motivo/recorte do foco no esporte, cases/clientes utilizáveis, região-alvo e prazo da meta de R$ 50.000/mês. Revisado em 2026-09-27 com aprovação de Vânia para retirar o item sobre o esporte (resolvido pela D-12), incluir a coleta da trajetória oficial da Work Digital e registrar que a situação técnica do site fica fora desta tarefa.",
+        "answer_registration": "Fatos informados por Vânia (receita, origem, capacidade, cases, fatos da trajetória) → Evidence com fonte 'declaração de Vânia' e data real. Escolhas (região-alvo, prazo da meta, clientes citáveis/contatáveis, elementos da trajetória autorizados para comunicação institucional) → Decision de Vânia. Lacunas não respondidas → registradas como lacuna, sem suposição.",
+        "origin_in_document_00": "Seção 9 (Q1–Q5 e outras lacunas) e D-07 (prazo da meta em aberto)"
+      },
+      "next_action": "Nenhuma ação pendente. TASK-001 encerrada em 2026-09-27 por Patrícia: todos os blocos essenciais respondidos por Vânia. Registros gerados: Evidence E-14 a E-22; Decisions D-13 a D-19. Lacunas remanescentes (não bloqueantes): faturamento total médio mensal exato; frequência exata dos projetos pontuais; capacidade medida (a atual é estimativa declarada). Cronologia de fases da empresa não coletada por decisão de Vânia (D-17). Dependência da TASK-002 satisfeita.",
+      "completed_at": null
+    },
+    {
+      "id": "ebf41a50-9c66-48df-9cb2-4dddffebdc67",
+      "key": "TASK-002",
+      "title": "Síntese estratégica de Brand & Marketing e hipóteses de posicionamento",
+      "owner": "larissa",
+      "status": "IN_PROGRESS",
+      "priority": 90,
+      "operation_id": "6a0ee0c6-7cc3-4ee2-95a6-20c99d5a3cb1",
+      "dependencies": [
+        {
+          "task_id": "dfc2399b-bc25-4477-ba46-9f72e62254da",
+          "task_key": "TASK-001"
+        }
+      ],
+      "constraints": {
+        "history": "A atribuição anterior à Clara com base na D-08 foi superada pela D-10; preservar D-08 como histórico.",
+        "execution": "Não executar ainda",
+        "architecture": "D-10 prevalece sobre D-08: Larissa exerce liderança disciplinar ampla em Brand & Marketing; Clara é especialista sênior em Brand & Marketing Digital e colabora na dimensão digital quando aplicável.",
+        "blocked_reason": "Depende da conclusão da TASK-001",
+        "d11_paid_media": "Mídia paga não integra o plano de execução da fase atual (D-11). Oportunidades futuras de mídia paga podem ser identificadas e registradas como oportunidade futura, sem virar frente ativa, recomendação de execução ou orçamento nesta fase.",
+        "hypotheses_note": "Hipóteses H-01 a H-03 não possuem entidade no Control Plane (dívida técnica registrada por Vânia em 2026-09-27). O documento 00 não deve ser usado como fonte operacional.",
+        "inputs_for_clara": "Dimensão de Brand & Marketing Digital: I-07/E-08 (encontrabilidade em busca, redes e AEO/GEO), E-07 (presença social), E-11/I-06 (saturação do discurso SEO/GEO/CRO), lacunas de canais digitais não auditados (site ao vivo, LinkedIn, Facebook).",
+        "d12_sports_market": "Mercado esportivo não é ICP atual e não deve determinar o primeiro posicionamento (D-12). Também não é hipótese rejeitada nem segmento descartado: é direção de expansão futura, a ser estudada no momento adequado.",
+        "dependency_status": "TASK-001 concluída (DONE) em 2026-09-27; o bloqueio registrado em blocked_reason está resolvido. A restrição 'Não executar ainda' permanece até o envio do Work Packet por Patrícia.",
+        "inputs_for_larissa": "Liderança da síntese de Brand & Marketing e das hipóteses do posicionamento inicial. Entradas: E-06, E-07, E-08, E-11, E-12, E-02-R1, E-03-R1; I-06, I-07; revisão de confiança de H-02 e H-03; sinais não formalizados (valor associado à Vânia; tensão de credibilidade temporal). As entradas esportivas (H-01, E-04, E-05, E-09, E-10, E-13, I-02, I-05) ficam disponíveis como conhecimento de expansão futura (D-12) e não entram como premissa do primeiro posicionamento.",
+        "collaboration_rules": "A Larissa produziu a auditoria da TASK-003 e lidera esta síntese; para mitigar autoconfirmação, o Work Packet desta tarefa deve exigir revisão técnica da Clara com direito explícito de contestação fundamentada e busca ativa de evidência contrária. Divergências devem ser preservadas, não resolvidas por hierarquia.",
+        "inputs_from_task_001": "Receita e composição (E-14, E-15, E-21); preço mínimo para novos sites (D-13); origem dos clientes, 100% indicação de amigos e parceiros (E-16, E-19); capacidade atual e modelo de entrega (E-17, E-22, D-14, D-19); clientes atuais e citáveis, sem prova documentada (E-18, D-15); atuação nacional e remota, sem localização pública (D-16); trajetória autorizada, empresa desde 2020 e Vânia desde 2006, comunicadas separadamente (E-20, D-17); prazo da meta: R$ 50.000/mês em 6 meses, início em 28/09/2026 e data-alvo em 28/03/2027 (D-18, corrigida pela D-18-R1 quanto ao marco inicial). D-17 atribui à Larissa avaliar se a cronologia de fases da empresa é necessária.",
+        "inputs_from_task_003": "Entregues pela TASK-003 (DONE em 2026-09-27; result no WP-003): Evidence E-06 a E-13, E-02-R1, E-03-R1; Insights I-05, I-06, I-07; impactos em H-01, H-02 e H-03 registrados no next_action do WP-003 (hipóteses sem entidade no Control Plane; não alteradas). Sinais não formalizados para avaliação: valor associado à Vânia (E-12, um único depoimento); ausência de oferta visível para organizações esportivas médias/pequenas (observação de ausência); tensão de credibilidade temporal (©2022; anos divergentes nos materiais).",
+        "sports_research_rule": "A pesquisa esportiva já produzida (H-01, E-04, E-05, E-09, E-10, E-13, I-02, I-03, I-05 e o sinal de ausência de oferta para organizações esportivas médias/pequenas) fica preservada como conhecimento acumulado para a fase de expansão. Não pode ser usada como premissa, justificativa ou direcionador do primeiro posicionamento. O case CBPq pode ser considerado como prova de capacidade em UX, sem enquadramento esportivo. Se a síntese identificar relação relevante entre o posicionamento inicial e o esporte, deve registrá-la como observação para a fase de expansão, sem alterar a D-12.",
+        "financial_distinctions": "Preservar a distinção entre: capacidade declarada (~10 projetos/mês, E-22, estimativa não medida); quantidade efetivamente vendida; quantidade efetivamente entregue; preço mínimo desejado para novos sites (R$ 3.000, D-13); ticket médio (não estabelecido); e faturamento realizado (E-14, E-21). O cálculo 10 × R$ 3.000 = R$ 30.000 é apenas receita mínima teórica de 10 projetos vendidos ao preço mínimo; não é teto de faturamento de Vânia sozinha, não é projeção nem receita esperada (correção de Vânia em 2026-09-27).",
+        "inputs_for_larissa_history": "Valor anterior (2026-09-27, antes da D-12): Liderança da síntese de Brand & Marketing e das hipóteses de posicionamento: E-06 a E-13, I-05, I-06, revisão de confiança de H-01 a H-03 e os sinais não formalizados. Substituído com aprovação de Vânia para alinhar à D-12."
+      },
+      "next_action": "WP-004 enviado à Larissa em 2026-09-27T04:28:10Z (status SENT), com autorização de Vânia. Aguardando início da execução (received_at) e retorno em REVIEW. Em seguida: revisão da Patrícia e revisão técnica da Clara via novo Work Packet.",
+      "completed_at": null
+    },
+    {
+      "id": "0b128b5f-73af-46c3-8891-c0062982d0c8",
+      "key": "TASK-003",
+      "title": "Auditoria da presença pública e análise competitiva",
+      "owner": "larissa",
+      "status": "DONE",
+      "priority": 80,
+      "operation_id": "6a0ee0c6-7cc3-4ee2-95a6-20c99d5a3cb1",
+      "dependencies": [],
+      "constraints": {
+        "execution": "Execução especializada entregue pela Larissa via WP-003; aguarda revisão/orquestração pela Patrícia.",
+        "scope_note": "A auditoria e análise competitiva foram executadas. O resultado deve ser interpretado à luz da D-10, que supera a divisão de papéis da D-08.",
+        "review_outcome": "2026-09-27 — Revisão da Patrícia concluída com plano aprovado por Vânia: entrega aceita com ressalvas; TASK-003 encerrada em DONE.",
+        "timestamp_note": "started_at e completed_at não foram registrados na execução e não são recuperáveis com fonte confiável; não retropreenchidos.",
+        "external_actions": "Ações externas relevantes exigem aprovação de Vânia (D-04).",
+        "known_limitation": "O site ao vivo da Work Digital não foi validado (erro 500 em workdigital.art.br/en/ e bloqueio de robôs em workdigital.global em 26/09/2026). Conclusões sobre o site dependem de snapshots ≈2022. Verificação atual pode ser tratada como trabalho próprio, se necessário.",
+        "formalized_records": "Evidence: E-06, E-07, E-08, E-09, E-10, E-11, E-12, E-13, E-02-R1, E-03-R1. Insights: I-05, I-06, I-07.",
+        "timestamp_integrity": "Não retropreencher timestamps ausentes sem informação confiável.",
+        "deliverable_location": "A entrega está no result do WP-003 (a TASK não possui campo de resultado editável pelo MCP atual). Síntese da revisão no next_action do WP-003."
+      },
+      "next_action": "Nenhuma ação pendente nesta tarefa. Resultados encaminhados como entradas à TASK-002 (BLOCKED pela TASK-001).",
+      "completed_at": null
+    },
+    {
+      "id": "c904871e-df44-4756-b0ec-c9456f9d7311",
+      "key": "TASK-004",
+      "title": "Preparar roteiro de entrevistas com clientes",
+      "owner": "larissa",
+      "status": "READY",
+      "priority": 70,
+      "operation_id": "6a0ee0c6-7cc3-4ee2-95a6-20c99d5a3cb1",
+      "dependencies": [],
+      "constraints": {
+        "execution": "Não executada nesta etapa; aguarda Work Packet em etapa futura",
+        "internal_work": "A preparação do roteiro é trabalho interno e pode ocorrer",
+        "external_contact": "Contatar clientes é ação externa e continua dependendo da aprovação de Vânia e da definição dos contatos elegíveis"
+      },
+      "next_action": null,
+      "completed_at": null
+    }
+  ],
+  "work_packets": [
+    {
+      "id": "ab8ef458-0ed1-4618-b612-acd7ee3d7020",
+      "key": "WP-004",
+      "operation_id": "6a0ee0c6-7cc3-4ee2-95a6-20c99d5a3cb1",
+      "task_id": "ebf41a50-9c66-48df-9cb2-4dddffebdc67",
+      "destination": "larissa",
+      "status": "SENT",
+      "objective": "Executar a TASK-002: realizar a síntese estratégica de Brand & Marketing da Work Digital e formular hipóteses do POSICIONAMENTO INICIAL, sob liderança disciplinar da Larissa, com revisão técnica da Clara na dimensão de Brand & Marketing Digital.",
+      "instructions": [
+        "Ao iniciar efetivamente o trabalho, registre received_at com o horário real (obtenha o horário atual no momento; não estime).",
+        "Leia no Control Plane as decisões D-04, D-07, D-09 a D-19 e D-18-R1, as evidências listadas neste pacote e os insights I-01, I-06 e I-07. A D-08 é histórico superado pela D-10.",
+        "Produza a síntese estratégica de Brand & Marketing da Work Digital para o posicionamento inicial, conectando negócio, mercado, oferta, público, capacidade, prova e meta.",
+        "Formule de 2 a 4 hipóteses de posicionamento inicial alternativas (não uma única resposta). Para cada uma: para quem, qual problema resolve, proposta de valor, diferenciação pretendida, evidências a favor, evidências contra, riscos, o que precisaria ser provado e como testar com baixo custo sem mídia paga.",
+        "Avalie cada hipótese quanto à compatibilidade com: atuação nacional e remota (D-16); preço mínimo de R$ 3.000 (D-13); modelo de entrega que não dependa da execução pessoal de Vânia (D-14, D-19); ausência atual de prova documentada (E-18); prazo da meta (D-18-R1); e o fato de 100% da aquisição atual vir de indicação (E-16, E-19).",
+        "Revise explicitamente a confiança de H-02 e H-03 com base nas evidências, indicando fortalecer, enfraquecer ou contradizer, sem alterar registros.",
+        "Trate a tensão entre o valor percebido associado à pessoa de Vânia (E-12) e a decisão de Vânia migrar para gestão de projetos (D-19): implicações para marca empresa × marca pessoal.",
+        "Considere o risco de colisão de nome (I-07) e sinalize implicações de marca, sem propor mudança de nome como decisão — apenas como recomendação, se for o caso.",
+        "Busque ativamente evidência contrária às suas próprias conclusões, inclusive às conclusões da sua auditoria anterior (TASK-003).",
+        "Avalie se a cronologia de fases da Work Digital é estrategicamente necessária (D-17). Se for, indique exatamente o que precisa ser perguntado a Vânia e por quê.",
+        "Identifique pontos que exigem análise da Clara na dimensão de Brand & Marketing Digital (presença, busca, AEO/GEO, canais, jornada, conversão), com perguntas específicas para ela. A revisão técnica da Clara será acionada por Patrícia via Control Plane após o seu retorno em REVIEW.",
+        "Classifique cada afirmação como FATO, EVIDÊNCIA, OBSERVAÇÃO, HIPÓTESE, INFERÊNCIA ou RECOMENDAÇÃO, com referência ao registro de origem quando houver.",
+        "Proponha, se houver, novas evidências ou insights para registro, sem gravá-los: Patrícia revisa e formaliza.",
+        "Ao concluir: registre o resultado completo em result, registre completed_at com o horário real, use next_action se houver pendência ou dependência, e devolva o pacote em status REVIEW. Não use COMPLETED nem DONE."
+      ],
+      "expected_output": "Retorno estruturado para a Patrícia contendo:\n1. Síntese estratégica de Brand & Marketing da Work Digital (situação atual, forças, fragilidades, restrições e oportunidades para o posicionamento inicial).\n2. De 2 a 4 hipóteses de posicionamento inicial, cada uma com: público, problema, proposta de valor, diferenciação, evidências a favor e contra, riscos, o que precisa ser provado e teste de baixo custo sem mídia paga.\n3. Avaliação comparativa das hipóteses frente a D-13, D-14, D-16, D-18-R1, D-19, E-16/E-19 e E-18, com recomendação fundamentada (recomendação, não decisão).\n4. Revisão de confiança de H-02 e H-03.\n5. Análise marca empresa × marca pessoal (E-12 × D-19) e implicações da colisão de nome (I-07).\n6. Avaliação da necessidade da cronologia de fases (D-17).\n7. Perguntas e pontos específicos para a revisão técnica da Clara.\n8. Evidências e insights propostos para registro (não gravados).\n9. Lacunas e decisões que dependem de Vânia.\n10. Toda afirmação classificada (FATO, EVIDÊNCIA, OBSERVAÇÃO, HIPÓTESE, INFERÊNCIA ou RECOMENDAÇÃO).\nNenhuma ação externa executada.",
+      "constraints": [
+        "Trabalho interno da Work Digital. Nenhuma ação externa autorizada (D-04): não publicar, não contatar clientes, prospects ou terceiros, não enviar mensagens ou formulários, não gastar, não contratar ferramentas, não criar contas.",
+        "Você formula hipóteses e recomendações; não decide o posicionamento. A decisão é de Vânia.",
+        "Mercado esportivo não pode ser premissa, justificativa ou direcionador do primeiro posicionamento (D-12). A pesquisa esportiva (H-01, E-04, E-05, E-09, E-10, E-13, I-02, I-03, I-05) é conhecimento para expansão futura. O case CBPq pode ser usado como prova de capacidade em UX, sem enquadramento esportivo. Relações relevantes com o esporte devem ser registradas apenas como observação para a fase de expansão.",
+        "Mídia paga não integra o plano de execução desta fase (D-11); pode aparecer apenas como oportunidade futura.",
+        "Preservar a distinção entre capacidade declarada (~10 projetos/mês), quantidade vendida, quantidade entregue, preço mínimo (R$ 3.000), ticket médio (não estabelecido) e faturamento realizado. 10 × R$ 3.000 = R$ 30.000 é apenas receita mínima teórica, não teto nem projeção.",
+        "Nunca atribuir à Work Digital os ~20 anos de experiência de Vânia. Empresa desde 2020; Vânia desde 2006 (D-17).",
+        "Não afirmar resultados, métricas ou depoimentos inexistentes. Citar nomes de clientes não autoriza afirmar resultados (D-15, D-17). Outros nomes históricos além de Bacio di Latte, Dasa e Dengo exigem validação de Vânia.",
+        "Não usar localização física nem o endereço de Santos (D-16).",
+        "Não inventar dados. Informação ausente deve ser registrada como lacuna.",
+        "Não usar o documento 00 como fonte operacional.",
+        "A meta de R$ 50.000/mês é contexto, não autorização; não justifica promessas artificiais, perda de qualidade ou quebra de governança.",
+        "Nova evidência pode superar recomendação anterior, preservando histórico e proveniência (D-09).",
+        "Não criar nem alterar registros de Evidence, Insight, Decision, Task ou Operation; apenas atualizar este Work Packet (received_at, result, completed_at, next_action, status REVIEW).",
+        "Registrar timestamps somente no momento real em que cada etapa ocorrer."
+      ],
+      "received_at": null,
+      "completed_at": null,
+      "result": null
+    },
+    {
+      "id": "e01e14f0-956b-4482-96b7-ff4862fe3b43",
+      "key": "WP-003",
+      "operation_id": "6a0ee0c6-7cc3-4ee2-95a6-20c99d5a3cb1",
+      "task_id": "0b128b5f-73af-46c3-8891-c0062982d0c8",
+      "destination": "larissa",
+      "status": "DONE",
+      "objective": "Executar a TASK-003: auditar a presença pública atual da Work Digital e realizar análise competitiva relevante, incluindo o contexto de agências do setor esportivo.",
+      "instructions": [
+        "Auditar a presença pública atual da Work Digital a partir de observação própria e atual: site workdigital.art.br (home, serviços, cases, depoimentos, CTAs, contato) e demais canais públicos que existirem. Identificar quais canais existem; não supor canais não encontrados.",
+        "Comparar o que a presença pública comunica com o que está registrado como prática real (I-01) e com as observações de 25/09/2026 (E-01, E-02, E-03, briefing 01). Registrar o que mudou desde 25/09/2026, se algo tiver mudado.",
+        "Avaliar os cases publicados: segmentos, presença ou ausência de prova (métricas, resultados, datas) e o case CBPq (I-03). Não presumir quais cases são da fase atual — isso depende de Vânia (TASK-001).",
+        "Definir e justificar o recorte da análise competitiva. Incluir no mínimo: (a) agências do setor esportivo e de academias citadas em E-05; (b) concorrentes comparáveis à oferta pública atual da Work Digital. O recorte pode ser ampliado ou revisto com justificativa.",
+        "Para cada concorrente analisado, registrar o que for observável publicamente (oferta, público declarado, provas apresentadas, posicionamento comunicado), com fonte e data de observação.",
+        "Confirmar ou corrigir as fontes das evidências E-02, E-03 e E-05, que estão sem fonte formal registrada.",
+        "Classificar cada afirmação como FATO, EVIDÊNCIA, OBSERVAÇÃO, HIPÓTESE, INFERÊNCIA ou RECOMENDAÇÃO, sempre com fonte e data quando houver.",
+        "Pesquisar livremente e questionar premissas — inclusive as hipóteses H-01, H-02 e H-03, os insights I-01 a I-03 e o próprio recorte esportivo. Procurar ativamente evidência contrária.",
+        "Preservar e reportar explicitamente qualquer descoberta que contradiga hipóteses, insights ou evidências existentes; não descartar evidência por contrariar o que já está registrado. Nova evidência pode superar recomendação anterior (D-09).",
+        "Sinalizar explicitamente descobertas relevantes para a Clara (TASK-002 — diagnóstico e hipóteses de posicionamento), sem formular hipóteses de posicionamento, que são domínio da Clara (D-08).",
+        "Registrar as lacunas: o que não pôde ser verificado publicamente e o que depende de informação interna de Vânia.",
+        "Devolver o resultado à Patrícia para consolidação e registro no Control Plane."
+      ],
+      "expected_output": "Retorno estruturado para a Patrícia contendo:\n1. Auditoria da presença pública atual: canais encontrados; o que cada um comunica (oferta, promessa, público, provas, CTAs); lacunas e contradições em relação à prática registrada; mudanças desde 25/09/2026.\n2. Análise competitiva: recorte escolhido e justificativa; concorrentes analisados com observações públicas, fonte e data; o que é comum, o que é diferenciado e onde há espaço ou saturação.\n3. Contexto das agências do setor esportivo, sem tratar o esporte como ICP definido.\n4. Evidências novas ou corrigidas propostas para registro, cada uma com conteúdo, fonte, URL, data de observação e confiabilidade.\n5. Impacto nas hipóteses H-01, H-02 e H-03 e nos insights I-01 a I-03: o que fortalece, enfraquece ou contradiz, com evidência.\n6. Descobertas relevantes para a Clara (TASK-002), sinalizadas explicitamente.\n7. Lacunas: o que não pôde ser verificado e o que depende de Vânia.\n8. Toda afirmação classificada (FATO, EVIDÊNCIA, OBSERVAÇÃO, HIPÓTESE, INFERÊNCIA ou RECOMENDAÇÃO).\nNenhuma ação externa executada.",
+      "constraints": [
+        "Trabalho interno. Nenhuma ação externa está autorizada (D-04).",
+        "Proibido: publicar, contatar pessoas ou empresas, enviar mensagens ou formulários, gastar dinheiro, contratar ferramentas pagas, criar contas ou assumir compromissos em nome da Work Digital.",
+        "Permitido: pesquisar e consultar fontes públicas sem interação com terceiros.",
+        "Não inventar clientes, métricas, percepções, concorrentes ou dados. Informação ausente deve ser registrada como lacuna.",
+        "D-10 prevalece sobre D-08: Larissa exerce liderança disciplinar ampla em Brand & Marketing; Clara é especialista sênior em Brand & Marketing Digital.",
+        "O resultado histórico deste pacote foi produzido sob a arquitetura então registrada e deve ser revisado à luz da D-10; não reescrever o result para simular que a nova arquitetura já vigorava na execução.",
+        "O foco esportivo não é ICP definido e pode ser refinado posteriormente.",
+        "Materiais históricos são evidência/contexto, não diretriz automática.",
+        "Descobertas que contradigam hipóteses, insights ou evidências existentes devem ser preservadas e reportadas.",
+        "Nova evidência pode superar recomendação anterior, preservando histórico e proveniência (D-09).",
+        "Vânia é a autoridade final; silêncio não significa aprovação (D-04).",
+        "Não retropreencher sent_at, received_at ou completed_at sem informação confiável.",
+        "NOTA DE REVISÃO (2026-09-27): sent_at, received_at e completed_at não foram registrados durante a execução; não são recuperáveis com fonte confiável e permanecem nulos (Auditoria 7D). O result histórico da Larissa foi preservado integralmente.",
+        "NOTA DE REVISÃO (2026-09-27): o documento 00 citado no context e nos reference_links é referência histórica e não deve ser utilizado como fonte operacional (determinação de Vânia em 2026-09-27)."
+      ],
+      "received_at": null,
+      "completed_at": null,
+      "result": "ENTREGA FINAL — TASK-003 / WP-003 — Auditoria da presença pública e análise competitiva\nDe: Larissa (larissa) → Para: Patrícia (patricia) · Operação: OP-03 · Data: 26/09/2026\n\nLIMITAÇÃO REGISTRADA: não validei o estado atual do site da Work Digital ao vivo. https://workdigital.art.br/en/ retornou erro 500 e https://workdigital.global/ bloqueia acesso automatizado (robots). Tudo o que se afirma sobre o site vem de snapshots de índice de busca (idade ~1.543 dias, ≈2022) ou do material já fornecido por Vânia. A limitação não bloqueia a TASK-003, mas qualquer afirmação sobre \"o site hoje\" deve ser lida com isso em mente.\n\nLegenda: [FATO] [EVID] [OBS] [INF] [HIP] [REC]\n\n==================================================\n1. CONFIRMADO POR PESQUISA PÚBLICA ATUAL (índice consultado em 26/09/2026)\n==================================================\nColisão de nome:\n- [EVID] Existe outra empresa brasileira de nome quase idêntico: Work Digital Marketing (@workdigitalmarketing), 7.913 seguidores, que se apresenta como agência de marketing digital \"TOP 1\", 5+ anos de mercado, clientes em todo o Brasil. Fonte: https://www.instagram.com/workdigitalmarketing/\n- [EVID] Homônimos no exterior: WorkDigital (EUA, sistemas de negócio e automação com IA — https://www.workdigital.com/) e work digital (Alemanha, jornadas digitais para distribuidoras de energia — https://de.linkedin.com/company/work-digital-de).\n\nAgências esportivas citadas na E-05:\n- [EVID] Layup (Maringá/PR; CNPJ aberto em 2017): agência de mídia esportiva que ajuda marcas a decidir onde, quando e como investir no esporte. https://layupsports.com.br/\n- [EVID] Heatmap (Belo Horizonte/MG): patrocínios, ativações e projetos especiais. https://www.heatmap.marketing/\n- [EVID] Oxyon (São Paulo/SP): marketing esportivo, captação de patrocínios, gestão de imagem de atletas, ativação de marcas e projetos especiais. https://www.oxyonsports.com/\n- [EVID] 10 Sports (RN): captação e organização de eventos, gestão de programa de sócio. http://10sports.com.br/servicos/\n- [EVID] ESM (desde 1999): a mais próxima do digital — gestão de sites e redes sociais de clubes como Corinthians, São Paulo, Santos e Vasco; lojas online de clubes. https://www.esm.com.br/quemsomos\n\nTecnologia esportiva:\n- [EVID] SporTI: aplicativos, sites, sistemas e plataformas para organizações esportivas; cita CBF, Atlético-MG, Cruzeiro, Santos, Botafogo e centenas de organizações. https://www.sporti.com.br/\n\nAcademias:\n- [EVID] Agências dedicadas ao segmento: Marketing Ativo (especializada em academias, método próprio para lotação) — https://marketingativo.com.br/ ; Modernizza (consultoria voltada a matrículas e fidelização) — https://modernizza.com/marketing-digital-para-academias/\n\nOferta comparável à pública da Work Digital:\n- [EVID] Santos: Marcasite declara equipe com designers, redatores, programadores e especialistas em UX e SEO. https://marcasite.com.br/criacao-de-sites-em-santos/\n- [EVID] São Paulo: Next4 declara 20+ anos e 2.000+ sites criados. https://www.next4.com.br/criacao-de-sites-orcamento/\n- [EVID] Combo UX/CRO/SEO/GEO já comunicado com provas: Safira (16 anos, 250+ clientes, WordPress + SEO técnico + GEO + UX/UI + LPs — https://safiradesign.com.br/); WebShare (200+ clientes, 15+ anos, 500 mil+ palavras no Top 10 do Google, 20 mil em resultados de IA — https://www.webshare.com.br/); KonveX (SEO, GEO e AEO + criação de sites — https://konvex.com.br/). Também Oxigenweb, Prosperidade Conteúdos e Yooper comunicam SEO+GEO e/ou UX/CRO.\n\nCBPq:\n- [EVID] A CBPq mantém site ativo em https://www.cbpq.org.br/ . Autoria do site atual não verificada.\n\n==================================================\n2. DERIVADO DO CONTEXTO / MATERIAL JÁ FORNECIDO POR VÂNIA\n==================================================\n- [FATO fornecido] Oferta comercial nas apresentações é ampla: sites, landing pages, blogs, e-commerce, UX/UI, SEO, performance, consultoria, marketing digital e automação (docs 01 e 03 do Project Larissa).\n- [FATO fornecido] A comunicação alterna entre \"empresa de criação de sites\" e \"estúdio multidisciplinar\" (doc 07).\n- [FATO fornecido] CBPq consta como case; depoimentos de Bacio di Latte, STWBrasil, FIAMM e Dra. Loren com temas de prazo, atuação consultiva e foco no problema do negócio (docs 04 e 05).\n- [FATO fornecido] Materiais trazem anos de referência divergentes para a empresa (doc 02).\n- [FATO fornecido] Briefing 01 (observado em 25/09/2026): 4 depoimentos, CTAs via WhatsApp; clientes recentes (Serur, Modenapak, Garrom) ausentes dos cases publicados.\n- [FATO fornecido, não público] Vânia atua a partir de São Bernardo do Campo; cliente Garrom no ABC (parte da E-03).\n- [OBS] O próprio material comercial já descreve oferta mais ampla que o site; o descompasso do I-01 parece ser, ao menos em parte, de canal, não só de oferta.\n\n==================================================\n3. DEPENDENTE DE SNAPSHOTS ANTIGOS (≈2022; NÃO VALIDADO AO VIVO)\n==================================================\nSite da Work Digital:\n- [EVID] Mesma mensagem da E-01: empresa especializada em criação de sites em WordPress, landing pages e lojas virtuais, focada em geração de leads e alta performance; promessa \"o site da sua empresa precisa ser um gerador de novos negócios\".\n- [EVID] Rodapé: Av. Conselheiro Nébias, 756, Helbor Offices, Santos-SP; \"Work Digital, 2022 ©\"; CNPJ 39.401.972/0001-23.\n- [EVID] Dois domínios com o mesmo conteúdo: workdigital.art.br e workdigital.global.\n- [EVID] Cases com rótulos curtos, sem métricas visíveis: Genera (Grupo DASA); Ideale Treinamentos (\"Forte interface criativa\"); CBPq (\"Reformulação UX\"); STWBrasil (\"Branding web\").\n- [EVID] Depoimento público atribui o valor à pessoa: Vania descrita como consultora de tecnologia que foca no problema, não só na solução/ferramenta.\n- [EVID] Canais declarados no schema: LinkedIn (company/workdigitalbr), Instagram @workdigitalbr, Facebook workdigital.global.\nInstagram:\n- [EVID] @workdigitalbr: 35 seguidores, 3 posts, bio de especialista em sites WordPress e lojas virtuais (data da captura não informada pelo índice). https://www.instagram.com/workdigitalbr/\nConcorrentes com fontes antigas:\n- [EVID] Agência Look: entidade ambígua — há ao menos uma em Brasília (carreira/imagem de atletas, página de serviços com ~8 anos listando criação de sites e aplicativos para atletas — https://agencialook.com.br/sites-e-aplicativos/) e uma full-service em Osasco/SP.\n- [EVID] Datas de Heatmap e Layup vêm em parte de notícias de 2020–2023.\n\n==================================================\n4. INFERÊNCIAS E OBSERVAÇÕES\n==================================================\n- [OBS] A maioria das agências da E-05 vende patrocínio e visibilidade, não presença digital/UX — não são concorrentes diretos da oferta da Work Digital.\n- [OBS] O esporte reúne compradores distintos, cada um com um tipo de fornecedor: marcas patrocinadoras → agências de patrocínio; grandes clubes → ESM; federações e ligas → plataformas (SporTI); academias → agências de tráfego/matrícula; atletas → gestão de imagem.\n- [OBS] \"Site de alta performance/conversão\", \"SEO + GEO\" e \"UX + CRO\" estão saturados no discurso do mercado e são sustentados por números pelos concorrentes.\n- [OBS] Há pouca oferta visível em presença digital e UX para organizações esportivas de porte médio/pequeno, entre agências de patrocínio e plataformas prontas.\n- [INF] O texto indexado em ≈2022 é idêntico à E-01 (registrada em 25/09/2026): o site pode ter mudado pouco em ~4 anos, ou a E-01 veio de cache. Não confirmado.\n- [INF] O valor percebido parece associado à Vânia como pessoa, mais do que à marca Work Digital.\n- [INF] Pela faixa numérica, o CNPJ pode ter sido aberto por volta de 2020, o que tensionaria a narrativa de \"trajetória de longa duração\". Não verificado.\n- [INF] A colisão de nome provavelmente reduz a encontrabilidade da marca em busca e redes.\n\n==================================================\n5. EVIDÊNCIAS NOVAS PROPOSTAS (NÃO GRAVADAS)\n==================================================\nE-06 | Site com \"© 2022\", CNPJ 39.401.972/0001-23, endereço em Santos, dois domínios | índice de https://workdigital.art.br/en/ e https://workdigital.global/ | observada 26/09/2026 (snapshot ≈2022) | confiabilidade média\nE-07 | Instagram @workdigitalbr: 35 seguidores, 3 posts | https://www.instagram.com/workdigitalbr/ | 26/09/2026 (captura sem data) | média\nE-08 | Colisão de nome: @workdigitalmarketing (BR), workdigital.com, workdigital.de | https://www.instagram.com/workdigitalmarketing/ ; https://www.workdigital.com/ ; https://de.linkedin.com/company/work-digital-de | 26/09/2026 | alta\nE-09 | Agências da E-05 atuam em patrocínio/ativação; ESM é a exceção digital, no topo do mercado | https://layupsports.com.br/ ; https://www.heatmap.marketing/ ; https://www.oxyonsports.com/ ; http://10sports.com.br/servicos/ ; https://www.esm.com.br/quemsomos | 26/09/2026 | alta\nE-10 | SporTI fornece sites e apps para federações e clubes | https://www.sporti.com.br/ | 26/09/2026 | média (autodeclarado)\nE-11 | Oferta WordPress + SEO + GEO + UX/CRO é comum e vem com provas numéricas | https://safiradesign.com.br/ ; https://www.webshare.com.br/ ; https://konvex.com.br/ ; https://marcasite.com.br/criacao-de-sites-em-santos/ ; https://www.next4.com.br/criacao-de-sites-orcamento/ | 26/09/2026 | alta\nE-12 | Depoimento público atribui o valor à Vânia pessoalmente | índice de https://workdigital.art.br/en/ | 26/09/2026 (snapshot ≈2022) | média\nE-13 | Existem agências especializadas em marketing para academias, focadas em matrícula/tráfego | https://marketingativo.com.br/ ; https://modernizza.com/marketing-digital-para-academias/ | 26/09/2026 | média\n\n==================================================\n6. CORREÇÕES PROPOSTAS ÀS EVIDÊNCIAS EXISTENTES\n==================================================\n- E-02: rótulos de 4 cases confirmados via snapshot; a contagem de 20 cases e a ausência total de métricas não foram confirmadas publicamente. Fonte sugerida: \"site workdigital.art.br — observação da OP-01, 25/09/2026\".\n- E-03: separar em (a) endereço público em Santos — confirmado pelo rodapé do site (snapshot); (b) Vânia em São Bernardo do Campo e Garrom no ABC — informação fornecida por Vânia, não pública.\n- E-05: fontes encontradas para ESM, Heatmap, Layup, Oxyon e 10 Sports; \"Agência Look\" ambígua; \"Serum\" não localizada. Proposta de reescrita: registrar que essas agências são majoritariamente de patrocínio/ativação e não concorrentes diretas em presença digital.\n\n==================================================\n7. IMPACTOS NAS HIPÓTESES E INSIGHTS\n==================================================\n- H-01 (esporte viável): continua não validada. Uma evidência contrária perde força — a E-05 era usada como \"já existem agências no nicho\", mas elas atuam em outra categoria. Concorrentes digitais reais: ESM (topo) e plataformas. Continua sem evidência sobre demanda e orçamento.\n- H-02 (UX + Marketing como diferencial): enfraquece como diferencial comunicável — vários concorrentes afirmam a mesma combinação com provas. A capacidade pode ser real; a exclusividade não se sustenta publicamente.\n- H-03 (falta de prova como principal freio): fortalece no plano público — concorrentes exibem números, a Work Digital não. \"Principal\" não é testável sem origem dos clientes. Explicações concorrentes: site aparentemente pouco atualizado, redes quase inativas, colisão de nome, descompasso oferta pública × prática.\n- I-01: parcialmente sustentado — lado público de fato estreito; lado \"prática real\" (AEO/GEO, CRO, social, auditorias) sem evidência registrada no Control Plane; material comercial já mais amplo que o site.\n- I-02: fortalecido pela segmentação de compradores observada.\n- I-03: parcialmente confirmado — case \"Reformulação UX\" existia em ≈2022; não verificado se é o único case esportivo hoje nem a autoria do site atual da CBPq.\n\n==================================================\n8. PARA A CLARA (TASK-002) — sinalizações, sem formular posicionamento\n==================================================\n1. O concorrente no esporte depende do comprador: patrocínio, presença digital e plataforma são categorias diferentes.\n2. \"UX + SEO/GEO + conversão\" está saturado como afirmação; diferenciação por esse caminho exigiria prova, não discurso.\n3. O valor percebido aparece ligado à Vânia, não à marca — afeta a relação marca pessoal × marca empresarial.\n4. A colisão do nome \"Work Digital\" é um risco de marca independente do posicionamento.\n5. Espaço aparentemente pouco disputado: presença digital e UX para organizações esportivas médias e pequenas. Observação de mercado, não hipótese nem recomendação.\n6. Tensão de credibilidade temporal (\"© 2022\", possível CNPJ ≈2020, anos divergentes nos materiais) precisa ser resolvida antes de usar \"trajetória\" como argumento.\n\n==================================================\n9. LACUNAS QUE PERMANECEM\n==================================================\nNão verificadas publicamente:\n- Estado atual do site ao vivo e mudanças desde 25/09/2026 (limitação registrada).\n- Páginas de LinkedIn e Facebook da Work Digital.\n- Contagem atual de cases.\n- Autoria do site atual da CBPq.\n- Existência da \"Serum\"; identidade exata da \"Agência Look\".\n- Tráfego e rankings (exigiriam ferramentas pagas, vetadas pelo pacote).\n- Data de abertura do CNPJ (verificável depois, em consulta pública, sem interação com terceiros).\nDependem de Vânia (TASK-001):\n- Quais cases são da fase atual e quais clientes podem ser citados.\n- Origem dos clientes, receita por serviço e ticket.\n- Região-alvo (Santos ou ABC).\n- Motivo e recorte do foco no esporte.\n- Se o domínio workdigital.global continua ativo.\n- Prazo da meta de R$ 50 mil/mês.\n\nCONTRADIÇÕES REGISTRADAS\n1. E-05 usada contra H-01, mas descreve agências de outra categoria.\n2. E-01 datada de 25/09/2026 com texto idêntico ao indexado em ≈2022.\n3. \"© 2022\" e possível CNPJ ≈2020 × narrativa de \"trajetória longa\" (materiais já trazem anos divergentes).\n4. Comunicação de \"empresa/estúdio\" × depoimento que atribui o valor à Vânia.\n5. Endereço público em Santos × atuação declarada no ABC.\n6. Heatmap: fundação 2021 no LinkedIn × CNPJ de 2018 (dado menor).\n7. Processo: WP-003 em SENT com sent_at nulo; TASK-003 em IN_PROGRESS com started_at nulo e constraint \"aguarda Work Packet\".\n\nSTATUS DA EXECUÇÃO\nExecução da TASK-003 concluída com as fontes e o contexto disponíveis, preservando a limitação de não validação do site ao vivo. Pronta para revisão da Patrícia. Nenhuma ação externa executada (sem contatos, publicações, mensagens, formulários, gastos, ferramentas, contas ou compromissos). Nenhum Evidence, Insight ou Decision criado."
+    }
+  ]
+}

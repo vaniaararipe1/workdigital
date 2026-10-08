@@ -4,6 +4,16 @@ const finished=new Set(['DONE','MEASURED','COMPLETED','CANCELLED']);
 const key=x=>x.packet_key||x.task_key||x.operation_key||x.key||'';
 const find=(items,ref)=>typeof ref==='string'&&ref.length?items.find(x=>x.id===ref||key(x)===ref):undefined;
 function executionConstraint(c){return typeof c==='string'?c:Array.isArray(c)?c.join('\n'):String(c?.execution||'');}
+const permissionByAction={contact:'external_contact',proposal:'send_proposal',publish:'publish',media:'media_execution',spend:'spend'};
+function classifyAction(packet){
+  if(packet.action_type)return packet.action_type;
+  const text=[packet.objective,packet.expected_output,...(Array.isArray(packet.instructions)?packet.instructions:[])].filter(Boolean).join(' ').toLowerCase();
+  if(/contat(ar|o)|enviar mensagem|prospecção externa/.test(text))return 'contact-unclassified';
+  if(/enviar proposta|apresentar proposta/.test(text))return 'proposal-unclassified';
+  if(/publicar|postar/.test(text))return 'publish-unclassified';
+  if(/gastar|contratar|comprar/.test(text))return 'spend-unclassified';
+  return 'internal';
+}
 // Pure planning: no state writes, model calls, claims or inferred approval.
 function planQueue(state){
   for(const k of ['agents','operations','tasks','work_packets'])if(!Array.isArray(state[k]))throw TypeError('Missing '+k);
@@ -14,6 +24,10 @@ function planQueue(state){
     const reasons=[],destination=p.destination_agent||p.destination;
     const agent=state.agents.find(a=>(a.agent_key||a.key)===destination);
     if(!keys.has(destination)||!agent||agent.status!=='active')reasons.push('agent-unavailable');
+    const action=classifyAction(p);
+    if(action.endsWith('-unclassified'))reasons.push('action-classification-required');
+    const permission=permissionByAction[action];
+    if(permission&&agent?.permissions?.[permission]!==true)reasons.push('agent-permission-denied');
     const task=find(state.tasks,p.task_id||p.task);
     if(!task)reasons.push('task-missing');
     else{

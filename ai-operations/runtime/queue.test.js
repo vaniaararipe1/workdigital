@@ -10,3 +10,5 @@ test('external actions and approval flags remain blocked',()=>{for(const mode of
 test('legacy restriction needs reconciliation',()=>{const s=fixture();s.tasks[0].constraints={execution:'Não executar ainda'};assert.ok(planQueue(s).blocked[0].reasons.includes('constraint-reconciliation-required'));});
 test('rejects missing schema and unknown agents',()=>{assert.throws(()=>planQueue({}));const s=fixture();s.work_packets[0].destination_agent='LARISSA_MENDES';assert.equal(planQueue(s).ready.length,0);});
 test('paused operation blocks work',()=>{const s=fixture();s.operations[0].status='PAUSED_CAPACITY';assert.equal(planQueue(s).ready.length,0);});
+test('agent permission blocks classified external work',()=>{const s=fixture();s.agents[0].permissions={external_contact:false};s.work_packets[0].action_type='contact';assert.ok(planQueue(s).blocked[0].reasons.includes('agent-permission-denied'));});
+test('external language without classification fails closed',()=>{const s=fixture();s.work_packets[0].objective='Contatar prospects e enviar mensagem';assert.ok(planQueue(s).blocked[0].reasons.includes('action-classification-required'));});
