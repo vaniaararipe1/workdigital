@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-09T02:28:02Z
+Atualizado em: 2026-10-09T05:32:40Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -34,14 +34,18 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Implementado contrato fail-closed de claim/lease em `runtime/lease.js`: aquisição otimista versionada, expiração, liberação exclusiva pelo owner e bloqueio de despacho sem estado ao vivo, `runtime_verified=true` e lease ativo do mesmo runtime.
 - O contrato não usa arquivo local como falsa persistência e exige adapter durável com `read` + `compareAndSwap`; portanto preserva a distinção entre máquina de estados testada e runtime de produção.
 - Contrato, seis novos testes e documentação persistidos na branch autorizada pelo commit `99690dcdf472818ba0b71ba7b5d4767a0c3bb159`.
+- Revalidado o Control Plane 2.6.0: online, banco conectado e escrita por chave disponível, porém sem `expected_version`, compare-and-swap ou claim atômico nos contratos MCP observados.
+- Adicionada matriz verificável em `GET /api/runtime-readiness`; `GET /api/queue` agora falha com `503 runtime-not-ready` quando faltar qualquer requisito, inclusive se existir leitura ao vivo sem lease atômico.
+- Capacidades observadas, endpoint de prontidão e bloqueio da fila persistidos no commit `b05d831242582c2b930bd03b2418d0de89013d64`; evidência `E-ECO-20261009-0230` registrada no Control Plane.
 
 ## Evidência e validação
 
-- `npm test`: 24/24 testes aprovados.
+- `npm test`: 27/27 testes aprovados.
 - `node --check public/app.js` e `node --check server.js`: aprovados.
 - QA estrutural: quatro áreas navegáveis, sete agentes, responsividade, preferência de movimento reduzido, permissões e `next_action` presentes. Teste também impede regressão para o rótulo “AGORA” enquanto o runtime não for comprovado.
 - Planejamento atual: nenhum pacote liberado; `WP-004` bloqueado por `action-classification-required`, `agent-permission-denied` e `constraint-reconciliation-required`. O texto contém intenção externa/vedações e a restrição legada “Não executar ainda”; o fail-closed é deliberado.
 - Testes de concorrência comprovam que um segundo owner não adquire lease ativo, que lease expirado pode ser retomado, que somente o owner libera e que o plano de despacho bloqueia sem as três provas de runtime. O armazenamento usado no teste é deliberadamente apenas um double em memória.
+- Testes de prontidão comprovam que estado ao vivo isolado não ativa o dispatcher, que projeção histórica permanece bloqueada e que todos os requisitos precisam ser verdadeiros simultaneamente.
 - O servidor é somente leitura: serve a interface e o snapshot, recusa escrita e travessia de diretório.
 - A interface usa estado cinza para agente apenas cadastrado; vinho indica trabalho associado e roxo identifica Patrícia. Nenhum ponto verde representa presença online sem prova.
 
@@ -61,8 +65,8 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 
 ## Próximo passo autorizado
 
-Inspecionar se o Control Plane expõe atualização condicional/versionada capaz de implementar o adapter de lease. Em paralelo, validar visualmente a interface em navegador real quando existir ambiente autorizado. Não usar `WP-004` como smoke test. Se o adapter exigir alteração ou credencial de infraestrutura não disponível, acionar Vânia apenas para esse acesso.
+Preparar a especificação mínima do endpoint CAS/lease para evolução do Control Plane, sem contratar infraestrutura nem ativar o dispatcher. Em paralelo, validar visualmente a interface em navegador real quando existir ambiente autorizado. Não usar `WP-004` como smoke test. Se implementar o endpoint exigir acesso ao código/host do Control Plane não disponível, acionar Vânia apenas para esse acesso.
 
 ## Bloqueio
 
-Sem bloqueio de capacidade nativa nesta rodada. O contrato de lease existe e está testado, mas o Control Plane ainda não expôs ou comprovou um backend CAS durável para conectá-lo; por isso execução contínua segue desativada. Permanecem também a ausência de endpoint autenticado para streaming ao vivo e de ambiente autorizado para QA visual/publicação. Nenhum gasto, contratação ou credencial foi assumido.
+O contrato de lease existe e está testado, mas o MCP atual do Control Plane não expõe backend CAS durável; por isso execução contínua segue desativada. Para eliminar esse bloqueio será necessário acesso ao código/host do Control Plane ou a publicação de uma primitiva atômica equivalente. Permanecem também a ausência de endpoint autenticado para streaming ao vivo e de ambiente autorizado para QA visual/publicação. Nenhum gasto, contratação ou credencial foi assumido.
