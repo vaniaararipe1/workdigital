@@ -35,7 +35,7 @@ async function claimLease(store,{owner,ttlMs=60_000,now=new Date(),maxAttempts=3
       return {acquired:false,reason:'lease-held',lease:current};
     }
     const next={version:current.version+1,owner,acquired_at:iso(acquiredAt),expires_at:iso(acquiredAt.getTime()+ttlMs)};
-    if(await store.compareAndSwap(current.version,next))return {acquired:true,lease:next};
+    if(await store.compareAndSwap(current.version,next,{owner}))return {acquired:true,lease:next};
   }
   return {acquired:false,reason:'lease-contention',lease:null};
 }
@@ -45,7 +45,7 @@ async function releaseLease(store,{owner,now=new Date()}={}){
   const current=normalizeLease(await store.read());
   if(!leaseIsActive(current,now)||current.owner!==owner)return {released:false,reason:'not-owner',lease:current};
   const next={version:current.version+1,owner:null,acquired_at:null,expires_at:null,released_at:iso(now)};
-  return await store.compareAndSwap(current.version,next)
+  return await store.compareAndSwap(current.version,next,{owner})
     ?{released:true,lease:next}
     :{released:false,reason:'lease-contention',lease:null};
 }
@@ -63,3 +63,4 @@ function planLeasedDispatch(state,{lease,owner,now=new Date()}={}){
 }
 
 module.exports={claimLease,releaseLease,planLeasedDispatch,leaseIsActive};
+

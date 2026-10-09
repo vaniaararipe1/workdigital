@@ -17,8 +17,9 @@ function createHttpLeaseStore({baseUrl,token,fetchImpl=globalThis.fetch,timeoutM
       if(!Number.isInteger(value?.version))throw Error('Lease response has no integer version');
       return value;
     },
-    async compareAndSwap(expectedVersion,next){
-      const response=await request('PUT',{headers:{'content-type':'application/json','if-match':'"lease-v'+expectedVersion+'"'},body:JSON.stringify(next)});
+    async compareAndSwap(expectedVersion,next,{owner=next.owner}={}){
+      if(typeof owner!=='string'||!owner.trim())throw TypeError('Runtime owner is required for lease writes');
+      const response=await request('PUT',{headers:{'content-type':'application/json','if-match':'"lease-v'+expectedVersion+'"','x-lease-owner':owner},body:JSON.stringify(next)});
       if(response.status===409||response.status===412)return false;
       if(!response.ok)throw Error('Lease compare-and-swap failed with '+response.status);
       return true;
@@ -27,3 +28,4 @@ function createHttpLeaseStore({baseUrl,token,fetchImpl=globalThis.fetch,timeoutM
 }
 
 module.exports={createHttpLeaseStore};
+

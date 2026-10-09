@@ -46,3 +46,10 @@ test('verified live state with owned lease selects one packet without executing 
 test('non-atomic stores are rejected',async()=>{
   await assert.rejects(()=>claimLease({read:async()=>null},{owner:'run-a'}),/Atomic lease store/);
 });
+test('simultaneous acquisitions admit one winner even after CAS retries',async()=>{
+  const store=memoryStore(),now='2026-10-09T12:00:00.000Z';
+  const results=await Promise.all(['a','b','c'].map(owner=>claimLease(store,{owner,now})));
+  assert.equal(results.filter(result=>result.acquired).length,1);
+  assert.equal((await store.read()).version,1);
+});
+

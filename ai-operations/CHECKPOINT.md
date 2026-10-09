@@ -1,6 +1,27 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-09T05:35:05Z
+Atualizado em: 2026-10-09 — implementação retomada na conversa da manhã
+
+## Retomada de implementação — 09/10/2026, manhã (America/Sao_Paulo)
+
+Esta seção prevalece sobre o próximo passo/bloqueio anterior que encaminhava a inspeção para Render.
+
+- Fonte atual recuperada da branch autorizada: head `6db8ea371afb4b3f5333f81d2fd59bdc6816448d`. Health consultado novamente: online, database connected, MCP 2.6.0.
+- Reexecutados os 30 testes anteriores: 30/30 passaram. O checkpoint anterior registra implementação agendada durante a madrugada; não afirmar que não houve trabalho entre acionamentos da CEO.
+- Implementada migração Supabase/PostgreSQL em `runtime/backend/001_runtime_lease.sql`: singleton durável, CAS por versão, bloqueio transacional de linha, autoridade do relógio do banco, expiração, principal autenticado autorizado e auditoria na mesma transação.
+- Implementado handler autenticado `runtime/backend/lease-handler.mjs` para GET/PUT runtime/lease, com RPC do Supabase, If-Match obrigatório, limites de entrada e erros sem detalhes privados.
+- Cliente e contrato de claim/release agora propagam identidade de execução em X-Lease-Owner, inclusive na liberação.
+- Oito testes adicionados: sete de autenticação/handler/integração de transporte, um de corrida entre três aquisições simultâneas. Suíte atual: 38/38 aprovados; sintaxe do handler aprovada.
+- Os testes de integração usam doubles de RPC. Não existe teste executado de PostgreSQL nem de CAS contra produção nesta rodada. A migração está implementada, mas NÃO aplicada.
+- Nenhum arquivo fora de ai-operations foi alterado. Nenhuma tarefa operacional, permissão comercial, flag de runtime ou segredo foi modificado.
+
+### Pendência e próximo passo real
+
+Não há ferramenta disponível nesta sessão para administrar o banco Supabase ou implantar sua Edge Function. A fonte histórica recuperada (MCP 2.5.0, 26/09) identifica Supabase, mas não substitui a fonte atual 2.6.0. É necessário acesso administrativo ao projeto Supabase correto e à fonte atual antes de aplicar a migração e montar o handler no middleware OAuth existente.
+
+O pacote e a sequência de validação estão em `runtime/backend/DEPLOYMENT.md`. Não é necessário presumir workspace Render nem contratar novo host. Manter todas as flags de CAS/backend/runtime falsas até as respectivas provas reais. Após implantação: teste de concorrência, retomada após expiração, persistência após reinício, auditoria e ciclo completo dos agentes com fencing antes de cada entrega.
+
+Consulta de automações confirmou a tarefa Concluir ecossistema Work Digital desativada; relatórios ativos não equivalem a continuidade da implementação. Não afirmar reativação sem resultado da ferramenta. O pedido atual autoriza esta execução de implementação e não fornece acesso administrativo ao Supabase.
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -72,3 +93,4 @@ Após seleção explícita da workspace Render `My Workspace` (`tea-dau102gjo6nc
 ## Bloqueio
 
 O contrato de lease e o adapter cliente existem e estão testados, mas o MCP atual do Control Plane não expõe backend CAS durável; por isso execução contínua segue desativada. A integração Render encontrou uma única workspace acessível (`My Workspace`), porém nenhuma workspace está selecionada e o conector exige escolha explícita antes de listar serviços. É necessário Vânia selecionar/autorizar essa workspace uma vez para a inspeção do host. Permanecem também a ausência de endpoint autenticado para streaming ao vivo e de ambiente autorizado para QA visual/publicação. Nenhum gasto, contratação ou credencial foi assumido.
+
