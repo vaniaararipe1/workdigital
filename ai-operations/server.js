@@ -17,8 +17,8 @@ async function readState(){
     const response=await fetch(base.replace(/\/$/,'')+'/snapshot',{headers:process.env.CONTROL_PLANE_API_TOKEN?{authorization:'Bearer '+process.env.CONTROL_PLANE_API_TOKEN}:{},signal:AbortSignal.timeout(5000)});
     if(!response.ok)throw Error('Unavailable');
     return {...normalize(await response.json()),source:'control-plane-api',live:true,fetched_at:new Date().toISOString()};
-  }catch{return {...normalize(snapshot),source:'historical-snapshot',live:false,connection_status:'unavailable'};}
-  return {...normalize(snapshot),source:'historical-snapshot',live:false,connection_status:'not-configured'};
+  }catch{return {...normalize(snapshot),source:snapshot.source||'historical-snapshot',live:false,connection_status:'unavailable'};}
+  return {...normalize(snapshot),source:snapshot.source||'historical-snapshot',live:false,connection_status:'not-configured'};
 }
 function createServer(){return http.createServer(async(req,res)=>{
   if(!['GET','HEAD'].includes(req.method))return json(res,405,{error:'method-not-allowed'});

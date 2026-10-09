@@ -18,10 +18,11 @@ Não presumir que arquivos TOML do Codex local sejam automaticamente instalados 
 7. Patrícia revisa a entrega; solicita revisão independente quando o pacote exigir (ex.: Clara revisa Larissa no WP-004). A CEO recebe decisões indispensáveis e entregas verificáveis.
 8. Persistir checkpoint ao concluir a sessão. Esta automação de construção não deve ser transformada silenciosamente em rotina de operação comercial.
 
-## Integração ainda pendente
+## Projeção autenticada implementada
 O servidor MCP disponível possui tools; não foi confirmado endpoint REST /snapshot. CONTROL_PLANE_API_URL é apenas um contrato existente e não deve receber o URL MCP assumindo equivalência.
-A interface retorna live:false com dados históricos quando o adapter está ausente. /api/queue responde 503 sem fonte ao vivo; não despacha trabalho.
-Próximo: implementar/testar adapter MCP ou projeção autenticada e UI com estado atual, recuperar vídeo, validar delegação nativa e teste operacional completo com pacotes dedicados.
+`runtime/projection.js` valida health, registro exato dos sete agentes e coleções do Control Plane, remove registros técnicos de teste e produz uma projeção somente leitura. `scripts/refresh-projection.js` grava o snapshot de forma atômica; a tarefa nativa do ChatGPT faz as leituras MCP e alimenta esse script.
+A interface retorna `live:false` e identifica a fonte como `chatgpt-control-plane-projection`, com data e hora. `/api/queue` continua respondendo 503 sem fonte ao vivo e não despacha trabalho. Projeção agendada não é streaming nem prova de runtime autônomo dos sete agentes.
+Próximo: repetir handoffs dedicados com os demais especialistas, validar retomada entre execuções e definir um mecanismo de claim/lease antes de qualquer dispatcher concorrente.
 Nenhum host/modelo adicional contratado. Nenhuma credencial API necessária para continuar os testes internos atuais.
 
 ## Documentação verificada em 08/10/2026

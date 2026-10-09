@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-08T23:31:00Z
+Atualizado em: 2026-10-09T00:33:00Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -23,12 +23,15 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Adicionados testes para bloqueio por permissão e por ação externa não classificada.
 - Revisão nativa executada por Felipe: confirmou limites comerciais e identificou a lacuna de permissão da fila, agora corrigida.
 - Alterações remotas confirmadas na branch autorizada pelo commit `b460588cf4762d81db9c611a27ffdc29a78af108`; nenhum arquivo fora de `ai-operations/` foi modificado.
+- Implementada projeção autenticada e fail-closed do Control Plane: valida health e os sete agentes, exclui registros de teste, grava snapshot atomicamente e mantém `/api/queue` indisponível sem fonte realmente ao vivo.
+- Clara executou revisão nativa da interface; seu achado sobre linguagem de “execução agora” foi incorporado. A tela agora usa “Estado operacional registrado”, mostra data/hora da projeção e mantém aviso permanente de execução autônoma não verificada.
+- Fechado e persistido no Control Plane um circuito atual Patrícia → Clara → Control Plane → Patrícia: `OP-ECO-TEST-20261008-2130`, `TASK-ECO-TEST-CLARA-001` e `WP-ECO-TEST-CLARA-001`, todos concluídos sem ação externa.
 
 ## Evidência e validação
 
-- `npm test`: 13/13 testes aprovados.
+- `npm test`: 15/15 testes aprovados.
 - `node --check public/app.js` e `node --check server.js`: aprovados.
-- QA estrutural: quatro áreas navegáveis, sete agentes, responsividade, preferência de movimento reduzido, permissões e `next_action` presentes.
+- QA estrutural: quatro áreas navegáveis, sete agentes, responsividade, preferência de movimento reduzido, permissões e `next_action` presentes. Teste também impede regressão para o rótulo “AGORA” enquanto o runtime não for comprovado.
 - Planejamento atual: nenhum pacote liberado; `WP-004` bloqueado por `constraint-reconciliation-required` porque `TASK-002` ainda contém a restrição legada “Não executar ainda”.
 - O servidor é somente leitura: serve a interface e o snapshot, recusa escrita e travessia de diretório.
 - A interface usa estado cinza para agente apenas cadastrado; vinho indica trabalho associado e roxo identifica Patrícia. Nenhum ponto verde representa presença online sem prova.
@@ -36,21 +39,21 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 ## Teste multiagente nativo
 
 - Funcionamento parcial comprovado: um subagente especializado (Felipe) recebeu contexto, revisou os artefatos e devolveu achado útil incorporado ao código.
-- O teste simultâneo dos outros cinco especialistas foi interrompido pelo limite temporário de uso do plano ChatGPT. Portanto, a operação conjunta dos sete agentes **não está comprovada**.
-- Esse limite não exige decisão da Vânia neste checkpoint; a tentativa pode ser repetida após a renovação de capacidade.
+- Segundo especialista comprovado: Clara recebeu um pacote interno, devolveu revisão útil, teve o achado incorporado e passou pela revisão da Patrícia com persistência integral no Control Plane.
+- O teste simultâneo anterior de outros especialistas foi interrompido pelo limite temporário de uso do plano ChatGPT. Portanto, a operação conjunta dos sete agentes **não está comprovada**; o teste sequencial Patrícia + Clara comprova apenas esse circuito.
 
 ## Pendências
 
 - Repetir o teste operacional completo com Patrícia + seis especialistas quando houver capacidade nativa disponível.
-- Implementar/adaptar uma leitura ao vivo do Control Plane para a interface; hoje ela usa snapshot verificável.
+- A projeção atual é renovável pela tarefa nativa e verificável, mas não é streaming ao vivo. Um adapter REST ao vivo continua condicionado a endpoint e autenticação próprios, ainda não disponíveis.
 - Reconciliar a divergência de `TASK-002` com sua proveniência antes de qualquer despacho.
 - Validar visualmente em navegador real e publicar somente se houver ambiente autorizado para esta branch.
 - Comprovar um runtime independente da presença da CEO. Cadastro de agentes, tela e planejador não são essa prova.
 
 ## Próximo passo autorizado
 
-Repetir o teste multiagente nativo, registrar cada handoff no Control Plane e, sem disparar ações externas, exercitar um pacote interno do início à revisão. Em paralelo, preparar a leitura ao vivo do Control Plane sem transformar o frontend em superfície de escrita.
+Executar circuitos dedicados e sequenciais para Bruno, Marcelo, Gabriel e Larissa, registrando handoff, resultado e revisão. Manter Felipe como prova já incorporada e evitar paralelismo até existir claim/lease atômico. Renovar a projeção após cada ciclo.
 
 ## Bloqueio
 
-Bloqueio transitório: limite de uso do plano ChatGPT interrompeu cinco das seis revisões especializadas. Bloqueios estruturais ainda abertos: ausência de lease/claim atômico na fila e ausência de adaptador ao vivo para a interface. Nenhum gasto, contratação ou credencial foi assumido.
+Bloqueio transitório anterior reduzido: Clara executou com sucesso nesta rodada. Bloqueios estruturais ainda abertos: ausência de lease/claim atômico na fila e ausência de endpoint autenticado para streaming ao vivo. Nenhum gasto, contratação ou credencial foi assumido.
