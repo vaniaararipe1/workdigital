@@ -33,6 +33,7 @@ Isso comprova colaboração nativa sequencial e retomada da construção sem pre
 `runtime/lease.js` implementa aquisição e liberação otimistas por versão e só produz um plano de despacho quando o chamador apresenta lease ativo do mesmo owner, projeção ao vivo e runtime verificado. O módulo não contém armazenamento local disfarçado de persistência e não executa modelo nem altera Work Packet.
 O teste em memória comprova a máquina de estados e a exclusão entre owners dentro do contrato. Ele não é adapter de produção. Para ativação real, o Control Plane precisa expor leitura e compare-and-swap atômico durável (ou primitiva equivalente) para o registro de lease.
 `runtime/control-plane-capabilities.json` registra as capacidades observadas do MCP 2.6.0, sem inferir funções internas do banco. `GET /api/runtime-readiness` publica cada requisito separadamente; `GET /api/queue` agora responde `503 runtime-not-ready` sempre que qualquer prova estiver ausente, inclusive quando houver estado ao vivo sem CAS.
+`runtime/http-lease-store.js` já implementa o lado cliente do contrato HTTPS + ETag/`If-Match`. O requisito de backend está definido em `runtime/CONTROL_PLANE_LEASE_API.md`; nenhuma URL ou credencial foi presumida.
 
 ## Projeção autenticada implementada
 O servidor MCP disponível possui tools; não foi confirmado endpoint REST /snapshot. CONTROL_PLANE_API_URL é apenas um contrato existente e não deve receber o URL MCP assumindo equivalência.
