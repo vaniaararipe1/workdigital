@@ -12,12 +12,12 @@
   <aside class="sidebar">
     <div class="brand"><span class="brand-mark"><i></i><i></i><i></i></span><span>work<b>digital</b></span></div>
     <nav aria-label="Áreas">
-      <button class="nav-item active" data-view="space"><span>◉</span>Agent Space</button>
-      <button class="nav-item" data-view="operations"><span>⌁</span>Operações</button>
-      <button class="nav-item" data-view="tasks"><span>✓</span>Tarefas</button>
-      <button class="nav-item" data-view="packets"><span>↗</span>Work Packets</button>
+      <button class="nav-item active" data-view="space" aria-controls="spaceView" aria-current="page"><span aria-hidden="true">◉</span>Agent Space</button>
+      <button class="nav-item" data-view="operations" aria-controls="operationsView"><span aria-hidden="true">⌁</span>Operações</button>
+      <button class="nav-item" data-view="tasks" aria-controls="tasksView"><span aria-hidden="true">✓</span>Tarefas</button>
+      <button class="nav-item" data-view="packets" aria-controls="packetsView"><span aria-hidden="true">↗</span>Work Packets</button>
     </nav>
-    <div class="side-status">
+    <div class="side-status" role="status" aria-live="polite">
       <span class="pulse-dot"></span>
       <div><strong>Control Plane</strong><small id="sideState">sincronizando</small></div>
     </div>
@@ -28,14 +28,15 @@
       <div>
         <span class="eyebrow">WORK DIGITAL · AI OPERATIONS</span>
         <h1 id="viewTitle">Estado operacional registrado</h1>
-        <p id="viewSubtitle">Patrícia organiza especialistas, tarefas e dependências no Control Plane.</p>
+        <p id="viewSubtitle">Patrícia está configurada para organizar especialistas, tarefas e dependências registradas no Control Plane.</p>
       </div>
       <div class="top-actions">
-        <span class="sync-chip" id="syncChip"><i></i> sincronizando</span>
+        <span class="sync-chip" id="syncChip" role="status" aria-live="polite"><i></i> sincronizando</span>
       </div>
     </header>
 
-    <section class="view active" id="spaceView">
+    <section class="view active" id="spaceView" aria-labelledby="viewTitle">
+      <div class="runtime-banner" id="runtimeBanner" role="status" aria-live="polite"><strong>Execução autônoma não verificada</strong><span>Mapa estático da equipe e dos estados registrados no Control Plane.</span></div>
       <div class="stage">
         <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
         <svg class="orbits" viewBox="0 0 1000 660" preserveAspectRatio="none" aria-hidden="true">
@@ -60,25 +61,28 @@
       </div>
       <div class="metric-row">
         <article><span>Agentes</span><strong id="agentCount">7</strong><small>especialistas cadastrados</small></article>
-        <article><span>Operação ativa</span><strong id="operationCount">—</strong><small>no Control Plane</small></article>
+        <article><span>Operações em andamento</span><strong id="operationCount">—</strong><small>estado registrado no Control Plane</small></article>
         <article><span>Fila atual</span><strong id="queueCount">—</strong><small>tarefas não concluídas</small></article>
         <article><span>Runtime</span><strong id="runtimeState">Pendente</strong><small>execução ainda em validação</small></article>
       </div>
     </section>
 
-    <section class="view data-view" id="operationsView"><div class="section-head"><span>OPERAÇÕES</span><strong>Frentes coordenadas pela Patrícia</strong></div><div class="data-grid" id="operationsList"></div></section>
-    <section class="view data-view" id="tasksView"><div class="section-head"><span>FILA DE TRABALHO</span><strong>Tarefas e seus responsáveis</strong></div><div class="data-grid" id="tasksList"></div></section>
-    <section class="view data-view" id="packetsView"><div class="section-head"><span>TRANSFERÊNCIAS</span><strong>Work Packets entre os agentes</strong></div><div class="data-grid" id="packetsList"></div></section>
+    <section class="view data-view" id="operationsView" aria-labelledby="operationsHeading"><div class="section-head"><span>OPERAÇÕES</span><h2 id="operationsHeading">Frentes registradas sob coordenação da Patrícia</h2></div><div class="data-grid" id="operationsList"></div></section>
+    <section class="view data-view" id="tasksView" aria-labelledby="tasksHeading"><div class="section-head"><span>FILA DE TRABALHO</span><h2 id="tasksHeading">Tarefas e seus responsáveis</h2></div><div class="data-grid" id="tasksList"></div></section>
+    <section class="view data-view" id="packetsView" aria-labelledby="packetsHeading"><div class="section-head"><span>TRANSFERÊNCIAS</span><h2 id="packetsHeading">Work Packets entre os agentes</h2></div><div class="data-grid" id="packetsList"></div></section>
   </main>
 </div>
 
-<aside class="drawer" id="drawer" aria-hidden="true">
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerName" aria-hidden="true">
   <button class="drawer-close" id="closeDrawer" aria-label="Fechar">×</button>
   <span class="eyebrow">PERFIL DO AGENTE</span>
   <div class="drawer-identity"><div class="drawer-avatar" id="drawerAvatar">P</div><div><h2 id="drawerName">Patrícia</h2><p id="drawerRole">COO / Orquestradora</p></div></div>
   <div class="drawer-block"><span>ESPECIALIDADE</span><p id="drawerSpecialty"></p></div>
-  <div class="drawer-block"><span>ATIVIDADE</span><p id="drawerActivity"></p></div>
-  <div class="drawer-block warning"><span>EXECUÇÃO</span><p>Perfil cadastrado no Control Plane. A execução autônoma nativa ainda está em validação; esta tela não simula respostas.</p></div>
+  <div class="drawer-block"><span>ATRIBUIÇÃO REGISTRADA</span><p id="drawerActivity"></p></div>
+  <div class="drawer-block"><span>GOVERNANÇA</span><p id="drawerGovernance"></p></div>
+  <div class="drawer-block"><span>PODE FAZER</span><p id="drawerAllowed"></p></div>
+  <div class="drawer-block"><span>REQUER AUTORIZAÇÃO</span><p id="drawerRequires"></p></div>
+  <div class="drawer-block warning"><span>EXECUÇÃO</span><p>O perfil está cadastrado no Control Plane. A execução autônoma ainda não foi comprovada; esta tela exibe apenas dados registrados e não simula respostas.</p></div>
 </aside>
 <div class="scrim" id="scrim"></div>
 <script src="/app.js"></script>

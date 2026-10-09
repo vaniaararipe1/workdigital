@@ -5,14 +5,22 @@ const key=x=>x.packet_key||x.task_key||x.operation_key||x.key||'';
 const find=(items,ref)=>typeof ref==='string'&&ref.length?items.find(x=>x.id===ref||key(x)===ref):undefined;
 function executionConstraint(c){return typeof c==='string'?c:Array.isArray(c)?c.join('\n'):String(c?.execution||'');}
 const permissionByAction={contact:'external_contact',proposal:'send_proposal',publish:'publish',media:'media_execution',spend:'spend'};
-function classifyAction(packet){
-  if(packet.action_type)return packet.action_type;
-  const text=[packet.objective,packet.expected_output,...(Array.isArray(packet.instructions)?packet.instructions:[])].filter(Boolean).join(' ').toLowerCase();
-  if(/contat(ar|o)|enviar mensagem|prospecção externa/.test(text))return 'contact-unclassified';
-  if(/enviar proposta|apresentar proposta/.test(text))return 'proposal-unclassified';
-  if(/publicar|postar/.test(text))return 'publish-unclassified';
-  if(/gastar|contratar|comprar/.test(text))return 'spend-unclassified';
-  return 'internal';
+const allowedActions=new Set(['internal',...Object.keys(permissionByAction)]);
+function actionText(packet,task,operation){return [packet.objective,packet.context,packet.expected_output,...(Array.isArray(packet.instructions)?packet.instructions:[]),task?.title,task?.objective,task?.next_action,operation?.name,operation?.objective].filter(Boolean).join(' ').toLowerCase()}
+function detectExternal(text){
+  if(/contat(ar|o)|enviar mensagem|mandar mensagem|e-?mail|whatsapp|outreach|prospecção ativa|ligar para/.test(text))return 'contact';
+  if(/enviar proposta|apresentar proposta|emitir proposta|assinar proposta|proposal/.test(text))return 'proposal';
+  if(/publicar|postar|colocar no ar|ir ao ar|disparar campanha/.test(text))return 'publish';
+  if(/mídia paga|paid media|google ads|meta ads|impulsionar|comprar mídia|ativar anúncios?/.test(text))return 'media';
+  if(/gastar|contratar|comprar|pagamento|pagar|assinar ferramenta/.test(text))return 'spend';
+  return null;
+}
+function classifyAction(packet,task,operation){
+  const declared=packet.action_type,detected=detectExternal(actionText(packet,task,operation));
+  if(declared&&!allowedActions.has(declared))return {action:detected||'internal',error:'unknown'};
+  if(detected&&declared&&declared!==detected)return {action:detected,error:'mismatch'};
+  if(detected&&!declared)return {action:detected,error:'unclassified'};
+  return {action:declared||detected||'internal',error:null};
 }
 // Pure planning: no state writes, model calls, claims or inferred approval.
 function planQueue(state){
@@ -24,11 +32,12 @@ function planQueue(state){
     const reasons=[],destination=p.destination_agent||p.destination;
     const agent=state.agents.find(a=>(a.agent_key||a.key)===destination);
     if(!keys.has(destination)||!agent||agent.status!=='active')reasons.push('agent-unavailable');
-    const action=classifyAction(p);
-    if(action.endsWith('-unclassified'))reasons.push('action-classification-required');
+    const task=find(state.tasks,p.task_id||p.task);
+    const operation=find(state.operations,p.operation_id||task?.operation_id);
+    const classification=classifyAction(p,task,operation),action=classification.action;
+    if(classification.error)reasons.push('action-classification-required');
     const permission=permissionByAction[action];
     if(permission&&agent?.permissions?.[permission]!==true)reasons.push('agent-permission-denied');
-    const task=find(state.tasks,p.task_id||p.task);
     if(!task)reasons.push('task-missing');
     else{
       if(!['READY','IN_PROGRESS','EXECUTING','APPROVED'].includes(task.status))reasons.push('task-not-runnable');
@@ -43,7 +52,7 @@ function planQueue(state){
       }
       if(/não executar|não executada|aguarda work packet/i.test(executionConstraint(task.constraints)))reasons.push('constraint-reconciliation-required');
     }
-    const op=find(state.operations,p.operation_id||task?.operation_id);
+    const op=operation;
     if(!op||!['IN_PROGRESS','EXECUTING','APPROVED','READY'].includes(op.status))reasons.push('operation-not-runnable');
     if(p.received_at||p.completed_at||p.result)reasons.push('already-started-or-result-present');
     if(!['SENT','READY'].includes(p.status))reasons.push('packet-not-runnable');

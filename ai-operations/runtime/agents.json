@@ -75,7 +75,9 @@
         "abm": true,
         "qualify": true,
         "forecast": true,
-        "prospect": true,
+        "prospect": false,
+        "prospecting_strategy": true,
+        "lead_research": true,
         "discovery": true,
         "send_proposal": false,
         "crm_commercial": true,
@@ -92,7 +94,8 @@
         "principle": "Sem necessidade identificada, não há proposta.",
         "seniority": "senior",
         "final_authority": "Vânia",
-        "revenue_engine_role": "acquisition_and_commercial"
+        "revenue_engine_role": "acquisition_and_commercial",
+        "prospecting_boundary": "Estratégia e pesquisa interna permitidas; abordagem ou contato externo não autorizado"
       }
     },
     {

@@ -23,6 +23,7 @@ function buildProjection(input,{capturedAt=new Date().toISOString()}={}){
     schema_version:2,
     source:'chatgpt-control-plane-projection',
     live:false,
+    runtime_verified:false,
     captured_at:capturedAt,
     control_plane:{status:input.health.status, database:input.health.database, version:input.health.version},
     agents,operations,tasks,work_packets

@@ -11,6 +11,7 @@ test('builds a safe scheduled projection and excludes test records',()=>{
   const out=buildProjection(fixture(),{capturedAt:'2026-10-09T00:30:00Z'});
   assert.equal(out.source,'chatgpt-control-plane-projection');
   assert.equal(out.live,false);
+  assert.equal(out.runtime_verified,false);
   assert.deepEqual(out.operations.map(x=>x.key),['OP-1']);
   assert.deepEqual(out.tasks.map(x=>x.key),['TASK-1']);
   assert.deepEqual(out.work_packets.map(x=>x.key),['WP-1']);

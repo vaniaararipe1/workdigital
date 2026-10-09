@@ -18,6 +18,17 @@ Não presumir que arquivos TOML do Codex local sejam automaticamente instalados 
 7. Patrícia revisa a entrega; solicita revisão independente quando o pacote exigir (ex.: Clara revisa Larissa no WP-004). A CEO recebe decisões indispensáveis e entregas verificáveis.
 8. Persistir checkpoint ao concluir a sessão. Esta automação de construção não deve ser transformada silenciosamente em rotina de operação comercial.
 
+## Matriz de roteamento Brand & Marketing (D-10)
+- Escopo amplo de marca, mercado, posicionamento, proposta de valor, governança e integração entre disciplinas: Larissa lidera.
+- Escopo especializado digital — aquisição, jornada digital, lifecycle, SEO/AEO/GEO, CRO, CRM, automação, analytics e experimentação: Clara pode receber diretamente da Patrícia.
+- Escopo misto: Larissa lidera a síntese; Clara recebe Work Packet delimitado para a dimensão digital. As contribuições e divergências são preservadas.
+- Revisão independente pode ser recíproca: Clara pode revisar tecnicamente uma entrega digital de Larissa; isso não altera a liderança disciplinar ampla de Larissa. Larissa pode revisar integração estratégica de uma entrega da Clara sem eliminar sua autonomia técnica.
+- Patrícia roteia pelo resultado esperado e pelas permissões, não por hierarquia genérica. Impasse relevante retorna à Patrícia; decisão de negócio ou ação externa retorna a Vânia.
+
+## Prova nativa atual
+Em 08/10/2026, uma execução agendada do ChatGPT orquestrou sequencialmente Work Packets isolados para Felipe, Clara, Bruno, Marcelo, Gabriel e Larissa. Cada especialista recebeu contexto e restrições, devolveu revisão própria, teve o resultado persistido no Control Plane e passou pela revisão da Patrícia. Os achados foram incorporados ao código e validados.
+Isso comprova colaboração nativa sequencial e retomada da construção sem presença da CEO. Não comprova um dispatcher contínuo: `runtime_verified` permanece falso até existir claim/lease atômico, observabilidade e um ciclo de produção seguro além dos pacotes de teste.
+
 ## Projeção autenticada implementada
 O servidor MCP disponível possui tools; não foi confirmado endpoint REST /snapshot. CONTROL_PLANE_API_URL é apenas um contrato existente e não deve receber o URL MCP assumindo equivalência.
 `runtime/projection.js` valida health, registro exato dos sete agentes e coleções do Control Plane, remove registros técnicos de teste e produz uma projeção somente leitura. `scripts/refresh-projection.js` grava o snapshot de forma atômica; a tarefa nativa do ChatGPT faz as leituras MCP e alimenta esse script.
