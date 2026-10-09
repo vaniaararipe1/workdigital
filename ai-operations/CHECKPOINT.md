@@ -1,27 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-09 — implementação retomada na conversa da manhã
-
-## Retomada de implementação — 09/10/2026, manhã (America/Sao_Paulo)
-
-Esta seção prevalece sobre o próximo passo/bloqueio anterior que encaminhava a inspeção para Render.
-
-- Fonte atual recuperada da branch autorizada: head `6db8ea371afb4b3f5333f81d2fd59bdc6816448d`. Health consultado novamente: online, database connected, MCP 2.6.0.
-- Reexecutados os 30 testes anteriores: 30/30 passaram. O checkpoint anterior registra implementação agendada durante a madrugada; não afirmar que não houve trabalho entre acionamentos da CEO.
-- Implementada migração Supabase/PostgreSQL em `runtime/backend/001_runtime_lease.sql`: singleton durável, CAS por versão, bloqueio transacional de linha, autoridade do relógio do banco, expiração, principal autenticado autorizado e auditoria na mesma transação.
-- Implementado handler autenticado `runtime/backend/lease-handler.mjs` para GET/PUT runtime/lease, com RPC do Supabase, If-Match obrigatório, limites de entrada e erros sem detalhes privados.
-- Cliente e contrato de claim/release agora propagam identidade de execução em X-Lease-Owner, inclusive na liberação.
-- Oito testes adicionados: sete de autenticação/handler/integração de transporte, um de corrida entre três aquisições simultâneas. Suíte atual: 38/38 aprovados; sintaxe do handler aprovada.
-- Os testes de integração usam doubles de RPC. Não existe teste executado de PostgreSQL nem de CAS contra produção nesta rodada. A migração está implementada, mas NÃO aplicada.
-- Nenhum arquivo fora de ai-operations foi alterado. Nenhuma tarefa operacional, permissão comercial, flag de runtime ou segredo foi modificado.
-
-### Pendência e próximo passo real
-
-Não há ferramenta disponível nesta sessão para administrar o banco Supabase ou implantar sua Edge Function. A fonte histórica recuperada (MCP 2.5.0, 26/09) identifica Supabase, mas não substitui a fonte atual 2.6.0. É necessário acesso administrativo ao projeto Supabase correto e à fonte atual antes de aplicar a migração e montar o handler no middleware OAuth existente.
-
-O pacote e a sequência de validação estão em `runtime/backend/DEPLOYMENT.md`. Não é necessário presumir workspace Render nem contratar novo host. Manter todas as flags de CAS/backend/runtime falsas até as respectivas provas reais. Após implantação: teste de concorrência, retomada após expiração, persistência após reinício, auditoria e ciclo completo dos agentes com fencing antes de cada entrega.
-
-Consulta de automações confirmou a tarefa Concluir ecossistema Work Digital desativada; relatórios ativos não equivalem a continuidade da implementação. Não afirmar reativação sem resultado da ferramenta. O pedido atual autoriza esta execução de implementação e não fornece acesso administrativo ao Supabase.
+Atualizado em: 2026-10-09T12:39:22Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -31,66 +10,69 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Destino e motor: ChatGPT/Work. Claude Projects, Anthropic e credenciais Claude foram abandonados por decisão de 08/10/2026.
 - Sem contratação, gasto adicional, credenciais de API ou efeitos comerciais externos autorizados.
 - Os sete agentes e o Control Plane permanecem: Patrícia orquestra; Felipe comercial; Larissa lidera Brand & Marketing; Clara é especialista digital; Bruno conteúdo; Marcelo direção de arte; Gabriel UX/UI.
-- D-10 prevalece sobre D-08 para a relação Larissa/Clara. Cadastro, contratos e interface não contam como prova de runtime autônomo.
+- D-10 prevalece sobre D-08 para a relação Larissa/Clara.
+- Cadastro, contratos, interface, testes unitários e deploy isolado não contam como prova de runtime autônomo.
+- `WP-004` permanece fora dos smoke tests enquanto suas restrições e proveniência não forem reconciliadas.
 
 ## Trabalho concluído
 
-- Reconciliado o estado atual com o Control Plane: serviço online, banco conectado, versão 2.6.0, sete agentes cadastrados e duas operações registradas.
-- Substituída a tela estática anterior por uma interface navegável de AI Operations, restrita a `ai-operations/`, com Agent Space, Operações, Tarefas e Work Packets.
-- Adaptado o comportamento do vídeo de referência: Patrícia no centro, seis especialistas em órbita, conexões visuais, cartão de atividade e transição para listas operacionais. A identidade visual foi recriada com a paleta Work Digital, sem copiar a identidade do vídeo.
-- Persistida uma fotografia verificável do Control Plane em `snapshot.json`; a interface a identifica como histórico e não como atualização ao vivo.
-- Preservados os sete contratos nativos para ChatGPT Work em `runtime/agents.json`; Claude/Anthropic não integra esta implementação.
-- Endurecido o planejador da fila: ações externas classificadas exigem permissão do agente e linguagem externa sem classificação falha de forma fechada.
-- Adicionados testes para bloqueio por permissão e por ação externa não classificada.
-- Revisão nativa executada por Felipe: confirmou limites comerciais e identificou a lacuna de permissão da fila, agora corrigida.
-- Alterações remotas confirmadas na branch autorizada pelo commit `b460588cf4762d81db9c611a27ffdc29a78af108`; nenhum arquivo fora de `ai-operations/` foi modificado.
-- Implementada projeção autenticada e fail-closed do Control Plane: valida health e os sete agentes, exclui registros de teste, grava snapshot atomicamente e mantém `/api/queue` indisponível sem fonte realmente ao vivo.
-- Clara executou revisão nativa da interface; seu achado sobre linguagem de “execução agora” foi incorporado. A tela agora usa “Estado operacional registrado”, mostra data/hora da projeção e mantém aviso permanente de execução autônoma não verificada.
-- Fechado e persistido no Control Plane um circuito atual Patrícia → Clara → Control Plane → Patrícia: `OP-ECO-TEST-20261008-2130`, `TASK-ECO-TEST-CLARA-001` e `WP-ECO-TEST-CLARA-001`, todos concluídos sem ação externa.
-- Projeção, revisão de Clara, teste operacional e 15 testes persistidos na branch pelo commit `bd6cf75b49bc8374394211b8351c0f29b4faee8f`.
-- Circuitos nativos sequenciais concluídos e persistidos para Bruno, Marcelo, Gabriel, Larissa e Felipe. Somados ao circuito de Clara, todos os seis especialistas executaram sob orquestração da Patrícia nesta construção.
-- Bruno corrigiu microcopy, nomes e estados; Marcelo condicionou todo movimento visual a `runtime_verified`; Gabriel incorporou diálogo acessível, foco, navegação semântica e renderização segura; Larissa formalizou a matriz D-10 e governança; Felipe endureceu a classificação de ações externas e o contrato comercial.
-- Permissão ambígua `prospect` de Felipe foi desativada no código e no Control Plane; estratégia e pesquisa interna agora usam `prospecting_strategy` e `lead_research`, mantendo `external_contact=false`.
-- Handoffs dos seis especialistas, melhorias de interface, matriz D-10, contrato comercial e 18 testes persistidos no commit `794b83812ccf7ed3ba54807d8154cef448ac4107`.
-- Implementado contrato fail-closed de claim/lease em `runtime/lease.js`: aquisição otimista versionada, expiração, liberação exclusiva pelo owner e bloqueio de despacho sem estado ao vivo, `runtime_verified=true` e lease ativo do mesmo runtime.
-- O contrato não usa arquivo local como falsa persistência e exige adapter durável com `read` + `compareAndSwap`; portanto preserva a distinção entre máquina de estados testada e runtime de produção.
-- Contrato, seis novos testes e documentação persistidos na branch autorizada pelo commit `99690dcdf472818ba0b71ba7b5d4767a0c3bb159`.
-- Revalidado o Control Plane 2.6.0: online, banco conectado e escrita por chave disponível, porém sem `expected_version`, compare-and-swap ou claim atômico nos contratos MCP observados.
-- Adicionada matriz verificável em `GET /api/runtime-readiness`; `GET /api/queue` agora falha com `503 runtime-not-ready` quando faltar qualquer requisito, inclusive se existir leitura ao vivo sem lease atômico.
-- Capacidades observadas, endpoint de prontidão e bloqueio da fila persistidos no commit `b05d831242582c2b930bd03b2418d0de89013d64`; evidência `E-ECO-20261009-0230` registrada no Control Plane.
-- Implementado o adapter cliente de produção para lease via HTTPS + ETag/`If-Match`, com Bearer token, timeout e tratamento explícito de disputa 409/412. O contrato mínimo do endpoint do Control Plane foi documentado, sem presumir URL ou credencial.
-- Adapter e especificação persistidos no commit `63c86cc6659a417d10b31c1fd5ac8282c254c2fd`.
+- Interface navegável de AI Operations implementada somente em `ai-operations/`, conforme comportamento do vídeo de referência e identidade Work Digital.
+- Sete contratos nativos preservados em `runtime/agents.json`; fila fail-closed, regras de permissão, classificação externa e matriz D-10 implementadas.
+- Colaboração nativa sequencial comprovada para Patrícia e os seis especialistas, com resultados internos revisados e persistidos.
+- Planejador de fila, projeção autenticada, readiness e bloqueio do dispatcher implementados.
+- Contrato de lease com versão monotônica, owner, expiração, heartbeat, liberação e verificação de fence implementado.
+- Projeto Supabase correto confirmado: `Work Digital Control Plane` (`jegzhawblljpngbkaoqx`), PostgreSQL 17, estado saudável.
+- Fonte atual da Edge Function `work-digital-mcp-v2` 2.6.0 recuperada antes de qualquer alteração; a fonte histórica não foi usada para substituir produção.
+- Migração `create_work_digital_runtime_lease` aplicada: schema privado `wd_runtime`, operador autorizado, singleton de lease, auditoria, CAS transacional e persistência fenced de Work Packet.
+- Migração `document_runtime_private_rls` aplicada com políticas explícitas de negação nas três tabelas privadas.
+- Edge Function implantada como versão 9 / aplicação 2.7.0, preservando OAuth existente e acrescentando:
+  - `read_runtime_lease`
+  - `cas_runtime_lease`
+  - `persist_work_packet_fenced`
+- Health MCP pós-deploy respondeu online, database connected e versão 2.7.0.
+- Código, migrações e documentação persistidos na branch pelo commit `9030fa0a729898e152426d28fdb40acd849d1700`.
 
 ## Evidência e validação
 
-- `npm test`: 30/30 testes aprovados.
-- `node --check public/app.js` e `node --check server.js`: aprovados.
-- QA estrutural: quatro áreas navegáveis, sete agentes, responsividade, preferência de movimento reduzido, permissões e `next_action` presentes. Teste também impede regressão para o rótulo “AGORA” enquanto o runtime não for comprovado.
-- Planejamento atual: nenhum pacote liberado; `WP-004` bloqueado por `action-classification-required`, `agent-permission-denied` e `constraint-reconciliation-required`. O texto contém intenção externa/vedações e a restrição legada “Não executar ainda”; o fail-closed é deliberado.
-- Testes de concorrência comprovam que um segundo owner não adquire lease ativo, que lease expirado pode ser retomado, que somente o owner libera e que o plano de despacho bloqueia sem as três provas de runtime. O armazenamento usado no teste é deliberadamente apenas um double em memória.
-- Testes de prontidão comprovam que estado ao vivo isolado não ativa o dispatcher, que projeção histórica permanece bloqueada e que todos os requisitos precisam ser verdadeiros simultaneamente.
-- O servidor é somente leitura: serve a interface e o snapshot, recusa escrita e travessia de diretório.
-- A interface usa estado cinza para agente apenas cadastrado; vinho indica trabalho associado e roxo identifica Patrícia. Nenhum ponto verde representa presença online sem prova.
+- `npm test`: 44/44 testes aprovados.
+- `node --experimental-strip-types --check runtime/backend/work-digital-mcp-v2/index.ts`: aprovado.
+- PostgreSQL real:
+  - leitura inicial: versão 0, sem owner;
+  - aquisição `validation-run-20261009`: aplicada, versão 1;
+  - owner concorrente: rejeitado sem escrita;
+  - heartbeat do owner: aplicado, versão 2;
+  - persistência com fence antigo 1: rejeitada com SQLSTATE `40001`;
+  - liberação pelo owner: aplicada, versão 3;
+  - estado final: sem owner e sem expiração;
+  - auditoria: três linhas, exatamente uma por escrita aceita.
+- Fonte implantada recuperada após deploy: status ACTIVE, versão de função 9, OAuth preservado e os três novos tools presentes.
+- Advisor de segurança após a segunda migração não aponta mais RLS sem política no schema `wd_runtime`. Permanece apenas aviso global preexistente de proteção contra senhas vazadas, fora do escopo deste runtime.
+- Nenhuma tarefa, agente, permissão comercial, projeto de cliente ou arquivo fora de `ai-operations/` foi alterado.
 
-## Teste multiagente nativo
+## Estado operacional
 
-- Colaboração nativa sequencial comprovada para Patrícia + seis especialistas: Felipe, Clara, Bruno, Marcelo, Gabriel e Larissa receberam pacotes internos, devolveram achados próprios, tiveram resultados persistidos e foram revisados pela Patrícia.
-- Esta execução também comprova retomada agendada da construção sem presença da CEO. Não comprova dispatcher contínuo ou concorrente: os testes foram deliberadamente sequenciais e isolados.
+- `atomic_compare_and_swap=true`
+- `lease_backend=true`
+- `fenced_work_packet_persistence=true`
+- `runtime_verified=false`
+- dispatcher continua desativado e `GET /api/queue` continua fail-closed sem todas as provas.
+
+O backend durável agora funciona. Isso ainda não comprova que o ChatGPT executa o protocolo completo de forma autônoma entre rodadas.
 
 ## Pendências
 
-- Conectar o contrato de lease a uma primitiva CAS durável do Control Plane; sem esse adapter o dispatcher permanece desligado.
-- Transformar a sequência validada em protocolo repetível para trabalho interno não-test, sem liberar `WP-004` enquanto houver divergências.
-- A projeção atual é renovável pela tarefa nativa e verificável, mas não é streaming ao vivo. Um adapter REST ao vivo continua condicionado a endpoint e autenticação próprios, ainda não disponíveis.
-- Reconciliar a divergência de `TASK-002` com sua proveniência antes de qualquer despacho.
-- Validar visualmente em navegador real e publicar somente se houver ambiente autorizado para esta branch.
-- Comprovar um runtime independente da presença da CEO. Cadastro de agentes, tela e planejador não são essa prova.
+- Confirmar, em uma nova execução, que o registry do ChatGPT recarregou os três novos tools MCP. O registry desta sessão foi carregado antes do deploy, embora o health já tenha retornado 2.7.0.
+- Executar um ciclo interno controlado: adquirir lease, selecionar pacote seguro que não seja `WP-004`, delegar, renovar por heartbeat, persistir resultado com o fence renovado e liberar.
+- Repetir a leitura em outra execução para comprovar retomada entre rodadas e estado durável após reinício da Edge Function.
+- Somente após essas provas definir `runtime_verified=true` e avaliar ativação do dispatcher.
+- Reconciliar `TASK-002` e `WP-004` antes de qualquer trabalho que possa implicar ação externa.
+- QA visual em navegador real e publicação da interface continuam pendentes até existir ambiente de preview autorizado para esta branch.
 
 ## Próximo passo autorizado
 
-Após seleção explícita da workspace Render `My Workspace` (`tea-dau102gjo6nc73cpglvg`), inspecionar de forma somente leitura se ela hospeda o Control Plane e qual repositório está conectado. Se confirmado, avaliar a implementação de `GET/PUT /runtime/lease` com CAS transacional e validar o adapter. Em paralelo, validar visualmente a interface em navegador real quando existir ambiente autorizado. Não usar `WP-004` como smoke test.
+Na próxima execução, descobrir novamente o contrato do plugin Work Digital. Se os três tools 2.7.0 estiverem expostos, executar o ciclo MCP autenticado completo com um novo pacote estritamente interno e descartável, incluindo heartbeat e persistência fenced. Não alterar flags de runtime antes da prova; não usar `WP-004`; não enviar mensagens a terceiros.
 
 ## Bloqueio
 
-O contrato de lease e o adapter cliente existem e estão testados, mas o MCP atual do Control Plane não expõe backend CAS durável; por isso execução contínua segue desativada. A integração Render encontrou uma única workspace acessível (`My Workspace`), porém nenhuma workspace está selecionada e o conector exige escolha explícita antes de listar serviços. É necessário Vânia selecionar/autorizar essa workspace uma vez para a inspeção do host. Permanecem também a ausência de endpoint autenticado para streaming ao vivo e de ambiente autorizado para QA visual/publicação. Nenhum gasto, contratação ou credencial foi assumido.
+Não há bloqueio de acesso ao Supabase neste checkpoint. O único limite imediato é o registry MCP desta sessão ter sido carregado antes do deploy e ainda mostrar o schema 2.6.0; isso deve ser verificado na próxima execução, sem pedir nova instalação ou reconexão a Vânia. A autonomia completa continua não comprovada até o ciclo MCP entre rodadas.
 
