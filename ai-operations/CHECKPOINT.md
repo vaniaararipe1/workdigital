@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-09T01:37:00Z
+Atualizado em: 2026-10-09T02:28:02Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -31,13 +31,17 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Bruno corrigiu microcopy, nomes e estados; Marcelo condicionou todo movimento visual a `runtime_verified`; Gabriel incorporou diálogo acessível, foco, navegação semântica e renderização segura; Larissa formalizou a matriz D-10 e governança; Felipe endureceu a classificação de ações externas e o contrato comercial.
 - Permissão ambígua `prospect` de Felipe foi desativada no código e no Control Plane; estratégia e pesquisa interna agora usam `prospecting_strategy` e `lead_research`, mantendo `external_contact=false`.
 - Handoffs dos seis especialistas, melhorias de interface, matriz D-10, contrato comercial e 18 testes persistidos no commit `794b83812ccf7ed3ba54807d8154cef448ac4107`.
+- Implementado contrato fail-closed de claim/lease em `runtime/lease.js`: aquisição otimista versionada, expiração, liberação exclusiva pelo owner e bloqueio de despacho sem estado ao vivo, `runtime_verified=true` e lease ativo do mesmo runtime.
+- O contrato não usa arquivo local como falsa persistência e exige adapter durável com `read` + `compareAndSwap`; portanto preserva a distinção entre máquina de estados testada e runtime de produção.
+- Contrato, seis novos testes e documentação persistidos na branch autorizada pelo commit `99690dcdf472818ba0b71ba7b5d4767a0c3bb159`.
 
 ## Evidência e validação
 
-- `npm test`: 18/18 testes aprovados.
+- `npm test`: 24/24 testes aprovados.
 - `node --check public/app.js` e `node --check server.js`: aprovados.
 - QA estrutural: quatro áreas navegáveis, sete agentes, responsividade, preferência de movimento reduzido, permissões e `next_action` presentes. Teste também impede regressão para o rótulo “AGORA” enquanto o runtime não for comprovado.
 - Planejamento atual: nenhum pacote liberado; `WP-004` bloqueado por `action-classification-required`, `agent-permission-denied` e `constraint-reconciliation-required`. O texto contém intenção externa/vedações e a restrição legada “Não executar ainda”; o fail-closed é deliberado.
+- Testes de concorrência comprovam que um segundo owner não adquire lease ativo, que lease expirado pode ser retomado, que somente o owner libera e que o plano de despacho bloqueia sem as três provas de runtime. O armazenamento usado no teste é deliberadamente apenas um double em memória.
 - O servidor é somente leitura: serve a interface e o snapshot, recusa escrita e travessia de diretório.
 - A interface usa estado cinza para agente apenas cadastrado; vinho indica trabalho associado e roxo identifica Patrícia. Nenhum ponto verde representa presença online sem prova.
 
@@ -48,6 +52,7 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 
 ## Pendências
 
+- Conectar o contrato de lease a uma primitiva CAS durável do Control Plane; sem esse adapter o dispatcher permanece desligado.
 - Transformar a sequência validada em protocolo repetível para trabalho interno não-test, sem liberar `WP-004` enquanto houver divergências.
 - A projeção atual é renovável pela tarefa nativa e verificável, mas não é streaming ao vivo. Um adapter REST ao vivo continua condicionado a endpoint e autenticação próprios, ainda não disponíveis.
 - Reconciliar a divergência de `TASK-002` com sua proveniência antes de qualquer despacho.
@@ -56,8 +61,8 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 
 ## Próximo passo autorizado
 
-Validar visualmente a interface em navegador real, testar retomada em uma execução posterior e desenhar claim/lease antes de qualquer dispatcher contínuo. Não usar `WP-004` como smoke test. Se publicação exigir ambiente/credencial não disponível, acionar Vânia apenas para esse acesso.
+Inspecionar se o Control Plane expõe atualização condicional/versionada capaz de implementar o adapter de lease. Em paralelo, validar visualmente a interface em navegador real quando existir ambiente autorizado. Não usar `WP-004` como smoke test. Se o adapter exigir alteração ou credencial de infraestrutura não disponível, acionar Vânia apenas para esse acesso.
 
 ## Bloqueio
 
-Sem bloqueio de capacidade nativa nesta rodada: os seis especialistas executaram sequencialmente. Bloqueios estruturais ainda abertos: ausência de lease/claim atômico, ausência de endpoint autenticado para streaming ao vivo e ausência de ambiente autorizado para QA visual/publicação. Nenhum gasto, contratação ou credencial foi assumido.
+Sem bloqueio de capacidade nativa nesta rodada. O contrato de lease existe e está testado, mas o Control Plane ainda não expôs ou comprovou um backend CAS durável para conectá-lo; por isso execução contínua segue desativada. Permanecem também a ausência de endpoint autenticado para streaming ao vivo e de ambiente autorizado para QA visual/publicação. Nenhum gasto, contratação ou credencial foi assumido.
