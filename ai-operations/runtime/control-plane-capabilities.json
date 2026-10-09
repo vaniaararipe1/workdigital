@@ -1,6 +1,6 @@
 {
-  "observed_at": "2026-10-09T12:38:00Z",
-  "control_plane_version": "2.7.0",
+  "observed_at": "2026-10-09T16:27:00Z",
+  "control_plane_version": "2.7.1",
   "transport": "mcp",
   "health": "online",
   "database": "connected",
@@ -10,5 +10,6 @@
   "atomic_compare_and_swap": true,
   "lease_backend": true,
   "fenced_work_packet_persistence": true,
-  "note": "Capabilities were verified against the deployed Edge Function source and PostgreSQL migrations. The current ChatGPT tool registry may require a new run to expose the three new MCP tools."
+  "legacy_delivery_writes_blocked": true,
+  "note": "Capabilities were verified against the deployed Edge Function source and PostgreSQL migrations. Legacy update_work_packet rejects result/completed_at without fencing. The current ChatGPT tool registry still does not expose the three new MCP tools."
 }

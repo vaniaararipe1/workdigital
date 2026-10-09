@@ -30,7 +30,7 @@ function createHandler(supabase: any) {
 
     name: "work-digital-control-plane",
 
-    version: "2.7.0",
+    version: "2.7.1",
 
   });
 
@@ -98,7 +98,7 @@ function createHandler(supabase: any) {
 
               error: error.message,
 
-              version: "2.7.0",
+              version: "2.7.1",
 
             }),
 
@@ -130,7 +130,7 @@ function createHandler(supabase: any) {
 
             database: "connected",
 
-            version: "2.7.0",
+            version: "2.7.1",
 
           }),
 
@@ -1595,6 +1595,19 @@ function createHandler(supabase: any) {
       }),
     },
     async ({ packet_key, operation_id, task_id, source_agent, destination_agent, objective, context, evidence, insights, instructions, constraints, reference_links, expected_output, result, next_action, sent_at, received_at, completed_at, status }) => {
+      if (result !== undefined || completed_at !== undefined) {
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify({
+              ok: false,
+              error: "runtime-delivery-requires-fence",
+              required_tool: "persist_work_packet_fenced",
+            }),
+          }],
+          isError: true,
+        };
+      }
       const updates: Record<string, unknown> = {};
       if (operation_id !== undefined) updates.operation_id = operation_id;
       if (task_id !== undefined) updates.task_id = task_id;
@@ -1608,11 +1621,9 @@ function createHandler(supabase: any) {
       if (constraints !== undefined) updates.constraints = constraints;
       if (reference_links !== undefined) updates.reference_links = reference_links;
       if (expected_output !== undefined) updates.expected_output = expected_output;
-      if (result !== undefined) updates.result = result;
       if (next_action !== undefined) updates.next_action = next_action;
       if (sent_at !== undefined) updates.sent_at = sent_at;
       if (received_at !== undefined) updates.received_at = received_at;
-      if (completed_at !== undefined) updates.completed_at = completed_at;
       if (status !== undefined) updates.status = status;
 
       if (Object.keys(updates).length === 0) {

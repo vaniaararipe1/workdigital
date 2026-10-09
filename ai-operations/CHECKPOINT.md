@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-09T15:31:09Z
+Atualizado em: 2026-10-09T16:26:59Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -25,15 +25,17 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Fonte atual da Edge Function `work-digital-mcp-v2` 2.6.0 recuperada antes de qualquer alteração; a fonte histórica não foi usada para substituir produção.
 - Migração `create_work_digital_runtime_lease` aplicada: schema privado `wd_runtime`, operador autorizado, singleton de lease, auditoria, CAS transacional e persistência fenced de Work Packet.
 - Migração `document_runtime_private_rls` aplicada com políticas explícitas de negação nas três tabelas privadas.
-- Edge Function implantada como versão 9 / aplicação 2.7.0, preservando OAuth existente e acrescentando:
+- Edge Function implantada inicialmente como versão 9 / aplicação 2.7.0, preservando OAuth existente e acrescentando:
   - `read_runtime_lease`
   - `cas_runtime_lease`
   - `persist_work_packet_fenced`
 - Health MCP pós-deploy respondeu online, database connected e versão 2.7.0.
+- Edge Function endurecida e reimplantada como versão 10 / aplicação 2.7.1: `update_work_packet` rejeita `result` e `completed_at`; entregas precisam obrigatoriamente passar por `persist_work_packet_fenced`.
 - Código, migrações e documentação persistidos na branch pelo commit `9030fa0a729898e152426d28fdb40acd849d1700`.
 - Ciclo técnico interno concluído com `WP-RUNTIME-FENCE-TEST-001`: Patrícia criou o pacote pelo MCP atual, Gabriel produziu a entrega, o backend executou aquisição, heartbeat e persistência fenced, Patrícia revisou o resultado e encerrou pacote, tarefa e operação.
 - A retomada em outra execução encontrou o lease anterior expirado, assumiu-o legalmente com novo owner e liberou o singleton na versão 7. Isso comprova recuperação após expiração sem deixar owner pendente.
 - Evidência `E-ECO-20261009-1230-FENCE-E2E` registrada como VERIFIED no Control Plane.
+- Inspeção do gerenciador de plugins confirmou que Work Digital Control Plane é um app personalizado, não uma release pública atualizável pelo diretório. Nenhuma permissão foi alterada e nenhuma reconexão foi solicitada.
 
 ## Evidência e validação
 
@@ -57,6 +59,7 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
   - execução posterior comprovou estado durável, recuperação do lease expirado na versão 6 e liberação na versão 7;
   - estado final do lease: owner nulo, sem expiração.
 - Fonte implantada recuperada após deploy: status ACTIVE, versão de função 9, OAuth preservado e os três novos tools presentes.
+- Health após o hardening: online, banco conectado, aplicação 2.7.1. Teste pelo comando legado retornou `runtime-delivery-requires-fence` e não executou escrita.
 - Advisor de segurança após a segunda migração não aponta mais RLS sem política no schema `wd_runtime`. Permanece apenas aviso global preexistente de proteção contra senhas vazadas, fora do escopo deste runtime.
 - Nenhuma tarefa, agente, permissão comercial, projeto de cliente ou arquivo fora de `ai-operations/` foi alterado.
 
@@ -65,10 +68,11 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - `atomic_compare_and_swap=true`
 - `lease_backend=true`
 - `fenced_work_packet_persistence=true`
+- `legacy_delivery_writes_blocked=true`
 - `runtime_verified=false`
 - dispatcher continua desativado e `GET /api/queue` continua fail-closed sem todas as provas.
 
-O backend durável, a retomada entre rodadas e a persistência fenced agora funcionam. Isso ainda não comprova a invocação nativa dos três novos tools pelo catálogo do ChatGPT, porque o registry continua expondo apenas o contrato anterior.
+O backend durável, a retomada entre rodadas, a persistência fenced e o bloqueio do bypass legado agora funcionam. Isso ainda não comprova a invocação nativa dos três novos tools pelo catálogo do ChatGPT, porque o registry continua expondo apenas o contrato anterior.
 
 ## Pendências
 
@@ -83,5 +87,5 @@ Na próxima execução, descobrir novamente o contrato do plugin Work Digital. S
 
 ## Bloqueio
 
-Não há bloqueio de acesso ao Supabase. O limite imediato é o registry MCP do ChatGPT continuar sem os três tools 2.7.0, apesar do health 2.7.0 e da fonte implantada. Não pedir nova instalação ou reconexão a Vânia e não alterar permissões globais. O QA visual local também não pôde ser concluído: não há navegador headless no workspace e o navegador remoto não alcança `localhost`; ainda falta um preview autorizado desta branch.
+Não há bloqueio de acesso ao Supabase. O limite imediato é o registry MCP do ChatGPT continuar sem os três tools, apesar do health 2.7.1 e da fonte implantada. O app é personalizado e não tem release pública atualizável pelo diretório. Não pedir nova instalação ou reconexão a Vânia e não alterar permissões globais. O QA visual local também não pôde ser concluído: não há navegador headless no workspace e o navegador remoto não alcança `localhost`; ainda falta um preview autorizado desta branch.
 

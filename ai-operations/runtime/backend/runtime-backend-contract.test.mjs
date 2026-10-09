@@ -31,7 +31,7 @@ test("current MCP source preserves OAuth and exposes the three runtime tools", a
   const source = await readFile(mcpUrl, "utf8");
   assert.match(source, /withOAuthProtectedResource\(/);
   assert.match(source, /withSupabase\(\s*\{ auth: "user" \}/);
-  assert.match(source, /version: "2\.7\.0"/);
+  assert.match(source, /version: "2\.7\.1"/);
   for (const tool of [
     "read_runtime_lease",
     "cas_runtime_lease",
@@ -40,4 +40,8 @@ test("current MCP source preserves OAuth and exposes the three runtime tools", a
     assert.match(source, new RegExp(`server\\.registerTool\\(\\s*"${tool}"`));
   }
   assert.match(source, /supabase\.rpc\("wd_persist_work_packet_fenced"/);
+  assert.match(source, /result !== undefined \|\| completed_at !== undefined/);
+  assert.match(source, /runtime-delivery-requires-fence/);
+  assert.doesNotMatch(source, /updates\.result = result/);
+  assert.doesNotMatch(source, /updates\.completed_at = completed_at/);
 });
