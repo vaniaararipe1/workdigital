@@ -11,7 +11,7 @@ Não presumir que arquivos TOML do Codex local sejam automaticamente instalados 
 ## Protocolo do dispatcher Patrícia
 1. Ler health, agentes, operações, tarefas, pacotes e decisões vigentes via ferramentas conectadas.
 2. Excluir testes e trabalho concluído. Usar queue.js para planejamento conservador. Reconciliar divergências com proveniência; restrições textuais não podem ser ignoradas automaticamente.
-3. Antes de cada despacho, reler pacote/tarefa/operação e restrições. Um único dispatcher. MCP observado não expõe lease/CAS; horário recebido não é trava atômica. Não ativar dispatchers paralelos.
+3. Antes de cada despacho, reler pacote/tarefa/operação e restrições. Um único dispatcher. `lease.js` exige armazenamento persistente com compare-and-swap, identidade da execução, estado ao vivo e `runtime_verified=true`; sem essas quatro condições, falha fechado. O armazenamento observado ainda não expõe lease/CAS, então não ativar dispatchers paralelos.
 4. Fornecer ao especialista contrato, contexto completo, decisões, referências e restrições do pacote. Delegação efetiva depende das ferramentas da sessão; não confundir registro de agente com execução.
 5. Registrar received_at real somente quando o especialista iniciar. Preservar result e histórico; pacotes já recebidos nunca são automaticamente reiniciados.
 6. Especialista produz resultado interno, registra result, completed_at real e next_action e devolve REVIEW. Não executar efeito externo, gasto, contato ou aprovação em nome de Vânia.
@@ -27,16 +27,21 @@ Não presumir que arquivos TOML do Codex local sejam automaticamente instalados 
 
 ## Prova nativa atual
 Em 08/10/2026, uma execução agendada do ChatGPT orquestrou sequencialmente Work Packets isolados para Felipe, Clara, Bruno, Marcelo, Gabriel e Larissa. Cada especialista recebeu contexto e restrições, devolveu revisão própria, teve o resultado persistido no Control Plane e passou pela revisão da Patrícia. Os achados foram incorporados ao código e validados.
-Isso comprova colaboração nativa sequencial e retomada da construção sem presença da CEO. Não comprova um dispatcher contínuo: `runtime_verified` permanece falso até existir claim/lease atômico, observabilidade e um ciclo de produção seguro além dos pacotes de teste.
+Isso comprova colaboração nativa sequencial e retomada da construção sem presença da CEO. Não comprova um dispatcher contínuo: `runtime_verified` permanece falso até o contrato de lease possuir um adapter persistente real, observabilidade e um ciclo de produção seguro além dos pacotes de teste.
+
+## Contrato de concorrência
+`runtime/lease.js` implementa aquisição e liberação otimistas por versão e só produz um plano de despacho quando o chamador apresenta lease ativo do mesmo owner, projeção ao vivo e runtime verificado. O módulo não contém armazenamento local disfarçado de persistência e não executa modelo nem altera Work Packet.
+O teste em memória comprova a máquina de estados e a exclusão entre owners dentro do contrato. Ele não é adapter de produção. Para ativação real, o Control Plane precisa expor leitura e compare-and-swap atômico durável (ou primitiva equivalente) para o registro de lease.
 
 ## Projeção autenticada implementada
 O servidor MCP disponível possui tools; não foi confirmado endpoint REST /snapshot. CONTROL_PLANE_API_URL é apenas um contrato existente e não deve receber o URL MCP assumindo equivalência.
 `runtime/projection.js` valida health, registro exato dos sete agentes e coleções do Control Plane, remove registros técnicos de teste e produz uma projeção somente leitura. `scripts/refresh-projection.js` grava o snapshot de forma atômica; a tarefa nativa do ChatGPT faz as leituras MCP e alimenta esse script.
 A interface retorna `live:false` e identifica a fonte como `chatgpt-control-plane-projection`, com data e hora. `/api/queue` continua respondendo 503 sem fonte ao vivo e não despacha trabalho. Projeção agendada não é streaming nem prova de runtime autônomo dos sete agentes.
-Próximo: repetir handoffs dedicados com os demais especialistas, validar retomada entre execuções e definir um mecanismo de claim/lease antes de qualquer dispatcher concorrente.
+Próximo: conectar o contrato de lease a uma primitiva atômica durável do Control Plane, validar retomada entre execuções e somente então habilitar um dispatcher.
 Nenhum host/modelo adicional contratado. Nenhuma credencial API necessária para continuar os testes internos atuais.
 
-## Documentação verificada em 08/10/2026
+## Documentação verificada em 09/10/2026
 - https://learn.chatgpt.com/docs/automations — tarefas Work web usam ferramentas/skills/plugins; arquivos locais não persistem entre execuções.
+- A página documenta execução agendada em background e retomada no mesmo chat, mas não garante serialização de rodadas sobrepostas; por isso esta implementação não infere exclusão mútua da agenda.
 - https://learn.chatgpt.com/docs/agent-configuration/subagents — delegação especializada; configuração de agentes personalizados em TOML descrita para clientes locais.
 - https://learn.chatgpt.com/docs/dots — produto always-on documentado; disponibilidade/configuração nesta conta ainda não comprovadas.
