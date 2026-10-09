@@ -30,6 +30,7 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Circuitos nativos sequenciais concluídos e persistidos para Bruno, Marcelo, Gabriel, Larissa e Felipe. Somados ao circuito de Clara, todos os seis especialistas executaram sob orquestração da Patrícia nesta construção.
 - Bruno corrigiu microcopy, nomes e estados; Marcelo condicionou todo movimento visual a `runtime_verified`; Gabriel incorporou diálogo acessível, foco, navegação semântica e renderização segura; Larissa formalizou a matriz D-10 e governança; Felipe endureceu a classificação de ações externas e o contrato comercial.
 - Permissão ambígua `prospect` de Felipe foi desativada no código e no Control Plane; estratégia e pesquisa interna agora usam `prospecting_strategy` e `lead_research`, mantendo `external_contact=false`.
+- Handoffs dos seis especialistas, melhorias de interface, matriz D-10, contrato comercial e 18 testes persistidos no commit `794b83812ccf7ed3ba54807d8154cef448ac4107`.
 
 ## Evidência e validação
 
