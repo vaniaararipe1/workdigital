@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-09T05:32:40Z
+Atualizado em: 2026-10-09T05:34:10Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -37,10 +37,12 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Revalidado o Control Plane 2.6.0: online, banco conectado e escrita por chave disponível, porém sem `expected_version`, compare-and-swap ou claim atômico nos contratos MCP observados.
 - Adicionada matriz verificável em `GET /api/runtime-readiness`; `GET /api/queue` agora falha com `503 runtime-not-ready` quando faltar qualquer requisito, inclusive se existir leitura ao vivo sem lease atômico.
 - Capacidades observadas, endpoint de prontidão e bloqueio da fila persistidos no commit `b05d831242582c2b930bd03b2418d0de89013d64`; evidência `E-ECO-20261009-0230` registrada no Control Plane.
+- Implementado o adapter cliente de produção para lease via HTTPS + ETag/`If-Match`, com Bearer token, timeout e tratamento explícito de disputa 409/412. O contrato mínimo do endpoint do Control Plane foi documentado, sem presumir URL ou credencial.
+- Adapter e especificação persistidos no commit `63c86cc6659a417d10b31c1fd5ac8282c254c2fd`.
 
 ## Evidência e validação
 
-- `npm test`: 27/27 testes aprovados.
+- `npm test`: 30/30 testes aprovados.
 - `node --check public/app.js` e `node --check server.js`: aprovados.
 - QA estrutural: quatro áreas navegáveis, sete agentes, responsividade, preferência de movimento reduzido, permissões e `next_action` presentes. Teste também impede regressão para o rótulo “AGORA” enquanto o runtime não for comprovado.
 - Planejamento atual: nenhum pacote liberado; `WP-004` bloqueado por `action-classification-required`, `agent-permission-denied` e `constraint-reconciliation-required`. O texto contém intenção externa/vedações e a restrição legada “Não executar ainda”; o fail-closed é deliberado.
@@ -65,7 +67,7 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 
 ## Próximo passo autorizado
 
-Preparar a especificação mínima do endpoint CAS/lease para evolução do Control Plane, sem contratar infraestrutura nem ativar o dispatcher. Em paralelo, validar visualmente a interface em navegador real quando existir ambiente autorizado. Não usar `WP-004` como smoke test. Se implementar o endpoint exigir acesso ao código/host do Control Plane não disponível, acionar Vânia apenas para esse acesso.
+Conectar e validar o adapter assim que o Control Plane expuser `GET/PUT /runtime/lease` com CAS transacional. Em paralelo, validar visualmente a interface em navegador real quando existir ambiente autorizado. Não usar `WP-004` como smoke test. Para implementar o endpoint agora falta acesso ao código/host do Control Plane; não presumir essa autoridade.
 
 ## Bloqueio
 
