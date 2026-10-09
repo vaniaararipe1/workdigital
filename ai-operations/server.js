@@ -2,6 +2,8 @@
 const http=require('node:http'), fs=require('node:fs/promises'), path=require('node:path');
 const snapshot=require('./snapshot.json');
 const {planQueue}=require('./runtime/queue');
+const capabilities=require('./runtime/control-plane-capabilities.json');
+const {evaluateRuntimeReadiness}=require('./runtime/readiness');
 const root=path.join(__dirname,'public');
 function json(res,status,data){res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data))}
 function normalize(data){
@@ -25,9 +27,14 @@ function createServer(){return http.createServer(async(req,res)=>{
   const route=req.url.split('?')[0];
   if(route==='/health')return json(res,200,{ok:true,service:'ai-operations-interface',runtime:'not-connected'});
   if(route==='/api/control-plane')return json(res,200,await readState());
+  if(route==='/api/runtime-readiness'){
+    const state=await readState();
+    return json(res,200,{source:state.source,capabilities,readiness:evaluateRuntimeReadiness(state,{capabilities})});
+  }
   if(route==='/api/queue'){
     const state=await readState();
-    if(!state.live)return json(res,503,{error:'live-state-required',source:state.source,runtime:'not-connected'});
+    const readiness=evaluateRuntimeReadiness(state,{capabilities});
+    if(!readiness.ready)return json(res,503,{error:'runtime-not-ready',source:state.source,readiness});
     return json(res,200,{source:state.source,executable:false,plan:planQueue(state)});
   }
   let relative;try{relative=decodeURIComponent(route).replace(/^\/+/, '')||'index.html';}catch{return json(res,400,{error:'invalid-path'});}
