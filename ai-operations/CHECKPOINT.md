@@ -26,6 +26,7 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Implementada projeção autenticada e fail-closed do Control Plane: valida health e os sete agentes, exclui registros de teste, grava snapshot atomicamente e mantém `/api/queue` indisponível sem fonte realmente ao vivo.
 - Clara executou revisão nativa da interface; seu achado sobre linguagem de “execução agora” foi incorporado. A tela agora usa “Estado operacional registrado”, mostra data/hora da projeção e mantém aviso permanente de execução autônoma não verificada.
 - Fechado e persistido no Control Plane um circuito atual Patrícia → Clara → Control Plane → Patrícia: `OP-ECO-TEST-20261008-2130`, `TASK-ECO-TEST-CLARA-001` e `WP-ECO-TEST-CLARA-001`, todos concluídos sem ação externa.
+- Projeção, revisão de Clara, teste operacional e 15 testes persistidos na branch pelo commit `bd6cf75b49bc8374394211b8351c0f29b4faee8f`.
 
 ## Evidência e validação
 
