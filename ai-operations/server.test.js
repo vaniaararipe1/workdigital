@@ -6,8 +6,8 @@ test('serves UI, labels history, refuses traversal and writes',async()=>{
   try{
     const home=await fetch(base+'/');assert.equal(home.status,200);const markup=await home.text();assert.match(markup,/Work Digital/);assert.match(markup,/Execução autônoma não verificada/);assert.match(markup,/role="dialog"/);assert.match(markup,/aria-live="polite"/);assert.doesNotMatch(markup,/>AGORA</);
     const state=await(await fetch(base+'/api/control-plane')).json();assert.equal(state.live,false);assert.equal(state.source,'chatgpt-control-plane-projection');
-    const readiness=await(await fetch(base+'/api/runtime-readiness')).json();assert.equal(readiness.readiness.ready,false);assert.equal(readiness.capabilities.atomic_compare_and_swap,false);
-    const queue=await fetch(base+'/api/queue');assert.equal(queue.status,503);const queueBody=await queue.json();assert.equal(queueBody.error,'runtime-not-ready');assert.ok(queueBody.readiness.reasons.includes('lease-backend-required'));
+    const readiness=await(await fetch(base+'/api/runtime-readiness')).json();assert.equal(readiness.readiness.ready,false);assert.equal(readiness.capabilities.atomic_compare_and_swap,true);assert.equal(readiness.capabilities.fenced_work_packet_persistence,true);
+    const queue=await fetch(base+'/api/queue');assert.equal(queue.status,503);const queueBody=await queue.json();assert.equal(queueBody.error,'runtime-not-ready');assert.ok(queueBody.readiness.reasons.includes('live-state-required'));assert.ok(queueBody.readiness.reasons.includes('runtime-verified-required'));
     assert.equal((await fetch(base+'/%2e%2e%2fserver.js')).status,403);
     assert.equal((await fetch(base+'/%ZZ')).status,400);
     assert.equal((await fetch(base+'/api/control-plane',{method:'POST'})).status,405);

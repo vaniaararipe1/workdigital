@@ -50,6 +50,38 @@ async function releaseLease(store,{owner,now=new Date()}={}){
     :{released:false,reason:'lease-contention',lease:null};
 }
 
+async function heartbeatLease(store,{owner,lease,ttlMs=60_000,now=new Date()}={}){
+  validateStore(store);
+  if(typeof owner!=='string'||!owner.trim())throw TypeError('Runtime owner is required');
+  if(!Number.isInteger(ttlMs)||ttlMs<1_000)throw RangeError('Lease ttlMs must be at least 1000');
+  const beatAt=new Date(now);
+  if(Number.isNaN(beatAt.getTime()))throw TypeError('Invalid lease clock');
+  const expected=normalizeLease(lease);
+  if(expected.owner!==owner)return {renewed:false,reason:'not-owner',lease:expected};
+  if(!leaseIsActive(expected,beatAt))return {renewed:false,reason:'lease-expired',lease:expected};
+  const current=normalizeLease(await store.read());
+  if(current.version!==expected.version||current.owner!==owner){
+    return {renewed:false,reason:'stale-fence',lease:current};
+  }
+  if(!leaseIsActive(current,beatAt))return {renewed:false,reason:'lease-expired',lease:current};
+  const next={version:current.version+1,owner,acquired_at:iso(beatAt),expires_at:iso(beatAt.getTime()+ttlMs)};
+  return await store.compareAndSwap(current.version,next,{owner})
+    ?{renewed:true,lease:next,fence:{owner,version:next.version}}
+    :{renewed:false,reason:'lease-contention',lease:null};
+}
+
+async function verifyLeaseFence(store,{owner,version,now=new Date()}={}){
+  validateStore(store);
+  if(typeof owner!=='string'||!owner.trim()||!Number.isSafeInteger(version)||version<1){
+    throw TypeError('Valid runtime owner and fence version are required');
+  }
+  const current=normalizeLease(await store.read());
+  if(current.owner!==owner)return {valid:false,reason:'not-owner',lease:current};
+  if(current.version!==version)return {valid:false,reason:'stale-fence',lease:current};
+  if(!leaseIsActive(current,now))return {valid:false,reason:'lease-expired',lease:current};
+  return {valid:true,fence:{owner,version},lease:current};
+}
+
 function planLeasedDispatch(state,{lease,owner,now=new Date()}={}){
   const reasons=[];
   if(state?.live!==true)reasons.push('live-state-required');
@@ -62,5 +94,4 @@ function planLeasedDispatch(state,{lease,owner,now=new Date()}={}){
   return {mode:'leased-dispatch-plan',executable:queue.ready.length>0,reasons:[],packet:queue.ready[0]||null,queue};
 }
 
-module.exports={claimLease,releaseLease,planLeasedDispatch,leaseIsActive};
-
+module.exports={claimLease,heartbeatLease,releaseLease,verifyLeaseFence,planLeasedDispatch,leaseIsActive};

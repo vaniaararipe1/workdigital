@@ -1,11 +1,13 @@
--- Apply only to the confirmed Control Plane Supabase database.
+-- Apply only to the confirmed Work Digital Control Plane Supabase database.
 -- No dispatcher is enabled by this migration.
-begin;
 
-create table public.wd_runtime_operators (
+create schema wd_runtime;
+revoke all on schema wd_runtime from public, anon, authenticated;
+
+create table wd_runtime.operators (
   user_id uuid primary key references auth.users(id) on delete cascade
 );
-create table public.wd_runtime_lease (
+create table wd_runtime.lease (
   singleton boolean primary key default true check (singleton),
   version bigint not null default 0 check (version between 0 and 9007199254740991),
   owner text,
@@ -16,8 +18,8 @@ create table public.wd_runtime_lease (
     or (owner is not null and principal is not null and acquired_at is not null and expires_at is not null
       and expires_at > acquired_at and length(btrim(owner)) between 1 and 200))
 );
-insert into public.wd_runtime_lease(singleton) values(true);
-create table public.wd_runtime_lease_audit (
+insert into wd_runtime.lease(singleton) values(true);
+create table wd_runtime.lease_audit (
   version bigint primary key,
   previous_version bigint not null,
   previous_owner text,
@@ -28,38 +30,44 @@ create table public.wd_runtime_lease_audit (
   acquired_at timestamptz,
   expires_at timestamptz
 );
-alter table public.wd_runtime_operators enable row level security;
-alter table public.wd_runtime_lease enable row level security;
-alter table public.wd_runtime_lease_audit enable row level security;
-revoke all on public.wd_runtime_operators, public.wd_runtime_lease,
-  public.wd_runtime_lease_audit from public, anon, authenticated;
+alter table wd_runtime.operators enable row level security;
+alter table wd_runtime.lease enable row level security;
+alter table wd_runtime.lease_audit enable row level security;
+revoke all on all tables in schema wd_runtime from public, anon, authenticated;
 
-create function public.wd_read_runtime_lease() returns jsonb
+create function wd_runtime.authorized() returns boolean
+language sql stable security definer set search_path = '' as $$
+  select auth.uid() is not null and exists (
+    select 1 from wd_runtime.operators where user_id=auth.uid()
+  );
+$$;
+
+create function wd_runtime.read_lease() returns jsonb
 language plpgsql security definer set search_path = '' as $$
-declare v public.wd_runtime_lease%rowtype;
+declare v wd_runtime.lease%rowtype;
 begin
-  if auth.uid() is null or not exists (
-    select 1 from public.wd_runtime_operators where user_id=auth.uid()
-  ) then raise exception 'Runtime operator required' using errcode='42501'; end if;
-  select * into strict v from public.wd_runtime_lease where singleton=true;
+  if not wd_runtime.authorized() then
+    raise exception 'Runtime operator required' using errcode='42501';
+  end if;
+  select * into strict v from wd_runtime.lease where singleton=true;
   return jsonb_build_object('version',v.version,'owner',v.owner,
     'acquired_at',v.acquired_at,'expires_at',v.expires_at);
 end;
 $$;
 
-create function public.wd_cas_runtime_lease(
+create function wd_runtime.cas_lease(
   p_expected_version bigint, p_request_owner text, p_next jsonb
 ) returns jsonb language plpgsql security definer set search_path = '' as $$
 declare
-  v public.wd_runtime_lease%rowtype;
+  v wd_runtime.lease%rowtype;
   v_now timestamptz;
   v_owner text;
   v_acquired timestamptz;
   v_expires timestamptz;
 begin
-  if auth.uid() is null or not exists (
-    select 1 from public.wd_runtime_operators where user_id=auth.uid()
-  ) then raise exception 'Runtime operator required' using errcode='42501'; end if;
+  if not wd_runtime.authorized() then
+    raise exception 'Runtime operator required' using errcode='42501';
+  end if;
   if p_expected_version is null or p_expected_version < 0
     or p_expected_version >= 9007199254740991
     or p_request_owner is null or length(btrim(p_request_owner)) not between 1 and 200
@@ -87,8 +95,7 @@ begin
   elsif p_next->'acquired_at' <> 'null'::jsonb or p_next->'expires_at' <> 'null'::jsonb then
     raise exception 'Release must clear timestamps' using errcode='22023';
   end if;
-  -- Serialize reads and writes in one transaction. Evaluate the clock after waiting.
-  select * into strict v from public.wd_runtime_lease where singleton=true for update;
+  select * into strict v from wd_runtime.lease where singleton=true for update;
   v_now := clock_timestamp();
   if v.version <> p_expected_version then return jsonb_build_object('applied',false); end if;
   if v_owner is null then
@@ -104,18 +111,87 @@ begin
       or v_acquired < v_now-interval '5 minutes'
     then raise exception 'Invalid lease clock or TTL' using errcode='22023'; end if;
   end if;
-  update public.wd_runtime_lease set version=v.version+1, owner=v_owner,
+  update wd_runtime.lease set version=v.version+1, owner=v_owner,
     principal=case when v_owner is null then null else auth.uid() end,
     acquired_at=v_acquired, expires_at=v_expires where singleton=true;
-  insert into public.wd_runtime_lease_audit(
+  insert into wd_runtime.lease_audit(
     version,previous_version,previous_owner,owner,principal,request_owner,occurred_at,acquired_at,expires_at
   ) values(v.version+1,v.version,v.owner,v_owner,auth.uid(),p_request_owner,v_now,v_acquired,v_expires);
   return jsonb_build_object('applied',true,'lease',jsonb_build_object(
     'version',v.version+1,'owner',v_owner,'acquired_at',v_acquired,'expires_at',v_expires));
 end;
 $$;
+
+-- The lease row remains locked until the delivery update commits. A heartbeat or takeover
+-- cannot invalidate the fence between its check and the Work Packet write.
+create function wd_runtime.persist_work_packet(
+  p_request_owner text,
+  p_fence_version bigint,
+  p_packet_key text,
+  p_result jsonb,
+  p_next_action text default null
+) returns jsonb language plpgsql security definer set search_path = '' as $$
+declare
+  v wd_runtime.lease%rowtype;
+  v_now timestamptz;
+  v_packet public.work_packets%rowtype;
+begin
+  if not wd_runtime.authorized() then
+    raise exception 'Runtime operator required' using errcode='42501';
+  end if;
+  if p_request_owner is null or length(btrim(p_request_owner)) not between 1 and 200
+    or p_fence_version is null or p_fence_version < 1
+    or p_packet_key is null or length(btrim(p_packet_key)) < 1
+    or p_result is null or jsonb_typeof(p_result) not in ('object','array','string')
+  then raise exception 'Invalid fenced delivery' using errcode='22023'; end if;
+  select * into strict v from wd_runtime.lease where singleton=true for update;
+  v_now := clock_timestamp();
+  if v.owner is distinct from p_request_owner
+    or v.principal is distinct from auth.uid()
+    or v.version <> p_fence_version
+    or v.expires_at is null or v.expires_at <= v_now
+  then raise exception 'Stale lease fence' using errcode='40001'; end if;
+  update public.work_packets
+  set result=p_result, next_action=p_next_action, status='REVIEW',
+      completed_at=v_now, updated_at=v_now
+  where packet_key=p_packet_key
+    and result is null
+    and status in ('SENT','READY','IN_PROGRESS','EXECUTING')
+  returning * into v_packet;
+  if not found then raise exception 'Work Packet is not writable' using errcode='55000'; end if;
+  return to_jsonb(v_packet);
+end;
+$$;
+
+-- Public wrappers are SECURITY INVOKER. Privileged code remains in a non-exposed schema.
+create function public.wd_read_runtime_lease() returns jsonb
+language sql security invoker set search_path = '' as $$
+  select wd_runtime.read_lease();
+$$;
+create function public.wd_cas_runtime_lease(
+  p_expected_version bigint, p_request_owner text, p_next jsonb
+) returns jsonb language sql security invoker set search_path = '' as $$
+  select wd_runtime.cas_lease(p_expected_version,p_request_owner,p_next);
+$$;
+create function public.wd_persist_work_packet_fenced(
+  p_request_owner text, p_fence_version bigint, p_packet_key text,
+  p_result jsonb, p_next_action text default null
+) returns jsonb language sql security invoker set search_path = '' as $$
+  select wd_runtime.persist_work_packet(
+    p_request_owner,p_fence_version,p_packet_key,p_result,p_next_action
+  );
+$$;
+
+revoke all on all functions in schema wd_runtime from public,anon,authenticated,service_role;
 revoke all on function public.wd_read_runtime_lease() from public,anon,authenticated,service_role;
 revoke all on function public.wd_cas_runtime_lease(bigint,text,jsonb) from public,anon,authenticated,service_role;
+revoke all on function public.wd_persist_work_packet_fenced(text,bigint,text,jsonb,text) from public,anon,authenticated,service_role;
+grant usage on schema wd_runtime to authenticated;
+grant execute on function wd_runtime.authorized() to authenticated;
+grant execute on function wd_runtime.read_lease() to authenticated;
+grant execute on function wd_runtime.cas_lease(bigint,text,jsonb) to authenticated;
+grant execute on function wd_runtime.persist_work_packet(text,bigint,text,jsonb,text) to authenticated;
 grant execute on function public.wd_read_runtime_lease() to authenticated;
 grant execute on function public.wd_cas_runtime_lease(bigint,text,jsonb) to authenticated;
-commit;
+grant execute on function public.wd_persist_work_packet_fenced(text,bigint,text,jsonb,text) to authenticated;
+

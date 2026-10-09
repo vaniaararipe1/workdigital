@@ -1,6 +1,6 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict');
-const {claimLease,releaseLease,planLeasedDispatch}=require('./lease');
+const {claimLease,heartbeatLease,releaseLease,verifyLeaseFence,planLeasedDispatch}=require('./lease');
 
 function memoryStore(initial=null){
   let value=initial;
@@ -52,4 +52,26 @@ test('simultaneous acquisitions admit one winner even after CAS retries',async()
   assert.equal(results.filter(result=>result.acquired).length,1);
   assert.equal((await store.read()).version,1);
 });
-
+test('heartbeat renews the active lease and advances its fencing version',async()=>{
+  const store=memoryStore(),start='2026-10-09T12:00:00.000Z';
+  const acquired=await claimLease(store,{owner:'run-a',now:start,ttlMs:60_000});
+  const renewed=await heartbeatLease(store,{owner:'run-a',lease:acquired.lease,now:'2026-10-09T12:00:30.000Z',ttlMs:60_000});
+  assert.equal(renewed.renewed,true);assert.equal(renewed.lease.version,2);
+  assert.equal(renewed.lease.expires_at,'2026-10-09T12:01:30.000Z');
+  assert.deepEqual(renewed.fence,{owner:'run-a',version:2});
+});
+test('heartbeat fails closed for stale, foreign or expired leases',async()=>{
+  const store=memoryStore(),start='2026-10-09T12:00:00.000Z';
+  const acquired=await claimLease(store,{owner:'run-a',now:start,ttlMs:60_000});
+  const renewed=await heartbeatLease(store,{owner:'run-a',lease:acquired.lease,now:'2026-10-09T12:00:20.000Z'});
+  assert.equal((await heartbeatLease(store,{owner:'run-a',lease:acquired.lease,now:'2026-10-09T12:00:30.000Z'})).reason,'stale-fence');
+  assert.equal((await heartbeatLease(store,{owner:'run-b',lease:renewed.lease,now:'2026-10-09T12:00:30.000Z'})).reason,'not-owner');
+  assert.equal((await heartbeatLease(store,{owner:'run-a',lease:renewed.lease,now:'2026-10-09T12:02:00.000Z'})).reason,'lease-expired');
+});
+test('fence verification rejects a token invalidated by heartbeat',async()=>{
+  const store=memoryStore(),start='2026-10-09T12:00:00.000Z';
+  const acquired=await claimLease(store,{owner:'run-a',now:start});
+  const renewed=await heartbeatLease(store,{owner:'run-a',lease:acquired.lease,now:'2026-10-09T12:00:20.000Z'});
+  assert.equal((await verifyLeaseFence(store,{owner:'run-a',version:acquired.lease.version,now:'2026-10-09T12:00:21.000Z'})).reason,'stale-fence');
+  assert.equal((await verifyLeaseFence(store,{owner:'run-a',version:renewed.lease.version,now:'2026-10-09T12:00:21.000Z'})).valid,true);
+});

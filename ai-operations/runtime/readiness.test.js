@@ -2,7 +2,7 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const {evaluateRuntimeReadiness}=require('./readiness');
 
-test('current MCP capabilities keep dispatcher disabled',()=>{
+test('missing durable backend capabilities keep dispatcher disabled',()=>{
   const result=evaluateRuntimeReadiness({live:true,runtime_verified:true},{capabilities:{atomic_compare_and_swap:false,lease_backend:false},runtimeIdentity:'run-a'});
   assert.equal(result.ready,false);assert.equal(result.dispatcher_enabled,false);
   assert.ok(result.reasons.includes('atomic-compare-and-swap-required'));

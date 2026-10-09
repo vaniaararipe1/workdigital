@@ -11,10 +11,10 @@ Não presumir que arquivos TOML do Codex local sejam automaticamente instalados 
 ## Protocolo do dispatcher Patrícia
 1. Ler health, agentes, operações, tarefas, pacotes e decisões vigentes via ferramentas conectadas.
 2. Excluir testes e trabalho concluído. Usar queue.js para planejamento conservador. Reconciliar divergências com proveniência; restrições textuais não podem ser ignoradas automaticamente.
-3. Antes de cada despacho, reler pacote/tarefa/operação e restrições. Um único dispatcher. `lease.js` exige armazenamento persistente com compare-and-swap, identidade da execução, estado ao vivo e `runtime_verified=true`; sem essas quatro condições, falha fechado. O armazenamento observado ainda não expõe lease/CAS, então não ativar dispatchers paralelos.
+3. Antes de cada despacho, reler pacote/tarefa/operação e restrições. Um único dispatcher. `lease.js` exige armazenamento persistente com compare-and-swap, identidade da execução, estado ao vivo e `runtime_verified=true`; sem essas quatro condições, falha fechado. O backend durável existe, mas `runtime_verified` continua falso até o ciclo MCP completo.
 4. Fornecer ao especialista contrato, contexto completo, decisões, referências e restrições do pacote. Delegação efetiva depende das ferramentas da sessão; não confundir registro de agente com execução.
 5. Registrar received_at real somente quando o especialista iniciar. Preservar result e histórico; pacotes já recebidos nunca são automaticamente reiniciados.
-6. Especialista produz resultado interno, registra result, completed_at real e next_action e devolve REVIEW. Não executar efeito externo, gasto, contato ou aprovação em nome de Vânia.
+6. Especialista produz resultado interno. O runtime renova a reserva, usa a nova versão como fence e persiste result, completed_at real, next_action e REVIEW exclusivamente por `persist_work_packet_fenced`. Não executar efeito externo, gasto, contato ou aprovação em nome de Vânia.
 7. Patrícia revisa a entrega; solicita revisão independente quando o pacote exigir (ex.: Clara revisa Larissa no WP-004). A CEO recebe decisões indispensáveis e entregas verificáveis.
 8. Persistir checkpoint ao concluir a sessão. Esta automação de construção não deve ser transformada silenciosamente em rotina de operação comercial.
 
@@ -27,19 +27,19 @@ Não presumir que arquivos TOML do Codex local sejam automaticamente instalados 
 
 ## Prova nativa atual
 Em 08/10/2026, uma execução agendada do ChatGPT orquestrou sequencialmente Work Packets isolados para Felipe, Clara, Bruno, Marcelo, Gabriel e Larissa. Cada especialista recebeu contexto e restrições, devolveu revisão própria, teve o resultado persistido no Control Plane e passou pela revisão da Patrícia. Os achados foram incorporados ao código e validados.
-Isso comprova colaboração nativa sequencial e retomada da construção sem presença da CEO. Não comprova um dispatcher contínuo: `runtime_verified` permanece falso até o contrato de lease possuir um adapter persistente real, observabilidade e um ciclo de produção seguro além dos pacotes de teste.
+Isso comprova colaboração nativa sequencial e retomada da construção sem presença da CEO. Em 09/10/2026, o backend persistente de lease, heartbeat e fencing foi implantado e validado no Supabase. Ainda não comprova um dispatcher contínuo: `runtime_verified` permanece falso até um ciclo MCP autenticado completo usar os novos tools durante uma entrega interna controlada.
 
 ## Contrato de concorrência
-`runtime/lease.js` implementa aquisição e liberação otimistas por versão e só produz um plano de despacho quando o chamador apresenta lease ativo do mesmo owner, projeção ao vivo e runtime verificado. O módulo não contém armazenamento local disfarçado de persistência e não executa modelo nem altera Work Packet.
-O teste em memória comprova a máquina de estados e a exclusão entre owners dentro do contrato. Ele não é adapter de produção. Para ativação real, o Control Plane precisa expor leitura e compare-and-swap atômico durável (ou primitiva equivalente) para o registro de lease.
-`runtime/control-plane-capabilities.json` registra as capacidades observadas do MCP 2.6.0, sem inferir funções internas do banco. `GET /api/runtime-readiness` publica cada requisito separadamente; `GET /api/queue` agora responde `503 runtime-not-ready` sempre que qualquer prova estiver ausente, inclusive quando houver estado ao vivo sem CAS.
+`runtime/lease.js` implementa aquisição, heartbeat, verificação de fence e liberação otimistas por versão e só produz um plano de despacho quando o chamador apresenta lease ativo do mesmo owner, projeção ao vivo e runtime verificado. O módulo não contém armazenamento local disfarçado de persistência e não executa modelo nem altera Work Packet.
+O teste em memória comprova a máquina de estados. As migrações Supabase e a Edge Function MCP 2.7.0 fornecem o adapter de produção: CAS transacional durável e persistência de entrega na mesma transação que bloqueia e verifica o lease.
+`runtime/control-plane-capabilities.json` registra as capacidades implantadas e verificadas. `GET /api/runtime-readiness` publica cada requisito separadamente; `GET /api/queue` continua respondendo `503 runtime-not-ready` enquanto estado ao vivo, identidade, lease ativo e `runtime_verified` não forem apresentados juntos.
 `runtime/http-lease-store.js` já implementa o lado cliente do contrato HTTPS + ETag/`If-Match`. O requisito de backend está definido em `runtime/CONTROL_PLANE_LEASE_API.md`; nenhuma URL ou credencial foi presumida.
 
 ## Projeção autenticada implementada
 O servidor MCP disponível possui tools; não foi confirmado endpoint REST /snapshot. CONTROL_PLANE_API_URL é apenas um contrato existente e não deve receber o URL MCP assumindo equivalência.
 `runtime/projection.js` valida health, registro exato dos sete agentes e coleções do Control Plane, remove registros técnicos de teste e produz uma projeção somente leitura. `scripts/refresh-projection.js` grava o snapshot de forma atômica; a tarefa nativa do ChatGPT faz as leituras MCP e alimenta esse script.
 A interface retorna `live:false` e identifica a fonte como `chatgpt-control-plane-projection`, com data e hora. `/api/queue` continua respondendo 503 sem fonte ao vivo e não despacha trabalho. Projeção agendada não é streaming nem prova de runtime autônomo dos sete agentes.
-Próximo: conectar o contrato de lease a uma primitiva atômica durável do Control Plane, validar retomada entre execuções e somente então habilitar um dispatcher.
+Próximo: em uma nova sessão com o schema MCP atualizado, executar aquisição → trabalho interno controlado → heartbeat → persistência fenced → liberação; depois validar retomada em outra execução. Somente então habilitar o dispatcher.
 Nenhum host/modelo adicional contratado. Nenhuma credencial API necessária para continuar os testes internos atuais.
 
 ## Documentação verificada em 09/10/2026
