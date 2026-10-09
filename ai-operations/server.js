@@ -5,6 +5,8 @@ const {planQueue}=require('./runtime/queue');
 const capabilities=require('./runtime/control-plane-capabilities.json');
 const {evaluateRuntimeReadiness}=require('./runtime/readiness');
 const root=path.join(__dirname,'public');
+const expectedAgents=['bruno','clara','felipe','gabriel','larissa','marcelo','patricia'];
+const maxLiveStateAgeMs=2*60*1000;
 function json(res,status,data){res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data))}
 function normalize(data){
   if(!data || ['agents','tasks','operations','work_packets'].some(k=>!Array.isArray(data[k])))throw Error('Invalid Control Plane snapshot');
@@ -13,13 +15,30 @@ function normalize(data){
     operations:data.operations.map(o=>({...o,key:o.operation_key||o.key})),
     work_packets:data.work_packets.map(p=>({...p,key:p.packet_key||p.key,destination:p.destination_agent||p.destination}))};
 }
+function validateLiveState(data,{now=Date.now()}={}){
+  const state=normalize(data);
+  const capturedAt=Date.parse(state.captured_at);
+  const agents=[...new Set(state.agents.map(agent=>agent.key))].sort();
+  if(state.live!==true)throw Error('Control Plane snapshot is not live');
+  if(!Number.isFinite(capturedAt)||capturedAt>now+30_000||now-capturedAt>maxLiveStateAgeMs)throw Error('Control Plane snapshot is stale');
+  if(state.control_plane?.status!=='online'||state.control_plane?.database!=='connected')throw Error('Control Plane is unhealthy');
+  if(agents.length!==expectedAgents.length||agents.some((agent,index)=>agent!==expectedAgents[index]))throw Error('Unexpected agent registry');
+  return {...state,source:'control-plane-api',fetched_at:new Date(now).toISOString()};
+}
+function controlPlaneEndpoint(base){
+  const endpoint=new URL('/snapshot',base.endsWith('/')?base:base+'/');
+  if(endpoint.protocol!=='https:'&&!['127.0.0.1','localhost','::1'].includes(endpoint.hostname))throw Error('Control Plane API must use HTTPS');
+  return endpoint;
+}
 async function readState(){
   const base=process.env.CONTROL_PLANE_API_URL;
-  if(base)try{
-    const response=await fetch(base.replace(/\/$/,'')+'/snapshot',{headers:process.env.CONTROL_PLANE_API_TOKEN?{authorization:'Bearer '+process.env.CONTROL_PLANE_API_TOKEN}:{},signal:AbortSignal.timeout(5000)});
+  const token=process.env.CONTROL_PLANE_API_TOKEN;
+  if(base&&token)try{
+    const response=await fetch(controlPlaneEndpoint(base),{headers:{authorization:'Bearer '+token,accept:'application/json'},signal:AbortSignal.timeout(5000)});
     if(!response.ok)throw Error('Unavailable');
-    return {...normalize(await response.json()),source:'control-plane-api',live:true,fetched_at:new Date().toISOString()};
+    return validateLiveState(await response.json());
   }catch{return {...normalize(snapshot),source:snapshot.source||'historical-snapshot',live:false,connection_status:'unavailable'};}
+  if(base&&!token)return {...normalize(snapshot),source:snapshot.source||'historical-snapshot',live:false,connection_status:'missing-token'};
   return {...normalize(snapshot),source:snapshot.source||'historical-snapshot',live:false,connection_status:'not-configured'};
 }
 function createServer(){return http.createServer(async(req,res)=>{
@@ -48,4 +67,4 @@ function createServer(){return http.createServer(async(req,res)=>{
   }catch{json(res,404,{error:'not-found'});}
 });}
 if(require.main===module)createServer().listen(process.env.PORT||10000);
-module.exports={createServer,normalize};
+module.exports={createServer,normalize,validateLiveState,controlPlaneEndpoint};

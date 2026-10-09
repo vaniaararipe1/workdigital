@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-09T16:26:59Z
+Atualizado em: 2026-10-09T20:35:11Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -36,10 +36,11 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - A retomada em outra execução encontrou o lease anterior expirado, assumiu-o legalmente com novo owner e liberou o singleton na versão 7. Isso comprova recuperação após expiração sem deixar owner pendente.
 - Evidência `E-ECO-20261009-1230-FENCE-E2E` registrada como VERIFIED no Control Plane.
 - Inspeção do gerenciador de plugins confirmou que Work Digital Control Plane é um app personalizado, não uma release pública atualizável pelo diretório. Nenhuma permissão foi alterada e nenhuma reconexão foi solicitada.
+- A ingestão de estado ao vivo da interface foi endurecida: não promove mais uma resposta arbitrária de `/snapshot` para `live=true`. Agora exige endpoint HTTPS (HTTP apenas em loopback para testes), token Bearer, timestamp com no máximo dois minutos, Control Plane online/banco conectado e o registro exato dos sete agentes. Qualquer falha retorna à projeção histórica e mantém a fila bloqueada.
 
 ## Evidência e validação
 
-- `npm test`: 44/44 testes aprovados.
+- `npm test`: 46/46 testes aprovados.
 - `node --experimental-strip-types --check runtime/backend/work-digital-mcp-v2/index.ts`: aprovado.
 - PostgreSQL real:
   - leitura inicial: versão 0, sem owner;
@@ -60,6 +61,8 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
   - estado final do lease: owner nulo, sem expiração.
 - Fonte implantada recuperada após deploy: status ACTIVE, versão de função 9, OAuth preservado e os três novos tools presentes.
 - Health após o hardening: online, banco conectado, aplicação 2.7.1. Teste pelo comando legado retornou `runtime-delivery-requires-fence` e não executou escrita.
+- Health reconfirmado em 09/10/2026 às 20:35Z: online, banco conectado, aplicação 2.7.1. Leitura direta do lease confirmou versão 7, owner/principal nulos e nenhuma expiração pendente.
+- Testes novos comprovam rejeição de snapshot antigo, não-live, não saudável, com agentes incompletos, endpoint remoto sem HTTPS e configuração sem token.
 - Advisor de segurança após a segunda migração não aponta mais RLS sem política no schema `wd_runtime`. Permanece apenas aviso global preexistente de proteção contra senhas vazadas, fora do escopo deste runtime.
 - Nenhuma tarefa, agente, permissão comercial, projeto de cliente ou arquivo fora de `ai-operations/` foi alterado.
 
@@ -76,14 +79,14 @@ O backend durável, a retomada entre rodadas, a persistência fenced e o bloquei
 
 ## Pendências
 
-- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. Duas execuções após o deploy ainda não os exibiram.
+- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 09/10/2026 às 20:33Z continuou sem os três comandos.
 - Somente após essas provas definir `runtime_verified=true` e avaliar ativação do dispatcher.
 - Reconciliar `TASK-002` e `WP-004` antes de qualquer trabalho que possa implicar ação externa.
 - QA visual em navegador real e publicação da interface continuam pendentes até existir ambiente de preview autorizado para esta branch.
 
 ## Próximo passo autorizado
 
-Na próxima execução, descobrir novamente o contrato do plugin Work Digital. Se os três tools 2.7.0 estiverem expostos, repetir uma aquisição e liberação inteiramente pelo MCP nativo e então avaliar `runtime_verified`. Se continuarem ausentes, não alterar permissões nem sobrecarregar tools existentes: continuar QA e integração interna que não dependam desse catálogo. Não usar `WP-004`; não enviar mensagens a terceiros.
+Na próxima execução, descobrir novamente o contrato do plugin Work Digital. Se os três tools 2.7.x estiverem expostos, repetir uma aquisição e liberação inteiramente pelo MCP nativo e então avaliar `runtime_verified`. Se continuarem ausentes, não alterar permissões nem sobrecarregar tools existentes: continuar QA e integração interna que não dependam desse catálogo, especialmente proveniência autenticada do snapshot e preview visual autorizado. Não usar `WP-004`; não enviar mensagens a terceiros.
 
 ## Bloqueio
 

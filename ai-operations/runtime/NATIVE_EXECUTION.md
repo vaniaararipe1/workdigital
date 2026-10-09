@@ -33,6 +33,8 @@ Isso comprova colaboração nativa sequencial e retomada da construção sem pre
 `runtime/lease.js` implementa aquisição, heartbeat, verificação de fence e liberação otimistas por versão e só produz um plano de despacho quando o chamador apresenta lease ativo do mesmo owner, projeção ao vivo e runtime verificado. O módulo não contém armazenamento local disfarçado de persistência e não executa modelo nem altera Work Packet.
 O teste em memória comprova a máquina de estados. As migrações Supabase e a Edge Function MCP 2.7.1 fornecem o adapter de produção: CAS transacional durável e persistência de entrega na mesma transação que bloqueia e verifica o lease. O comando legado de atualização não aceita mais `result` ou `completed_at`, impedindo bypass do fence.
 `runtime/control-plane-capabilities.json` registra as capacidades implantadas e verificadas. `GET /api/runtime-readiness` publica cada requisito separadamente; `GET /api/queue` continua respondendo `503 runtime-not-ready` enquanto estado ao vivo, identidade, lease ativo e `runtime_verified` não forem apresentados juntos.
+
+A interface só aceita uma projeção como estado ao vivo quando o endpoint usa HTTPS, existe token Bearer, o snapshot tem no máximo dois minutos, o Control Plane declara estado online/banco conectado e o registro contém exatamente os sete agentes autorizados. A aplicação nunca converte localmente um snapshot histórico em vivo; qualquer inconsistência cai para a projeção histórica e mantém a fila fail-closed.
 `runtime/http-lease-store.js` já implementa o lado cliente do contrato HTTPS + ETag/`If-Match`. O requisito de backend está definido em `runtime/CONTROL_PLANE_LEASE_API.md`; nenhuma URL ou credencial foi presumida.
 
 ## Projeção autenticada implementada
