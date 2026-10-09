@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-09T05:34:10Z
+Atualizado em: 2026-10-09T05:35:05Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -67,8 +67,8 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 
 ## Próximo passo autorizado
 
-Conectar e validar o adapter assim que o Control Plane expuser `GET/PUT /runtime/lease` com CAS transacional. Em paralelo, validar visualmente a interface em navegador real quando existir ambiente autorizado. Não usar `WP-004` como smoke test. Para implementar o endpoint agora falta acesso ao código/host do Control Plane; não presumir essa autoridade.
+Após seleção explícita da workspace Render `My Workspace` (`tea-dau102gjo6nc73cpglvg`), inspecionar de forma somente leitura se ela hospeda o Control Plane e qual repositório está conectado. Se confirmado, avaliar a implementação de `GET/PUT /runtime/lease` com CAS transacional e validar o adapter. Em paralelo, validar visualmente a interface em navegador real quando existir ambiente autorizado. Não usar `WP-004` como smoke test.
 
 ## Bloqueio
 
-O contrato de lease existe e está testado, mas o MCP atual do Control Plane não expõe backend CAS durável; por isso execução contínua segue desativada. Para eliminar esse bloqueio será necessário acesso ao código/host do Control Plane ou a publicação de uma primitiva atômica equivalente. Permanecem também a ausência de endpoint autenticado para streaming ao vivo e de ambiente autorizado para QA visual/publicação. Nenhum gasto, contratação ou credencial foi assumido.
+O contrato de lease e o adapter cliente existem e estão testados, mas o MCP atual do Control Plane não expõe backend CAS durável; por isso execução contínua segue desativada. A integração Render encontrou uma única workspace acessível (`My Workspace`), porém nenhuma workspace está selecionada e o conector exige escolha explícita antes de listar serviços. É necessário Vânia selecionar/autorizar essa workspace uma vez para a inspeção do host. Permanecem também a ausência de endpoint autenticado para streaming ao vivo e de ambiente autorizado para QA visual/publicação. Nenhum gasto, contratação ou credencial foi assumido.
