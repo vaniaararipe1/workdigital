@@ -39,6 +39,41 @@ function indexLiveRecords(records,label){
   }
   return ids;
 }
+function rejectCycles(edges,label){
+  const visiting=new Set(),visited=new Set();
+  function visit(id){
+    if(visiting.has(id))throw Error(`Cyclic ${label} in Control Plane snapshot`);
+    if(visited.has(id))return;
+    visiting.add(id);for(const dependency of edges.get(id)||[])visit(dependency);
+    visiting.delete(id);visited.add(id);
+  }
+  for(const id of edges.keys())visit(id);
+}
+function validateTaskRelationships(tasks){
+  const byId=new Map(tasks.map(task=>[task.id,task])),byKey=new Map(tasks.map(task=>[task.key,task]));
+  const dependencies=new Map(),parents=new Map();
+  for(const task of tasks){
+    if(task.parent_task_id){
+      const parent=byId.get(task.parent_task_id);
+      if(!parent||parent.id===task.id||parent.operation_id!==task.operation_id)throw Error('Invalid task parent in Control Plane snapshot');
+      parents.set(task.id,[parent.id]);
+    }else parents.set(task.id,[]);
+    if(!Array.isArray(task.dependencies))throw Error('Invalid task dependencies in Control Plane snapshot');
+    const resolved=[];
+    for(const dependency of task.dependencies){
+      const id=typeof dependency==='string'?dependency:dependency?.task_id;
+      const key=typeof dependency==='object'&&dependency?dependency.task_key:undefined;
+      const byIdMatch=id?(byId.get(id)||byKey.get(id)):undefined,byKeyMatch=key?byKey.get(key):undefined;
+      if(byIdMatch&&byKeyMatch&&byIdMatch!==byKeyMatch)throw Error('Mismatched task dependency in Control Plane snapshot');
+      const target=byIdMatch||byKeyMatch;
+      if(!target||target.id===task.id||target.operation_id!==task.operation_id||resolved.includes(target.id))throw Error('Invalid task dependency in Control Plane snapshot');
+      resolved.push(target.id);
+    }
+    dependencies.set(task.id,resolved);
+  }
+  rejectCycles(dependencies,'task dependencies');rejectCycles(parents,'task parents');
+  return byId;
+}
 function validateLiveGraph(state){
   indexLiveRecords(state.agents,'agent');
   const agentKeys=new Set(state.agents.map(agent=>agent.key));
@@ -50,12 +85,12 @@ function validateLiveGraph(state){
   const operationIds=indexLiveRecords(state.operations,'operation');
   const taskIds=indexLiveRecords(state.tasks,'task');
   indexLiveRecords(state.work_packets,'work packet');
-  const tasksById=new Map(state.tasks.map(task=>[task.id,task]));
   for(const operation of state.operations)if(operation.coordinator_agent&&!agentKeys.has(operation.coordinator_agent))throw Error('Unknown operation coordinator in Control Plane snapshot');
   for(const task of state.tasks){
     if(!operationIds.has(task.operation_id))throw Error('Orphan task in Control Plane snapshot');
     if(task.owner&&!agentKeys.has(task.owner))throw Error('Unknown task owner in Control Plane snapshot');
   }
+  const tasksById=validateTaskRelationships(state.tasks);
   for(const packet of state.work_packets){
     const task=tasksById.get(packet.task_id);
     if(!operationIds.has(packet.operation_id)||!task||task.operation_id!==packet.operation_id)throw Error('Orphan work packet in Control Plane snapshot');
