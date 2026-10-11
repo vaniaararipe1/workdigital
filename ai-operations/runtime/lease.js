@@ -1,6 +1,7 @@
 'use strict';
 
 const {planQueue}=require('./queue');
+const {evaluateRuntimeReadiness}=require('./readiness');
 
 const iso=value=>new Date(value).toISOString();
 const validTime=value=>typeof value==='string'&&!Number.isNaN(Date.parse(value));
@@ -82,16 +83,13 @@ async function verifyLeaseFence(store,{owner,version,now=new Date()}={}){
   return {valid:true,fence:{owner,version},lease:current};
 }
 
-function planLeasedDispatch(state,{lease,owner,now=new Date()}={}){
-  const reasons=[];
-  if(state?.live!==true)reasons.push('live-state-required');
-  if(state?.runtime_verified!==true)reasons.push('runtime-verification-required');
+function planLeasedDispatch(state,{lease,owner,capabilities={},now=new Date()}={}){
   let current;
-  try{current=normalizeLease(lease);}catch{reasons.push('valid-lease-required');}
-  if(current&&(!leaseIsActive(current,now)||current.owner!==owner))reasons.push('active-owned-lease-required');
-  if(reasons.length)return {mode:'dispatch-blocked',executable:false,reasons:[...new Set(reasons)],packet:null};
+  try{current=normalizeLease(lease);}catch{return {mode:'dispatch-blocked',executable:false,reasons:['valid-lease-required'],packet:null};}
+  const readiness=evaluateRuntimeReadiness(state,{capabilities,runtimeIdentity:owner,lease:current,now});
+  if(!readiness.ready)return {mode:'dispatch-blocked',executable:false,reasons:readiness.reasons,packet:null,readiness};
   const queue=planQueue(state);
-  return {mode:'leased-dispatch-plan',executable:queue.ready.length>0,reasons:[],packet:queue.ready[0]||null,queue};
+  return {mode:'leased-dispatch-plan',executable:queue.ready.length>0,reasons:[],packet:queue.ready[0]||null,queue,readiness};
 }
 
 module.exports={claimLease,heartbeatLease,releaseLease,verifyLeaseFence,planLeasedDispatch,leaseIsActive};

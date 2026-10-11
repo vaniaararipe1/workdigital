@@ -14,6 +14,7 @@ function memoryStore(initial=null){
   };
 }
 function state(overrides={}){return {live:true,runtime_verified:true,agents:[{agent_key:'larissa',status:'active'}],operations:[{id:'op',status:'IN_PROGRESS'}],tasks:[{id:'t',task_key:'TASK-1',status:'READY',priority:90,dependencies:[]}],work_packets:[{packet_key:'WP-1',task_id:'t',operation_id:'op',destination_agent:'larissa',status:'SENT'}],...overrides};}
+const capabilities={expected_version:true,atomic_compare_and_swap:true,lease_backend:true,fenced_work_packet_persistence:true,legacy_delivery_writes_blocked:true};
 
 test('atomic store admits one owner and rejects a concurrent owner',async()=>{
   const store=memoryStore(),now='2026-10-09T02:00:00.000Z';
@@ -34,14 +35,20 @@ test('only the active owner can release a lease',async()=>{
 });
 test('dispatch fails closed without live verified state and an owned active lease',()=>{
   const now='2026-10-09T02:00:00.000Z',lease={version:1,owner:'run-a',acquired_at:now,expires_at:'2026-10-09T02:01:00.000Z'};
-  const result=planLeasedDispatch(state({live:false,runtime_verified:false}),{lease,owner:'run-b',now});
-  assert.deepEqual(result.reasons,['live-state-required','runtime-verification-required','active-owned-lease-required']);
+  const result=planLeasedDispatch(state({live:false,runtime_verified:false}),{lease,owner:'run-b',capabilities,now});
+  assert.deepEqual(result.reasons,['live-state-required','runtime-verified-required','active-lease-required']);
   assert.equal(result.executable,false);assert.equal(result.packet,null);
 });
 test('verified live state with owned lease selects one packet without executing it',()=>{
   const now='2026-10-09T02:00:00.000Z',lease={version:1,owner:'run-a',acquired_at:now,expires_at:'2026-10-09T02:01:00.000Z'};
-  const result=planLeasedDispatch(state(),{lease,owner:'run-a',now});
+  const result=planLeasedDispatch(state(),{lease,owner:'run-a',capabilities,now});
   assert.equal(result.mode,'leased-dispatch-plan');assert.equal(result.executable,true);assert.equal(result.packet.packet_key,'WP-1');
+});
+test('leased dispatch uses the complete readiness gate',()=>{
+  const now='2026-10-09T02:00:00.000Z',lease={version:1,owner:'run-a',acquired_at:now,expires_at:'2026-10-09T02:01:00.000Z'};
+  const result=planLeasedDispatch(state(),{lease,owner:'run-a',capabilities:{...capabilities,fenced_work_packet_persistence:false},now});
+  assert.equal(result.mode,'dispatch-blocked');assert.equal(result.executable,false);assert.equal(result.packet,null);
+  assert.ok(result.reasons.includes('fenced-work-packet-persistence-required'));
 });
 test('non-atomic stores are rejected',async()=>{
   await assert.rejects(()=>claimLease({read:async()=>null},{owner:'run-a'}),/Atomic lease store/);
