@@ -1,5 +1,6 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),http=require('node:http'),snapshot=require('./snapshot.json'),{createServer,normalize,validateLiveState,controlPlaneEndpoint}=require('./server');
+const capabilities=require('./runtime/control-plane-capabilities.json');
 test('serves UI, labels history, refuses traversal and writes',async()=>{
   const previous=process.env.CONTROL_PLANE_API_URL;delete process.env.CONTROL_PLANE_API_URL;
   const server=createServer();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const base='http://127.0.0.1:'+server.address().port;
@@ -16,6 +17,13 @@ test('serves UI, labels history, refuses traversal and writes',async()=>{
 test('normalizes MCP keys and rejects malformed snapshots',()=>{
   assert.throws(()=>normalize({agents:[]}));
   assert.equal(normalize({agents:[{agent_key:'patricia'}],tasks:[],operations:[],work_packets:[]}).agents[0].key,'patricia');
+});
+test('bundled historical projection matches the deployed Control Plane and excludes test records',()=>{
+  assert.equal(snapshot.control_plane.version,capabilities.control_plane_version);
+  assert.equal(snapshot.live,false);assert.equal(snapshot.runtime_verified,false);
+  assert.deepEqual(snapshot.agents.map(agent=>agent.key).sort(),['bruno','clara','felipe','gabriel','larissa','marcelo','patricia']);
+  const records=[...snapshot.operations,...snapshot.tasks,...snapshot.work_packets];
+  assert.equal(records.filter(item=>/(^|-)TEST(-|$)/i.test(item.key||'')).length,0);
 });
 test('accepts only fresh, healthy live state with the complete agent registry',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');

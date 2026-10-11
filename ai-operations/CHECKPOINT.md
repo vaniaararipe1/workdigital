@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-11T04:36:23Z
+Atualizado em: 2026-10-11T05:32:15Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -38,10 +38,11 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Inspeção do gerenciador de plugins confirmou que Work Digital Control Plane é um app personalizado, não uma release pública atualizável pelo diretório. Nenhuma permissão foi alterada e nenhuma reconexão foi solicitada.
 - A ingestão de estado ao vivo da interface foi endurecida: não promove mais uma resposta arbitrária de `/snapshot` para `live=true`. Agora exige endpoint HTTPS (HTTP apenas em loopback para testes), token Bearer, timestamp com no máximo dois minutos, Control Plane online/banco conectado e o registro exato dos sete agentes. Qualquer falha retorna à projeção histórica e mantém a fila bloqueada.
 - A Edge Function foi implantada como versão 11 / aplicação 2.8.0 com a rota somente leitura `/snapshot`, protegida pelo mesmo OAuth e contexto RLS do MCP. A resposta usa `no-store`, agrega agentes/operações/tarefas/pacotes e mantém `runtime_verified=false` por construção.
+- A projeção histórica embarcada na interface foi regenerada a partir do MCP 2.8.0: sete agentes, 2 operações, 4 tarefas e 2 Work Packets válidos; registros `*-TEST-*` foram removidos e `live=false`/`runtime_verified=false` preservados.
 
 ## Evidência e validação
 
-- `npm test`: 47/47 testes aprovados.
+- `npm test`: 48/48 testes aprovados.
 - `node --experimental-strip-types --check runtime/backend/work-digital-mcp-v2/index.ts`: aprovado.
 - PostgreSQL real:
   - leitura inicial: versão 0, sem owner;
@@ -66,6 +67,7 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Testes novos comprovam rejeição de snapshot antigo, não-live, não saudável, com agentes incompletos, endpoint remoto sem HTTPS e configuração sem token.
 - Fonte implantada da versão 11 recuperada e comparada: rota `/snapshot`, OAuth/RLS, `no-store` e bloqueio de `runtime_verified` presentes. Health MCP retornou online, banco conectado e aplicação 2.8.0.
 - As quatro coleções usadas pelo snapshot foram lidas pelo mesmo MCP autenticado: sete agentes exatos, 7 operações, 12 tarefas e 15 Work Packets. O lease permaneceu livre na versão 7.
+- Teste de regressão agora exige que a projeção embarcada acompanhe a versão do Control Plane, contenha exatamente os sete agentes e não inclua registros técnicos.
 - Advisor de segurança após a segunda migração não aponta mais RLS sem política no schema `wd_runtime`. Permanece apenas aviso global preexistente de proteção contra senhas vazadas, fora do escopo deste runtime.
 - Nenhuma tarefa, agente, permissão comercial, projeto de cliente ou arquivo fora de `ai-operations/` foi alterado.
 
