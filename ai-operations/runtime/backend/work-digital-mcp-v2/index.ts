@@ -21,6 +21,46 @@ import {
 
 import { z } from "npm:zod@^4.3.6";
 
+const applicationVersion = "2.8.0";
+
+function jsonResponse(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+    },
+  });
+}
+
+async function createSnapshotResponse(supabase: any) {
+  const [agents, operations, tasks, workPackets] = await Promise.all([
+    supabase.from("agents").select("*").order("name", { ascending: true }),
+    supabase.from("operations").select("*").order("created_at", { ascending: false }),
+    supabase.from("tasks").select("*").order("priority", { ascending: false }),
+    supabase.from("work_packets").select("*").order("created_at", { ascending: false }),
+  ]);
+  if (agents.error || operations.error || tasks.error || workPackets.error) {
+    return jsonResponse({ ok: false, error: "snapshot-unavailable" }, 503);
+  }
+  return jsonResponse({
+    schema_version: 2,
+    source: "work-digital-control-plane",
+    live: true,
+    runtime_verified: false,
+    captured_at: new Date().toISOString(),
+    control_plane: {
+      status: "online",
+      database: "connected",
+      version: applicationVersion,
+    },
+    agents: agents.data ?? [],
+    operations: operations.data ?? [],
+    tasks: tasks.data ?? [],
+    work_packets: workPackets.data ?? [],
+  });
+}
+
 
 
 function createHandler(supabase: any) {
@@ -30,7 +70,7 @@ function createHandler(supabase: any) {
 
     name: "work-digital-control-plane",
 
-    version: "2.7.1",
+    version: applicationVersion,
 
   });
 
@@ -98,7 +138,7 @@ function createHandler(supabase: any) {
 
               error: error.message,
 
-              version: "2.7.1",
+              version: applicationVersion,
 
             }),
 
@@ -130,7 +170,7 @@ function createHandler(supabase: any) {
 
             database: "connected",
 
-            version: "2.7.1",
+            version: applicationVersion,
 
           }),
 
@@ -1995,6 +2035,13 @@ Deno.serve(
     withSupabase(
       { auth: "user" },
       async (req, { supabase }) => {
+        const pathname = new URL(req.url).pathname.replace(/\/+$/, "");
+        if (pathname.endsWith("/snapshot")) {
+          if (req.method !== "GET") {
+            return jsonResponse({ ok: false, error: "method-not-allowed" }, 405);
+          }
+          return createSnapshotResponse(supabase);
+        }
         const handler = createHandler(supabase);
         return handler.fetch(req);
       },

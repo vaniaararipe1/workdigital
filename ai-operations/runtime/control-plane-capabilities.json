@@ -1,6 +1,6 @@
 {
-  "observed_at": "2026-10-09T20:35:11Z",
-  "control_plane_version": "2.7.1",
+  "observed_at": "2026-10-11T04:36:23Z",
+  "control_plane_version": "2.8.0",
   "transport": "mcp",
   "health": "online",
   "database": "connected",
@@ -12,5 +12,7 @@
   "fenced_work_packet_persistence": true,
   "legacy_delivery_writes_blocked": true,
   "live_projection_validation": true,
-  "note": "Capabilities were verified against the deployed Edge Function source and PostgreSQL migrations. Legacy update_work_packet rejects result/completed_at without fencing. Live projection ingestion requires authenticated HTTPS, freshness, health, and the exact seven-agent registry. The current ChatGPT tool registry still does not expose the three new MCP tools."
+  "authenticated_snapshot_endpoint": true,
+  "snapshot_runtime_verified": false,
+  "note": "Capabilities were verified against deployed Edge Function version 11 and PostgreSQL migrations. The OAuth/RLS snapshot is read-only and never verifies the runtime. The current ChatGPT tool registry still does not expose the three runtime MCP tools."
 }
