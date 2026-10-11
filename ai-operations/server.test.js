@@ -83,6 +83,14 @@ test('rejects incompatible schemas and unknown agent references',()=>{
   const unknownDestination=live();unknownDestination.work_packets[0].destination_agent=unknownDestination.work_packets[0].destination='unknown-agent';
   assert.throws(()=>validateLiveState(unknownDestination,{now}),/Unknown work packet destination/);
 });
+test('rejects agent identity or permission drift from the versioned contracts',()=>{
+  const now=Date.parse('2026-10-09T20:00:00Z');
+  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}});
+  const changedRole=live();changedRole.agents.find(agent=>agent.key==='gabriel').role='Direção de Arte';
+  assert.throws(()=>validateLiveState(changedRole,{now}),/Unexpected agent contract/);
+  const escalated=live();escalated.agents.find(agent=>agent.key==='felipe').permissions.external_contact=true;
+  assert.throws(()=>validateLiveState(escalated,{now}),/Unexpected agent permissions/);
+});
 test('a live snapshot cannot certify the autonomous runtime',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');
   const claimed={...snapshot,live:true,runtime_verified:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}};

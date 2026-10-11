@@ -1,5 +1,5 @@
 {
-  "observed_at": "2026-10-11T14:35:17Z",
+  "observed_at": "2026-10-11T15:27:02Z",
   "control_plane_version": "2.8.1",
   "transport": "mcp",
   "health": "online",
@@ -15,6 +15,7 @@
   "authenticated_snapshot_endpoint": true,
   "snapshot_schema_version": 2,
   "snapshot_graph_validation": true,
+  "agent_contract_validation": true,
   "historical_runtime_verified": false,
   "snapshot_runtime_verified": false,
   "note": "Capabilities were verified against deployed Edge Function version 12 and PostgreSQL migrations. The OAuth/RLS snapshot is read-only, filters technical and orphan records, and never verifies the runtime. The current ChatGPT tool registry still does not expose the three runtime MCP tools."

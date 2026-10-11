@@ -1,11 +1,14 @@
 'use strict';
 const http=require('node:http'), fs=require('node:fs/promises'), path=require('node:path');
+const {isDeepStrictEqual}=require('node:util');
 const snapshot=require('./snapshot.json');
+const agentConfiguration=require('./runtime/agents.json');
 const {planQueue}=require('./runtime/queue');
 const capabilities=require('./runtime/control-plane-capabilities.json');
 const {evaluateRuntimeReadiness}=require('./runtime/readiness');
 const root=path.join(__dirname,'public');
-const expectedAgents=['bruno','clara','felipe','gabriel','larissa','marcelo','patricia'];
+const agentContracts=new Map(agentConfiguration.agents.map(agent=>[agent.key,agent]));
+const expectedAgents=[...agentContracts.keys()].sort();
 const expectedSnapshotSchemaVersion=2;
 const maxLiveStateAgeMs=2*60*1000;
 const maxSnapshotBytes=1024*1024;
@@ -39,6 +42,11 @@ function indexLiveRecords(records,label){
 function validateLiveGraph(state){
   indexLiveRecords(state.agents,'agent');
   const agentKeys=new Set(state.agents.map(agent=>agent.key));
+  for(const agent of state.agents){
+    const contract=agentContracts.get(agent.key);
+    if(!contract||agent.name!==contract.name||agent.role!==contract.role||agent.specialty!==contract.specialty)throw Error('Unexpected agent contract');
+    if(!isDeepStrictEqual(agent.permissions,contract.permissions))throw Error('Unexpected agent permissions');
+  }
   const operationIds=indexLiveRecords(state.operations,'operation');
   const taskIds=indexLiveRecords(state.tasks,'task');
   indexLiveRecords(state.work_packets,'work packet');
