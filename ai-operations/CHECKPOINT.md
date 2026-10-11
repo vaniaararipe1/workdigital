@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-11T19:32:11Z
+Atualizado em: 2026-10-11T20:28:16Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -53,10 +53,11 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - A normalização do snapshot deixou de ocultar contradições entre campos canônicos e aliases do MCP. Pares como `agent_key`/`key`, `owner_agent`/`owner` e `destination_agent`/`destination` precisam coincidir, e um `task_id` não pode ser resolvido silenciosamente como `task_key`.
 - O gate de readiness do dispatcher agora exige, além de estado ao vivo, identidade, lease e CAS, as três provas de segurança da entrega: versão esperada, persistência fenced e bloqueio das escritas legadas. Marcar o runtime como verificado e apresentar lease ativo não contorna mais uma dessas proteções ausente.
 - O caminho interno `planLeasedDispatch` foi unificado ao mesmo avaliador de readiness usado pela API. Ele não mantém mais um critério reduzido próprio: só produz plano executável quando todas as provas do gate completo estão presentes, usando o mesmo relógio explícito para validar o lease.
+- O cliente Node do lease foi alinhado aos limites já aplicados pelo PostgreSQL: owner entre 1 e 200 caracteres, versão inteira segura, TTL entre 1 segundo e 5 minutos, duração coerente, timestamps nulos na liberação e número de tentativas limitado. Isso evita aprovar localmente um documento que seria recusado pelo backend transacional.
 
 ## Evidência e validação
 
-- `npm test`: 62/62 testes aprovados.
+- `npm test`: 63/63 testes aprovados.
 - `node --experimental-strip-types --check runtime/backend/work-digital-mcp-v2/index.ts`: aprovado.
 - PostgreSQL real:
   - leitura inicial: versão 0, sem owner;
@@ -98,6 +99,7 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Regressão dedicada confirmou rejeição de aliases contraditórios em agentes, operações, tarefas e Work Packets, além de referência de chave inserida indevidamente no campo `task_id`.
 - Regressão dedicada apresentou estado ao vivo, `runtime_verified=true`, identidade e lease ativo, removendo separadamente `expected_version`, persistência fenced e bloqueio de escrita legada; nos três casos o readiness permaneceu falso e o dispatcher desativado.
 - Regressão dedicada chamou diretamente `planLeasedDispatch` com estado verificado, owner correto e lease ativo, mas sem persistência fenced; o helper retornou `dispatch-blocked`, sem pacote, confirmando que o gate não pode ser contornado pelo caminho interno.
+- Regressão de paridade confirmou rejeição local de TTL acima de 5 minutos, owner acima de 200 caracteres, versão acima do inteiro seguro, lease com duração excessiva e contagem de tentativas inválida — os mesmos limites essenciais do contrato SQL.
 - Advisor de segurança após a segunda migração não aponta mais RLS sem política no schema `wd_runtime`. Permanece apenas aviso global preexistente de proteção contra senhas vazadas, fora do escopo deste runtime.
 - Nenhuma tarefa, agente, permissão comercial, projeto de cliente ou arquivo fora de `ai-operations/` foi alterado.
 
@@ -114,7 +116,7 @@ O backend durável, a retomada entre rodadas, a persistência fenced e o bloquei
 
 ## Pendências
 
-- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 11/10/2026 às 19:32Z continuou sem os três comandos, embora a fonte ativa recuperada diretamente do Supabase os contenha.
+- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 11/10/2026 às 20:28Z continuou sem os três comandos, embora a fonte ativa recuperada diretamente do Supabase os contenha.
 - Conectar a interface publicada à rota `/snapshot` com um token OAuth de servidor somente quando existir ambiente autorizado; nenhuma credencial foi criada, exposta ou solicitada no chat.
 - Somente após essas provas definir `runtime_verified=true` e avaliar ativação do dispatcher.
 - Reconciliar `TASK-002` e `WP-004` antes de qualquer trabalho que possa implicar ação externa.

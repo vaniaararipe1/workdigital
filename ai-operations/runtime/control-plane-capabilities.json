@@ -1,5 +1,5 @@
 {
-  "observed_at": "2026-10-11T19:32:11Z",
+  "observed_at": "2026-10-11T20:28:16Z",
   "control_plane_version": "2.8.1",
   "transport": "mcp",
   "health": "online",
@@ -13,6 +13,7 @@
   "legacy_delivery_writes_blocked": true,
   "complete_readiness_gate": true,
   "shared_dispatch_readiness_gate": true,
+  "lease_client_database_parity": true,
   "live_projection_validation": true,
   "authenticated_snapshot_endpoint": true,
   "snapshot_schema_version": 2,

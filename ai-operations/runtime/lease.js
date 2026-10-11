@@ -5,6 +5,14 @@ const {evaluateRuntimeReadiness}=require('./readiness');
 
 const iso=value=>new Date(value).toISOString();
 const validTime=value=>typeof value==='string'&&!Number.isNaN(Date.parse(value));
+const minTtlMs=1_000,maxTtlMs=300_000,maxOwnerLength=200;
+
+function validateOwner(owner){
+  if(typeof owner!=='string'||!owner.trim()||owner.length>maxOwnerLength)throw TypeError('Runtime owner must contain 1 to 200 characters');
+}
+function validateTtl(ttlMs){
+  if(!Number.isInteger(ttlMs)||ttlMs<minTtlMs||ttlMs>maxTtlMs)throw RangeError('Lease ttlMs must be between 1000 and 300000');
+}
 
 function validateStore(store){
   if(!store||typeof store.read!=='function'||typeof store.compareAndSwap!=='function'){
@@ -14,9 +22,15 @@ function validateStore(store){
 
 function normalizeLease(value){
   if(value==null)return {version:0,owner:null,acquired_at:null,expires_at:null};
-  if(!Number.isInteger(value.version)||value.version<0)throw TypeError('Invalid lease version');
-  if(value.owner!==null&&typeof value.owner!=='string')throw TypeError('Invalid lease owner');
-  if(value.owner&&(!validTime(value.acquired_at)||!validTime(value.expires_at)))throw TypeError('Invalid lease timestamps');
+  if(!Number.isSafeInteger(value.version)||value.version<0)throw TypeError('Invalid lease version');
+  if(value.owner===null){
+    if(value.acquired_at!==null||value.expires_at!==null)throw TypeError('Released lease must clear timestamps');
+  }else{
+    validateOwner(value.owner);
+    if(!validTime(value.acquired_at)||!validTime(value.expires_at))throw TypeError('Invalid lease timestamps');
+    const duration=Date.parse(value.expires_at)-Date.parse(value.acquired_at);
+    if(duration<minTtlMs||duration>maxTtlMs)throw TypeError('Invalid lease duration');
+  }
   return {...value};
 }
 
@@ -26,8 +40,8 @@ function leaseIsActive(lease,now){
 
 async function claimLease(store,{owner,ttlMs=60_000,now=new Date(),maxAttempts=3}={}){
   validateStore(store);
-  if(typeof owner!=='string'||!owner.trim())throw TypeError('Runtime owner is required');
-  if(!Number.isInteger(ttlMs)||ttlMs<1_000)throw RangeError('Lease ttlMs must be at least 1000');
+  validateOwner(owner);validateTtl(ttlMs);
+  if(!Number.isInteger(maxAttempts)||maxAttempts<1||maxAttempts>10)throw RangeError('maxAttempts must be between 1 and 10');
   const acquiredAt=new Date(now);
   if(Number.isNaN(acquiredAt.getTime()))throw TypeError('Invalid lease clock');
   for(let attempt=0;attempt<maxAttempts;attempt+=1){
@@ -42,10 +56,10 @@ async function claimLease(store,{owner,ttlMs=60_000,now=new Date(),maxAttempts=3
 }
 
 async function releaseLease(store,{owner,now=new Date()}={}){
-  validateStore(store);
+  validateStore(store);validateOwner(owner);
   const current=normalizeLease(await store.read());
   if(!leaseIsActive(current,now)||current.owner!==owner)return {released:false,reason:'not-owner',lease:current};
-  const next={version:current.version+1,owner:null,acquired_at:null,expires_at:null,released_at:iso(now)};
+  const next={version:current.version+1,owner:null,acquired_at:null,expires_at:null};
   return await store.compareAndSwap(current.version,next,{owner})
     ?{released:true,lease:next}
     :{released:false,reason:'lease-contention',lease:null};
@@ -53,8 +67,7 @@ async function releaseLease(store,{owner,now=new Date()}={}){
 
 async function heartbeatLease(store,{owner,lease,ttlMs=60_000,now=new Date()}={}){
   validateStore(store);
-  if(typeof owner!=='string'||!owner.trim())throw TypeError('Runtime owner is required');
-  if(!Number.isInteger(ttlMs)||ttlMs<1_000)throw RangeError('Lease ttlMs must be at least 1000');
+  validateOwner(owner);validateTtl(ttlMs);
   const beatAt=new Date(now);
   if(Number.isNaN(beatAt.getTime()))throw TypeError('Invalid lease clock');
   const expected=normalizeLease(lease);
@@ -73,9 +86,8 @@ async function heartbeatLease(store,{owner,lease,ttlMs=60_000,now=new Date()}={}
 
 async function verifyLeaseFence(store,{owner,version,now=new Date()}={}){
   validateStore(store);
-  if(typeof owner!=='string'||!owner.trim()||!Number.isSafeInteger(version)||version<1){
-    throw TypeError('Valid runtime owner and fence version are required');
-  }
+  validateOwner(owner);
+  if(!Number.isSafeInteger(version)||version<1)throw TypeError('Valid fence version is required');
   const current=normalizeLease(await store.read());
   if(current.owner!==owner)return {valid:false,reason:'not-owner',lease:current};
   if(current.version!==version)return {valid:false,reason:'stale-fence',lease:current};

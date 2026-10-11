@@ -53,6 +53,14 @@ test('leased dispatch uses the complete readiness gate',()=>{
 test('non-atomic stores are rejected',async()=>{
   await assert.rejects(()=>claimLease({read:async()=>null},{owner:'run-a'}),/Atomic lease store/);
 });
+test('client lease validation matches the PostgreSQL bounds',async()=>{
+  const store=memoryStore(),owner='x'.repeat(201);
+  await assert.rejects(()=>claimLease(store,{owner:'run-a',ttlMs:300_001}),/ttlMs/);
+  await assert.rejects(()=>claimLease(store,{owner}),/1 to 200/);
+  await assert.rejects(()=>claimLease(store,{owner:'run-a',maxAttempts:0}),/maxAttempts/);
+  await assert.rejects(()=>heartbeatLease(store,{owner:'run-a',lease:{version:Number.MAX_SAFE_INTEGER+1,owner:null,acquired_at:null,expires_at:null}}),/lease version/);
+  await assert.rejects(()=>heartbeatLease(store,{owner:'run-a',lease:{version:1,owner:'run-a',acquired_at:'2026-10-09T12:00:00.000Z',expires_at:'2026-10-09T12:06:00.000Z'}}),/lease duration/);
+});
 test('simultaneous acquisitions admit one winner even after CAS retries',async()=>{
   const store=memoryStore(),now='2026-10-09T12:00:00.000Z';
   const results=await Promise.all(['a','b','c'].map(owner=>claimLease(store,{owner,now})));
