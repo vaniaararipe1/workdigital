@@ -31,7 +31,7 @@ function validateLiveState(data,{now=Date.now()}={}){
   if(!Number.isFinite(capturedAt)||capturedAt>now+30_000||now-capturedAt>maxLiveStateAgeMs)throw Error('Control Plane snapshot is stale');
   if(state.control_plane?.status!=='online'||state.control_plane?.database!=='connected')throw Error('Control Plane is unhealthy');
   if(agents.length!==expectedAgents.length||agents.some((agent,index)=>agent!==expectedAgents[index]))throw Error('Unexpected agent registry');
-  return {...state,source:'control-plane-api',fetched_at:new Date(now).toISOString()};
+  return {...state,source:'control-plane-api',runtime_verified:false,fetched_at:new Date(now).toISOString()};
 }
 function controlPlaneEndpoint(base){
   const endpoint=new URL(base);

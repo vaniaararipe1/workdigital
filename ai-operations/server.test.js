@@ -1,6 +1,7 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),http=require('node:http'),snapshot=require('./snapshot.json'),{createServer,normalize,validateLiveState,controlPlaneEndpoint}=require('./server');
 const capabilities=require('./runtime/control-plane-capabilities.json');
+const {evaluateRuntimeReadiness}=require('./runtime/readiness');
 test('serves a restrictive browser security boundary on UI and API responses',async()=>{
   const server=createServer();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const base='http://127.0.0.1:'+server.address().port;
   try{
@@ -49,6 +50,14 @@ test('accepts only fresh, healthy live state with the complete agent registry',(
   assert.throws(()=>validateLiveState({...live,agents:live.agents.slice(1)},{now}),/agent registry/);
   assert.throws(()=>validateLiveState({...live,control_plane:{status:'offline',database:'connected'}},{now}),/unhealthy/);
   assert.throws(()=>controlPlaneEndpoint('http://control-plane.example'),/HTTPS/);
+});
+test('a live snapshot cannot certify the autonomous runtime',()=>{
+  const now=Date.parse('2026-10-09T20:00:00Z');
+  const claimed={...snapshot,live:true,runtime_verified:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}};
+  const state=validateLiveState(claimed,{now});
+  assert.equal(state.live,true);assert.equal(state.runtime_verified,false);
+  const readiness=evaluateRuntimeReadiness(state,{capabilities,runtimeIdentity:'run-a',lease:{owner:'run-a',expires_at:'2026-10-09T20:01:00Z'}});
+  assert.equal(readiness.ready,false);assert.ok(readiness.reasons.includes('runtime-verified-required'));
 });
 test('snapshot endpoint preserves the nested Supabase Edge Function path',()=>{
   const base='https://example.supabase.co/functions/v1/work-digital-mcp-v2';
