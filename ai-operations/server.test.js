@@ -1,5 +1,5 @@
 'use strict';
-const {test}=require('node:test'),assert=require('node:assert/strict'),http=require('node:http'),snapshot=require('./snapshot.json'),{createServer,normalize,validateLiveState,controlPlaneEndpoint}=require('./server');
+const {test}=require('node:test'),assert=require('node:assert/strict'),http=require('node:http'),snapshot=require('./snapshot.json'),{createServer,normalize,validateLiveState,historicalState,controlPlaneEndpoint}=require('./server');
 const capabilities=require('./runtime/control-plane-capabilities.json');
 const {evaluateRuntimeReadiness}=require('./runtime/readiness');
 test('serves a restrictive browser security boundary on UI and API responses',async()=>{
@@ -39,6 +39,12 @@ test('bundled historical projection matches the deployed Control Plane and exclu
   assert.deepEqual(snapshot.agents.map(agent=>agent.key).sort(),['bruno','clara','felipe','gabriel','larissa','marcelo','patricia']);
   const records=[...snapshot.operations,...snapshot.tasks,...snapshot.work_packets];
   assert.equal(records.filter(item=>/(^|-)TEST(-|$)/i.test(item.key||'')).length,0);
+});
+test('historical fallback cannot certify live state or runtime execution',()=>{
+  const poisoned={...snapshot,live:true,runtime_verified:true,source:''};
+  const state=historicalState('unavailable',poisoned);
+  assert.equal(state.live,false);assert.equal(state.runtime_verified,false);
+  assert.equal(state.source,'historical-snapshot');assert.equal(state.connection_status,'unavailable');
 });
 test('accepts only fresh, healthy live state with the complete agent registry',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');

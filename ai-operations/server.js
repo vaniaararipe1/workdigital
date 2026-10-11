@@ -93,6 +93,10 @@ async function readJsonResponse(response){
   }
   return JSON.parse(Buffer.concat(chunks,total).toString('utf8'));
 }
+function historicalState(connectionStatus,data=snapshot){
+  const state=normalize(data);
+  return {...state,source:state.source||'historical-snapshot',live:false,runtime_verified:false,connection_status:connectionStatus};
+}
 async function readState(){
   const base=process.env.CONTROL_PLANE_API_URL;
   const token=process.env.CONTROL_PLANE_API_TOKEN;
@@ -100,9 +104,9 @@ async function readState(){
     const response=await fetch(controlPlaneEndpoint(base),{headers:{authorization:'Bearer '+token,accept:'application/json'},redirect:'error',signal:AbortSignal.timeout(5000)});
     if(!response.ok)throw Error('Unavailable');
     return validateLiveState(await readJsonResponse(response));
-  }catch{return {...normalize(snapshot),source:snapshot.source||'historical-snapshot',live:false,connection_status:'unavailable'};}
-  if(base&&!token)return {...normalize(snapshot),source:snapshot.source||'historical-snapshot',live:false,connection_status:'missing-token'};
-  return {...normalize(snapshot),source:snapshot.source||'historical-snapshot',live:false,connection_status:'not-configured'};
+  }catch{return historicalState('unavailable');}
+  if(base&&!token)return historicalState('missing-token');
+  return historicalState('not-configured');
 }
 function createServer(){return http.createServer(async(req,res)=>{
   if(!['GET','HEAD'].includes(req.method))return json(res,405,{error:'method-not-allowed'});
@@ -130,4 +134,4 @@ function createServer(){return http.createServer(async(req,res)=>{
   }catch{json(res,404,{error:'not-found'});}
 });}
 if(require.main===module)createServer().listen(process.env.PORT||10000);
-module.exports={createServer,normalize,validateLiveState,validateLiveGraph,controlPlaneEndpoint,readJsonResponse,securityHeaders};
+module.exports={createServer,normalize,validateLiveState,validateLiveGraph,historicalState,controlPlaneEndpoint,readJsonResponse,securityHeaders};

@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-11T13:31:52Z
+Atualizado em: 2026-10-11T14:35:17Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -47,10 +47,11 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - O cliente do snapshot deixou de seguir redirecionamentos e passou a exigir MIME JSON e corpo limitado a 1 MiB. Isso impede que o Bearer token seja reutilizado em destino redirecionado e faz respostas inesperadas falharem para a projeção histórica.
 - A interface agora também valida a integridade relacional de todo snapshot ao vivo: exige IDs e chaves não vazios e únicos, rejeita registros `*-TEST-*`, tarefas sem operação válida e Work Packets cujo par tarefa/operação não seja consistente. O filtro do backend deixou de ser a única barreira contra uma projeção corrompida.
 - O contrato ao vivo passou a exigir `schema_version=2`, IDs únicos também no registro de agentes e referências de coordenador, owner, origem e destino limitadas aos sete agentes válidos. Schema futuro incompatível ou agente inexistente derruba a projeção para histórico em vez de contaminar a fila.
+- O fallback histórico deixou de confiar até nas flags do arquivo embarcado: `historicalState` força `live=false` e `runtime_verified=false` em código para estados indisponível, sem token e não configurado. Um snapshot local alterado incorretamente não consegue mais se apresentar como prova de execução.
 
 ## Evidência e validação
 
-- `npm test`: 56/56 testes aprovados.
+- `npm test`: 57/57 testes aprovados.
 - `node --experimental-strip-types --check runtime/backend/work-digital-mcp-v2/index.ts`: aprovado.
 - PostgreSQL real:
   - leitura inicial: versão 0, sem owner;
@@ -86,6 +87,7 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Regressão dedicada apresentou registros duplicados, operação técnica, tarefa órfã e Work Packet ligado a tarefa de outra operação; os quatro cenários foram rejeitados antes de qualquer estado ser tratado como ao vivo.
 - Em 11/10/2026 às 12:26Z, o conector Supabase finalmente ficou disponível nesta sessão. A listagem confirmou apenas o projeto `Work Digital Control Plane` saudável; a Edge Function `work-digital-mcp-v2` permaneceu ACTIVE na versão 12, e sua fonte recuperada confirmou aplicação 2.8.1 e os três comandos de runtime implantados. O catálogo do app Work Digital, verificado separadamente na mesma execução, ainda não expôs esses comandos.
 - Regressão dedicada confirmou rejeição de schema 3, ID duplicado entre agentes, task com owner inexistente e Work Packet com destino inexistente. O health permaneceu online, banco conectado e versão 2.8.1 após a validação.
+- Regressão dedicada injetou `live=true` e `runtime_verified=true` em uma cópia da projeção histórica; o fallback zerou ambas as flags e preservou o motivo `connection_status=unavailable`.
 - Advisor de segurança após a segunda migração não aponta mais RLS sem política no schema `wd_runtime`. Permanece apenas aviso global preexistente de proteção contra senhas vazadas, fora do escopo deste runtime.
 - Nenhuma tarefa, agente, permissão comercial, projeto de cliente ou arquivo fora de `ai-operations/` foi alterado.
 
@@ -102,7 +104,7 @@ O backend durável, a retomada entre rodadas, a persistência fenced e o bloquei
 
 ## Pendências
 
-- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 11/10/2026 às 13:31Z continuou sem os três comandos, embora a fonte ativa recuperada diretamente do Supabase os contenha.
+- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 11/10/2026 às 14:35Z continuou sem os três comandos, embora a fonte ativa recuperada diretamente do Supabase os contenha.
 - Conectar a interface publicada à rota `/snapshot` com um token OAuth de servidor somente quando existir ambiente autorizado; nenhuma credencial foi criada, exposta ou solicitada no chat.
 - Somente após essas provas definir `runtime_verified=true` e avaliar ativação do dispatcher.
 - Reconciliar `TASK-002` e `WP-004` antes de qualquer trabalho que possa implicar ação externa.
@@ -114,5 +116,5 @@ Na próxima execução, descobrir novamente o contrato do plugin Work Digital. S
 
 ## Bloqueio
 
-Não há bloqueio de acesso ao Supabase. O limite imediato é o registry MCP do ChatGPT continuar sem os três tools, apesar do health 2.8.1 e da fonte implantada. O app é personalizado e não tem release pública atualizável pelo diretório. Não pedir nova instalação ou reconexão a Vânia e não alterar permissões globais. A rota `/snapshot` não pôde ser invocada com OAuth bruto porque o conector não expõe o token; foram validados a fonte ativa, o health e as coleções subjacentes, inclusive as contagens filtradas. O QA visual local também não pôde ser concluído: não há navegador headless no workspace e o navegador remoto não alcança `localhost`; ainda falta um preview autorizado desta branch.
+Não há bloqueio de acesso ao Supabase. O limite imediato é o registry MCP do ChatGPT continuar sem os três tools, apesar do health 2.8.1 e da fonte implantada. O app é personalizado e não tem release pública atualizável pelo diretório. Não pedir nova instalação ou reconexão a Vânia e não alterar permissões globais. A rota `/snapshot` não pôde ser invocada com OAuth bruto porque o conector não expõe o token; foram validados a fonte ativa, o health e as coleções subjacentes, inclusive as contagens filtradas. O QA visual local foi tentado novamente em 11/10/2026 às 14:34Z, mas o navegador remoto retornou `ERR_CONNECTION_REFUSED` para `127.0.0.1`; ainda falta um preview autorizado desta branch.
 
