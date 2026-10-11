@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-11T07:30:12Z
+Atualizado em: 2026-10-11T08:32:21Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -41,10 +41,11 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - A projeção histórica embarcada na interface foi regenerada a partir do MCP 2.8.0: sete agentes, 2 operações, 4 tarefas e 2 Work Packets válidos; registros `*-TEST-*` foram removidos e `live=false`/`runtime_verified=false` preservados.
 - A rota ao vivo foi corrigida na Edge Function versão 12 / aplicação 2.8.1: o backend agora remove registros `*-TEST-*` e relações órfãs antes de responder, em vez de depender apenas do filtro da interface.
 - O servidor da interface passou a aplicar uma fronteira de segurança uniforme em páginas e APIs: CSP restritiva, bloqueio de framing e MIME sniffing, isolamento de opener, política mínima de permissões e ausência de referrer. Assets estáticos usam revalidação e respostas operacionais continuam `no-store`.
+- A montagem da URL do snapshot foi corrigida: ao receber a URL real da Edge Function, a interface agora preserva `/functions/v1/work-digital-mcp-v2` e acrescenta `/snapshot` ao final. Query, fragmento e credenciais embutidas são removidos/rejeitados antes de qualquer requisição.
 
 ## Evidência e validação
 
-- `npm test`: 51/51 testes aprovados.
+- `npm test`: 52/52 testes aprovados.
 - `node --experimental-strip-types --check runtime/backend/work-digital-mcp-v2/index.ts`: aprovado.
 - PostgreSQL real:
   - leitura inicial: versão 0, sem owner;
@@ -73,6 +74,7 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - A fonte da versão 12 foi recuperada após o deploy com `index.ts` e `snapshot-filter.mjs`; status ACTIVE e autenticação customizada preservados. O health retornou 2.8.1.
 - Validação sobre o PostgreSQL atual confirmou 7/12/15 registros brutos e exatamente 2/4/2 operações, tarefas e Work Packets após o mesmo filtro relacional aplicado pela rota.
 - Teste HTTP dedicado confirmou a fronteira de segurança tanto em `/` quanto em `/api/control-plane`, incluindo `frame-ancestors 'none'`, `object-src 'none'`, `X-Frame-Options: DENY` e `Permissions-Policy` sem câmera, geolocalização, microfone ou pagamentos.
+- Regressão dedicada confirmou que `https://example.supabase.co/functions/v1/work-digital-mcp-v2` produz exatamente `.../work-digital-mcp-v2/snapshot`; URLs já finalizadas em `/snapshot` permanecem idempotentes.
 - Advisor de segurança após a segunda migração não aponta mais RLS sem política no schema `wd_runtime`. Permanece apenas aviso global preexistente de proteção contra senhas vazadas, fora do escopo deste runtime.
 - Nenhuma tarefa, agente, permissão comercial, projeto de cliente ou arquivo fora de `ai-operations/` foi alterado.
 
@@ -89,7 +91,7 @@ O backend durável, a retomada entre rodadas, a persistência fenced e o bloquei
 
 ## Pendências
 
-- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 11/10/2026 às 07:30Z continuou sem os três comandos.
+- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 11/10/2026 às 08:32Z continuou sem os três comandos.
 - Conectar a interface publicada à rota `/snapshot` com um token OAuth de servidor somente quando existir ambiente autorizado; nenhuma credencial foi criada, exposta ou solicitada no chat.
 - Somente após essas provas definir `runtime_verified=true` e avaliar ativação do dispatcher.
 - Reconciliar `TASK-002` e `WP-004` antes de qualquer trabalho que possa implicar ação externa.

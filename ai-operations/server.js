@@ -34,8 +34,12 @@ function validateLiveState(data,{now=Date.now()}={}){
   return {...state,source:'control-plane-api',fetched_at:new Date(now).toISOString()};
 }
 function controlPlaneEndpoint(base){
-  const endpoint=new URL('/snapshot',base.endsWith('/')?base:base+'/');
+  const endpoint=new URL(base);
   if(endpoint.protocol!=='https:'&&!['127.0.0.1','localhost','::1'].includes(endpoint.hostname))throw Error('Control Plane API must use HTTPS');
+  if(endpoint.username||endpoint.password)throw Error('Control Plane API URL cannot contain credentials');
+  endpoint.hash='';endpoint.search='';
+  const path=endpoint.pathname.replace(/\/+$/,'');
+  endpoint.pathname=path.endsWith('/snapshot')?path:path+'/snapshot';
   return endpoint;
 }
 async function readState(){

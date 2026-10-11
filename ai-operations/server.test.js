@@ -50,6 +50,12 @@ test('accepts only fresh, healthy live state with the complete agent registry',(
   assert.throws(()=>validateLiveState({...live,control_plane:{status:'offline',database:'connected'}},{now}),/unhealthy/);
   assert.throws(()=>controlPlaneEndpoint('http://control-plane.example'),/HTTPS/);
 });
+test('snapshot endpoint preserves the nested Supabase Edge Function path',()=>{
+  const base='https://example.supabase.co/functions/v1/work-digital-mcp-v2';
+  assert.equal(controlPlaneEndpoint(base).href,base+'/snapshot');
+  assert.equal(controlPlaneEndpoint(base+'/snapshot?ignored=true#fragment').href,base+'/snapshot');
+  assert.throws(()=>controlPlaneEndpoint('https://user:secret@example.supabase.co/functions/v1/work-digital-mcp-v2'),/credentials/);
+});
 test('live API requires bearer auth and stale upstream data falls back closed',async()=>{
   const oldUrl=process.env.CONTROL_PLANE_API_URL,oldToken=process.env.CONTROL_PLANE_API_TOKEN;
   let authorization;
