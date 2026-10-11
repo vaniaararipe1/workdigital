@@ -65,6 +65,18 @@ test('rejects duplicate, technical and relationally inconsistent live records',(
   const mismatchedPacket=live();mismatchedPacket.work_packets[0].operation_id=mismatchedPacket.operations[0].id;
   assert.throws(()=>validateLiveState(mismatchedPacket,{now}),/Orphan work packet/);
 });
+test('rejects incompatible schemas and unknown agent references',()=>{
+  const now=Date.parse('2026-10-09T20:00:00Z');
+  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}});
+  const incompatible=live();incompatible.schema_version=3;
+  assert.throws(()=>validateLiveState(incompatible,{now}),/snapshot schema version/);
+  const duplicateAgentId=live();duplicateAgentId.agents[1].id=duplicateAgentId.agents[0].id;
+  assert.throws(()=>validateLiveState(duplicateAgentId,{now}),/Duplicate agent identity/);
+  const unknownOwner=live();unknownOwner.tasks[0].owner_agent=unknownOwner.tasks[0].owner='unknown-agent';
+  assert.throws(()=>validateLiveState(unknownOwner,{now}),/Unknown task owner/);
+  const unknownDestination=live();unknownDestination.work_packets[0].destination_agent=unknownDestination.work_packets[0].destination='unknown-agent';
+  assert.throws(()=>validateLiveState(unknownDestination,{now}),/Unknown work packet destination/);
+});
 test('a live snapshot cannot certify the autonomous runtime',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');
   const claimed={...snapshot,live:true,runtime_verified:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}};

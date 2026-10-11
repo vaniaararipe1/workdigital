@@ -6,6 +6,7 @@ const capabilities=require('./runtime/control-plane-capabilities.json');
 const {evaluateRuntimeReadiness}=require('./runtime/readiness');
 const root=path.join(__dirname,'public');
 const expectedAgents=['bruno','clara','felipe','gabriel','larissa','marcelo','patricia'];
+const expectedSnapshotSchemaVersion=2;
 const maxLiveStateAgeMs=2*60*1000;
 const maxSnapshotBytes=1024*1024;
 const technicalKey=/(^|-)TEST(?:-|$)/i;
@@ -36,14 +37,22 @@ function indexLiveRecords(records,label){
   return ids;
 }
 function validateLiveGraph(state){
+  indexLiveRecords(state.agents,'agent');
+  const agentKeys=new Set(state.agents.map(agent=>agent.key));
   const operationIds=indexLiveRecords(state.operations,'operation');
   const taskIds=indexLiveRecords(state.tasks,'task');
   indexLiveRecords(state.work_packets,'work packet');
   const tasksById=new Map(state.tasks.map(task=>[task.id,task]));
-  for(const task of state.tasks)if(!operationIds.has(task.operation_id))throw Error('Orphan task in Control Plane snapshot');
+  for(const operation of state.operations)if(operation.coordinator_agent&&!agentKeys.has(operation.coordinator_agent))throw Error('Unknown operation coordinator in Control Plane snapshot');
+  for(const task of state.tasks){
+    if(!operationIds.has(task.operation_id))throw Error('Orphan task in Control Plane snapshot');
+    if(task.owner&&!agentKeys.has(task.owner))throw Error('Unknown task owner in Control Plane snapshot');
+  }
   for(const packet of state.work_packets){
     const task=tasksById.get(packet.task_id);
     if(!operationIds.has(packet.operation_id)||!task||task.operation_id!==packet.operation_id)throw Error('Orphan work packet in Control Plane snapshot');
+    if(packet.source_agent&&!agentKeys.has(packet.source_agent))throw Error('Unknown work packet source in Control Plane snapshot');
+    if(packet.destination&&!agentKeys.has(packet.destination))throw Error('Unknown work packet destination in Control Plane snapshot');
   }
   return state;
 }
@@ -52,6 +61,7 @@ function validateLiveState(data,{now=Date.now()}={}){
   const capturedAt=Date.parse(state.captured_at);
   const agentKeys=state.agents.map(agent=>agent.key),agents=[...new Set(agentKeys)].sort();
   if(state.live!==true)throw Error('Control Plane snapshot is not live');
+  if(state.schema_version!==expectedSnapshotSchemaVersion)throw Error('Unexpected snapshot schema version');
   if(!Number.isFinite(capturedAt)||capturedAt>now+30_000||now-capturedAt>maxLiveStateAgeMs)throw Error('Control Plane snapshot is stale');
   if(state.control_plane?.status!=='online'||state.control_plane?.database!=='connected')throw Error('Control Plane is unhealthy');
   if(state.control_plane?.version!==capabilities.control_plane_version)throw Error('Unexpected Control Plane version');
