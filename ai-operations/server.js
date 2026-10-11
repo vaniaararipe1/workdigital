@@ -26,11 +26,12 @@ function normalize(data){
 function validateLiveState(data,{now=Date.now()}={}){
   const state=normalize(data);
   const capturedAt=Date.parse(state.captured_at);
-  const agents=[...new Set(state.agents.map(agent=>agent.key))].sort();
+  const agentKeys=state.agents.map(agent=>agent.key),agents=[...new Set(agentKeys)].sort();
   if(state.live!==true)throw Error('Control Plane snapshot is not live');
   if(!Number.isFinite(capturedAt)||capturedAt>now+30_000||now-capturedAt>maxLiveStateAgeMs)throw Error('Control Plane snapshot is stale');
   if(state.control_plane?.status!=='online'||state.control_plane?.database!=='connected')throw Error('Control Plane is unhealthy');
-  if(agents.length!==expectedAgents.length||agents.some((agent,index)=>agent!==expectedAgents[index]))throw Error('Unexpected agent registry');
+  if(state.control_plane?.version!==capabilities.control_plane_version)throw Error('Unexpected Control Plane version');
+  if(agentKeys.length!==expectedAgents.length||agents.length!==expectedAgents.length||agents.some((agent,index)=>agent!==expectedAgents[index]))throw Error('Unexpected agent registry');
   return {...state,source:'control-plane-api',runtime_verified:false,fetched_at:new Date(now).toISOString()};
 }
 function controlPlaneEndpoint(base){

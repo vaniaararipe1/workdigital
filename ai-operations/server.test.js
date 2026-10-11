@@ -42,13 +42,15 @@ test('bundled historical projection matches the deployed Control Plane and exclu
 });
 test('accepts only fresh, healthy live state with the complete agent registry',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');
-  const live={...snapshot,live:true,runtime_verified:false,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.7.1'}};
+  const live={...snapshot,live:true,runtime_verified:false,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}};
   const state=validateLiveState(live,{now});
   assert.equal(state.live,true);assert.equal(state.source,'control-plane-api');
   assert.throws(()=>validateLiveState({...live,captured_at:'2026-10-09T19:57:59Z'},{now}),/stale/);
   assert.throws(()=>validateLiveState({...live,live:false},{now}),/not live/);
   assert.throws(()=>validateLiveState({...live,agents:live.agents.slice(1)},{now}),/agent registry/);
+  assert.throws(()=>validateLiveState({...live,agents:[...live.agents,live.agents[0]]},{now}),/agent registry/);
   assert.throws(()=>validateLiveState({...live,control_plane:{status:'offline',database:'connected'}},{now}),/unhealthy/);
+  assert.throws(()=>validateLiveState({...live,control_plane:{status:'online',database:'connected',version:'2.8.0'}},{now}),/Control Plane version/);
   assert.throws(()=>controlPlaneEndpoint('http://control-plane.example'),/HTTPS/);
 });
 test('a live snapshot cannot certify the autonomous runtime',()=>{
