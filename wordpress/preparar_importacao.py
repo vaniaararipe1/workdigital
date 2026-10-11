@@ -76,6 +76,7 @@ pages = [
     {'slug': 'bio', 'title': 'Bio', 'seo_title': '', 'seo_desc': 'Conheça quem escreve os artigos do Blog da Work.', 'content': ''},
     {'slug': 'contato', 'title': 'Contato', 'seo_title': 'Contato - Work Digital', 'seo_desc': 'Fale com a Work Digital e peça uma proposta para o seu site, blog, landing page ou loja virtual.',
      'content': '<p>Conte para a gente o que você precisa. Respondemos rápido.</p>\n<p><button class="wd-work-cta wd-cta" type="button" data-wd-contact><span>Solicitar proposta</span></button></p>\n<p>Se preferir, fale pelo WhatsApp: <a href="https://wa.me/5511993916363">(11) 99391-6363</a>.</p>'},
+    {'slug': 'obrigado', 'title': 'Obrigado', 'seo_title': 'Obrigado pelo contato - Work Digital', 'seo_desc': 'Recebemos sua mensagem.', 'content': ''},
     {'slug': 'politica-de-privacidade', 'title': 'Política de privacidade', 'status': 'draft', 'seo_title': '', 'seo_desc': 'Como a Work Digital trata os dados pessoais de quem visita o site.',
      'content': open(os.path.join(ROOT, 'wordpress', 'importacao', 'politica-de-privacidade.html')).read()},
 ]

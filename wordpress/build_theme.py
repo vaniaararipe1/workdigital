@@ -230,8 +230,14 @@ def build():
     shutil.copytree(SRC, OUT, ignore=shutil.ignore_patterns('assets-extra'))
     assets = os.path.join(OUT, 'assets')
     os.makedirs(assets, exist_ok=True)
-    for f in ['app.js', 'contact.css', 'contact.js', 'wd-revision.css', 'wd-revision.js', 'whatsapp.js', 'favicon.svg']:
+    for f in ['app.js', 'contact.css', 'wd-revision.css', 'wd-revision.js', 'whatsapp.js', 'favicon.svg']:
         shutil.copy(os.path.join(SITE, f), assets)
+    # formulário: depois de enviar com sucesso, leva para a página /obrigado/ (conversão do Google Ads)
+    ct = open(os.path.join(SITE, 'contact.js')).read()
+    a = "form.reset();growIdea();showResult(true)}"
+    assert ct.count(a) == 1
+    ct = ct.replace(a, "form.reset();growIdea();if(CONFIG.thanksUrl){try{sessionStorage.setItem('wdLead','1')}catch(e){}location.href=CONFIG.thanksUrl;return}showResult(true)}")
+    open(os.path.join(assets, 'contact.js'), 'w').write(ct)
     shutil.copy(os.path.join(SRC, 'assets-extra', 'wd-theme.css'), assets)
     ft = open(os.path.join(SITE, 'footer.js')).read().replace("home: '" + A + PAGES['home'] + "'", "home: '/'")
     open(os.path.join(assets, 'footer.js'), 'w').write(ft)
@@ -245,6 +251,7 @@ def build():
            'home.php': page('blog', assets, fix_blog),
            'single.php': page('post', assets, fix_post),
            'page-bio.php': page('blog', assets, main_swap('bio')),
+           'page-obrigado.php': page('blog', assets, main_swap('obrigado')),
            'page.php': page('blog', assets, main_swap('page')),
            '404.php': page('blog', assets, main_swap('404')),
            'index.php': page('blog', assets, main_swap('page'))}

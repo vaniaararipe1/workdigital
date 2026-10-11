@@ -101,3 +101,17 @@ A home mostra sempre os 3 artigos mais recentes.
 - Aviso de cookies (LGPD) ligado ao Modo de Consentimento do Google.
 - Formulário "Solicitar proposta" com proteção contra robôs e limite de envios.
 - Página 404 com caminhos de volta.
+
+## Página de obrigado e RD Station
+
+- Depois de enviar o formulário "Solicitar proposta" com sucesso, a pessoa vai para `/obrigado/`
+  (a página é criada sozinha pelo tema, fica fora do Google e do sitemap).
+- Na página de obrigado o tema envia ao GTM o evento `wd_lead` — uma vez por envio (recarregar a página não conta de novo).
+  No GTM, use um acionador "Evento personalizado" = `wd_lead` para a conversão do Google Ads (e GA4, se quiser).
+- **RD Station:** em Configurações › Geral, cole o **Token público do RD Station**
+  (RD Station Marketing › sua conta › Integrações › Tokens). Cada proposta entra no RD como a conversão
+  `solicitar-proposta-site`, com nome, e-mail, empresa e a origem do tráfego (do script do RD).
+  Para levar também "Qual é a sua ideia?" e "Como você conheceu a Work?", crie esses campos personalizados no RD
+  e informe os identificadores (ex.: `cf_ideia`) nos campos ao lado do token. O resultado do último envio aparece ali.
+- O lead vale se chegar por e-mail **ou** no RD: mesmo sem SMTP configurado, a pessoa vê a página de obrigado
+  quando o RD recebe o contato.

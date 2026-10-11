@@ -1612,6 +1612,13 @@
    "content": "<p>Conte para a gente o que você precisa. Respondemos rápido.</p>\n<p><button class=\"wd-work-cta wd-cta\" type=\"button\" data-wd-contact><span>Solicitar proposta</span></button></p>\n<p>Se preferir, fale pelo WhatsApp: <a href=\"https://wa.me/5511993916363\">(11) 99391-6363</a>.</p>"
   },
   {
+   "slug": "obrigado",
+   "title": "Obrigado",
+   "seo_title": "Obrigado pelo contato - Work Digital",
+   "seo_desc": "Recebemos sua mensagem.",
+   "content": ""
+  },
+  {
    "slug": "politica-de-privacidade",
    "title": "Política de privacidade",
    "status": "draft",

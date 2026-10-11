@@ -25,3 +25,5 @@
 .wd-404 p{font-size:18px;color:#4a4458}
 .wd-404-links{list-style:none;display:flex;flex-wrap:wrap;gap:14px 28px;padding:0;margin:20px 0 0;font-size:18px}
 @media(max-width:600px){.wd-bio-posts a{flex-direction:column;gap:4px}}
+.wd-thanks-lead{font-size:20px!important;line-height:1.6;color:#2c2638!important;max-width:60ch}
+.wd-thanks-wa{margin-top:32px}.wd-thanks-wa a{color:#6025E1;font-weight:600;text-decoration:underline;text-underline-offset:3px}
