@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-11T05:32:15Z
+Atualizado em: 2026-10-11T06:28:28Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -39,10 +39,11 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - A ingestão de estado ao vivo da interface foi endurecida: não promove mais uma resposta arbitrária de `/snapshot` para `live=true`. Agora exige endpoint HTTPS (HTTP apenas em loopback para testes), token Bearer, timestamp com no máximo dois minutos, Control Plane online/banco conectado e o registro exato dos sete agentes. Qualquer falha retorna à projeção histórica e mantém a fila bloqueada.
 - A Edge Function foi implantada como versão 11 / aplicação 2.8.0 com a rota somente leitura `/snapshot`, protegida pelo mesmo OAuth e contexto RLS do MCP. A resposta usa `no-store`, agrega agentes/operações/tarefas/pacotes e mantém `runtime_verified=false` por construção.
 - A projeção histórica embarcada na interface foi regenerada a partir do MCP 2.8.0: sete agentes, 2 operações, 4 tarefas e 2 Work Packets válidos; registros `*-TEST-*` foram removidos e `live=false`/`runtime_verified=false` preservados.
+- A rota ao vivo foi corrigida na Edge Function versão 12 / aplicação 2.8.1: o backend agora remove registros `*-TEST-*` e relações órfãs antes de responder, em vez de depender apenas do filtro da interface.
 
 ## Evidência e validação
 
-- `npm test`: 48/48 testes aprovados.
+- `npm test`: 50/50 testes aprovados.
 - `node --experimental-strip-types --check runtime/backend/work-digital-mcp-v2/index.ts`: aprovado.
 - PostgreSQL real:
   - leitura inicial: versão 0, sem owner;
@@ -68,6 +69,8 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Fonte implantada da versão 11 recuperada e comparada: rota `/snapshot`, OAuth/RLS, `no-store` e bloqueio de `runtime_verified` presentes. Health MCP retornou online, banco conectado e aplicação 2.8.0.
 - As quatro coleções usadas pelo snapshot foram lidas pelo mesmo MCP autenticado: sete agentes exatos, 7 operações, 12 tarefas e 15 Work Packets. O lease permaneceu livre na versão 7.
 - Teste de regressão agora exige que a projeção embarcada acompanhe a versão do Control Plane, contenha exatamente os sete agentes e não inclua registros técnicos.
+- A fonte da versão 12 foi recuperada após o deploy com `index.ts` e `snapshot-filter.mjs`; status ACTIVE e autenticação customizada preservados. O health retornou 2.8.1.
+- Validação sobre o PostgreSQL atual confirmou 7/12/15 registros brutos e exatamente 2/4/2 operações, tarefas e Work Packets após o mesmo filtro relacional aplicado pela rota.
 - Advisor de segurança após a segunda migração não aponta mais RLS sem política no schema `wd_runtime`. Permanece apenas aviso global preexistente de proteção contra senhas vazadas, fora do escopo deste runtime.
 - Nenhuma tarefa, agente, permissão comercial, projeto de cliente ou arquivo fora de `ai-operations/` foi alterado.
 
@@ -84,7 +87,7 @@ O backend durável, a retomada entre rodadas, a persistência fenced e o bloquei
 
 ## Pendências
 
-- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 11/10/2026 às 04:34Z continuou sem os três comandos.
+- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 11/10/2026 às 06:28Z continuou sem os três comandos.
 - Conectar a interface publicada à rota `/snapshot` com um token OAuth de servidor somente quando existir ambiente autorizado; nenhuma credencial foi criada, exposta ou solicitada no chat.
 - Somente após essas provas definir `runtime_verified=true` e avaliar ativação do dispatcher.
 - Reconciliar `TASK-002` e `WP-004` antes de qualquer trabalho que possa implicar ação externa.
@@ -96,5 +99,5 @@ Na próxima execução, descobrir novamente o contrato do plugin Work Digital. S
 
 ## Bloqueio
 
-Não há bloqueio de acesso ao Supabase. O limite imediato é o registry MCP do ChatGPT continuar sem os três tools, apesar do health 2.8.0 e da fonte implantada. O app é personalizado e não tem release pública atualizável pelo diretório. Não pedir nova instalação ou reconexão a Vânia e não alterar permissões globais. A rota `/snapshot` não pôde ser invocada com OAuth bruto porque o conector não expõe o token; foram validados a fonte ativa, o health e as quatro leituras subjacentes. O QA visual local também não pôde ser concluído: não há navegador headless no workspace e o navegador remoto não alcança `localhost`; ainda falta um preview autorizado desta branch.
+Não há bloqueio de acesso ao Supabase. O limite imediato é o registry MCP do ChatGPT continuar sem os três tools, apesar do health 2.8.1 e da fonte implantada. O app é personalizado e não tem release pública atualizável pelo diretório. Não pedir nova instalação ou reconexão a Vânia e não alterar permissões globais. A rota `/snapshot` não pôde ser invocada com OAuth bruto porque o conector não expõe o token; foram validados a fonte ativa, o health e as coleções subjacentes, inclusive as contagens filtradas. O QA visual local também não pôde ser concluído: não há navegador headless no workspace e o navegador remoto não alcança `localhost`; ainda falta um preview autorizado desta branch.
 

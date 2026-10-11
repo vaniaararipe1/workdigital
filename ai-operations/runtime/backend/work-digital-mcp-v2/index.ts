@@ -20,8 +20,9 @@ import {
 
 
 import { z } from "npm:zod@^4.3.6";
+import { filterSnapshotRecords } from "./snapshot-filter.mjs";
 
-const applicationVersion = "2.8.0";
+const applicationVersion = "2.8.1";
 
 function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -43,6 +44,11 @@ async function createSnapshotResponse(supabase: any) {
   if (agents.error || operations.error || tasks.error || workPackets.error) {
     return jsonResponse({ ok: false, error: "snapshot-unavailable" }, 503);
   }
+  const snapshot = filterSnapshotRecords({
+    operations: operations.data ?? [],
+    tasks: tasks.data ?? [],
+    work_packets: workPackets.data ?? [],
+  });
   return jsonResponse({
     schema_version: 2,
     source: "work-digital-control-plane",
@@ -55,9 +61,7 @@ async function createSnapshotResponse(supabase: any) {
       version: applicationVersion,
     },
     agents: agents.data ?? [],
-    operations: operations.data ?? [],
-    tasks: tasks.data ?? [],
-    work_packets: workPackets.data ?? [],
+    ...snapshot,
   });
 }
 

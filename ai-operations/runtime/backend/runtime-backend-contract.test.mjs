@@ -31,7 +31,7 @@ test("current MCP source preserves OAuth and exposes the three runtime tools", a
   const source = await readFile(mcpUrl, "utf8");
   assert.match(source, /withOAuthProtectedResource\(/);
   assert.match(source, /withSupabase\(\s*\{ auth: "user" \}/);
-  assert.match(source, /const applicationVersion = "2\.8\.0"/);
+  assert.match(source, /const applicationVersion = "2\.8\.1"/);
   assert.match(source, /version: applicationVersion/);
   for (const tool of [
     "read_runtime_lease",
@@ -49,6 +49,7 @@ test("current MCP source preserves OAuth and exposes the three runtime tools", a
 
 test("authenticated snapshot route is read-only, fresh and cannot verify the runtime", async () => {
   const source = await readFile(mcpUrl, "utf8");
+  assert.match(source, /import \{ filterSnapshotRecords \} from "\.\/snapshot-filter\.mjs"/);
   assert.match(source, /withOAuthProtectedResource\(/);
   assert.match(source, /withSupabase\(\s*\{ auth: "user" \}/);
   assert.match(source, /pathname\.endsWith\("\/snapshot"\)/);
@@ -56,6 +57,7 @@ test("authenticated snapshot route is read-only, fresh and cannot verify the run
   assert.match(source, /"cache-control": "no-store"/);
   assert.match(source, /runtime_verified: false/);
   assert.match(source, /captured_at: new Date\(\)\.toISOString\(\)/);
+  assert.match(source, /const snapshot = filterSnapshotRecords\(/);
   for (const table of ["agents", "operations", "tasks", "work_packets"]) {
     assert.match(source, new RegExp(`supabase\\.from\\("${table}"\\)\\.select\\("\\*"\\)`));
   }
