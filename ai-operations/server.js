@@ -7,6 +7,7 @@ const {evaluateRuntimeReadiness}=require('./runtime/readiness');
 const root=path.join(__dirname,'public');
 const expectedAgents=['bruno','clara','felipe','gabriel','larissa','marcelo','patricia'];
 const maxLiveStateAgeMs=2*60*1000;
+const maxSnapshotBytes=1024*1024;
 const securityHeaders=Object.freeze({
   'content-security-policy':"default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'",
   'cross-origin-opener-policy':'same-origin',
@@ -43,13 +44,28 @@ function controlPlaneEndpoint(base){
   endpoint.pathname=path.endsWith('/snapshot')?path:path+'/snapshot';
   return endpoint;
 }
+async function readJsonResponse(response){
+  const type=(response.headers.get('content-type')||'').split(';',1)[0].trim().toLowerCase();
+  if(type!=='application/json'&&!type.endsWith('+json'))throw Error('Control Plane response must be JSON');
+  const declared=Number(response.headers.get('content-length'));
+  if(Number.isFinite(declared)&&declared>maxSnapshotBytes)throw Error('Control Plane response is too large');
+  const reader=response.body?.getReader();
+  if(!reader)return response.json();
+  const chunks=[];let total=0;
+  for(;;){
+    const {done,value}=await reader.read();if(done)break;
+    total+=value.byteLength;if(total>maxSnapshotBytes){await reader.cancel();throw Error('Control Plane response is too large');}
+    chunks.push(Buffer.from(value));
+  }
+  return JSON.parse(Buffer.concat(chunks,total).toString('utf8'));
+}
 async function readState(){
   const base=process.env.CONTROL_PLANE_API_URL;
   const token=process.env.CONTROL_PLANE_API_TOKEN;
   if(base&&token)try{
-    const response=await fetch(controlPlaneEndpoint(base),{headers:{authorization:'Bearer '+token,accept:'application/json'},signal:AbortSignal.timeout(5000)});
+    const response=await fetch(controlPlaneEndpoint(base),{headers:{authorization:'Bearer '+token,accept:'application/json'},redirect:'error',signal:AbortSignal.timeout(5000)});
     if(!response.ok)throw Error('Unavailable');
-    return validateLiveState(await response.json());
+    return validateLiveState(await readJsonResponse(response));
   }catch{return {...normalize(snapshot),source:snapshot.source||'historical-snapshot',live:false,connection_status:'unavailable'};}
   if(base&&!token)return {...normalize(snapshot),source:snapshot.source||'historical-snapshot',live:false,connection_status:'missing-token'};
   return {...normalize(snapshot),source:snapshot.source||'historical-snapshot',live:false,connection_status:'not-configured'};
@@ -80,4 +96,4 @@ function createServer(){return http.createServer(async(req,res)=>{
   }catch{json(res,404,{error:'not-found'});}
 });}
 if(require.main===module)createServer().listen(process.env.PORT||10000);
-module.exports={createServer,normalize,validateLiveState,controlPlaneEndpoint,securityHeaders};
+module.exports={createServer,normalize,validateLiveState,controlPlaneEndpoint,readJsonResponse,securityHeaders};

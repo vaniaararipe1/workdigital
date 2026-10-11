@@ -87,3 +87,26 @@ test('live API requires bearer auth and stale upstream data falls back closed',a
     if(oldToken===undefined)delete process.env.CONTROL_PLANE_API_TOKEN;else process.env.CONTROL_PLANE_API_TOKEN=oldToken;
   }
 });
+test('live API rejects redirects and non-JSON responses without following the token',async()=>{
+  const oldUrl=process.env.CONTROL_PLANE_API_URL,oldToken=process.env.CONTROL_PLANE_API_TOKEN;
+  let mode='redirect',redirected=false;
+  const upstream=http.createServer((req,res)=>{
+    if(req.url==='/redirected'){redirected=true;res.writeHead(200,{'content-type':'application/json'});return res.end('{}');}
+    if(mode==='redirect'){res.writeHead(302,{location:'/redirected'});return res.end();}
+    res.writeHead(200,{'content-type':'text/html'});res.end(JSON.stringify(snapshot));
+  });
+  await new Promise(resolve=>upstream.listen(0,'127.0.0.1',resolve));
+  process.env.CONTROL_PLANE_API_URL='http://127.0.0.1:'+upstream.address().port;
+  process.env.CONTROL_PLANE_API_TOKEN='test-token';
+  const server=createServer();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const base='http://127.0.0.1:'+server.address().port;
+  try{
+    const redirectedState=await(await fetch(base+'/api/control-plane')).json();
+    assert.equal(redirectedState.live,false);assert.equal(redirectedState.connection_status,'unavailable');assert.equal(redirected,false);
+    mode='html';const htmlState=await(await fetch(base+'/api/control-plane')).json();
+    assert.equal(htmlState.live,false);assert.equal(htmlState.connection_status,'unavailable');
+  }finally{
+    await new Promise(resolve=>server.close(resolve));await new Promise(resolve=>upstream.close(resolve));
+    if(oldUrl===undefined)delete process.env.CONTROL_PLANE_API_URL;else process.env.CONTROL_PLANE_API_URL=oldUrl;
+    if(oldToken===undefined)delete process.env.CONTROL_PLANE_API_TOKEN;else process.env.CONTROL_PLANE_API_TOKEN=oldToken;
+  }
+});

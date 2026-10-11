@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-11T10:25:01Z
+Atualizado em: 2026-10-11T11:24:53Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -44,10 +44,11 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - A montagem da URL do snapshot foi corrigida: ao receber a URL real da Edge Function, a interface agora preserva `/functions/v1/work-digital-mcp-v2` e acrescenta `/snapshot` ao final. Query, fragmento e credenciais embutidas são removidos/rejeitados antes de qualquer requisição.
 - A ingestão da interface deixou de confiar na flag `runtime_verified` enviada pelo snapshot. Mesmo um snapshot fresco e saudável que se autodeclare verificado é normalizado para `runtime_verified=false`; a prova do runtime precisa vir de um canal independente com identidade e lease válidos.
 - A validação ao vivo agora exige exatamente uma ocorrência de cada um dos sete agentes e a mesma versão do Control Plane registrada nas capacidades implantadas. Agentes duplicados ou backend incompatível fazem a interface retornar à projeção histórica e manter a fila fechada.
+- O cliente do snapshot deixou de seguir redirecionamentos e passou a exigir MIME JSON e corpo limitado a 1 MiB. Isso impede que o Bearer token seja reutilizado em destino redirecionado e faz respostas inesperadas falharem para a projeção histórica.
 
 ## Evidência e validação
 
-- `npm test`: 53/53 testes aprovados.
+- `npm test`: 54/54 testes aprovados.
 - `node --experimental-strip-types --check runtime/backend/work-digital-mcp-v2/index.ts`: aprovado.
 - PostgreSQL real:
   - leitura inicial: versão 0, sem owner;
@@ -79,6 +80,7 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Regressão dedicada confirmou que `https://example.supabase.co/functions/v1/work-digital-mcp-v2` produz exatamente `.../work-digital-mcp-v2/snapshot`; URLs já finalizadas em `/snapshot` permanecem idempotentes.
 - Regressão dedicada apresentou um snapshot ao vivo com `runtime_verified=true`, identidade e lease aparentes; a interface zerou a alegação e o readiness permaneceu bloqueado por `runtime-verified-required`.
 - O contrato de ingestão rejeitou tanto um oitavo registro duplicado de agente quanto um snapshot saudável declarado como 2.8.0 diante da capacidade implantada 2.8.1. A suíte permaneceu em 53/53 testes aprovados.
+- Um servidor de teste tentou redirecionar `/snapshot`; a interface não seguiu o destino nem reenviou a credencial. Uma resposta `text/html` contendo JSON também foi rejeitada. Ambos os casos retornaram `live=false` e `connection_status=unavailable`.
 - Advisor de segurança após a segunda migração não aponta mais RLS sem política no schema `wd_runtime`. Permanece apenas aviso global preexistente de proteção contra senhas vazadas, fora do escopo deste runtime.
 - Nenhuma tarefa, agente, permissão comercial, projeto de cliente ou arquivo fora de `ai-operations/` foi alterado.
 
@@ -95,7 +97,7 @@ O backend durável, a retomada entre rodadas, a persistência fenced e o bloquei
 
 ## Pendências
 
-- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 11/10/2026 às 10:25Z continuou sem os três comandos.
+- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 11/10/2026 às 11:24Z continuou sem os três comandos.
 - Conectar a interface publicada à rota `/snapshot` com um token OAuth de servidor somente quando existir ambiente autorizado; nenhuma credencial foi criada, exposta ou solicitada no chat.
 - Somente após essas provas definir `runtime_verified=true` e avaliar ativação do dispatcher.
 - Reconciliar `TASK-002` e `WP-004` antes de qualquer trabalho que possa implicar ação externa.
