@@ -60,7 +60,7 @@ Cada diagnóstico leva de 2 a 4 minutos. A maior parte do tempo é a medição d
 **Fluxo de revisão sugerido:**
 1. Abra `notas-internas.html` e siga a lista "Antes de enviar".
 2. Confira as capturas de tela.
-3. Se discordar de alguma avaliação de especialista, edite o texto em `relatorio.html` e gere o PDF de novo. Para isso, abra o HTML no Chrome e use Imprimir, depois Salvar como PDF, com "Gráficos de plano de fundo" ligado.
+3. Se discordar de algum texto, edite o campo correspondente em `dados.json` (lista `achados`) e rode `python diagnostico.py --regerar relatorios/<pasta>`. O HTML, o PDF e as notas internas são gerados de novo sem acessar o site, e as notas são recalculadas.
 4. Envie o PDF ao lead.
 
 ## Como testar
@@ -167,6 +167,7 @@ Envio ao lead (manual no começo; depois, botão "aprovar" que envia pelo RD Sta
 ## Limitações conhecidas
 
 - **Performance sem a chave do PageSpeed.** O Lighthouse local mede na máquina que roda a ferramenta. Os números podem diferir do PageSpeed do Google e não incluem dados de visitantes reais, então o INP aparece como "não foi possível medir".
+- **Variação entre medições:** notas de velocidade mudam alguns pontos a cada execução, inclusive no PageSpeed. Em testes, a mesma home variou de 60 a 70 com o Lighthouse local. Use os números como ordem de grandeza, não como valor exato.
 - **Firewalls e proteção anti-robô** (Cloudflare e similares) podem bloquear a ferramenta. O relatório registra a falha e as notas internas avisam.
 - **Conteúdo que só aparece depois de um clique** (formulários em pop-up, menus, abas) não é analisado, porque a ferramenta não clica em nada.
 - **Prova social e proposta de valor** são detectadas por palavras-chave e precisam de revisão humana. Por isso estão marcadas como avaliação de especialista.

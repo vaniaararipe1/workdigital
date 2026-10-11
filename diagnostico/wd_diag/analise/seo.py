@@ -50,8 +50,9 @@ def extrair_pagina(url: str, html: str) -> dict:
     headings = [(int(h.name[1]), h.get_text(" ", strip=True)) for h in sopa.find_all(re.compile("^h[1-6]$"))]
     saltos = [f"h{a}→h{b}" for (a, _), (b, _) in zip(headings, headings[1:]) if b > a + 1]
 
-    imgs = sopa.find_all("img")
-    sem_alt = [i.get("src") or i.get("data-src") or "" for i in imgs if not i.has_attr("alt")]
+    imgs = [i for i in sopa.find_all("img")
+            if not i.find_parent("noscript") and not (i.get("width") in ("0", "1") and i.get("height") in ("0", "1"))]
+    sem_alt = [i.get("src") or i.get("data-src") or "(sem endereço)" for i in imgs if not i.has_attr("alt")]
 
     tipos = []
     jsonld_invalido = 0
@@ -91,6 +92,10 @@ def extrair_pagina(url: str, html: str) -> dict:
 
 
 # ---------------- critérios ----------------
+
+def _v(n: int, singular: str, plural_: str) -> str:
+    return singular if n == 1 else plural_
+
 
 def _cap(t: str) -> str:
     return t[:1].upper() + t[1:]
@@ -196,7 +201,7 @@ def hierarquia(pags: list[dict]) -> Achado:
     com = [p for p in pags if p["saltos_hierarquia"]]
     sit = "ok" if not com else "atencao"
     vimos = ("Os títulos e subtítulos seguem uma ordem lógica." if not com else
-             f"{plural(len(com), 'página')} pula níveis de subtítulo (por exemplo, de H2 direto para H4).")
+             f"{plural(len(com), 'página')} {_v(len(com), 'pula', 'pulam')} níveis de subtítulo (por exemplo, de H2 direto para H4).")
     ev = "; ".join(f"{code(caminho(p['url']), 30)}: {', '.join(p['saltos_hierarquia'][:3])}" for p in com[:3])
     return _a("seo-hierarquia", "Hierarquia de títulos", sit, vimos, 0.5, evidencia=ev,
               significado="Uma estrutura de títulos organizada ajuda o Google, as IAs e leitores de tela a entender o conteúdo.",
@@ -207,7 +212,7 @@ def canonical(pags: list[dict]) -> Achado:
     sem = [p for p in pags if not p["canonical"]]
     externo = [p for p in pags if p["canonical"] and not mesmo_site(p["canonical"], p["url"])]
     if externo:
-        sit, vimos = "problema", f"{plural(len(externo), 'página')} indica como endereço oficial uma URL de outro domínio."
+        sit, vimos = "problema", f"{plural(len(externo), 'página')} {_v(len(externo), 'indica', 'indicam')} como endereço oficial uma URL de outro domínio."
     elif sem:
         sit, vimos = "atencao", f"{len(sem)} de {len(pags)} páginas não indicam o endereço oficial (canonical)."
     else:
@@ -226,7 +231,7 @@ def indexacao(pags: list[dict]) -> Achado:
                   "Nenhuma página analisada pede ao Google para não aparecer nas buscas.", 3)
     home = pags[0] in bloqueadas
     return _a("seo-noindex", "Páginas liberadas para o Google", "problema",
-              f"{plural(len(bloqueadas), 'página')} pede ao Google para não aparecer nas buscas" + (", incluindo a página inicial." if home else "."),
+              f"{plural(len(bloqueadas), 'página')} {_v(len(bloqueadas), 'pede', 'pedem')} ao Google para não aparecer nas buscas" + (", incluindo a página inicial." if home else "."),
               3, evidencia=f"{code('noindex')} em {lista_curta(caminho(p['url']) for p in bloqueadas)}.",
               significado="Essas páginas não aparecem no Google, mesmo que tenham bom conteúdo.",
               correcao="Remover a instrução noindex das páginas que devem ser encontradas.",
@@ -341,7 +346,7 @@ def links_quebrados(dados: dict) -> Achado:
     sit = "ok" if not q else ("atencao" if len(q) <= 2 else "problema")
     return _a("seo-links", "Links internos quebrados", sit,
               f"Verificamos {dados['verificados']} links internos e todos funcionam." if not q else
-              f"{plural(len(q), 'link interno')} de {dados['verificados']} verificados leva a uma página que não existe (erro 404).", 1.5,
+              f"{plural(len(q), 'link interno', 'links internos')} de {dados['verificados']} verificados {_v(len(q), 'leva', 'levam')} a uma página que não existe (erro 404).", 1.5,
               evidencia=lista_curta([caminho(x["url"]) for x in q], 4) + "." if q else "",
               significado="Links quebrados frustram o visitante e desperdiçam a atenção do Google.",
               correcao="Corrigir ou remover os links listados.", prioridade="media" if sit == "problema" else "baixa",

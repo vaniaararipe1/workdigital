@@ -274,3 +274,16 @@ def test_tecnologias_detecta_so_com_assinatura_inequivoca():
     nomes = {t.nome for t in tecnologias.detectar([html], {"server": "cloudflare"})}
     assert {"WordPress", "Elementor", "Google Analytics 4", "Cloudflare"} <= nomes
     assert "RD Station" not in nomes and "Wix" not in nomes
+
+
+def test_pixel_de_rastreamento_nao_conta_como_imagem_sem_alt():
+    html = ('<img src="a.jpg" alt="x"><noscript><img src="https://www.facebook.com/tr?id=1"></noscript>'
+            '<img src="p.gif" width="1" height="1">')
+    p = seo.extrair_pagina("https://ex.com/", html)
+    assert p["imagens"] == 1 and p["imagens_sem_alt"] == []
+
+
+def test_concordancia_no_plural():
+    pags = [seo.extrair_pagina(f"https://ex.com/{i}", HTML_RUIM) for i in range(2)]
+    assert "2 páginas pulam" in seo.hierarquia(pags).o_que_vimos
+    assert "1 página pula" in seo.hierarquia(pags[:1]).o_que_vimos

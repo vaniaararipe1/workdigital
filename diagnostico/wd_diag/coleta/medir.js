@@ -30,7 +30,8 @@
     const t = texto(el).slice(0, 80);
     const href = el.getAttribute('href') || '';
     const botao = pareceBotao(el);
-    const chave = CTA_RE.test(t) || WA_RE.test(href) || href.toLowerCase().startsWith('tel:');
+    const contatoDireto = WA_RE.test(href) || href.toLowerCase().startsWith('tel:');
+    const chave = CTA_RE.test(t) || contatoDireto;
     const noMenu = !!el.closest('nav, [role=navigation]');
     if (!t && !chave) continue;
     if (/^(pular|ir) para|^skip to/i.test(t) || topoAbs(el) < 0) continue;  // links de acessibilidade
@@ -41,10 +42,10 @@
     if (noMenu && !botao) continue;
     const r = el.getBoundingClientRect();
     ctas.push({ texto: t, href: href.slice(0, 200), topo: Math.round(topoAbs(el)), largura: Math.round(r.width), altura: Math.round(r.height),
-                botao, palavra_chave: chave, fixo: fixo(el) });
+                botao, palavra_chave: chave, contato: contatoDireto, fixo: fixo(el) });
   }
   const ctasDobra = ctas.filter(c => c.topo < vh || c.fixo);
-  const ctaForte = ctasDobra.filter(c => c.palavra_chave && c.botao);
+  const ctaForte = ctasDobra.filter(c => c.palavra_chave && (c.botao || (c.contato && c.texto.length >= 8)));
 
   // ---------- contato direto ----------
   const contato = [...document.querySelectorAll('a[href]')].map(a => {
