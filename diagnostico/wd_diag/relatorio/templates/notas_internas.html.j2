@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notas internas · {{ empresa }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--roxo:#6025E1;--verde:#03A372;--vinho:#C00252;--texto:#23232B;--texto2:#5E5D6E;--borda:#E2DFEC;--sup:#F7F6FB}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--texto);font:400 15px/1.55 "Nunito",system-ui,sans-serif}
+h1,h2,h3{font-family:"Space Grotesk",sans-serif;margin:0;line-height:1.2}
+.wrap{max-width:960px;margin:0 auto;padding:32px 20px 64px}
+.faixa{background:#121316;color:#fff;padding:18px 20px}
+.faixa .wrap{padding:0;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+.faixa img{height:30px}
+.aviso{background:#FBE3EC;color:var(--vinho);font-weight:700;padding:10px 14px;border-radius:10px;margin:20px 0}
+h1{font-size:28px;margin-top:8px}
+h2{font-size:20px;margin:36px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--borda)}
+.meta{color:var(--texto2)}
+.card{background:var(--sup);border:1px solid var(--borda);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.card h3{font-size:16px;margin-bottom:4px}
+.card p{margin:4px 0}
+.pequeno{font-size:13px;color:var(--texto2)}
+.check li{margin:6px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--borda);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--texto2)}
+code{background:#EEEBF7;padding:1px 5px;border-radius:4px;font-size:12.5px;word-break:break-all}
+.tag{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;padding:3px 7px;border-radius:5px;background:#ECE5FD;color:var(--roxo)}
+.tag.ok{background:#DDF7EE;color:#037D58}.tag.problema{background:#FBE3EC;color:var(--vinho)}.tag.na{background:#eee;color:#666}
+</style>
+</head>
+<body>
+<div class="faixa"><div class="wrap"><img src="{{ assets.logo_branco }}" alt="Work Digital"><strong>Notas internas: não enviar ao lead</strong></div></div>
+<div class="wrap">
+  <div class="kicker pequeno">Diagnóstico de {{ data_extenso }}</div>
+  <h1>{{ empresa }}</h1>
+  <div class="meta">{{ url }}</div>
+
+  <h2>Antes de enviar</h2>
+  <ul class="check">
+    <li>Leia os {{ julgamento|length }} itens de avaliação abaixo e ajuste o texto do relatório se discordar.</li>
+    <li>Confira os itens de baixa confiança e os avisos da coleta.</li>
+    <li>Abra a captura do celular (pasta <code>capturas/</code>) e confirme que o site carregou de verdade (sem tela de bloqueio, aviso de cookies cobrindo tudo ou página de manutenção).</li>
+    <li>Confirme o nome da empresa na capa.</li>
+    {% if performance.mobile.get('fonte') == 'lighthouse_local' or performance.desktop.get('fonte') == 'lighthouse_local' %}
+    <li><strong>A velocidade foi medida pelo Lighthouse local, não pelo PageSpeed do Google.</strong> Se possível, rode de novo com a chave configurada. Os números do PageSpeed são os que o lead vai encontrar se pesquisar.</li>
+    {% endif %}
+  </ul>
+
+  {% if avisos %}
+  <h2>Avisos da coleta</h2>
+  {% for a in avisos %}<div class="card"><p>{{ a }}</p></div>{% endfor %}
+  {% endif %}
+
+  <h2>Itens que dependem de julgamento</h2>
+  {% for a in julgamento %}
+  <div class="card">
+    <h3><span class="tag {{ a.situacao }}">{{ {'ok':'parece ok','atencao':'revisar','problema':'problema','na':'sem dado'}[a.situacao] }}</span> {{ a.titulo }}</h3>
+    <p>{{ a.o_que_vimos }}</p>
+    {% if a.evidencia %}<p class="pequeno">Evidência: {{ a.evidencia|safe }}</p>{% endif %}
+    {% if a.nota_interna %}<p class="pequeno"><strong>Para você:</strong> {{ a.nota_interna }}</p>{% endif %}
+  </div>
+  {% else %}<p class="pequeno">Nenhum.</p>{% endfor %}
+
+  <h2>Achados de baixa confiança ou não medidos</h2>
+  {% for a in baixa_confianca %}
+  <div class="card">
+    <h3><span class="tag {{ a.situacao }}">{{ a.tipo|replace('_',' ') }}</span> {{ a.titulo }}</h3>
+    <p>{{ a.o_que_vimos }}</p>
+    {% if a.evidencia %}<p class="pequeno">Evidência: {{ a.evidencia|safe }}</p>{% endif %}
+    {% if a.nota_interna %}<p class="pequeno"><strong>Para você:</strong> {{ a.nota_interna }}</p>{% endif %}
+  </div>
+  {% else %}<p class="pequeno">Nenhum.</p>{% endfor %}
+
+  <h2>Sugestões de abordagem comercial</h2>
+  {% for s in abordagens %}
+  <div class="card"><h3>{{ s.titulo }}</h3><p>{{ s.texto }}</p><p class="pequeno">Baseado em: {{ s.base }}</p></div>
+  {% endfor %}
+
+  <h2>Páginas analisadas</h2>
+  <table><thead><tr><th>Página</th><th>Origem</th><th>Situação</th></tr></thead><tbody>
+  {% for p in paginas %}<tr><td><code>{{ p.url }}</code></td><td>{{ p.origem }}</td><td>{{ p.situacao }}</td></tr>{% endfor %}
+  </tbody></table>
+
+  <h2>Como as notas foram calculadas</h2>
+  {% for n in notas %}
+  <div class="card">
+    <h3>{{ n.categoria }}: {{ n.nota if n.nota is not none else 'sem nota' }}</h3>
+    <table><thead><tr><th>Critério</th><th>Peso</th><th>Situação</th><th>Pontos</th></tr></thead><tbody>
+    {% for d in n.detalhe %}<tr><td>{{ d.criterio }}</td><td>{{ d.peso }}</td><td>{{ d.situacao or '' }}</td><td>{% if d.valor is defined %}nota {{ d.valor }}{% elif d.pontos is not none %}{{ d.pontos }}{% else %}fora da nota{% endif %}</td></tr>{% endfor %}
+    </tbody></table>
+  </div>
+  {% endfor %}
+  <p class="pequeno">Regras completas em CRITERIOS.md. Dados brutos em dados.json.</p>
+
+  <h2>Fontes de performance</h2>
+  {% for nome, p in [('Celular', performance.mobile), ('Computador', performance.desktop)] %}
+  <div class="card"><h3>{{ nome }}</h3>
+    {% if p.ok %}<p>Fonte: {{ p.fonte }} (Lighthouse {{ p.versao_lighthouse }}), nota {{ p.nota }}. Dados de visitantes reais disponíveis: {{ 'sim' if p.tem_dados_campo else 'não' }}.</p>{% endif %}
+    {% for t in p.tentativas %}<p class="pequeno">{{ t.fonte }}: {{ t.erro or 'ok' }}</p>{% endfor %}
+  </div>
+  {% endfor %}
+</div>
+</body>
+</html>
