@@ -123,6 +123,8 @@ def extrair(resultado: dict) -> dict:
         det = a.get("details") or {}
         ms = det.get("overallSavingsMs") or (a.get("metricSavings") or {}).get("LCP") or 0
         bytes_ = det.get("overallSavingsBytes") or 0
+        if chave in ("cache-insight", "uses-long-cache-ttl"):
+            ms = 0   # cache só ajuda em visitas repetidas; não somar ao tempo da primeira visita
         if chave == "total-byte-weight" or (ms < 100 and bytes_ < 50_000):
             continue
         oportunidades.append({"id": chave, "titulo": a.get("title", chave), "economia_ms": round(ms or 0),

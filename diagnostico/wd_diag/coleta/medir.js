@@ -45,7 +45,7 @@
                 botao, palavra_chave: chave, contato: contatoDireto, fixo: fixo(el) });
   }
   const ctasDobra = ctas.filter(c => c.topo < vh || c.fixo);
-  const ctaForte = ctasDobra.filter(c => c.palavra_chave && (c.botao || (c.contato && c.texto.length >= 8)));
+  const ctaForte = ctasDobra.filter(c => c.palavra_chave && (c.botao || (c.contato && c.texto.length >= 8 && c.largura >= 60)));
 
   // ---------- contato direto ----------
   const contato = [...document.querySelectorAll('a[href]')].map(a => {

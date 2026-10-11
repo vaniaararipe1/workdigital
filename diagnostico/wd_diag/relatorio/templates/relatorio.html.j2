@@ -134,6 +134,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 .plano{display:grid;gap:22px}
 .fase h3{font-size:18px;display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .fase h3 .pt{width:10px;height:10px;border-radius:50%}
+.fase{break-inside:avoid}
 .fase table{width:100%;border-collapse:collapse;font-size:14px}
 .fase th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--texto2);padding:0 10px 8px;border-bottom:1px solid var(--borda)}
 .fase td{padding:11px 10px;border-bottom:1px solid var(--borda);vertical-align:top}
@@ -371,21 +372,6 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 </section>
 {% endfor %}
 
-{# ================= TECNOLOGIAS ================= #}
-<section class="bloco continua" id="tecnologias">
-  <div class="wrap">
-    <h3 class="sub-titulo">Ferramentas detectadas no site</h3>
-    {% if tecnologias %}
-    <div class="tecs">
-      {% for t in tecnologias %}<div class="tec"><div class="cat">{{ t.categoria }}</div><div class="nome">{{ t.nome }}</div></div>{% endfor %}
-    </div>
-    <p class="evid" style="margin-top:10px">Listamos apenas o que foi identificado com segurança no código público do site.</p>
-    {% else %}
-    <p class="evid">Nenhuma ferramenta foi identificada com segurança.</p>
-    {% endif %}
-  </div>
-</section>
-
 {# ================= PLANO ================= #}
 <section class="bloco" id="plano">
   <div class="wrap">
@@ -411,6 +397,21 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
       {% endif %}
     {% endfor %}
     </div>
+  </div>
+</section>
+
+{# ================= TECNOLOGIAS ================= #}
+<section class="bloco continua" id="tecnologias">
+  <div class="wrap">
+    <h3 class="sub-titulo">Ferramentas detectadas no site</h3>
+    {% if tecnologias %}
+    <div class="tecs">
+      {% for t in tecnologias %}<div class="tec"><div class="cat">{{ t.categoria }}</div><div class="nome">{{ t.nome }}</div></div>{% endfor %}
+    </div>
+    <p class="evid" style="margin-top:10px">Listamos apenas o que foi identificado com segurança no código público do site.</p>
+    {% else %}
+    <p class="evid">Nenhuma ferramenta foi identificada com segurança.</p>
+    {% endif %}
   </div>
 </section>
 
