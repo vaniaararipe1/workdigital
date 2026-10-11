@@ -24,6 +24,10 @@ const securityHeaders=Object.freeze({
 function json(res,status,data){res.writeHead(status,{...securityHeaders,'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data))}
 function normalize(data){
   if(!data || ['agents','tasks','operations','work_packets'].some(k=>!Array.isArray(data[k])))throw Error('Invalid Control Plane snapshot');
+  rejectAliasMismatches(data.agents,[['agent_key','key']],'agent alias');
+  rejectAliasMismatches(data.operations,[['operation_key','key'],['coordinator_agent','coordinator']],'operation alias');
+  rejectAliasMismatches(data.tasks,[['task_key','key'],['owner_agent','owner']],'task alias');
+  rejectAliasMismatches(data.work_packets,[['packet_key','key'],['destination_agent','destination']],'work packet alias');
   return {...data,agents:data.agents.map(a=>({...a,key:a.agent_key||a.key})),
     tasks:data.tasks.map(t=>({...t,key:t.task_key||t.key,owner:t.owner_agent||t.owner})),
     operations:data.operations.map(o=>({...o,key:o.operation_key||o.key})),
@@ -38,6 +42,12 @@ function indexLiveRecords(records,label){
     ids.add(record.id);keys.add(record.key);
   }
   return ids;
+}
+function rejectAliasMismatches(records,pairs,label){
+  for(const record of records)for(const [canonical,alias] of pairs){
+    const canonicalValue=record?.[canonical],aliasValue=record?.[alias];
+    if(canonicalValue!=null&&aliasValue!=null&&canonicalValue!==aliasValue)throw Error(`Mismatched ${label} ${canonical}/${alias}`);
+  }
 }
 function rejectCycles(edges,label){
   const visiting=new Set(),visited=new Set();
@@ -61,11 +71,12 @@ function validateTaskRelationships(tasks){
     if(!Array.isArray(task.dependencies))throw Error('Invalid task dependencies in Control Plane snapshot');
     const resolved=[];
     for(const dependency of task.dependencies){
-      const id=typeof dependency==='string'?dependency:dependency?.task_id;
-      const key=typeof dependency==='object'&&dependency?dependency.task_key:undefined;
-      const byIdMatch=id?(byId.get(id)||byKey.get(id)):undefined,byKeyMatch=key?byKey.get(key):undefined;
+      const isReferenceObject=typeof dependency==='object'&&dependency!==null;
+      const id=isReferenceObject?dependency.task_id:undefined,key=isReferenceObject?dependency.task_key:undefined;
+      const flexibleMatch=typeof dependency==='string'?(byId.get(dependency)||byKey.get(dependency)):undefined;
+      const byIdMatch=id?byId.get(id):undefined,byKeyMatch=key?byKey.get(key):undefined;
       if(byIdMatch&&byKeyMatch&&byIdMatch!==byKeyMatch)throw Error('Mismatched task dependency in Control Plane snapshot');
-      const target=byIdMatch||byKeyMatch;
+      const target=flexibleMatch||byIdMatch||byKeyMatch;
       if(!target||target.id===task.id||target.operation_id!==task.operation_id||resolved.includes(target.id))throw Error('Invalid task dependency in Control Plane snapshot');
       resolved.push(target.id);
     }

@@ -1,5 +1,5 @@
 {
-  "observed_at": "2026-10-11T16:30:42Z",
+  "observed_at": "2026-10-11T17:28:25Z",
   "control_plane_version": "2.8.1",
   "transport": "mcp",
   "health": "online",
@@ -16,6 +16,7 @@
   "snapshot_schema_version": 2,
   "snapshot_graph_validation": true,
   "task_graph_validation": true,
+  "snapshot_alias_validation": true,
   "agent_contract_validation": true,
   "historical_runtime_verified": false,
   "snapshot_runtime_verified": false,

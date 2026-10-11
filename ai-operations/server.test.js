@@ -98,12 +98,25 @@ test('rejects invalid, cross-operation and cyclic task relationships',()=>{
   assert.throws(()=>validateLiveState(missing,{now}),/Invalid task dependency/);
   const mismatch=live();mismatch.tasks[0].dependencies=[{task_id:mismatch.tasks[1].id,task_key:mismatch.tasks[2].key}];
   assert.throws(()=>validateLiveState(mismatch,{now}),/Mismatched task dependency/);
+  const mislabeledId=live();mislabeledId.tasks[0].dependencies=[{task_id:mislabeledId.tasks[1].key}];
+  assert.throws(()=>validateLiveState(mislabeledId,{now}),/Invalid task dependency/);
   const crossOperation=live();crossOperation.tasks[0].operation_id=crossOperation.operations[0].id;crossOperation.tasks[0].dependencies=[{task_id:crossOperation.tasks[1].id}];
   assert.throws(()=>validateLiveState(crossOperation,{now}),/Invalid task dependency/);
   const cyclic=live();cyclic.tasks[0].dependencies=[{task_id:cyclic.tasks[1].id}];cyclic.tasks[1].dependencies=[{task_id:cyclic.tasks[0].id}];
   assert.throws(()=>validateLiveState(cyclic,{now}),/Cyclic task dependencies/);
   const parentCycle=live();parentCycle.tasks[0].parent_task_id=parentCycle.tasks[1].id;parentCycle.tasks[1].parent_task_id=parentCycle.tasks[0].id;
   assert.throws(()=>validateLiveState(parentCycle,{now}),/Cyclic task parents/);
+});
+test('rejects contradictory canonical and normalized aliases',()=>{
+  const now=Date.parse('2026-10-09T20:00:00Z');
+  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}});
+  const cases=[
+    state=>{state.agents[0].key='clara';},
+    state=>{state.operations[0].coordinator='clara';},
+    state=>{state.tasks[0].owner='clara';},
+    state=>{state.work_packets[0].destination='clara';}
+  ];
+  for(const mutate of cases){const state=live();mutate(state);assert.throws(()=>validateLiveState(state,{now}),/Mismatched .* alias/);}
 });
 test('a live snapshot cannot certify the autonomous runtime',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');

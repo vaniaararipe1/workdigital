@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-11T16:30:42Z
+Atualizado em: 2026-10-11T17:28:25Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -50,10 +50,11 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - O fallback histórico deixou de confiar até nas flags do arquivo embarcado: `historicalState` força `live=false` e `runtime_verified=false` em código para estados indisponível, sem token e não configurado. Um snapshot local alterado incorretamente não consegue mais se apresentar como prova de execução.
 - A validação ao vivo agora ancora o cadastro nos contratos de `runtime/agents.json`: nome, função, especialidade e mapa completo de permissões precisam coincidir para cada chave. Isso impede troca silenciosa de identidade e escalada de poderes externos no snapshot.
 - O grafo de tarefas do snapshot ao vivo agora é validado antes de alimentar a fila: dependências e parents precisam existir, permanecer na mesma operação e formar grafos acíclicos; referências duplicadas, autorreferentes ou com `task_id`/`task_key` divergentes são rejeitadas.
+- A normalização do snapshot deixou de ocultar contradições entre campos canônicos e aliases do MCP. Pares como `agent_key`/`key`, `owner_agent`/`owner` e `destination_agent`/`destination` precisam coincidir, e um `task_id` não pode ser resolvido silenciosamente como `task_key`.
 
 ## Evidência e validação
 
-- `npm test`: 59/59 testes aprovados.
+- `npm test`: 60/60 testes aprovados.
 - `node --experimental-strip-types --check runtime/backend/work-digital-mcp-v2/index.ts`: aprovado.
 - PostgreSQL real:
   - leitura inicial: versão 0, sem owner;
@@ -92,6 +93,7 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Regressão dedicada injetou `live=true` e `runtime_verified=true` em uma cópia da projeção histórica; o fallback zerou ambas as flags e preservou o motivo `connection_status=unavailable`.
 - O cadastro atual foi relido pelo MCP e comparado aos sete contratos versionados; nome, função, especialidade e permissões coincidiram. Regressões que transformaram Gabriel em Direção de Arte e habilitaram contato externo para Felipe foram rejeitadas.
 - Regressão dedicada confirmou que dependência inexistente, par ID/chave divergente, dependência entre operações e ciclos de dependência ou parent invalidam o snapshot ao vivo. A fila não recebe um grafo parcial ou ambíguo.
+- Regressão dedicada confirmou rejeição de aliases contraditórios em agentes, operações, tarefas e Work Packets, além de referência de chave inserida indevidamente no campo `task_id`.
 - Advisor de segurança após a segunda migração não aponta mais RLS sem política no schema `wd_runtime`. Permanece apenas aviso global preexistente de proteção contra senhas vazadas, fora do escopo deste runtime.
 - Nenhuma tarefa, agente, permissão comercial, projeto de cliente ou arquivo fora de `ai-operations/` foi alterado.
 
@@ -108,7 +110,7 @@ O backend durável, a retomada entre rodadas, a persistência fenced e o bloquei
 
 ## Pendências
 
-- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 11/10/2026 às 16:30Z continuou sem os três comandos, embora a fonte ativa recuperada diretamente do Supabase os contenha.
+- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 11/10/2026 às 17:28Z continuou sem os três comandos, embora a fonte ativa recuperada diretamente do Supabase os contenha.
 - Conectar a interface publicada à rota `/snapshot` com um token OAuth de servidor somente quando existir ambiente autorizado; nenhuma credencial foi criada, exposta ou solicitada no chat.
 - Somente após essas provas definir `runtime_verified=true` e avaliar ativação do dispatcher.
 - Reconciliar `TASK-002` e `WP-004` antes de qualquer trabalho que possa implicar ação externa.
