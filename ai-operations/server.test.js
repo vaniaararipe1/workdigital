@@ -53,6 +53,18 @@ test('accepts only fresh, healthy live state with the complete agent registry',(
   assert.throws(()=>validateLiveState({...live,control_plane:{status:'online',database:'connected',version:'2.8.0'}},{now}),/Control Plane version/);
   assert.throws(()=>controlPlaneEndpoint('http://control-plane.example'),/HTTPS/);
 });
+test('rejects duplicate, technical and relationally inconsistent live records',()=>{
+  const now=Date.parse('2026-10-09T20:00:00Z');
+  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}});
+  const duplicate=live();duplicate.tasks.push({...duplicate.tasks[0]});
+  assert.throws(()=>validateLiveState(duplicate,{now}),/Duplicate task identity/);
+  const technical=live();technical.operations[0].operation_key=technical.operations[0].key='OP-TEST-001';
+  assert.throws(()=>validateLiveState(technical,{now}),/Technical operation record/);
+  const orphanTask=live();orphanTask.tasks[0].operation_id='missing-operation';
+  assert.throws(()=>validateLiveState(orphanTask,{now}),/Orphan task/);
+  const mismatchedPacket=live();mismatchedPacket.work_packets[0].operation_id=mismatchedPacket.operations[0].id;
+  assert.throws(()=>validateLiveState(mismatchedPacket,{now}),/Orphan work packet/);
+});
 test('a live snapshot cannot certify the autonomous runtime',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');
   const claimed={...snapshot,live:true,runtime_verified:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}};

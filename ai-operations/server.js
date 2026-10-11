@@ -8,6 +8,7 @@ const root=path.join(__dirname,'public');
 const expectedAgents=['bruno','clara','felipe','gabriel','larissa','marcelo','patricia'];
 const maxLiveStateAgeMs=2*60*1000;
 const maxSnapshotBytes=1024*1024;
+const technicalKey=/(^|-)TEST(?:-|$)/i;
 const securityHeaders=Object.freeze({
   'content-security-policy':"default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'",
   'cross-origin-opener-policy':'same-origin',
@@ -24,6 +25,28 @@ function normalize(data){
     operations:data.operations.map(o=>({...o,key:o.operation_key||o.key})),
     work_packets:data.work_packets.map(p=>({...p,key:p.packet_key||p.key,destination:p.destination_agent||p.destination}))};
 }
+function indexLiveRecords(records,label){
+  const ids=new Set(),keys=new Set();
+  for(const record of records){
+    if(typeof record?.id!=='string'||!record.id.trim()||typeof record?.key!=='string'||!record.key.trim())throw Error(`Invalid ${label} identity`);
+    if(technicalKey.test(record.key))throw Error(`Technical ${label} record is not allowed`);
+    if(ids.has(record.id)||keys.has(record.key))throw Error(`Duplicate ${label} identity`);
+    ids.add(record.id);keys.add(record.key);
+  }
+  return ids;
+}
+function validateLiveGraph(state){
+  const operationIds=indexLiveRecords(state.operations,'operation');
+  const taskIds=indexLiveRecords(state.tasks,'task');
+  indexLiveRecords(state.work_packets,'work packet');
+  const tasksById=new Map(state.tasks.map(task=>[task.id,task]));
+  for(const task of state.tasks)if(!operationIds.has(task.operation_id))throw Error('Orphan task in Control Plane snapshot');
+  for(const packet of state.work_packets){
+    const task=tasksById.get(packet.task_id);
+    if(!operationIds.has(packet.operation_id)||!task||task.operation_id!==packet.operation_id)throw Error('Orphan work packet in Control Plane snapshot');
+  }
+  return state;
+}
 function validateLiveState(data,{now=Date.now()}={}){
   const state=normalize(data);
   const capturedAt=Date.parse(state.captured_at);
@@ -33,6 +56,7 @@ function validateLiveState(data,{now=Date.now()}={}){
   if(state.control_plane?.status!=='online'||state.control_plane?.database!=='connected')throw Error('Control Plane is unhealthy');
   if(state.control_plane?.version!==capabilities.control_plane_version)throw Error('Unexpected Control Plane version');
   if(agentKeys.length!==expectedAgents.length||agents.length!==expectedAgents.length||agents.some((agent,index)=>agent!==expectedAgents[index]))throw Error('Unexpected agent registry');
+  validateLiveGraph(state);
   return {...state,source:'control-plane-api',runtime_verified:false,fetched_at:new Date(now).toISOString()};
 }
 function controlPlaneEndpoint(base){
@@ -96,4 +120,4 @@ function createServer(){return http.createServer(async(req,res)=>{
   }catch{json(res,404,{error:'not-found'});}
 });}
 if(require.main===module)createServer().listen(process.env.PORT||10000);
-module.exports={createServer,normalize,validateLiveState,controlPlaneEndpoint,readJsonResponse,securityHeaders};
+module.exports={createServer,normalize,validateLiveState,validateLiveGraph,controlPlaneEndpoint,readJsonResponse,securityHeaders};
