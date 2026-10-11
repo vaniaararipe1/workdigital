@@ -7,7 +7,15 @@ const {evaluateRuntimeReadiness}=require('./runtime/readiness');
 const root=path.join(__dirname,'public');
 const expectedAgents=['bruno','clara','felipe','gabriel','larissa','marcelo','patricia'];
 const maxLiveStateAgeMs=2*60*1000;
-function json(res,status,data){res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data))}
+const securityHeaders=Object.freeze({
+  'content-security-policy':"default-src 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'",
+  'cross-origin-opener-policy':'same-origin',
+  'permissions-policy':'camera=(), geolocation=(), microphone=(), payment=()',
+  'referrer-policy':'no-referrer',
+  'x-content-type-options':'nosniff',
+  'x-frame-options':'DENY'
+});
+function json(res,status,data){res.writeHead(status,{...securityHeaders,'content-type':'application/json; charset=utf-8','cache-control':'no-store'});res.end(JSON.stringify(data))}
 function normalize(data){
   if(!data || ['agents','tasks','operations','work_packets'].some(k=>!Array.isArray(data[k])))throw Error('Invalid Control Plane snapshot');
   return {...data,agents:data.agents.map(a=>({...a,key:a.agent_key||a.key})),
@@ -63,8 +71,8 @@ function createServer(){return http.createServer(async(req,res)=>{
     const real=await fs.realpath(file);
     if(!real.startsWith(root+path.sep))return json(res,403,{error:'forbidden'});
     const bytes=await fs.readFile(real),types={'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css'};
-    res.writeHead(200,{'content-type':types[path.extname(real)]||'application/octet-stream'});res.end(req.method==='HEAD'?undefined:bytes);
+    res.writeHead(200,{...securityHeaders,'content-type':types[path.extname(real)]||'application/octet-stream','cache-control':'no-cache'});res.end(req.method==='HEAD'?undefined:bytes);
   }catch{json(res,404,{error:'not-found'});}
 });}
 if(require.main===module)createServer().listen(process.env.PORT||10000);
-module.exports={createServer,normalize,validateLiveState,controlPlaneEndpoint};
+module.exports={createServer,normalize,validateLiveState,controlPlaneEndpoint,securityHeaders};

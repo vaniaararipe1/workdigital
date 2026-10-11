@@ -1,6 +1,20 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),http=require('node:http'),snapshot=require('./snapshot.json'),{createServer,normalize,validateLiveState,controlPlaneEndpoint}=require('./server');
 const capabilities=require('./runtime/control-plane-capabilities.json');
+test('serves a restrictive browser security boundary on UI and API responses',async()=>{
+  const server=createServer();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const base='http://127.0.0.1:'+server.address().port;
+  try{
+    for(const route of ['/','/api/control-plane']){
+      const response=await fetch(base+route),csp=response.headers.get('content-security-policy');
+      assert.equal(response.headers.get('x-content-type-options'),'nosniff');
+      assert.equal(response.headers.get('x-frame-options'),'DENY');
+      assert.equal(response.headers.get('referrer-policy'),'no-referrer');
+      assert.equal(response.headers.get('cross-origin-opener-policy'),'same-origin');
+      assert.match(response.headers.get('permissions-policy'),/camera=\(\)/);
+      assert.match(csp,/default-src 'self'/);assert.match(csp,/frame-ancestors 'none'/);assert.match(csp,/object-src 'none'/);assert.match(csp,/connect-src 'self'/);
+    }
+  }finally{await new Promise(resolve=>server.close(resolve));}
+});
 test('serves UI, labels history, refuses traversal and writes',async()=>{
   const previous=process.env.CONTROL_PLANE_API_URL;delete process.env.CONTROL_PLANE_API_URL;
   const server=createServer();await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const base='http://127.0.0.1:'+server.address().port;
