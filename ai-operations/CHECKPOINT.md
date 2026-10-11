@@ -1,6 +1,6 @@
 # Checkpoint — ecossistema Work Digital
 
-Atualizado em: 2026-10-11T20:28:16Z
+Atualizado em: 2026-10-11T21:37:23Z
 
 Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somente `ai-operations/`. Históricos de 26/09/2026 orientam a recuperação, mas não são prova do estado atual.
 
@@ -54,10 +54,12 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - O gate de readiness do dispatcher agora exige, além de estado ao vivo, identidade, lease e CAS, as três provas de segurança da entrega: versão esperada, persistência fenced e bloqueio das escritas legadas. Marcar o runtime como verificado e apresentar lease ativo não contorna mais uma dessas proteções ausente.
 - O caminho interno `planLeasedDispatch` foi unificado ao mesmo avaliador de readiness usado pela API. Ele não mantém mais um critério reduzido próprio: só produz plano executável quando todas as provas do gate completo estão presentes, usando o mesmo relógio explícito para validar o lease.
 - O cliente Node do lease foi alinhado aos limites já aplicados pelo PostgreSQL: owner entre 1 e 200 caracteres, versão inteira segura, TTL entre 1 segundo e 5 minutos, duração coerente, timestamps nulos na liberação e número de tentativas limitado. Isso evita aprovar localmente um documento que seria recusado pelo backend transacional.
+- O registry do ChatGPT passou a expor nativamente `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. Uma execução agendada, sem presença da CEO, completou aquisição, dois heartbeats, rejeição de fence obsoleto sem escrita, persistência com fence vigente e liberação.
+- A primeira rejeição nativa revelou que PostgREST apresentou a exceção `Stale lease fence` como código `P0001`, apesar do SQLSTATE solicitado pela função interna. O classificador da Edge Function foi isolado, coberto por regressão e reimplantado; a fonte recuperada da versão ativa 14 / aplicação 2.8.2 devolve `stale-runtime-fence` explicitamente.
 
 ## Evidência e validação
 
-- `npm test`: 63/63 testes aprovados.
+- `npm test`: 66/66 testes aprovados.
 - `node --experimental-strip-types --check runtime/backend/work-digital-mcp-v2/index.ts`: aprovado.
 - PostgreSQL real:
   - leitura inicial: versão 0, sem owner;
@@ -100,6 +102,12 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - Regressão dedicada apresentou estado ao vivo, `runtime_verified=true`, identidade e lease ativo, removendo separadamente `expected_version`, persistência fenced e bloqueio de escrita legada; nos três casos o readiness permaneceu falso e o dispatcher desativado.
 - Regressão dedicada chamou diretamente `planLeasedDispatch` com estado verificado, owner correto e lease ativo, mas sem persistência fenced; o helper retornou `dispatch-blocked`, sem pacote, confirmando que o gate não pode ser contornado pelo caminho interno.
 - Regressão de paridade confirmou rejeição local de TTL acima de 5 minutos, owner acima de 200 caracteres, versão acima do inteiro seguro, lease com duração excessiva e contagem de tentativas inválida — os mesmos limites essenciais do contrato SQL.
+- Ciclo nativo pós-deploy 2.8.2:
+  - aquisição aplicada na versão 21 e heartbeat na versão 22;
+  - persistência com fence 21 rejeitada nominalmente como `stale-runtime-fence`;
+  - o mesmo pacote técnico permaneceu gravável e foi persistido com fence 22 em `REVIEW`;
+  - liberação aplicada na versão 23; leitura final confirmou owner e expiração nulos;
+  - evidência sanitizada persistida em `runtime/evidence/native-fencing-2026-10-11.json`.
 - Advisor de segurança após a segunda migração não aponta mais RLS sem política no schema `wd_runtime`. Permanece apenas aviso global preexistente de proteção contra senhas vazadas, fora do escopo deste runtime.
 - Nenhuma tarefa, agente, permissão comercial, projeto de cliente ou arquivo fora de `ai-operations/` foi alterado.
 
@@ -109,14 +117,18 @@ Escopo preservado: `vaniaararipe1/workdigital`, branch `ai-operations-v1`, somen
 - `lease_backend=true`
 - `fenced_work_packet_persistence=true`
 - `legacy_delivery_writes_blocked=true`
+- `native_runtime_tools_exposed=true`
+- `native_lease_cycle_verified=true`
+- `native_fenced_delivery_verified=true`
+- `explicit_stale_fence_error=true`
 - `runtime_verified=false`
 - dispatcher continua desativado e `GET /api/queue` continua fail-closed sem todas as provas.
 
-O backend durável, a retomada entre rodadas, a persistência fenced e o bloqueio do bypass legado agora funcionam. Isso ainda não comprova a invocação nativa dos três novos tools pelo catálogo do ChatGPT, porque o registry continua expondo apenas o contrato anterior.
+O backend durável, a retomada entre rodadas, a invocação nativa, o heartbeat, a persistência fenced e o bloqueio do bypass legado estão comprovados. `runtime_verified=false` continua correto para a projeção da interface porque ainda não existe um canal independente que publique identidade da execução e lease ativo; o snapshot não pode autocertificar esse estado.
 
 ## Pendências
 
-- Confirmar em execução futura que o registry do ChatGPT recarregou `read_runtime_lease`, `cas_runtime_lease` e `persist_work_packet_fenced`. A verificação de 11/10/2026 às 20:28Z continuou sem os três comandos, embora a fonte ativa recuperada diretamente do Supabase os contenha.
+- Implementar um canal independente e autenticado de runtime readiness que vincule identidade da execução, versão esperada e lease ativo sem aceitar autocertificação da rota `/snapshot`.
 - Conectar a interface publicada à rota `/snapshot` com um token OAuth de servidor somente quando existir ambiente autorizado; nenhuma credencial foi criada, exposta ou solicitada no chat.
 - Somente após essas provas definir `runtime_verified=true` e avaliar ativação do dispatcher.
 - Reconciliar `TASK-002` e `WP-004` antes de qualquer trabalho que possa implicar ação externa.
@@ -124,9 +136,9 @@ O backend durável, a retomada entre rodadas, a persistência fenced e o bloquei
 
 ## Próximo passo autorizado
 
-Na próxima execução, descobrir novamente o contrato do plugin Work Digital. Se os três tools 2.7+ estiverem expostos, repetir uma aquisição e liberação inteiramente pelo MCP nativo e então avaliar `runtime_verified`. Se continuarem ausentes, não alterar permissões nem sobrecarregar tools existentes: continuar QA e integração interna que não dependam desse catálogo, especialmente o preview visual autorizado e o contrato de configuração da interface publicada. Não usar `WP-004`; não enviar mensagens a terceiros.
+Projetar e implementar o canal independente de runtime readiness, mantendo o snapshot incapaz de definir `runtime_verified` por conta própria. Depois integrar esse canal ao gate já existente e repetir o ciclo nativo com identidade + lease ativo observáveis pela interface. Não ativar o dispatcher, não usar `WP-004` e não enviar mensagens a terceiros antes dessa prova.
 
 ## Bloqueio
 
-Não há bloqueio de acesso ao Supabase. O limite imediato é o registry MCP do ChatGPT continuar sem os três tools, apesar do health 2.8.1 e da fonte implantada. O app é personalizado e não tem release pública atualizável pelo diretório. Não pedir nova instalação ou reconexão a Vânia e não alterar permissões globais. A rota `/snapshot` não pôde ser invocada com OAuth bruto porque o conector não expõe o token; foram validados a fonte ativa, o health e as coleções subjacentes, inclusive as contagens filtradas. O QA visual local foi tentado novamente em 11/10/2026 às 14:34Z, mas o navegador remoto retornou `ERR_CONNECTION_REFUSED` para `127.0.0.1`; ainda falta um preview autorizado desta branch.
+Não há bloqueio de acesso ao Supabase nem ao trio nativo de runtime. O limite imediato passou a ser arquitetural: a interface ainda não recebe uma prova independente de identidade do runtime + lease ativo, e a rota `/snapshot` permanece deliberadamente incapaz de definir `runtime_verified=true`. O QA visual local também continua pendente porque o navegador remoto não alcança o servidor em `127.0.0.1`; ainda falta um preview autorizado desta branch. Nenhuma ação de Vânia é necessária para o próximo trabalho interno.
 

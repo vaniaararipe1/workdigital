@@ -21,8 +21,9 @@ import {
 
 import { z } from "npm:zod@^4.3.6";
 import { filterSnapshotRecords } from "./snapshot-filter.mjs";
+import { classifyFencedDeliveryError } from "./fenced-error.mjs";
 
-const applicationVersion = "2.8.1";
+const applicationVersion = "2.8.2";
 
 function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -1582,22 +1583,10 @@ function createHandler(supabase: any) {
         p_next_action: next_action ?? null,
       });
       if (error) {
-        const denied = error.code === "42501";
-        const stale = error.code === "40001";
-        const notWritable = error.code === "55000";
-        const invalid = ["22023", "22007", "22008", "22P02"].includes(error.code);
         return {
           content: [{ type: "text", text: JSON.stringify({
             ok: false,
-            error: denied
-              ? "runtime-operator-required"
-              : stale
-              ? "stale-runtime-fence"
-              : notWritable
-              ? "work-packet-not-writable"
-              : invalid
-              ? "invalid-fenced-delivery"
-              : "fenced-delivery-unavailable",
+            error: classifyFencedDeliveryError(error),
           }) }],
           isError: true,
         };

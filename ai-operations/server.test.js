@@ -48,7 +48,7 @@ test('historical fallback cannot certify live state or runtime execution',()=>{
 });
 test('accepts only fresh, healthy live state with the complete agent registry',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');
-  const live={...snapshot,live:true,runtime_verified:false,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}};
+  const live={...snapshot,live:true,runtime_verified:false,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.2'}};
   const state=validateLiveState(live,{now});
   assert.equal(state.live,true);assert.equal(state.source,'control-plane-api');
   assert.throws(()=>validateLiveState({...live,captured_at:'2026-10-09T19:57:59Z'},{now}),/stale/);
@@ -61,7 +61,7 @@ test('accepts only fresh, healthy live state with the complete agent registry',(
 });
 test('rejects duplicate, technical and relationally inconsistent live records',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');
-  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}});
+  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.2'}});
   const duplicate=live();duplicate.tasks.push({...duplicate.tasks[0]});
   assert.throws(()=>validateLiveState(duplicate,{now}),/Duplicate task identity/);
   const technical=live();technical.operations[0].operation_key=technical.operations[0].key='OP-TEST-001';
@@ -73,7 +73,7 @@ test('rejects duplicate, technical and relationally inconsistent live records',(
 });
 test('rejects incompatible schemas and unknown agent references',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');
-  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}});
+  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.2'}});
   const incompatible=live();incompatible.schema_version=3;
   assert.throws(()=>validateLiveState(incompatible,{now}),/snapshot schema version/);
   const duplicateAgentId=live();duplicateAgentId.agents[1].id=duplicateAgentId.agents[0].id;
@@ -85,7 +85,7 @@ test('rejects incompatible schemas and unknown agent references',()=>{
 });
 test('rejects agent identity or permission drift from the versioned contracts',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');
-  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}});
+  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.2'}});
   const changedRole=live();changedRole.agents.find(agent=>agent.key==='gabriel').role='Direção de Arte';
   assert.throws(()=>validateLiveState(changedRole,{now}),/Unexpected agent contract/);
   const escalated=live();escalated.agents.find(agent=>agent.key==='felipe').permissions.external_contact=true;
@@ -93,7 +93,7 @@ test('rejects agent identity or permission drift from the versioned contracts',(
 });
 test('rejects invalid, cross-operation and cyclic task relationships',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');
-  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}});
+  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.2'}});
   const missing=live();missing.tasks[0].dependencies=[{task_key:'TASK-MISSING'}];
   assert.throws(()=>validateLiveState(missing,{now}),/Invalid task dependency/);
   const mismatch=live();mismatch.tasks[0].dependencies=[{task_id:mismatch.tasks[1].id,task_key:mismatch.tasks[2].key}];
@@ -109,7 +109,7 @@ test('rejects invalid, cross-operation and cyclic task relationships',()=>{
 });
 test('rejects contradictory canonical and normalized aliases',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');
-  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}});
+  const live=()=>structuredClone({...snapshot,live:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.2'}});
   const cases=[
     state=>{state.agents[0].key='clara';},
     state=>{state.operations[0].coordinator='clara';},
@@ -120,7 +120,7 @@ test('rejects contradictory canonical and normalized aliases',()=>{
 });
 test('a live snapshot cannot certify the autonomous runtime',()=>{
   const now=Date.parse('2026-10-09T20:00:00Z');
-  const claimed={...snapshot,live:true,runtime_verified:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.1'}};
+  const claimed={...snapshot,live:true,runtime_verified:true,captured_at:'2026-10-09T19:59:00Z',control_plane:{status:'online',database:'connected',version:'2.8.2'}};
   const state=validateLiveState(claimed,{now});
   assert.equal(state.live,true);assert.equal(state.runtime_verified,false);
   const readiness=evaluateRuntimeReadiness(state,{capabilities,runtimeIdentity:'run-a',lease:{owner:'run-a',expires_at:'2026-10-09T20:01:00Z'}});

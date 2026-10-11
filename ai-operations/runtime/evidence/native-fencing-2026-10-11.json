@@ -1,0 +1,35 @@
+{
+  "observed_at": "2026-10-11T21:37:23Z",
+  "scope": "disposable_internal_runtime_test",
+  "control_plane": {
+    "project_ref": "jegzhawblljpngbkaoqx",
+    "edge_function_version": 14,
+    "application_version": "2.8.2",
+    "health": "online",
+    "database": "connected"
+  },
+  "native_tools": [
+    "read_runtime_lease",
+    "cas_runtime_lease",
+    "persist_work_packet_fenced"
+  ],
+  "cycle": {
+    "owner": "chatgpt-work-fence-mapper-test-20261011-2138",
+    "acquired_version": 21,
+    "heartbeat_version": 22,
+    "stale_attempt_version": 21,
+    "stale_response": "stale-runtime-fence",
+    "current_attempt_version": 22,
+    "current_persisted": true,
+    "current_packet_status": "REVIEW",
+    "released_version": 23,
+    "final_owner": null,
+    "final_expires_at": null
+  },
+  "safety": {
+    "test_record": true,
+    "external_actions": false,
+    "wp_004_used": false,
+    "dispatcher_activated": false
+  }
+}
