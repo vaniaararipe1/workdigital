@@ -63,10 +63,14 @@ Média ponderada: **ok vale 100, atenção vale 50, problema vale 0.**
 **Formulário de contato: quando dizemos "não há".** Antes de afirmar que não há formulário (MEDIDO), a ferramenta:
 1. espera a página terminar de carregar (rede ociosa e mais 3 segundos);
 2. procura `<form>` visível, `iframe` de formulário (RD Station, HubSpot, Typeform, Google Forms, Jotform, Calendly...) e código de formulários carregados por script (RD Station, HubSpot, Typeform, Google Forms, Elementor, Contact Form 7, WPForms, Gravity Forms, Calendly);
-3. procura botões que parecem abrir formulário em janela (modal/pop-up);
-4. inclui a página de contato entre as analisadas: do menu ou sitemap, ou tentando `/contato` e `/fale-conosco`.
+3. procura botões que parecem abrir formulário em janela (modal/pop-up) e, se nenhum formulário estiver visível, **clica em no máximo um** desses botões (de preferência na página de contato) para abrir a janela, **sem preencher nem enviar nada**. Se o clique levar para outra página, o resultado é descartado;
+4. inclui a página de contato entre as analisadas: do menu, do rodapé ou do sitemap, ou tentando `/contato` e `/fale-conosco`.
+
+Quando o formulário é encontrado, o relatório diz onde: a página, ou o botão que abre a janela.
 
 Se houver qualquer sinal (passos 2 e 3) sem formulário visível, ou se a página de contato ou outra página não abrir, o item fica como **Não foi possível confirmar**. Só fica como MEDIDO quando nada foi encontrado em nenhuma das buscas.
+
+**A mesma cautela vale para as outras ausências de Experiência e conversão.** "Não há WhatsApp", "não há telefone/e-mail clicável" e "não há botão de ação" só saem como MEDIDO depois da renderização completa e da busca nas páginas-chave. Se alguma página não abriu, se a página de contato ficou inacessível, se há código de botão de WhatsApp sem link visível ou se a página não mostrou nenhum elemento clicável, o item fica como **Não foi possível confirmar**.
 
 Ficam **fora da nota** por serem avaliação de especialista (preenchidos só pela Vania):
 - **Prova social visível:** busca por palavras-chave e blocos de depoimentos.

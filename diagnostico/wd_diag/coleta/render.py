@@ -5,6 +5,7 @@ endereços de rede interna são abortados. Vídeos e áudios não são baixados.
 """
 from __future__ import annotations
 
+import re
 import time
 from pathlib import Path
 
@@ -95,6 +96,65 @@ class Renderizador:
         except Exception as e:  # noqa: BLE001 - o relatório precisa registrar qualquer falha
             msg = str(e).splitlines()[0][:200]
             resultado["erro"] = "tempo esgotado ao abrir a página" if "Timeout" in msg else f"falha ao abrir a página: {msg}"
+        finally:
+            contexto.close()
+        return resultado
+
+    # Seletores de botões que abrem janela (modal/pop-up). Nunca botões de envio.
+    GATILHOS_JANELA = ("[aria-haspopup=dialog]", "[data-toggle=modal]", "[data-bs-toggle=modal]", "[data-modal]",
+                       "[data-popup]", "a[href*='#elementor-action']", "a[href*='popup']", "a[href*='modal']")
+    TEXTO_CONTATO = re.compile(r"(orçamento|orcamento|proposta|fale conosco|contato|cotação|cotacao|solicit|agend|quero)", re.I)
+
+    def abrir_janela_de_contato(self, url: str) -> dict:
+        """Abre (sem preencher nem enviar) a janela de contato e procura o formulário dentro dela.
+
+        Clica em no máximo UM botão visível que abre janela e cujo texto fala de contato/orçamento/proposta.
+        Se o clique levar para outra página, o resultado é descartado.
+        """
+        resultado = {"url": url, "botao": None, "formularios": [], "navegou": False, "erro": None}
+        contexto = self._browser.new_context(user_agent=UA_CHROME_DESKTOP + " " + self.config.user_agent,
+                                             locale="pt-BR", **DESKTOP)
+        contexto.route("**/*", self._rota)
+        pagina = contexto.new_page()
+        pagina.set_default_timeout(self.config.timeout_pagina * 1000)
+        try:
+            pagina.goto(url, wait_until="domcontentloaded", timeout=self.config.timeout_pagina * 1000)
+            try:
+                pagina.wait_for_load_state("networkidle", timeout=8000)
+            except Exception:
+                pass
+            pagina.wait_for_timeout(self.espera_extra_ms)
+            alvo = None
+            for seletor in self.GATILHOS_JANELA + ("button", "a[href='#']", "a[href^='javascript']"):
+                loc = pagina.locator(seletor)
+                for i in range(min(loc.count(), 20)):
+                    el = loc.nth(i)
+                    try:
+                        if not el.is_visible():
+                            continue
+                        texto = " ".join((el.inner_text(timeout=1000) or "").replace("↗", " ").split())
+                        if el.evaluate("e => e.type === 'submit' || !!e.closest('form')"):
+                            continue
+                    except Exception:
+                        continue
+                    if self.TEXTO_CONTATO.search(texto):
+                        alvo, resultado["botao"] = el, texto[:60]
+                        break
+                if alvo:
+                    break
+            if not alvo:
+                return resultado
+            antes = pagina.url
+            alvo.click(timeout=5000)
+            pagina.wait_for_timeout(3000)
+            if pagina.url.split("#")[0] != antes.split("#")[0]:
+                resultado["navegou"] = True
+                return resultado
+            medidas = pagina.evaluate(MEDIR_JS)
+            resultado["formularios"] = medidas.get("formularios", [])
+            resultado["formularios_externos"] = medidas.get("formularios_externos", [])
+        except Exception as e:  # noqa: BLE001
+            resultado["erro"] = str(e).splitlines()[0][:200]
         finally:
             contexto.close()
         return resultado

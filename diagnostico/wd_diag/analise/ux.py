@@ -19,6 +19,26 @@ def _nao_medido(id_, titulo, motivo, peso) -> Achado:
     return Achado(id_, "ux", titulo, "nao_medido", "na", f"Não foi possível medir: {motivo}.", peso=peso, confianca="baixa")
 
 
+def _nao_confirmado(id_, titulo, vimos, motivos, peso, nota="") -> Achado:
+    return Achado(id_, "ux", titulo, "nao_confirmado", "na", vimos,
+                  evidencia="motivo: " + "; ".join(motivos) + ".", peso=peso, area="Conversão", confianca="baixa",
+                  nota_interna=nota or "Confira manualmente no site antes de enviar.")
+
+
+def duvidas_de_coleta(paginas: list[dict], busca_contato: dict | None) -> list[str]:
+    """Motivos que impedem afirmar uma ausência como MEDIDO (páginas que não abriram, contato inacessível)."""
+    motivos = []
+    falhas = [p["url"] for p in paginas if p.get("erro")]
+    if falhas:
+        motivos.append(f"{plural(len(falhas), 'página')} não abriu ({', '.join(code(caminho(u), 30) for u in falhas[:2])})")
+    if (busca_contato or {}).get("erro"):
+        motivos.append(f"a página de contato não pôde ser aberta ({busca_contato['erro']})")
+    return motivos
+
+
+SINAIS_WHATSAPP = r"joinchat|creame-whatsapp|wa-widget|whatsapp-button|wpp-button|getbutton\.io|click-to-chat|ht-ctc|qlwapp|wa\.link|aria-label=\"[^\"]*whats"
+
+
 def _descr_ctas(ctas: list) -> str:
     return ", ".join(f"{code(c['texto'] or c['href'], 40)} a {c['topo']} px do topo" for c in ctas[:3])
 
@@ -47,6 +67,9 @@ def cta_dobra(medidas: dict | None, dispositivo: str) -> Achado:
                       correcao="Usar um botão com verbo de ação e destaque visual logo abaixo do título principal.",
                       impacto="menos visitantes dão o primeiro passo de contato.",
                       prioridade="alta" if dispositivo == "mobile" else "media", esforco=ESFORCO_RAPIDO, peso=peso, area="Conversão")
+    if not medidas.get("alvos_total"):
+        return _nao_confirmado(id_, titulo, f"Não encontramos elementos clicáveis na página inicial no {nome}.",
+                               ["a página pode não ter terminado de carregar ou usar elementos que a análise não reconhece"], peso)
     ev = (f"primeiro botão de ação ({code(primeiro['texto'] or primeiro['href'], 40)}) a {primeiro['topo']} px do topo; "
           f"a tela tem {altura} px de altura." if primeiro else "nenhum botão de ação encontrado na página inicial.")
     return Achado(id_, "ux", titulo, "medido", "problema",
@@ -62,7 +85,7 @@ def _links(paginas: list[dict], tipos: tuple) -> list[tuple[str, dict]]:
             for c in p["medidas"].get("contato_direto", []) if c["tipo"] in tipos]
 
 
-def whatsapp(home_mobile: dict | None, paginas: list[dict]) -> Achado:
+def whatsapp(home_mobile: dict | None, paginas: list[dict], busca_contato: dict | None = None) -> Achado:
     """Link de WhatsApp na home (celular) e nas demais páginas analisadas."""
     titulo = "Link de WhatsApp"
     abertas = [p for p in paginas if p.get("medidas")]
@@ -95,6 +118,13 @@ def whatsapp(home_mobile: dict | None, paginas: list[dict]) -> Achado:
                       correcao="Adicionar botão de WhatsApp na página inicial, de preferência fixo no canto da tela.",
                       impacto="quem está no celular precisa navegar por outras páginas para encontrar como falar com você.",
                       prioridade="alta", esforco=ESFORCO_RAPIDO, peso=3, area="Conversão")
+    motivos = duvidas_de_coleta(paginas, busca_contato)
+    widgets = [caminho(p["url"]) for p in abertas if re.search(SINAIS_WHATSAPP, p.get("html", ""), re.I)]
+    if widgets:
+        motivos.append(f"há código de botão de WhatsApp em {', '.join(code(w, 30) for w in widgets[:2])}, mas sem link visível")
+    if motivos:
+        return _nao_confirmado("ux-whatsapp", titulo, "Não encontramos link de WhatsApp visível, mas não dá para afirmar que ele não existe.",
+                               motivos, 3, "Abra o site no celular e confira se há botão de WhatsApp (pode abrir só depois de um clique).")
     return Achado("ux-whatsapp", "ux", titulo, "medido", "problema",
                   "Não encontramos link de WhatsApp.",
                   evidencia=f"nenhum link {code('wa.me')} ou {code('api.whatsapp.com')} nas {len(abertas)} páginas analisadas.",
@@ -105,7 +135,7 @@ def whatsapp(home_mobile: dict | None, paginas: list[dict]) -> Achado:
                   nota_interna="Confira se há widget de chat que abre o WhatsApp sem link direto (a ferramenta não clica).")
 
 
-def telefone_email(paginas: list[dict]) -> Achado:
+def telefone_email(paginas: list[dict], busca_contato: dict | None = None) -> Achado:
     titulo = "Telefone e e-mail clicáveis"
     abertas = [p for p in paginas if p.get("medidas")]
     if not abertas:
@@ -128,6 +158,9 @@ def telefone_email(paginas: list[dict]) -> Achado:
                       significado="Oferecer mais de um canal clicável facilita o contato para quem prefere ligar ou escrever.",
                       correcao=f"Transformar o {falta} em link clicável no rodapé e na página de contato.",
                       prioridade="baixa", esforco=ESFORCO_RAPIDO, peso=1, area="Conversão")
+    motivos = duvidas_de_coleta(paginas, busca_contato)
+    if motivos:
+        return _nao_confirmado("ux-tel-email", titulo, "Não encontramos telefone nem e-mail clicáveis nas páginas que abriram.", motivos, 1)
     return Achado("ux-tel-email", "ux", titulo, "medido", "problema", "Não encontramos telefone nem e-mail clicáveis.", evidencia=ev,
                   significado="Quem quer ligar ou mandar e-mail precisa copiar os dados à mão.",
                   correcao="Transformar telefone e e-mail em links clicáveis no rodapé e na página de contato.",
@@ -173,7 +206,10 @@ def formulario(paginas: list[dict], tem_contato_direto: bool, busca_contato: dic
     if contato:
         url, f = max(contato, key=lambda x: x[1]["campos"])
         sem_rotulo = f["campos"] - f["com_rotulo"]
-        ev = f"página {code(caminho(url), 40)}: {plural(f['campos'], 'campo')}, {f['com_rotulo']} com rótulo identificável."
+        html_pag = next((p.get("html", "") for p in abertas if p["url"] == url), "")
+        ferramenta = sinais_formulario(html_pag)
+        ev = (f"encontrado na página {code(caminho(url), 40)}" + (f" (formulário de {', '.join(ferramenta)})" if ferramenta else "") +
+              f": {plural(f['campos'], 'campo')}, {f['com_rotulo']} com rótulo identificável.")
         if f["campos"] > 9:
             return Achado("ux-form", "ux", titulo, "medido", "problema",
                           f"O formulário principal tem {f['campos']} campos.", evidencia=ev,
@@ -196,7 +232,26 @@ def formulario(paginas: list[dict], tem_contato_direto: bool, busca_contato: dic
                       f"Formulário com {plural(f['campos'], 'campo')}, todos com rótulo.", evidencia=ev,
                       significado="Curto e claro. Bom para quem prefere escrever.", peso=2, area="Conversão")
 
+    janela = busca_contato.get("janela") or {}
+    form_janela = [f for f in janela.get("formularios", []) if f.get("campos", 0) >= 2]
+    if form_janela and not janela.get("navegou"):
+        f = max(form_janela, key=lambda x: x["campos"])
+        sem_rotulo = f["campos"] - f["com_rotulo"]
+        ev = (f"encontrado na janela aberta pelo botão {code(janela['botao'], 40)} na página {code(caminho(janela['url']), 40)}: "
+              f"{plural(f['campos'], 'campo')}, {f['com_rotulo']} com rótulo identificável.")
+        if f["campos"] > 9 or f["campos"] > 6 or sem_rotulo > 0:
+            return Achado("ux-form", "ux", titulo, "medido", "atencao",
+                          f"O formulário de contato abre numa janela e tem {plural(f['campos'], 'campo')}"
+                          + (f", {sem_rotulo} sem rótulo" if sem_rotulo else "") + ".", evidencia=ev,
+                          significado="Rótulos claros e poucos campos facilitam o preenchimento, inclusive para leitores de tela.",
+                          correcao="Manter até 6 campos e colocar um rótulo visível acima de cada um.",
+                          prioridade="baixa", esforco=ESFORCO_RAPIDO, peso=2, area="Conversão")
+        return Achado("ux-form", "ux", titulo, "medido", "ok",
+                      f"O formulário de contato abre numa janela ao clicar em “{janela['botao']}” e tem {plural(f['campos'], 'campo')}, todos com rótulo.",
+                      evidencia=ev, significado="Curto e claro. Bom para quem prefere escrever.", peso=2, area="Conversão")
+
     externos = [(p["url"], s) for p in abertas for s in p["medidas"].get("formularios_externos", [])]
+    externos += [(janela["url"], s) for s in janela.get("formularios_externos", [])] if janela and not janela.get("navegou") else []
     if externos:
         u, src = externos[0]
         return Achado("ux-form", "ux", titulo, "medido", "ok",
@@ -208,16 +263,12 @@ def formulario(paginas: list[dict], tem_contato_direto: bool, busca_contato: dic
 
     sinais = sorted({n for p in abertas for n in sinais_formulario(p.get("html", ""))})
     modais = [b for p in abertas for b in p["medidas"].get("botoes_modal", [])]
-    falhas = [p["url"] for p in paginas if p.get("erro")]
     motivos = []
     if sinais:
         motivos.append("código de formulário de " + ", ".join(sinais))
     if modais:
         motivos.append("botão que parece abrir um formulário em janela (" + ", ".join(code(m, 40) for m in modais[:2]) + ")")
-    if busca_contato.get("erro"):
-        motivos.append(f"a página de contato não pôde ser aberta ({busca_contato['erro']})")
-    if falhas:
-        motivos.append(f"{plural(len(falhas), 'página')} não abriu")
+    motivos += duvidas_de_coleta(paginas, busca_contato)
     if motivos:
         return Achado("ux-form", "ux", titulo, "nao_confirmado", "na",
                       "Não encontramos um formulário visível sem interação, mas há sinais de que ele existe.",
@@ -358,8 +409,8 @@ def analisar(home_mobile: dict | None, home_desktop: dict | None, paginas: list[
              busca_contato: dict | None = None) -> list[Achado]:
     m = (home_mobile or {}).get("medidas")
     d = (home_desktop or {}).get("medidas")
-    wa = whatsapp(m, paginas)
-    tel = telefone_email(paginas)
+    wa = whatsapp(m, paginas, busca_contato)
+    tel = telefone_email(paginas, busca_contato)
     return [
         cta_dobra(m, "mobile"),
         cta_dobra(d, "desktop"),

@@ -44,7 +44,7 @@ def _json_padrao(o):
     return repr(o)
 
 
-E_CONTATO = re.compile(r"/(contato|contatos|fale-conosco|faleconosco|contact|contact-us|orcamento|solicite)", re.I)
+E_CONTATO = re.compile(r"/(contato|contatos|fale-conosco|faleconosco|contate-nos|contact|contact-us|orcamento|solicite|atendimento)", re.I)
 CAMINHOS_CONTATO = ("/contato/", "/contato", "/fale-conosco/", "/fale-conosco", "/contact/")
 
 
@@ -139,6 +139,13 @@ def executar_diagnostico(url: str, empresa: str, config: Config | None = None, p
                         continue
                     paginas.append(rp)
                     abertas += 1
+                # Formulário que só aparece numa janela: abre (sem preencher nem enviar) e confere.
+                sem_form = not any(f.get("campos", 0) >= 2 for p in paginas for f in (p.get("medidas") or {}).get("formularios", []))
+                modais = [p for p in paginas if (p.get("medidas") or {}).get("botoes_modal")]
+                if sem_form and modais:
+                    alvo = next((p for p in modais if E_CONTATO.search(p["url"])), modais[0])
+                    log.info("Abrindo janela de contato em %s", alvo["url"])
+                    busca_contato["janela"] = rnd.abrir_janela_de_contato(alvo.get("url_final") or alvo["url"])
                 bloqueados = rnd.bloqueados
         except Exception as e:  # noqa: BLE001
             avisos.append(f"O navegador automatizado falhou: {str(e).splitlines()[0][:200]}.")
