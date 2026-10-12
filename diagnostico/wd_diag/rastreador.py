@@ -104,3 +104,32 @@ def escolher_paginas(base: str, html_home: str, sitemap_urls: list[str], maximo:
         key=lambda c: (-pontuar(c["url"], "menu" in c["origens"], "sitemap" in c["origens"]), len(c["url"])),
     )
     return [{"url": c["url"], "origem": ", ".join(sorted(c["origens"]))} for c in ordenados[:maximo]]
+
+
+CONTATO_RE = re.compile(r"(contato|contate|fale[- ]?conosco|fale[- ]com|atendimento|or[çc]amento|contact)", re.I)
+CONTATO_PADRAO = ("/contato/", "/fale-conosco/")
+
+
+def paginas_de_contato(base: str, html_home: str, maximo: int = 3) -> list[dict]:
+    """Páginas de contato a visitar explicitamente: links do menu e do rodapé com cara de contato,
+    mais os endereços padrão /contato/ e /fale-conosco/ (que podem não existir)."""
+    sopa = BeautifulSoup(html_home or "", "html.parser")
+    achadas: dict[str, dict] = {}
+    for a in sopa.find_all("a", href=True):
+        href = a["href"].strip()
+        if not href or href.startswith(("#", "mailto:", "tel:", "javascript:", "whatsapp:")):
+            continue
+        absoluto = limpar(urljoin(base, href))
+        p = urlsplit(absoluto)
+        if p.scheme not in ("http", "https") or not mesmo_site(absoluto, base) or chave_caminho(absoluto) == chave_caminho(base):
+            continue
+        texto = a.get_text(" ", strip=True)
+        if not (CONTATO_RE.search(p.path) or CONTATO_RE.search(texto)):
+            continue
+        local = "rodapé" if a.find_parent("footer") is not None else (
+            "menu" if a.find_parent(["nav", "header"]) is not None else "link da página inicial")
+        achadas.setdefault(chave_caminho(absoluto), {"url": absoluto, "origem": local})
+    for caminho in CONTATO_PADRAO:
+        u = limpar(urljoin(base, caminho))
+        achadas.setdefault(chave_caminho(u), {"url": u, "origem": "endereço padrão"})
+    return list(achadas.values())[:maximo + len(CONTATO_PADRAO)]

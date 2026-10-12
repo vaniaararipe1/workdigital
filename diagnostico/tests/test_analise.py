@@ -52,10 +52,27 @@ def test_contato_direto_whatsapp_visivel_na_dobra():
     assert a.situacao == "ok"
 
 
+BUSCA_COMPLETA = {"contato": [{"url": "https://ex.com/contato/", "origem": "endereço padrão", "situacao": "analisada", "detalhe": ""},
+                              {"url": "https://ex.com/fale-conosco/", "origem": "endereço padrão", "situacao": "nao_existe", "detalhe": "código 404"}],
+                  "paginas_contato": [], "falhas": []}
+
+
 def test_contato_direto_ausente_em_todas_as_paginas():
     m = medidas()
-    a = ux.contato_direto(m, [{"url": "https://ex.com/", "medidas": m}, {"url": "https://ex.com/contato", "medidas": m}])
-    assert a.situacao == "problema" and "2 páginas" in a.evidencia
+    a = ux.contato_direto(m, [{"url": "https://ex.com/", "medidas": m}, {"url": "https://ex.com/contato", "medidas": m}], BUSCA_COMPLETA)
+    assert a.situacao == "problema" and a.tipo == "medido" and "2 páginas" in a.evidencia
+
+
+def test_contato_direto_ausente_sem_busca_de_contato_nao_e_afirmado():
+    m = medidas()
+    a = ux.contato_direto(m, [{"url": "https://ex.com/", "medidas": m}])
+    assert a.tipo == "nao_confirmado" and a.situacao == "na" and not a.conta_na_nota()
+
+
+def test_contato_direto_widget_de_whatsapp_sem_link_nao_e_afirmado():
+    m = medidas(sinais_whatsapp=[{"tipo": "script", "detalhe": "https://cdn.joinchat.com/x.js"}])
+    a = ux.contato_direto(m, [{"url": "https://ex.com/", "medidas": m}], BUSCA_COMPLETA)
+    assert a.tipo == "nao_confirmado" and "joinchat" in a.evidencia
 
 
 def test_formulario_longo_e_sem_rotulo():
@@ -65,6 +82,77 @@ def test_formulario_longo_e_sem_rotulo():
     form = {"campos": 4, "com_rotulo": 1, "com_placeholder": 4}
     a = ux.formulario([{"url": "https://ex.com/contato", "medidas": medidas(formularios=[form])}], True)
     assert a.situacao == "atencao" and "sem rótulo" in a.o_que_vimos
+
+
+def form_(campos=4, visivel=True, em_dialogo=False):
+    return {"campos": campos, "campos_visiveis": campos if visivel else 0, "com_rotulo": campos, "com_placeholder": 0,
+            "visivel": visivel, "oculto": not visivel, "em_dialogo": em_dialogo, "topo": 100 if visivel else None,
+            "id": "", "nomes": []}
+
+
+def test_formulario_escondido_em_painel_conta_como_existente():
+    # caso workdigital.art.br: o formulário é montado por script dentro de um painel fechado
+    m = medidas(formularios=[form_(5, visivel=False, em_dialogo=True)])
+    a = ux.formulario([{"url": "https://ex.com/", "medidas": m}], True, BUSCA_COMPLETA)
+    assert a.tipo == "medido" and a.situacao == "ok" and "painel ou pop-up" in a.evidencia
+
+
+def test_formulario_que_aparece_depois_do_clique():
+    m = medidas(gatilhos_formulario=[{"texto": "Pedir orçamento", "href": "", "abre_dialogo": True}])
+    clique = {"texto": "Pedir orçamento", "href": "", "abriu_formulario": True, "erro": None,
+              "medidas": {"formularios": [form_(3)]}}
+    a = ux.formulario([{"url": "https://ex.com/", "medidas": m, "cliques": [clique]}], True, BUSCA_COMPLETA)
+    assert a.tipo == "medido" and a.situacao == "ok" and "Pedir orçamento" in a.evidencia
+
+
+def test_formulario_de_ferramenta_incorporada_rd_station():
+    m = medidas(formularios_provedor=[{"provedor": "RD Station", "campos": 0, "visivel": True, "em_dialogo": False}])
+    a = ux.formulario([{"url": "https://ex.com/", "medidas": m}], True, BUSCA_COMPLETA)
+    assert a.tipo == "medido" and a.situacao == "ok" and "RD Station" in a.evidencia
+
+
+def test_formulario_na_pagina_de_contato_visitada_explicitamente():
+    contato = {"url": "https://ex.com/contato/", "medidas": medidas(formularios=[form_(3)])}
+    busca = {**BUSCA_COMPLETA, "paginas_contato": [contato]}
+    a = ux.formulario([{"url": "https://ex.com/", "medidas": medidas()}], True, busca)
+    assert a.tipo == "medido" and a.situacao == "ok" and "/contato/" in a.evidencia
+
+
+def test_formulario_ausente_so_e_medido_com_busca_completa_e_sem_sinais():
+    m = medidas()
+    a = ux.formulario([{"url": "https://ex.com/", "medidas": m, "render_completo": True}], False, BUSCA_COMPLETA)
+    assert a.tipo == "medido" and a.situacao == "problema" and a.conta_na_nota()
+    assert "/fale-conosco/ (não existe)" in a.evidencia
+
+
+def test_formulario_ausente_com_script_de_formulario_nao_e_afirmado():
+    m = medidas(sinais_formulario=[{"provedor": "RD Station", "tipo": "script", "detalhe": "rdstation-forms.min.js"}])
+    a = ux.formulario([{"url": "https://ex.com/", "medidas": m}], False, BUSCA_COMPLETA)
+    assert a.tipo == "nao_confirmado" and a.situacao == "na" and not a.conta_na_nota()
+    assert "RD Station" in a.evidencia and "Não foi possível confirmar" in a.o_que_vimos
+
+
+def test_formulario_ausente_com_pagina_de_contato_inacessivel_nao_e_afirmado():
+    busca = {**BUSCA_COMPLETA, "contato": [{"url": "https://ex.com/contato/", "origem": "menu",
+                                            "situacao": "inacessivel", "detalhe": "código 403"}]}
+    a = ux.formulario([{"url": "https://ex.com/", "medidas": medidas()}], False, busca)
+    assert a.tipo == "nao_confirmado" and "403" in a.evidencia
+
+
+def test_formulario_ausente_com_pagina_que_nao_terminou_de_carregar_nao_e_afirmado():
+    a = ux.formulario([{"url": "https://ex.com/", "medidas": medidas(), "render_completo": False}], False, BUSCA_COMPLETA)
+    assert a.tipo == "nao_confirmado" and "não terminou de carregar" in a.evidencia
+
+
+def test_formulario_ausente_com_botao_nao_testado_nao_e_afirmado():
+    m = medidas(gatilhos_formulario=[{"texto": "Fale conosco", "href": "#", "abre_dialogo": True}])
+    a = ux.formulario([{"url": "https://ex.com/", "medidas": m}], False, BUSCA_COMPLETA)
+    assert a.tipo == "nao_confirmado" and "Fale conosco" in a.evidencia
+
+
+def test_cta_ausente_com_pagina_incompleta_nao_e_afirmado():
+    a = ux.cta_dobra(medidas(), "mobile", completo=False)
+    assert a.tipo == "nao_confirmado" and not a.conta_na_nota()
 
 
 def test_formulario_externo_conta_como_existente_com_baixa_confianca():
@@ -287,3 +375,25 @@ def test_concordancia_no_plural():
     pags = [seo.extrair_pagina(f"https://ex.com/{i}", HTML_RUIM) for i in range(2)]
     assert "2 páginas pulam" in seo.hierarquia(pags).o_que_vimos
     assert "1 página pula" in seo.hierarquia(pags[:1]).o_que_vimos
+
+
+def test_paginas_de_contato_do_menu_rodape_e_enderecos_padrao():
+    from wd_diag.rastreador import paginas_de_contato
+    html = """<header><nav><a href="/servicos/">Serviços</a><a href="/fale-com-a-gente/">Fale com a gente</a></nav></header>
+              <footer><a href="/atendimento">Atendimento</a><a href="https://outro.com/contato">fora</a></footer>"""
+    achadas = paginas_de_contato("https://ex.com/", html)
+    urls = [a["url"] for a in achadas]
+    assert "https://ex.com/fale-com-a-gente/" in urls and "https://ex.com/atendimento" in urls
+    assert "https://ex.com/contato/" in urls and "https://ex.com/fale-conosco/" in urls
+    assert not any("outro.com" in u for u in urls)
+    assert next(a for a in achadas if a["url"].endswith("/atendimento"))["origem"] == "rodapé"
+
+
+def test_contato_direto_widget_de_whatsapp_fixo_na_home_conta_como_existente():
+    # caso workdigital.art.br: botão flutuante abre um painel com os links wa.me (escondidos até o clique)
+    m = medidas(contato_direto=[{"tipo": "whatsapp", "href": "https://wa.me/5511999999999", "visivel": False,
+                                 "fixo": False, "topo": None, "texto": ""}],
+                sinais_whatsapp=[{"tipo": "elemento", "detalhe": "wd-whatsapp-toggle", "visivel": True, "botao": True,
+                                  "fixo": True, "topo": 780}])
+    a = ux.contato_direto(m, [{"url": "https://ex.com/", "medidas": m}], BUSCA_COMPLETA)
+    assert a.tipo == "medido" and a.situacao == "ok" and "wd-whatsapp-toggle" in a.evidencia

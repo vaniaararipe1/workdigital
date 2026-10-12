@@ -105,6 +105,7 @@ wd_diag/
 - Toda afirmação do relatório vem de um `Achado` com evidência coletada, e tudo fica em `dados.json`.
 - Itens de julgamento têm `tipo="avaliacao"`: aparecem com selo próprio, não entram na nota e vão para as notas internas.
 - Coletas que falham viram `tipo="nao_medido"`, com o texto "Não foi possível medir", e saem do cálculo da nota.
+- Ausências com algum sinal contrário (script de formulário, widget de WhatsApp, página de contato que não abriu, página que não terminou de carregar) viram `tipo="nao_confirmado"`, com o texto "Não foi possível confirmar", e também saem da nota. Ver CRITERIOS.md, "Como procuramos formulários e contato".
 - Texto vindo do site analisado é sempre escapado antes de entrar no relatório.
 
 **Rastreamento educado e seguro:**
@@ -112,7 +113,7 @@ wd_diag/
 - O robots.txt é respeitado. Se ele bloquear a home, nenhuma página é aberta e só o PageSpeed do Google é consultado.
 - Há 1 s de intervalo entre requisições, timeout de 15 s (HTTP) e 30 s (página), e limite de 5 MB por resposta.
 - Cada salto de redirecionamento e cada requisição do navegador é validado: endereços privados, localhost e metadados de nuvem são bloqueados.
-- Vídeos e áudios não são baixados. Nada é clicado, nenhum formulário é enviado e nenhum dado pessoal é coletado.
+- Vídeos e áudios não são baixados. Nenhum formulário é preenchido ou enviado e nenhum dado pessoal é coletado. O único clique é em até 2 botões de contato que não mudam de página, para ver se abrem um formulário em pop-up; abas novas são fechadas.
 
 ## Fase 2: integração com RD Station (projeto, ainda não construído)
 
@@ -170,7 +171,7 @@ Envio ao lead (manual no começo; depois, botão "aprovar" que envia pelo RD Sta
 - **Performance sem a chave do PageSpeed.** O Lighthouse local mede na máquina que roda a ferramenta. Os números podem diferir do PageSpeed do Google e não incluem dados de visitantes reais, então o INP aparece como "não foi possível medir".
 - **Variação entre medições:** notas de velocidade mudam alguns pontos a cada execução, inclusive no PageSpeed. Em testes, a mesma home variou de 60 a 70 com o Lighthouse local. Use os números como ordem de grandeza, não como valor exato.
 - **Firewalls e proteção anti-robô** (Cloudflare e similares) podem bloquear a ferramenta. O relatório registra a falha e as notas internas avisam.
-- **Conteúdo que só aparece depois de um clique** (formulários em pop-up, menus, abas) não é analisado, porque a ferramenta não clica em nada.
+- **Conteúdo que só aparece depois de um clique:** a ferramenta testa até 2 botões de contato por página. Menus, abas e pop-ups abertos por outros botões não são analisados; quando há sinal de formulário não testado, o item sai como "Não foi possível confirmar".
 - **Prova social e proposta de valor** são detectadas por palavras-chave e precisam de revisão humana. Por isso estão marcadas como avaliação de especialista.
 - **Detecção de tecnologias** é conservadora de propósito: ferramentas carregadas só após consentimento de cookies podem não aparecer.
 - **DNS rebinding:** a URL é validada antes de cada requisição, mas um domínio malicioso pode trocar o IP entre a validação e a conexão. Na Fase 2, rode o worker numa rede sem acesso a serviços internos.

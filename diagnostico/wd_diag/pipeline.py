@@ -18,7 +18,7 @@ from .coleta import pagespeed, site
 from .coleta.render import Renderizador
 from .config import Config
 from .http import ClienteHTTP
-from .rastreador import escolher_paginas
+from .rastreador import chave_caminho, escolher_paginas, paginas_de_contato
 from .relatorio import contexto as ctx_relatorio
 from .relatorio import notas as ctx_notas
 from .modelos import Nota
@@ -74,6 +74,8 @@ def executar_diagnostico(url: str, empresa: str, config: Config | None = None, p
     home_d = home_m = None
     paginas: list[dict] = []
     paginas_resumo: list[dict] = []
+    paginas_contato: list[dict] = []
+    buscas_contato: list[dict] = []
     sitemap = {"existe": False, "url": "", "total_urls": 0, "urls": [], "tentativas": []}
     bloqueados: list[str] = []
     if pode_rastrear:
@@ -109,6 +111,8 @@ def executar_diagnostico(url: str, empresa: str, config: Config | None = None, p
                         continue
                     paginas.append(rp)
                     abertas += 1
+                paginas_contato, buscas_contato = _buscar_contato(rnd, cliente, url_final, home_d.get("html", ""),
+                                                                  paginas, config.max_paginas_contato)
                 bloqueados = rnd.bloqueados
         except Exception as e:  # noqa: BLE001
             avisos.append(f"O navegador automatizado falhou: {str(e).splitlines()[0][:200]}.")
@@ -143,7 +147,9 @@ def executar_diagnostico(url: str, empresa: str, config: Config | None = None, p
     achados += a_perf.achados(perf_m, perf_d)
     achados += a_ux.analisar(home_m if home_m and not home_m.get("erro") else None,
                              home_d if home_d and not home_d.get("erro") else None,
-                             [p for p in paginas_ok if p.get("medidas")])
+                             [p for p in paginas_ok if p.get("medidas")],
+                             busca={"contato": buscas_contato, "paginas_contato": paginas_contato,
+                                    "falhas": [r for r in paginas_resumo if not str(r.get("situacao", "")).startswith("aberta")]})
     achados_seo, _ = a_seo.analisar(paginas_ok, robots, sitemap, llms, https, inicial.redirecionamentos, links, url_final)
     achados += achados_seo
 
@@ -172,6 +178,7 @@ def executar_diagnostico(url: str, empresa: str, config: Config | None = None, p
         "performance": {"mobile": perf_m, "desktop": perf_d,
                         "fonte_texto": a_perf.fonte_texto(perf_m, perf_d, hoje.strftime("%d/%m/%Y"))},
         "paginas_resumo": paginas_resumo,
+        "buscas_contato": buscas_contato,
         "captura_mobile": (home_m or {}).get("captura"),
         "coleta": {
             "requisicao_inicial": {"status": inicial.status, "erro": inicial.erro,
@@ -179,6 +186,7 @@ def executar_diagnostico(url: str, empresa: str, config: Config | None = None, p
             "robots": robots, "sitemap": {**sitemap, "urls": sitemap.get("urls", [])[:50]},
             "llms": llms, "https": https, "links": links,
             "paginas": [{k: v for k, v in p.items() if k != "html"} for p in paginas],
+            "paginas_contato": [{k: v for k, v in p.items() if k != "html"} for p in paginas_contato],
             "seo_paginas": extraidas,
             "requisicoes_bloqueadas": bloqueados[:50],
             "log_http": cliente.log,
@@ -186,6 +194,42 @@ def executar_diagnostico(url: str, empresa: str, config: Config | None = None, p
     }
     gerar_arquivos(resultado, pasta, config, gerar_pdf)
     return resultado
+
+
+def _buscar_contato(rnd, cliente, base: str, html_home: str, ja_abertas: list[dict], maximo: int):
+    """Visita as páginas de contato (menu, rodapé, /contato/, /fale-conosco/) que ainda não foram abertas.
+
+    Devolve (páginas renderizadas, registro de cada busca). A situação de cada busca é
+    "analisada", "nao_existe" (404 ou redireciona para a home) ou "inacessivel" (erro, bloqueio, robots).
+    """
+    abertas_por_chave = {chave_caminho(p.get("url_final") or p["url"]): p for p in ja_abertas if not p.get("erro")}
+    home = chave_caminho(base)
+    renderizadas, buscas = [], []
+    for item in paginas_de_contato(base, html_home, maximo):
+        k = chave_caminho(item["url"])
+        if k in abertas_por_chave:
+            buscas.append({**item, "situacao": "analisada", "detalhe": "já estava entre as páginas analisadas"})
+            continue
+        if not cliente.permitido(item["url"]):
+            buscas.append({**item, "situacao": "inacessivel", "detalhe": "o robots.txt pede para não acessar"})
+            continue
+        log.info("Procurando contato em %s", item["url"])
+        rp = rnd.renderizar(item["url"], "desktop")
+        status = rp.get("status")
+        destino = chave_caminho(rp.get("url_final") or item["url"])
+        if rp.get("erro"):
+            buscas.append({**item, "situacao": "inacessivel", "detalhe": rp["erro"]})
+        elif status in (404, 410):
+            buscas.append({**item, "situacao": "nao_existe", "detalhe": f"código {status}"})
+        elif status and status >= 400:
+            buscas.append({**item, "situacao": "inacessivel", "detalhe": f"código {status}"})
+        elif destino == home or destino in abertas_por_chave:
+            buscas.append({**item, "situacao": "nao_existe", "detalhe": "redireciona para uma página já analisada"})
+        else:
+            buscas.append({**item, "situacao": "analisada", "detalhe": f"aberta (código {status})"})
+            renderizadas.append(rp)
+            abertas_por_chave[destino] = rp
+    return renderizadas, buscas
 
 
 def gerar_arquivos(resultado: dict, pasta: Path, config: Config, gerar_pdf: bool = True) -> None:

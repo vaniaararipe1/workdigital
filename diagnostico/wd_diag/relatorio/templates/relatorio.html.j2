@@ -80,7 +80,7 @@ section.bloco{padding:56px 0 24px}
 .selo::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
 .selo.medido{color:var(--verde);border-color:rgba(4,205,143,.45);background:rgba(4,205,143,.08)}
 .selo.avaliacao{color:var(--roxo-claro);border-color:rgba(155,123,255,.45);background:rgba(96,37,225,.12)}
-.selo.nao_medido{color:var(--neutro);border-color:rgba(138,138,153,.45);background:rgba(138,138,153,.08)}
+.selo.nao_medido,.selo.nao_confirmado{color:var(--neutro);border-color:rgba(138,138,153,.45);background:rgba(138,138,153,.08)}
 .legenda{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:13px;color:var(--texto2);margin:6px 0 22px}
 
 .metricas{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:26px}
@@ -316,6 +316,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
       <span class="selo medido">Medido</span> dado coletado por ferramenta
       <span class="selo avaliacao">Avaliação de especialista</span> leitura técnica, sujeita a contexto
       <span class="selo nao_medido">Não foi possível medir</span> coleta falhou ou foi bloqueada
+      <span class="selo nao_confirmado">Não foi possível confirmar</span> não encontramos, mas há sinal de que pode existir
     </div>
   </div>
 </section>
@@ -386,10 +387,10 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
     </ul>
     {% endif %}
     {% if semdado %}
-    <h3 class="sub-titulo">Não foi possível medir</h3>
+    <h3 class="sub-titulo">Não foi possível medir ou confirmar</h3>
     <ul class="bons semdado">
     {% for i in semdado %}
-      <li><span class="check">–</span><div><b>{{ i.titulo }}</b><br><span>{{ i.o_que_vimos }}</span></div></li>
+      <li><span class="check">–</span><div><b>{{ i.titulo }}</b> <span class="selo {{ i.tipo }} mini">{{ {'nao_confirmado':'Não foi possível confirmar'}.get(i.tipo, 'Não foi possível medir') }}</span><br><span>{{ i.o_que_vimos }}</span>{% if i.tipo == 'nao_confirmado' and i.evidencia %}<div class="evid">Por quê: {{ i.evidencia | safe }}</div>{% endif %}</div></li>
     {% endfor %}
     </ul>
     {% endif %}

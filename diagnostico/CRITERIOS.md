@@ -11,10 +11,12 @@ para um dado coletado (que fica registrado em `dados.json`).
   - **80 a 100:** Bom
   - **50 a 79:** Precisa melhorar
   - **0 a 49:** Crítico
-- Três tipos de item:
+- Quatro tipos de item:
   - **Medido:** dado coletado por ferramenta. É o único tipo que entra na nota.
   - **Avaliação de especialista:** depende de julgamento, como prova social ou clareza da proposta de valor. Aparece no relatório com selo próprio, **nunca entra na nota** e vai para as notas internas para revisão.
   - **Não foi possível medir:** a coleta falhou (site bloqueou, página não abriu, API fora do ar). **Sai do cálculo**, e o relatório mostra quantos critérios foram realmente medidos (por exemplo, "7 de 8 critérios medidos").
+  - **Não foi possível confirmar:** não encontramos o item, mas há sinal de que ele pode existir (script de formulário ou de WhatsApp, botão que pode abrir um pop-up, página de contato que não abriu, página que não terminou de carregar). **Sai do cálculo** e não afirma o problema.
+- **Ausência só é afirmada como Medido** (por exemplo, "não há formulário" ou "não há WhatsApp") depois de: carregar cada página até o fim, visitar as páginas de contato e não encontrar nenhum sinal. Na dúvida, o item sai como "Não foi possível confirmar". Detalhes em "Como procuramos formulários e contato".
 - Se nenhum critério de uma categoria puder ser medido, a nota aparece como "sem medição", e não como zero.
 
 ## Performance
@@ -65,6 +67,22 @@ Ficam **fora da nota** por serem avaliação de especialista:
 - "Chamada para ação" é um link ou botão com aparência de botão (fundo ou borda e preenchimento) e texto com verbo de ação, como contato, orçamento, comprar, agendar ou WhatsApp.
 - Botões de cookies, idioma, menu e links de acessibilidade são ignorados.
 - Links no meio de parágrafos não contam como alvo de toque, seguindo a exceção da WCAG 2.5.8.
+
+### Como procuramos formulários e contato
+
+1. **Carregamento completo.** Cada página espera a rede ficar ociosa (até 15 s), é rolada até o fim para carregar o que é preguiçoso, espera mais 2,5 s e espera o DOM parar de mudar (até 8 s). A página conta como completa se a rede ficou ociosa ou o DOM ficou estável.
+2. **O que conta como formulário:**
+   - `<form>` com 2 ou mais campos, **inclusive escondido** (dentro de pop-up, painel ou gaveta fechada);
+   - campos de contato montados por script sem `<form>`;
+   - formulários e widgets de RD Station (`bricks-form`, `rd-form`, scripts `rdstation`), HubSpot, Typeform, Google Forms, Elementor, Contact Form 7, WPForms, Gravity Forms, Calendly, Jotform, Tally e Leadster, em DOM ou iframe;
+   - link para formulário externo (Google Forms, Typeform, Calendly, Tally, Jotform);
+   - formulário que aparece depois de clicar num botão de contato. A ferramenta clica em até 2 botões que não mudam de página (texto como "Fale conosco", "Pedir orçamento" ou `aria-haspopup=dialog`). Ela nunca preenche nem envia nada e fecha qualquer aba nova.
+3. **Onde procuramos:** a página inicial, as páginas internas analisadas, os links de contato do menu e do rodapé (até 3), e os endereços padrão `/contato/` e `/fale-conosco/`.
+4. **Etiquetas:**
+   - formulário encontrado: **Medido**, dizendo em qual página e como (visível, em pop-up, depois de um clique, de uma ferramenta incorporada);
+   - nada encontrado, mas com script de formulário, botão não testado, página de contato inacessível ou página que não terminou de carregar: **Não foi possível confirmar**;
+   - nada encontrado e nenhum sinal, com todas as buscas feitas: **Medido** (ausência).
+5. **WhatsApp e botão de ação** seguem a mesma regra. Widget de WhatsApp sem link legível (Joinchat, Click to Chat, GetButton, número no código) e página inicial que não terminou de carregar levam a "Não foi possível confirmar".
 
 ## SEO e visibilidade
 

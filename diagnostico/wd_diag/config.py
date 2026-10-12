@@ -39,6 +39,10 @@ class Config:
     intervalo_requisicoes: float = 1.0      # segundos entre requisições ao mesmo site
     timeout_http: float = 15.0              # segundos por requisição HTTP
     timeout_pagina: float = 30.0            # segundos para renderizar uma página
+    espera_rede_ms: int = 15000             # quanto esperar a rede ficar ociosa
+    espera_extra_ms: int = 2500             # espera fixa depois da rede (scripts que montam formulários)
+    espera_dom_ms: int = 8000               # quanto esperar o DOM parar de mudar
+    max_paginas_contato: int = 3            # páginas de contato visitadas além das internas
     timeout_pagespeed: float = 120.0
     max_bytes_resposta: int = 5 * 1024 * 1024
     max_redirecionamentos: int = 5

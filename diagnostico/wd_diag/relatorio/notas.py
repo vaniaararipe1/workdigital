@@ -69,7 +69,7 @@ def abordagens(r: dict) -> list[dict]:
 def montar(r: dict) -> dict:
     achados: list[Achado] = r["achados"]
     julgamento = [a for a in achados if a.tipo == "avaliacao"]
-    baixa = [a for a in achados if a.tipo == "nao_medido" or a.confianca == "baixa" or a.nota_interna and a.tipo != "avaliacao"]
+    baixa = [a for a in achados if a.tipo in ("nao_medido", "nao_confirmado") or a.confianca == "baixa" or a.nota_interna and a.tipo != "avaliacao"]
     avisos = list(r.get("avisos", []))
     return {
         "empresa": r["empresa"],
