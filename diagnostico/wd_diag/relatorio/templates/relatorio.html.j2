@@ -152,6 +152,28 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 .rodape .logo{width:120px;flex:none}
 .rodape p{margin:0;max-width:560px}
 
+.convite{display:grid;grid-template-columns:200px 1fr;gap:36px;align-items:center;margin:22px 0 34px}
+.foto-anel{width:200px;height:200px;border-radius:50%;padding:5px;background:conic-gradient(from 200deg,#6025E1,#C00252,#04CD8F,#6025E1);box-shadow:0 18px 60px rgba(96,37,225,.45)}
+.foto-anel img{width:100%;height:100%;border-radius:50%;display:block;border:4px solid #121316;object-fit:cover}
+.convite h2{font-size:36px;letter-spacing:-.01em;max-width:none}
+.convite .texto{margin:14px 0 14px;max-width:none}
+.assinatura{display:flex;flex-direction:column;gap:2px}
+.assinatura b{font:600 17px/1.2 "Space Grotesk",sans-serif;color:#fff}
+.assinatura span{font-size:13px;color:#B9B7C8}
+.cta-bloco{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:24px;padding:26px}
+.cta-wa{display:flex;align-items:center;gap:14px;background:#04CD8F;color:#08140F;text-decoration:none;font:700 22px/1 "Space Grotesk",sans-serif;padding:20px 24px;border-radius:16px;box-shadow:0 12px 40px rgba(4,205,143,.35)}
+.cta-wa svg{width:30px;height:30px;flex:none}
+.cta-wa .seta{margin-left:auto;font-size:24px}
+.cta-num{font-size:13px;color:#C9C7D6;margin:10px 2px 16px}
+.na-conversa{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:14px;color:#E4E2EE}
+.na-conversa li{display:flex;gap:10px;align-items:flex-start}
+.na-conversa li::before{content:"";flex:none;width:8px;height:8px;margin-top:7px;border-radius:50%;background:linear-gradient(135deg,#6025E1,#C00252)}
+.qr{text-align:center;width:150px}
+.qr-img{background:#fff;border-radius:14px;padding:10px;width:150px;height:150px}
+.qr-img svg{width:100%;height:100%;display:block}
+.qr-leg{font-size:11.5px;line-height:1.35;color:#C9C7D6;margin-top:8px}
+.outros-contatos{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:22px;font-size:14px;color:#C9C7D6}
+.outros-contatos a{color:#fff;font-weight:700;text-decoration:none}
 .mascote-final{width:150px;margin:48px 0 0 auto;opacity:.9}
 .mascote-final path{fill:#fff}
 .exemplo{position:fixed;top:14px;right:14px;z-index:9;background:var(--vinho);color:#fff;font:700 12px/1 "Nunito",sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:8px 12px;border-radius:8px}
@@ -159,7 +181,10 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 @media (max-width:720px){
   .wrap{padding:0 16px}
   .capa h1{font-size:38px} .capa .miolo{flex-direction:column;align-items:flex-start} .capa .mascote{width:110px}
-  .notas,.metricas,.tecs,.contatos,.bons{grid-template-columns:1fr}
+  .notas,.metricas,.tecs,.contatos,.bons,.convite,.cta-bloco{grid-template-columns:1fr}
+  .foto-anel{width:150px;height:150px}
+  .convite h2{font-size:28px}
+  .qr{display:none}
   .resumo-grid{grid-template-columns:1fr}
   .item .linhas{grid-template-columns:1fr}
   .final h2{font-size:30px}
@@ -421,14 +446,42 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 <footer class="final-pag neon">
   <div class="wrap final">
     <div class="kicker">Próximo passo</div>
-    <h2 style="margin-top:12px">Quer ajuda para transformar este diagnóstico em resultado?</h2>
-    <p class="texto">Se fizer sentido para você, podemos conversar 30 minutos sem compromisso para revisar estes pontos juntos, tirar dúvidas e entender quais melhorias trazem mais retorno para o seu momento. Você também pode usar este relatório com a sua equipe ou com o fornecedor atual.</p>
-    <div class="contatos">
-      <a class="contato" href="mailto:hello@workdigital.art.br"><div class="rot">E-mail</div><div class="val">hello@workdigital.art.br</div></a>
-      <a class="contato" href="https://wa.me/5511993916363"><div class="rot">WhatsApp</div><div class="val">(11) 99391-6363</div></a>
-      <a class="contato" href="https://workdigital.art.br"><div class="rot">Site</div><div class="val">workdigital.art.br</div></a>
+    <div class="convite">
+      <div class="foto-anel"><img src="{{ assets.foto }}" alt="{{ assinatura.nome or 'Work Digital' }}"></div>
+      <div>
+        <h2>Vamos conversar sobre o site{% if empresa %} da {{ empresa }}{% endif %}?</h2>
+        <p class="texto">Oi! Eu sou {{ assinatura.nome or '[seu nome]' }}, da Work Digital. Revisei pessoalmente cada ponto deste diagnóstico. Numa conversa rápida pelo WhatsApp, te mostro por onde começar e o que traz mais retorno para o seu momento. Sem compromisso.</p>
+        <div class="assinatura"><b>{{ assinatura.nome or '[seu nome]' }}</b><span>{{ assinatura.cargo }}</span></div>
+      </div>
     </div>
-    <div class="mascote-final">{{ assets.mascote_svg | safe }}</div>
+
+    <div class="cta-bloco">
+      <div class="cta-lado">
+        <a class="cta-wa" href="{{ whatsapp_url }}">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3 29l6.9-2.2c1.9 1 4 1.6 6.1 1.6 7 0 12.7-5.7 12.7-12.7S23 3 16 3Zm0 23.1c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.3 1.3-4-.3-.4a10.4 10.4 0 0 1-1.6-5.6C5.5 9.8 10.2 5.2 16 5.2s10.5 4.6 10.5 10.4S21.8 26.1 16 26.1Zm5.8-7.8c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6.3-.5c.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.6 5.8 5 .8.4 1.4.6 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4Z"/></svg>
+          <span>Conversar no WhatsApp</span>
+          <span class="seta">→</span>
+        </a>
+        <div class="cta-num">(11) 99391-6363 · a mensagem já vai pronta, é só enviar</div>
+        <ul class="na-conversa">
+          <li>Revisamos juntos os pontos prioritários deste relatório</li>
+          <li>Você sai com um caminho claro, mesmo que não contrate</li>
+          <li>Se fizer sentido, enviamos uma proposta sob medida</li>
+        </ul>
+      </div>
+      {% if qr_svg %}
+      <div class="qr">
+        <div class="qr-img">{{ qr_svg | safe }}</div>
+        <div class="qr-leg">Aponte a câmera do celular para abrir o WhatsApp</div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="outros-contatos">
+      <span>Prefere e-mail? <a href="mailto:hello@workdigital.art.br">hello@workdigital.art.br</a></span>
+      <span><a href="https://workdigital.art.br">workdigital.art.br</a></span>
+    </div>
+
     <div class="rodape">
       <p>© Work Digital 2026. Este diagnóstico é uma análise técnica automatizada com revisão especializada, baseada em dados públicos do site coletados em {{ data_extenso }}. Resultados podem variar conforme o momento da medição, o dispositivo e a conexão do visitante.</p>
       <img class="logo" src="{{ assets.logo_branco }}" alt="Work Digital">

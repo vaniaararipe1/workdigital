@@ -28,7 +28,30 @@ def assets_embutidos() -> dict:
         "logo_branco": _data_uri(ASSETS / "logo-workdigital-branco.svg", "image/svg+xml"),
         "logo": _data_uri(ASSETS / "logo-workdigital.svg", "image/svg+xml"),
         "mascote_svg": (ASSETS / "mascote.svg").read_text(),
+        "foto": _data_uri(ASSETS / "foto-assinatura.webp", "image/webp"),
     }
+
+
+WHATSAPP_NUMERO = "5511993916363"
+
+
+def link_whatsapp(empresa: str | None) -> str:
+    from urllib.parse import quote
+    msg = (f"Olá! Recebi o diagnóstico do site da {empresa} e quero conversar sobre os próximos passos."
+           if empresa else "Olá! Recebi o diagnóstico do meu site e quero conversar sobre os próximos passos.")
+    return f"https://wa.me/{WHATSAPP_NUMERO}?text={quote(msg)}"
+
+
+def qr_svg(url: str) -> str | None:
+    """QR code em SVG (para quem lê o PDF impresso). Retorna None se a biblioteca não estiver instalada."""
+    try:
+        import qrcode
+        import qrcode.image.svg
+    except ImportError:
+        return None
+    img = qrcode.make(url, image_factory=qrcode.image.svg.SvgPathImage, box_size=10, border=1)
+    svg = img.to_string(encoding="unicode")
+    return svg[svg.index("<svg"):]
 
 
 def _env() -> Environment:
@@ -41,7 +64,14 @@ def _env() -> Environment:
 
 
 def renderizar_html(contexto: dict, template: str = "relatorio.html.j2") -> str:
-    ctx = {"assets": assets_embutidos(), "exemplo": False, **contexto}
+    import os
+    ctx = {"assets": assets_embutidos(), "exemplo": False,
+           "assinatura": {"nome": os.environ.get("ASSINATURA_NOME", "").strip(),
+                          "cargo": os.environ.get("ASSINATURA_CARGO", "Work Digital").strip()},
+           **contexto}
+    if "whatsapp_url" not in ctx:
+        ctx["whatsapp_url"] = link_whatsapp(ctx.get("empresa"))
+        ctx["qr_svg"] = qr_svg(ctx["whatsapp_url"])
     return _env().get_template(template).render(**ctx)
 
 
