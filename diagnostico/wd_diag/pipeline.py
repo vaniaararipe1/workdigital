@@ -45,24 +45,35 @@ def _json_padrao(o):
 
 
 E_CONTATO = re.compile(r"/(contato|contatos|fale-conosco|faleconosco|contate-nos|contact|contact-us|orcamento|solicite|atendimento)", re.I)
-CAMINHOS_CONTATO = ("/contato/", "/contato", "/fale-conosco/", "/fale-conosco", "/contact/")
+CAMINHOS_CONTATO = ("/contato/", "/fale-conosco/", "/contact/")
 
 
 def garantir_pagina_contato(cliente: ClienteHTTP, url_final: str, escolhidas: list[dict]) -> tuple[list[dict], dict]:
-    """Garante que a página de contato esteja entre as analisadas (menu/sitemap ou /contato, /fale-conosco)."""
+    """Coloca as páginas de contato na frente da fila de análise.
+
+    Sempre visita explicitamente /contato e /fale-conosco (além das variações do menu, rodapé e
+    sitemap), porque o link do menu pode apontar para outra página (ex.: /contato1/ sem formulário).
+    """
+    from .rastreador import chave_caminho
     busca = {"url": None, "tentativas": [], "erro": None}
-    contato = [e for e in escolhidas if E_CONTATO.search(e["url"])]
-    if contato:
-        resto = [e for e in escolhidas if e is not contato[0]]
-        return [contato[0]] + resto, busca
+    do_menu = [e for e in escolhidas if E_CONTATO.search(e["url"])]
+    vistos = {chave_caminho(e["url"]) for e in do_menu} | {chave_caminho(url_final)}
+    sondadas = []
     base = "{0.scheme}://{0.netloc}".format(urlsplit(url_final))
     for caminho_ in CAMINHOS_CONTATO:
         alvo = base + caminho_
+        if chave_caminho(alvo) in vistos:
+            continue
         busca["tentativas"].append(caminho_)
         r = cliente.get(alvo, max_bytes=512 * 1024)
-        if r.ok and "html" in r.headers.get("content-type", ""):
-            return [{"url": r.url_final or alvo, "origem": "busca da página de contato"}] + escolhidas, busca
-    return escolhidas, busca
+        final = r.url_final or alvo
+        if r.ok and "html" in r.headers.get("content-type", "") and chave_caminho(final) not in vistos:
+            vistos.add(chave_caminho(final))
+            sondadas.append({"url": final, "origem": f"visita direta a {caminho_}"})
+        vistos.add(chave_caminho(alvo))
+    contato = (do_menu + sondadas)[:3]
+    resto = [e for e in escolhidas if e not in contato]
+    return contato + resto, busca
 
 
 def executar_diagnostico(url: str, empresa: str, config: Config | None = None, pasta_saida: Path | None = None,
@@ -151,7 +162,7 @@ def executar_diagnostico(url: str, empresa: str, config: Config | None = None, p
             avisos.append(f"O navegador automatizado falhou: {str(e).splitlines()[0][:200]}.")
             log.exception("Falha no navegador")
     if bloqueados:
-        avisos.append(f"{len(bloqueados)} requisições do navegador para endereços internos/privados foram bloqueadas por segurança.")
+        avisos.append(f"{len(bloqueados)} {'requisição' if len(bloqueados) == 1 else 'requisições'} do navegador para endereços internos ou privados {'foi bloqueada' if len(bloqueados) == 1 else 'foram bloqueadas'} por segurança.")
 
     paginas_ok = [p for p in paginas if p.get("html") and not p.get("erro")]
 

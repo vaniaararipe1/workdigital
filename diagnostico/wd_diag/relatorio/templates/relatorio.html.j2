@@ -474,17 +474,16 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
     <h3 class="sub-titulo">Páginas analisadas</h3>
     <ul class="paginas-lista">{% for p in paginas %}<li><code>{{ p.url }}</code></li>{% endfor %}</ul>
     {% endif %}
+    {% if versao == 'automatica' %}
+    <div class="fim-automatico">
+      <div class="faixa-revisao">A avaliação completa, revisada por uma especialista da Work Digital, chega em até {{ prazo_dias }} {{ 'dia útil' if prazo_dias == 1 else 'dias úteis' }}.</div>
+      <div class="rod"><span>© Work Digital 2026 · {{ rodape_texto }} Dados públicos do site coletados em {{ data_extenso }}.</span><img src="{{ assets.logo }}" alt="Work Digital"></div>
+    </div>
+    {% endif %}
   </div>
 </section>
 
-{% if versao == 'automatica' %}
-<section class="bloco continua fim-automatico">
-  <div class="wrap">
-    <div class="faixa-revisao">A avaliação completa, revisada por uma especialista da Work Digital, chega em até {{ prazo_dias }} {{ 'dia útil' if prazo_dias == 1 else 'dias úteis' }}.</div>
-    <div class="rod"><span>© Work Digital 2026 · {{ rodape_texto }} Dados públicos do site coletados em {{ data_extenso }}.</span><img src="{{ assets.logo }}" alt="Work Digital"></div>
-  </div>
-</section>
-{% endif %}
+
 
 </main>
 
