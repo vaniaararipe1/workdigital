@@ -31,6 +31,7 @@ class Renderizador:
         self._cache_hosts: dict = {}
         self.bloqueados: list[str] = []
         self._ultimo = 0.0
+        self.espera_extra_ms = 3000
 
     def __enter__(self):
         from playwright.sync_api import sync_playwright
@@ -78,7 +79,7 @@ class Renderizador:
                 pagina.wait_for_load_state("networkidle", timeout=8000)
             except Exception:
                 pass  # sites com conexões abertas (chat, analytics) nunca ficam "ociosos"
-            pagina.wait_for_timeout(800)
+            pagina.wait_for_timeout(self.espera_extra_ms)  # formulários e widgets carregados por script
             resultado["status"] = resposta.status if resposta else None
             resultado["url_final"] = pagina.url
             resultado["tempo_carregamento_ms"] = int((time.monotonic() - inicio) * 1000)

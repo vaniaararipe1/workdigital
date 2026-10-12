@@ -42,6 +42,11 @@ def contexto(captura: str) -> dict:
     hoje = date(2026, 10, 11)
     return {
         "exemplo": True,
+        "versao": "revisada",
+        "rodape_texto": "Análise técnica automatizada com revisão especializada.",
+        "prazo_dias": 2,
+        "nota_pessoal": "Olá! Este é um exemplo de nota pessoal da especialista.",
+        "paginas": [],
         "empresa": "Padaria Exemplo Ltda.",
         "url": "https://www.padariaexemplo.com.br",
         "data_extenso": data_extenso(hoje),

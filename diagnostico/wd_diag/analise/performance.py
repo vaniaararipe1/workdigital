@@ -83,7 +83,7 @@ def metricas(mobile: dict, desktop: dict) -> list[Metrica]:
     out: list[Metrica] = []
     if not base.get("ok"):
         for id_, nome in (("lcp", "Tempo até o conteúdo principal aparecer"), ("cls", "Estabilidade da página enquanto carrega"),
-                          ("inp", "Resposta ao toque e ao clique"), ("bytes", "Peso da página inicial")):
+                          ("bytes", "Peso da página inicial")):
             out.append(Metrica(id_, nome, "", "—", "", "na", "nao_medido", "",
                                "Não foi possível medir: a ferramenta de performance não respondeu."))
         return out
@@ -114,17 +114,13 @@ def metricas(mobile: dict, desktop: dict) -> list[Metrica]:
                        "Bom: até 0,1 · Ruim: acima de 0,25", frase, cls))
 
     inp = base.get("inp_ms_campo")
-    st = _status(inp, "inp")
-    if inp is None:
-        frase = ("Não foi possível medir: este indicador vem de visitas reais registradas pelo Google, "
-                 "e o site ainda não tem volume suficiente na base pública.")
-    else:
+    if inp is not None:  # só existe com dados de visitantes reais; sem eles, o cartão é omitido
+        st = _status(inp, "inp")
         frase = {"bom": "O site responde rápido quando o visitante toca ou clica.",
                  "medio": "Há um pequeno atraso entre o toque e a resposta da página.",
                  "ruim": "O site demora para reagir ao toque. Parece travado e passa insegurança."}[st]
-    out.append(Metrica("inp", "Resposta ao toque e ao clique", "Interação até a próxima pintura (INP), dado de visitantes reais",
-                       str(round(inp)) if inp is not None else "—", "ms" if inp is not None else "", st,
-                       "medido" if inp is not None else "nao_medido", "Bom: até 200 ms · Ruim: acima de 500 ms", frase, inp))
+        out.append(Metrica("inp", "Resposta ao toque e ao clique", "Interação até a próxima pintura (INP), dado de visitantes reais",
+                           str(round(inp)), "ms", st, "medido", "Bom: até 200 ms · Ruim: acima de 500 ms", frase, inp))
 
     b = base.get("bytes_total")
     st = _status(b, "bytes")

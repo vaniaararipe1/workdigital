@@ -80,6 +80,20 @@ section.bloco{padding:56px 0 24px}
 .selo::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
 .selo.medido{color:var(--verde);border-color:rgba(4,205,143,.45);background:rgba(4,205,143,.08)}
 .selo.avaliacao{color:var(--roxo-claro);border-color:rgba(155,123,255,.45);background:rgba(96,37,225,.12)}
+.selo.nao_confirmado{color:#C9A227;border-color:rgba(201,162,39,.5);background:rgba(201,162,39,.1)}
+.etiqueta-capa{display:inline-block;margin-top:22px;font:700 12px/1 "Space Grotesk",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:9px 14px}
+.formula{font-size:12.5px;color:var(--texto2);margin:-10px 0 18px;padding-left:10px;border-left:3px solid var(--roxo)}
+.nota-pessoal{display:grid;grid-template-columns:96px 1fr;gap:22px;align-items:start;background:var(--superficie);border:1px solid var(--borda);border-radius:18px;padding:22px;break-inside:avoid}
+.nota-pessoal img{width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--roxo)}
+.nota-pessoal .txt{font-size:15.5px;line-height:1.65;white-space:pre-line}
+.nota-pessoal .ass{margin-top:12px;font:600 15px/1.3 "Space Grotesk",sans-serif;color:var(--titulo)}
+.nota-pessoal .ass span{display:block;font:400 12.5px/1.4 "Nunito",sans-serif;color:var(--texto2)}
+.paginas-lista{list-style:none;padding:0;margin:0;display:grid;gap:4px;font-size:13px;color:var(--texto2)}
+.paginas-lista code{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--texto)}
+.faixa-revisao{margin-top:28px;border-radius:16px;padding:18px 22px;background:linear-gradient(90deg,rgba(96,37,225,.12),rgba(192,2,82,.08),rgba(4,205,143,.1));border:1px solid var(--borda);font-size:15px;color:var(--texto);break-inside:avoid}
+.fim-automatico{padding:26px 0 10px}
+.fim-automatico .rod{margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:12px;color:var(--texto2);border-top:1px solid var(--borda);padding-top:14px}
+.fim-automatico .rod img{width:110px}
 .selo.nao_medido{color:var(--neutro);border-color:rgba(138,138,153,.45);background:rgba(138,138,153,.08)}
 .legenda{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:13px;color:var(--texto2);margin:6px 0 22px}
 
@@ -191,7 +205,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 }
 
 /* ---------- Impressão / PDF: páginas internas claras ---------- */
-@page{size:A4;margin:16mm 14mm 18mm}
+@page{size:A4;margin:16mm 14mm 18mm;@bottom-left{content:"{{ rodape_texto }}";font:8pt Nunito,sans-serif;color:#77768A}@bottom-right{content:"workdigital.art.br";font:8pt Nunito,sans-serif;color:#77768A}}
 @page capa{margin:0}
 @page final{margin:0}
 @media print{
@@ -235,6 +249,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 </head>
 <body>
 {% if exemplo %}<div class="exemplo">Exemplo com dados fictícios</div>{% endif %}
+{% if demonstracao %}<div class="exemplo">Demonstração: revisão simulada, não enviar</div>{% endif %}
 
 {# ================= CAPA ================= #}
 <header class="capa neon">
@@ -246,6 +261,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
         <h1>Como o seu site está trabalhando pelo seu negócio</h1>
         <div class="empresa">{{ empresa }}</div>
         <div class="url">{{ url }}</div>
+        {% if versao == 'automatica' %}<div class="etiqueta-capa">Resultado técnico</div>{% endif %}
       </div>
       <div class="mascote">{{ assets.mascote_svg | safe }}</div>
     </div>
@@ -314,11 +330,25 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 
     <div class="legenda">
       <span class="selo medido">Medido</span> dado coletado por ferramenta
-      <span class="selo avaliacao">Avaliação de especialista</span> leitura técnica, sujeita a contexto
+      {% if versao == 'revisada' %}<span class="selo avaliacao">Avaliação de especialista</span> leitura da especialista da Work Digital{% endif %}
       <span class="selo nao_medido">Não foi possível medir</span> coleta falhou ou foi bloqueada
+      <span class="selo nao_confirmado">Não foi possível confirmar</span> há sinais, mas não deu para comprovar
     </div>
   </div>
 </section>
+
+{% if versao == 'revisada' and nota_pessoal %}
+<section class="bloco continua" id="nota-pessoal">
+  <div class="wrap">
+    <h3 class="sub-titulo">Uma nota da especialista</h3>
+    <div class="nota-pessoal">
+      <img src="{{ assets.foto }}" alt="{{ assinatura.nome }}">
+      <div><div class="txt">{{ nota_pessoal }}</div>
+        <div class="ass">{{ assinatura.nome }}<span>{{ assinatura.cargo }} · Work Digital</span></div></div>
+    </div>
+  </div>
+</section>
+{% endif %}
 
 {# ================= SEÇÕES POR CATEGORIA ================= #}
 {% for s in secoes %}
@@ -331,6 +361,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
         <div class="sub">{{ s.intro }}</div>
       </div>
     </div>
+    {% if s.formula %}<p class="formula">{{ s.formula }}</p>{% endif %}
 
     {% if s.metricas %}
       {% if s.dispositivos %}<div class="dispositivos">{% for d in s.dispositivos %}<span>{{ d.nome }}: <b>nota {{ d.nota }}</b></span>{% if not loop.last %}<span>·</span>{% endif %}{% endfor %}</div>{% endif %}
@@ -339,7 +370,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
         <div class="metrica">
           <div class="topo">
             <div class="nome">{{ m.nome }}<small>{{ m.explicacao }}</small></div>
-            <span class="selo {{ m.tipo }}">{{ {'medido':'Medido','avaliacao':'Avaliação','nao_medido':'Sem dado'}[m.tipo] }}</span>
+            <span class="selo {{ m.tipo }}">{{ {'medido':'Medido','avaliacao':'Avaliação','nao_medido':'Não foi possível medir','nao_confirmado':'Não confirmado'}[m.tipo] }}</span>
           </div>
           <div class="num st-{{ m.status }}">{{ m.valor }}{% if m.unidade %}<small>{{ m.unidade }}</small>{% endif %}</div>
           <div class="ref">{{ m.referencia }}</div>
@@ -365,9 +396,9 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
         <dl class="linhas">
           <dt>O que vimos</dt><dd>{{ i.o_que_vimos }}{% if i.evidencia %}<div class="evid">Evidência: {{ i.evidencia | safe }}</div>{% endif %}</dd>
           {% if i.significado %}<dt>O que significa</dt><dd>{{ i.significado }}</dd>{% endif %}
-          {% if i.correcao %}<dt>O que fazer</dt><dd>{{ i.correcao }}</dd>{% endif %}
+          {% if i.correcao and versao == 'revisada' %}<dt>O que fazer</dt><dd>{{ i.correcao }}</dd>{% endif %}
         </dl>
-        {% if i.prioridade %}
+        {% if i.prioridade and versao == 'revisada' %}
         <div class="chips">
           <span class="chip {{ i.prioridade }}">Prioridade {{ i.prioridade | replace('media','média') }}</span>
           <span class="chip">Esforço: {{ i.esforco }}</span>
@@ -386,10 +417,10 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
     </ul>
     {% endif %}
     {% if semdado %}
-    <h3 class="sub-titulo">Não foi possível medir</h3>
+    <h3 class="sub-titulo">Não foi possível medir ou confirmar</h3>
     <ul class="bons semdado">
     {% for i in semdado %}
-      <li><span class="check">–</span><div><b>{{ i.titulo }}</b><br><span>{{ i.o_que_vimos }}</span></div></li>
+      <li><span class="check">–</span><div><b>{{ i.titulo }}</b> <span class="selo {{ i.tipo }} mini">{{ 'Não foi possível confirmar' if i.tipo == 'nao_confirmado' else 'Não foi possível medir' }}</span><br><span>{{ i.o_que_vimos }}</span>{% if i.tipo == 'nao_confirmado' and i.evidencia %}<br><span class="evid">{{ i.evidencia | safe }}</span>{% endif %}</div></li>
     {% endfor %}
     </ul>
     {% endif %}
@@ -398,6 +429,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 {% endfor %}
 
 {# ================= PLANO ================= #}
+{% if versao == 'revisada' %}
 <section class="bloco" id="plano">
   <div class="wrap">
     <div class="cab-secao">
@@ -424,6 +456,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
     </div>
   </div>
 </section>
+{% endif %}
 
 {# ================= TECNOLOGIAS ================= #}
 <section class="bloco continua" id="tecnologias">
@@ -437,12 +470,26 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
     {% else %}
     <p class="evid">Nenhuma ferramenta foi identificada com segurança.</p>
     {% endif %}
+    {% if paginas %}
+    <h3 class="sub-titulo">Páginas analisadas</h3>
+    <ul class="paginas-lista">{% for p in paginas %}<li><code>{{ p.url }}</code></li>{% endfor %}</ul>
+    {% endif %}
   </div>
 </section>
+
+{% if versao == 'automatica' %}
+<section class="bloco continua fim-automatico">
+  <div class="wrap">
+    <div class="faixa-revisao">A avaliação completa, revisada por uma especialista da Work Digital, chega em até {{ prazo_dias }} {{ 'dia útil' if prazo_dias == 1 else 'dias úteis' }}.</div>
+    <div class="rod"><span>© Work Digital 2026 · {{ rodape_texto }} Dados públicos do site coletados em {{ data_extenso }}.</span><img src="{{ assets.logo }}" alt="Work Digital"></div>
+  </div>
+</section>
+{% endif %}
 
 </main>
 
 {# ================= PRÓXIMO PASSO ================= #}
+{% if versao == 'revisada' %}
 <footer class="final-pag neon">
   <div class="wrap final">
     <div class="kicker">Próximo passo</div>
@@ -450,7 +497,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
       <div class="foto-anel"><img src="{{ assets.foto }}" alt="{{ assinatura.nome or 'Work Digital' }}"></div>
       <div>
         <h2>Vamos conversar sobre o site{% if empresa %} da {{ empresa }}{% endif %}?</h2>
-        <p class="texto">{{ assinatura.apresentacao }} Revisei pessoalmente cada ponto deste diagnóstico. Numa conversa rápida pelo WhatsApp, te mostro por onde começar e o que traz mais retorno para o seu momento. Sem compromisso.</p>
+        <p class="texto">{{ assinatura.apresentacao }} Revisei pessoalmente cada ponto deste diagnóstico. Numa conversa de 30 minutos, te mostro por onde começar e o que traz mais retorno para o seu momento. Sem compromisso.</p>
         <div class="assinatura"><b>{{ assinatura.nome or '[seu nome]' }}</b><span>{{ assinatura.cargo }} · Work Digital</span></div>
       </div>
     </div>
@@ -483,10 +530,11 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
     </div>
 
     <div class="rodape">
-      <p>© Work Digital 2026. Este diagnóstico é uma análise técnica automatizada com revisão especializada, baseada em dados públicos do site coletados em {{ data_extenso }}. Resultados podem variar conforme o momento da medição, o dispositivo e a conexão do visitante.</p>
+      <p>© Work Digital 2026. {{ rodape_texto }} Baseada em dados públicos do site coletados em {{ data_extenso }}. Resultados podem variar conforme o momento da medição, o dispositivo e a conexão do visitante.</p>
       <img class="logo" src="{{ assets.logo_branco }}" alt="Work Digital">
     </div>
   </div>
 </footer>
+{% endif %}
 </body>
 </html>

@@ -57,56 +57,147 @@ def cta_dobra(medidas: dict | None, dispositivo: str) -> Achado:
                   prioridade="alta" if dispositivo == "mobile" else "media", esforco=ESFORCO_RAPIDO, peso=peso, area="Conversão")
 
 
-def contato_direto(home_mobile: dict | None, paginas: list[dict]) -> Achado:
-    titulo = "WhatsApp ou telefone clicável"
-    todas = [(p["url"], c) for p in paginas if p.get("medidas") for c in p["medidas"].get("contato_direto", [])]
-    if not paginas or not any(p.get("medidas") for p in paginas):
-        return _nao_medido("ux-contato", titulo, "as páginas não puderam ser abertas", 3)
-    tipos = sorted({c["tipo"] for _, c in todas})
-    home = (home_mobile or {}).get("contato_direto", []) if home_mobile else []
-    home_vis = [c for c in home if c["visivel"]]
+def _links(paginas: list[dict], tipos: tuple) -> list[tuple[str, dict]]:
+    return [(p["url"], c) for p in paginas if p.get("medidas")
+            for c in p["medidas"].get("contato_direto", []) if c["tipo"] in tipos]
+
+
+def whatsapp(home_mobile: dict | None, paginas: list[dict]) -> Achado:
+    """Link de WhatsApp na home (celular) e nas demais páginas analisadas."""
+    titulo = "Link de WhatsApp"
+    abertas = [p for p in paginas if p.get("medidas")]
+    if not abertas:
+        return _nao_medido("ux-whatsapp", titulo, "as páginas não puderam ser abertas", 3)
+    todas = _links(abertas, ("whatsapp",))
+    home = [c for c in (home_mobile or {}).get("contato_direto", []) if c["tipo"] == "whatsapp" and c["visivel"]]
     altura = (home_mobile or {}).get("viewport", {}).get("altura", 0)
-    na_dobra = [c for c in home_vis if c["fixo"] or (c["topo"] is not None and c["topo"] < altura)]
-    n_pag = len([p for p in paginas if p.get("medidas")])
-    if home_vis:
-        nomes = " e ".join("WhatsApp" if t == "whatsapp" else "telefone" for t in sorted({c["tipo"] for c in home_vis}))
-        extra = " Fica visível já na primeira tela." if na_dobra else " Porém não aparece na primeira tela: é preciso rolar a página."
-        return Achado("ux-contato", "ux", titulo, "medido", "ok" if na_dobra else "atencao",
-                      f"A página inicial no celular tem link clicável de {nomes}.{extra}",
-                      evidencia=f"links {', '.join(code(c['href'], 50) for c in home_vis[:2])}" + (" (botão fixo na tela)" if any(c['fixo'] for c in home_vis) else ""),
-                      significado="Um toque abre a conversa, sem precisar copiar número.",
-                      correcao="" if na_dobra else "Adicionar um botão de WhatsApp fixo no canto da tela do celular.",
-                      prioridade="" if na_dobra else "media", esforco="" if na_dobra else ESFORCO_RAPIDO,
-                      impacto="" if na_dobra else "o caminho mais curto até o contato fica escondido para quem não rola a página.",
-                      peso=3, area="Conversão")
+    na_dobra = [c for c in home if c["fixo"] or (c["topo"] is not None and c["topo"] < altura)]
+    outras = sorted({caminho(u) for u, _ in todas})
+    if home:
+        ev = f"{code(home[0]['href'], 50)}" + (" (botão fixo na tela)" if any(c["fixo"] for c in home) else
+                                               f" a {home[0]['topo']} px do topo; a tela tem {altura} px")
+        ev += f"; presente em {plural(len(outras), 'página')} das {len(abertas)} analisadas."
+        if na_dobra:
+            return Achado("ux-whatsapp", "ux", titulo, "medido", "ok",
+                          "A página inicial no celular tem link de WhatsApp visível já na primeira tela.", evidencia=ev,
+                          significado="Um toque abre a conversa, sem precisar copiar o número.", peso=3, area="Conversão")
+        return Achado("ux-whatsapp", "ux", titulo, "medido", "atencao",
+                      "A página inicial no celular tem link de WhatsApp, mas ele só aparece depois de rolar a página.",
+                      evidencia=ev, significado="O caminho mais curto até a conversa fica escondido para quem não rola a página.",
+                      correcao="Adicionar um botão de WhatsApp fixo no canto da tela do celular.",
+                      impacto="parte dos visitantes não encontra o jeito mais rápido de falar com você.",
+                      prioridade="media", esforco=ESFORCO_RAPIDO, peso=3, area="Conversão")
     if todas:
-        onde = sorted({caminho(u) for u, _ in todas})
-        return Achado("ux-contato", "ux", titulo, "medido", "atencao",
-                      "Há link clicável de contato no site, mas não na página inicial do celular.",
-                      evidencia=f"encontrado em {', '.join(code(o, 40) for o in onde[:3])}.",
+        return Achado("ux-whatsapp", "ux", titulo, "medido", "atencao",
+                      "Há link de WhatsApp no site, mas não na página inicial do celular.",
+                      evidencia=f"encontrado em {', '.join(code(o, 40) for o in outras[:3])}.",
                       significado="A página inicial é a mais visitada; o contato direto deveria estar nela.",
-                      correcao="Adicionar botão de WhatsApp clicável na página inicial, de preferência fixo no canto da tela.",
+                      correcao="Adicionar botão de WhatsApp na página inicial, de preferência fixo no canto da tela.",
                       impacto="quem está no celular precisa navegar por outras páginas para encontrar como falar com você.",
                       prioridade="alta", esforco=ESFORCO_RAPIDO, peso=3, area="Conversão")
-    return Achado("ux-contato", "ux", titulo, "medido", "problema",
-                  "Não encontramos link de WhatsApp nem telefone clicável.",
-                  evidencia=f"nenhum link {code('wa.me')}, {code('api.whatsapp.com')} ou {code('tel:')} nas {n_pag} páginas analisadas.",
+    return Achado("ux-whatsapp", "ux", titulo, "medido", "problema",
+                  "Não encontramos link de WhatsApp.",
+                  evidencia=f"nenhum link {code('wa.me')} ou {code('api.whatsapp.com')} nas {len(abertas)} páginas analisadas.",
                   significado="Para quem está no celular, falar com você exige copiar e colar o número.",
                   correcao="Transformar o número em link de WhatsApp e adicionar um botão fixo no canto da tela.",
                   impacto="cada passo extra até a conversa reduz o número de pedidos de contato.",
                   prioridade="alta", esforco=ESFORCO_RAPIDO, peso=3, area="Conversão",
-                  nota_interna=f"Tipos encontrados no site: {tipos or 'nenhum'}. Confirme manualmente se há widget de chat que use outro formato de link.")
+                  nota_interna="Confira se há widget de chat que abre o WhatsApp sem link direto (a ferramenta não clica).")
 
 
-def formulario(paginas: list[dict], tem_contato_direto: bool) -> Achado:
+def telefone_email(paginas: list[dict]) -> Achado:
+    titulo = "Telefone e e-mail clicáveis"
+    abertas = [p for p in paginas if p.get("medidas")]
+    if not abertas:
+        return _nao_medido("ux-tel-email", titulo, "as páginas não puderam ser abertas", 1)
+    tel = _links(abertas, ("telefone",))
+    mail = _links(abertas, ("email",))
+    partes = []
+    if tel:
+        partes.append(f"telefone {code(tel[0][1]['href'], 30)}")
+    if mail:
+        partes.append(f"e-mail {code(mail[0][1]['href'], 50)}")
+    ev = ("encontrados: " + "; ".join(partes) + ".") if partes else f"nenhum link {code('tel:')} ou {code('mailto:')} nas {len(abertas)} páginas analisadas."
+    if tel and mail:
+        return Achado("ux-tel-email", "ux", titulo, "medido", "ok", "O site tem telefone e e-mail clicáveis.", evidencia=ev,
+                      significado="Um toque liga ou abre o e-mail, sem copiar nada.", peso=1, area="Conversão")
+    if tel or mail:
+        falta = "e-mail" if tel else "telefone"
+        return Achado("ux-tel-email", "ux", titulo, "medido", "atencao",
+                      f"O site tem {'telefone' if tel else 'e-mail'} clicável, mas não encontramos {falta} clicável.", evidencia=ev,
+                      significado="Oferecer mais de um canal clicável facilita o contato para quem prefere ligar ou escrever.",
+                      correcao=f"Transformar o {falta} em link clicável no rodapé e na página de contato.",
+                      prioridade="baixa", esforco=ESFORCO_RAPIDO, peso=1, area="Conversão")
+    return Achado("ux-tel-email", "ux", titulo, "medido", "problema", "Não encontramos telefone nem e-mail clicáveis.", evidencia=ev,
+                  significado="Quem quer ligar ou mandar e-mail precisa copiar os dados à mão.",
+                  correcao="Transformar telefone e e-mail em links clicáveis no rodapé e na página de contato.",
+                  prioridade="baixa", esforco=ESFORCO_RAPIDO, peso=1, area="Conversão")
+
+
+# Assinaturas de formulários carregados por script ou embutidos (busca no HTML renderizado).
+SINAIS_FORMULARIO = [
+    ("RD Station", r"rdstation|rd-form|bricks-form|RDStationForms|d335luupugsy2\.cloudfront\.net"),
+    ("HubSpot", r"hsforms|hbspt\.forms|hs-form"),
+    ("Typeform", r"typeform\.com|data-tf-(?:widget|popup|live)"),
+    ("Google Forms", r"docs\.google\.com/forms|forms\.gle"),
+    ("Elementor", r"elementor-form"),
+    ("Contact Form 7", r"wpcf7"),
+    ("WPForms", r"wpforms"),
+    ("Gravity Forms", r"gform_wrapper|gravityforms"),
+    ("Calendly", r"calendly\.com"),
+    ("Jotform", r"jotform"),
+]
+
+
+def sinais_formulario(html: str) -> list[str]:
+    """Ferramentas de formulário presentes no código da página (mesmo que o formulário não esteja visível)."""
+    return [nome for nome, padrao in SINAIS_FORMULARIO if re.search(padrao, html or "", re.I)]
+
+
+def formulario(paginas: list[dict], tem_contato_direto: bool, busca_contato: dict | None = None) -> Achado:
+    """Classifica o formulário de contato.
+
+    Só afirma "não há formulário" (MEDIDO) quando: todas as páginas abriram, a página de contato foi
+    procurada (menu, /contato, /fale-conosco) e não há nenhum sinal de formulário carregado por script,
+    embutido ou aberto por botão. Havendo qualquer sinal ou página de contato inacessível, o resultado é
+    "Não foi possível confirmar".
+    """
     titulo = "Formulário de contato"
+    busca_contato = busca_contato or {}
     abertas = [p for p in paginas if p.get("medidas")]
     if not abertas:
         return _nao_medido("ux-form", titulo, "as páginas não puderam ser abertas", 2)
     forms = [(p["url"], f) for p in abertas for f in p["medidas"].get("formularios", [])]
     contato = [(u, f) for u, f in forms if f["campos"] >= 2]
+
+    if contato:
+        url, f = max(contato, key=lambda x: x[1]["campos"])
+        sem_rotulo = f["campos"] - f["com_rotulo"]
+        ev = f"página {code(caminho(url), 40)}: {plural(f['campos'], 'campo')}, {f['com_rotulo']} com rótulo identificável."
+        if f["campos"] > 9:
+            return Achado("ux-form", "ux", titulo, "medido", "problema",
+                          f"O formulário principal tem {f['campos']} campos.", evidencia=ev,
+                          significado="Formulários longos desanimam. Cada campo extra é um motivo para desistir.",
+                          correcao="Reduzir para o essencial (nome, contato e mensagem) e pedir o resto depois, na conversa.",
+                          impacto="menos pedidos de contato chegam até você.",
+                          prioridade="media", esforco=ESFORCO_RAPIDO, peso=2, area="Conversão")
+        if f["campos"] > 6 or sem_rotulo > 0:
+            motivo = []
+            if f["campos"] > 6:
+                motivo.append(f"tem {f['campos']} campos")
+            if sem_rotulo > 0:
+                motivo.append(f"{plural(sem_rotulo, 'campo')} sem rótulo (só com texto de exemplo dentro do campo, que some ao digitar)")
+            return Achado("ux-form", "ux", titulo, "medido", "atencao", "O formulário principal " + " e ".join(motivo) + ".",
+                          evidencia=ev,
+                          significado="Rótulos claros e poucos campos facilitam o preenchimento, inclusive para leitores de tela.",
+                          correcao="Manter até 6 campos e colocar um rótulo visível acima de cada um.",
+                          prioridade="baixa", esforco=ESFORCO_RAPIDO, peso=2, area="Conversão")
+        return Achado("ux-form", "ux", titulo, "medido", "ok",
+                      f"Formulário com {plural(f['campos'], 'campo')}, todos com rótulo.", evidencia=ev,
+                      significado="Curto e claro. Bom para quem prefere escrever.", peso=2, area="Conversão")
+
     externos = [(p["url"], s) for p in abertas for s in p["medidas"].get("formularios_externos", [])]
-    if not contato and externos:
+    if externos:
         u, src = externos[0]
         return Achado("ux-form", "ux", titulo, "medido", "ok",
                       "Há um formulário de contato de serviço externo incorporado ao site.",
@@ -114,38 +205,38 @@ def formulario(paginas: list[dict], tem_contato_direto: bool) -> Achado:
                       significado="O visitante tem uma forma de escrever para a empresa. Os campos não puderam ser medidos porque o formulário vem de outro serviço.",
                       peso=2, area="Conversão", confianca="baixa",
                       nota_interna="Formulário em iframe: abra a página e confira quantidade de campos e rótulos.")
-    if not contato:
-        return Achado("ux-form", "ux", titulo, "medido", "atencao" if tem_contato_direto else "problema",
-                      f"Não encontramos formulário de contato nas {len(abertas)} páginas analisadas.",
-                      significado=("Parte dos clientes prefere escrever a ligar ou chamar no WhatsApp, principalmente fora do horário comercial."),
-                      correcao="Incluir um formulário curto (nome, contato e mensagem) na página de contato.",
-                      prioridade="baixa" if tem_contato_direto else "media", esforco=ESFORCO_RAPIDO, peso=2, area="Conversão",
-                      impacto="" if tem_contato_direto else "quem não quer ligar não tem outra forma simples de pedir contato.",
-                      nota_interna="Formulários que só aparecem depois de um clique (pop-up) não são detectados, porque a ferramenta não clica em nada. Confira o botão de contato do site.")
-    url, f = max(contato, key=lambda x: x[1]["campos"])
-    sem_rotulo = f["campos"] - f["com_rotulo"]
-    ev = f"página {code(caminho(url), 40)}: {plural(f['campos'], 'campo')}, {f['com_rotulo']} com rótulo identificável."
-    if f["campos"] > 9:
-        return Achado("ux-form", "ux", titulo, "medido", "problema",
-                      f"O formulário principal tem {f['campos']} campos.", evidencia=ev,
-                      significado="Formulários longos desanimam. Cada campo extra é um motivo para desistir.",
-                      correcao="Reduzir para o essencial (nome, contato e mensagem) e pedir o resto depois, na conversa.",
-                      impacto="menos pedidos de contato chegam até você.",
-                      prioridade="media", esforco=ESFORCO_RAPIDO, peso=2, area="Conversão")
-    if f["campos"] > 6 or sem_rotulo > 0:
-        motivo = []
-        if f["campos"] > 6:
-            motivo.append(f"tem {f['campos']} campos")
-        if sem_rotulo > 0:
-            motivo.append(f"{plural(sem_rotulo, 'campo')} sem rótulo (só com texto de exemplo dentro do campo, que some ao digitar)")
-        return Achado("ux-form", "ux", titulo, "medido", "atencao", "O formulário principal " + " e ".join(motivo) + ".",
-                      evidencia=ev,
-                      significado="Rótulos claros e poucos campos facilitam o preenchimento, inclusive para leitores de tela.",
-                      correcao="Manter até 6 campos e colocar um rótulo visível acima de cada um.",
-                      prioridade="baixa", esforco=ESFORCO_RAPIDO, peso=2, area="Conversão")
-    return Achado("ux-form", "ux", titulo, "medido", "ok",
-                  f"Formulário com {plural(f['campos'], 'campo')}, todos com rótulo.", evidencia=ev,
-                  significado="Curto e claro. Bom para quem prefere escrever.", peso=2, area="Conversão")
+
+    sinais = sorted({n for p in abertas for n in sinais_formulario(p.get("html", ""))})
+    modais = [b for p in abertas for b in p["medidas"].get("botoes_modal", [])]
+    falhas = [p["url"] for p in paginas if p.get("erro")]
+    motivos = []
+    if sinais:
+        motivos.append("código de formulário de " + ", ".join(sinais))
+    if modais:
+        motivos.append("botão que parece abrir um formulário em janela (" + ", ".join(code(m, 40) for m in modais[:2]) + ")")
+    if busca_contato.get("erro"):
+        motivos.append(f"a página de contato não pôde ser aberta ({busca_contato['erro']})")
+    if falhas:
+        motivos.append(f"{plural(len(falhas), 'página')} não abriu")
+    if motivos:
+        return Achado("ux-form", "ux", titulo, "nao_confirmado", "na",
+                      "Não encontramos um formulário visível sem interação, mas há sinais de que ele existe.",
+                      evidencia="sinais encontrados: " + "; ".join(motivos) + ".",
+                      significado="O formulário pode aparecer só depois de um clique ou carregar de forma que a análise automática não alcança.",
+                      peso=2, area="Conversão", confianca="baixa",
+                      nota_interna="Abra o site, clique no botão de contato e confira o formulário (campos, rótulos, se funciona no celular).")
+
+    pagina_contato = busca_contato.get("url")
+    ev = (f"analisamos {plural(len(abertas), 'página')}" +
+          (f", incluindo a página de contato {code(caminho(pagina_contato), 40)}" if pagina_contato else
+           f"; procuramos também {', '.join(code(t, 30) for t in busca_contato.get('tentativas', [])[:3]) or 'a página de contato'}, sem sucesso") +
+          ", e não há sinal de formulário carregado por script, embutido ou aberto por botão.")
+    return Achado("ux-form", "ux", titulo, "medido", "atencao" if tem_contato_direto else "problema",
+                  f"Não há formulário de contato nas {len(abertas)} páginas analisadas.", evidencia=ev,
+                  significado="Parte dos clientes prefere escrever a ligar ou chamar no WhatsApp, principalmente fora do horário comercial.",
+                  correcao="Incluir um formulário curto (nome, contato e mensagem) na página de contato.",
+                  prioridade="baixa" if tem_contato_direto else "media", esforco=ESFORCO_RAPIDO, peso=2, area="Conversão",
+                  impacto="" if tem_contato_direto else "quem não quer ligar não tem outra forma simples de pedir contato.")
 
 
 def viewport(medidas: dict | None) -> Achado:
@@ -263,15 +354,18 @@ def proposta_valor(home: dict | None) -> Achado:
                   nota_interna="Leia o título e decida se a proposta de valor está clara. Ajuste o texto do relatório se discordar.")
 
 
-def analisar(home_mobile: dict | None, home_desktop: dict | None, paginas: list[dict]) -> list[Achado]:
+def analisar(home_mobile: dict | None, home_desktop: dict | None, paginas: list[dict],
+             busca_contato: dict | None = None) -> list[Achado]:
     m = (home_mobile or {}).get("medidas")
     d = (home_desktop or {}).get("medidas")
-    contato = contato_direto(m, paginas)
+    wa = whatsapp(m, paginas)
+    tel = telefone_email(paginas)
     return [
         cta_dobra(m, "mobile"),
         cta_dobra(d, "desktop"),
-        contato,
-        formulario(paginas, contato.situacao in ("ok", "atencao")),
+        wa,
+        tel,
+        formulario(paginas, wa.situacao in ("ok", "atencao") or tel.situacao in ("ok", "atencao"), busca_contato),
         viewport(m),
         alvos_toque(m),
         legibilidade(m),
