@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnóstico de Site · {{ empresa }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --roxo:#6025E1; --roxo-claro:#9B7BFF; --verde:#04CD8F; --vinho:#C00252; --rosa:#FF3D8B;
+  --preto:#16171B; --preto2:#121316;
+  --bg:var(--preto2); --superficie:#1C1D23; --superficie2:#23242B; --borda:#2E2F38;
+  --texto:#ECEBF2; --texto2:#A9A8B8; --titulo:#FFFFFF;
+  --ok:var(--verde); --atencao:#B79BFF; --problema:#FF4D8D; --neutro:#8A8A99;
+}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;background:var(--bg);color:var(--texto);font:400 15px/1.6 "Nunito",system-ui,sans-serif}
+h1,h2,h3,h4{font-family:"Space Grotesk",system-ui,sans-serif;color:var(--titulo);line-height:1.15;margin:0}
+p{margin:0 0 .6em}
+a{color:inherit}
+.wrap{max-width:920px;margin:0 auto;padding:0 32px}
+
+/* ---------- Faixas escuras com degradê (capa e próximo passo) ---------- */
+.neon{position:relative;overflow:hidden;background:var(--preto2);color:#fff}
+.neon::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(60% 55% at 0% 0%, rgba(96,37,225,.75), transparent 70%),
+    radial-gradient(45% 45% at 100% 20%, rgba(192,2,82,.55), transparent 70%),
+    radial-gradient(55% 50% at 85% 100%, rgba(4,205,143,.45), transparent 70%);}
+.neon > *{position:relative}
+
+.capa{min-height:100vh;display:flex;flex-direction:column;padding:48px 0}
+.capa .wrap{flex:1;display:flex;flex-direction:column;width:100%}
+.capa .logo{width:220px}
+.capa .miolo{flex:1;display:flex;align-items:center;gap:40px}
+.capa .mascote{width:190px;flex:none;filter:drop-shadow(0 20px 60px rgba(96,37,225,.6))}
+.capa .mascote path{fill:#fff}
+.kicker{font:600 13px/1 "Space Grotesk",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--verde)}
+.capa h1{font-size:56px;margin:14px 0 18px;letter-spacing:-.02em}
+.capa .empresa{font:600 26px/1.2 "Space Grotesk",sans-serif;color:#fff}
+.capa .url{color:#C9C7D6;margin-top:6px;font-size:16px;word-break:break-all}
+.capa .rodape-capa{display:flex;justify-content:space-between;align-items:flex-end;color:#C9C7D6;font-size:13px;border-top:1px solid rgba(255,255,255,.18);padding-top:16px}
+
+/* ---------- Conteúdo ---------- */
+section.bloco{padding:56px 0 24px}
+.cab-secao{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--borda)}
+.cab-secao h2{font-size:32px;letter-spacing:-.01em}
+.cab-secao .sub{color:var(--texto2);margin-top:6px;max-width:560px}
+.lead{font-size:17px;color:var(--texto)}
+
+.notas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:8px 0 28px}
+.nota{background:var(--superficie);border:1px solid var(--borda);border-radius:18px;padding:20px;display:flex;gap:16px;align-items:center;break-inside:avoid}
+.anel{width:84px;height:84px;flex:none;position:relative}
+.anel svg{width:100%;height:100%;transform:rotate(-90deg)}
+.anel .valor{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 26px/1 "Space Grotesk",sans-serif;color:var(--titulo)}
+.anel .valor.na{font-size:13px;color:var(--neutro);text-align:center;line-height:1.1}
+.nota h3{font-size:16px}
+.nota .faixa{font-weight:700;font-size:13px;margin-top:4px}
+.nota .cobertura{font-size:12px;color:var(--texto2);margin-top:2px}
+.f-bom{color:var(--ok)} .f-medio{color:var(--atencao)} .f-ruim{color:var(--problema)} .f-na{color:var(--neutro)}
+
+.top3{display:grid;gap:12px;margin-bottom:24px}
+.achado-top{display:grid;grid-template-columns:6px 1fr;gap:16px;background:var(--superficie);border:1px solid var(--borda);border-radius:14px;padding:16px 18px 16px 0;break-inside:avoid}
+.achado-top .barra{border-radius:0 6px 6px 0;background:var(--vinho)}
+.achado-top.p-media .barra{background:var(--roxo)}
+.achado-top h4{font-size:17px;margin-bottom:4px}
+.achado-top p{margin:0;color:var(--texto2)}
+.achado-top .impacto{color:var(--texto);margin-top:6px}
+.achado-top .impacto b{color:var(--verde)}
+
+.resumo-grid{display:grid;grid-template-columns:1fr 220px;gap:24px;align-items:start}
+.captura{border-radius:22px;border:6px solid #2A2B33;overflow:hidden;background:#000;break-inside:avoid}
+.captura img{display:block;width:100%}
+.captura-leg{font-size:12px;color:var(--texto2);text-align:center;margin-top:8px}
+
+.selo{display:inline-flex;align-items:center;gap:6px;font:700 11px/1 "Nunito",sans-serif;letter-spacing:.04em;text-transform:uppercase;padding:5px 9px;border-radius:999px;white-space:nowrap;border:1px solid}
+.selo::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.selo.medido{color:var(--verde);border-color:rgba(4,205,143,.45);background:rgba(4,205,143,.08)}
+.selo.avaliacao{color:var(--roxo-claro);border-color:rgba(155,123,255,.45);background:rgba(96,37,225,.12)}
+.selo.nao_medido{color:var(--neutro);border-color:rgba(138,138,153,.45);background:rgba(138,138,153,.08)}
+.legenda{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:13px;color:var(--texto2);margin:6px 0 22px}
+
+.metricas{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:26px}
+.metrica{background:var(--superficie);border:1px solid var(--borda);border-radius:16px;padding:18px;break-inside:avoid}
+.metrica .topo{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.metrica .nome{font:600 15px/1.3 "Space Grotesk",sans-serif;color:var(--titulo)}
+.metrica .nome small{display:block;font:400 12px/1.4 "Nunito",sans-serif;color:var(--texto2);margin-top:2px}
+.metrica .num{font:700 34px/1 "Space Grotesk",sans-serif;margin:12px 0 4px}
+.metrica .num small{font-size:15px;font-weight:600;color:var(--texto2);margin-left:4px}
+.metrica .ref{font-size:12px;color:var(--texto2)}
+.metrica .frase{margin-top:10px;font-size:14px}
+.st-bom{color:var(--ok)} .st-medio{color:var(--atencao)} .st-ruim{color:var(--problema)} .st-na{color:var(--neutro)}
+
+.dispositivos{display:flex;gap:10px;margin:0 0 14px;font-size:13px;color:var(--texto2)}
+.dispositivos b{color:var(--texto)}
+.fonte{font-size:12px;color:var(--texto2);margin:-12px 0 22px}
+
+h3.sub-titulo{font-size:19px;margin:28px 0 12px}
+.itens{display:grid;gap:12px}
+.item{background:var(--superficie);border:1px solid var(--borda);border-radius:16px;padding:18px 20px;break-inside:avoid}
+.item .topo{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.item h4{font-size:17px;display:flex;gap:10px;align-items:center}
+.status{font:700 11px/1 "Nunito",sans-serif;text-transform:uppercase;letter-spacing:.05em;padding:5px 8px;border-radius:6px;flex:none}
+.status.ok{background:rgba(4,205,143,.15);color:var(--ok)}
+.status.problema{background:rgba(255,77,141,.15);color:var(--problema)}
+.status.atencao{background:rgba(155,123,255,.16);color:var(--atencao)}
+.status.na{background:rgba(138,138,153,.16);color:var(--neutro)}
+.item .linhas{display:grid;grid-template-columns:150px 1fr;gap:6px 16px;font-size:14px}
+.item .linhas dt{color:var(--texto2);font-weight:700}
+.item .linhas dd{margin:0}
+.evid{font-size:13px;color:var(--texto2)}
+.evid code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:var(--superficie2);padding:1px 5px;border-radius:4px;color:var(--texto);word-break:break-all}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chip{font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--superficie2);color:var(--texto2)}
+.chip.alta{background:rgba(192,2,82,.22);color:#FF7AAB}
+.chip.media{background:rgba(96,37,225,.22);color:var(--roxo-claro)}
+.chip.baixa{background:rgba(4,205,143,.14);color:var(--verde)}
+
+.bons{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+.bons li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45;padding:8px 0;border-bottom:1px solid var(--borda);break-inside:avoid}
+.bons li b{color:var(--titulo);font-family:"Space Grotesk",sans-serif;font-weight:600}
+.bons li span{color:var(--texto2)}
+.bons .check{flex:none;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(4,205,143,.16);color:var(--ok);font-weight:800;font-size:12px}
+.bons.semdado .check{background:rgba(138,138,153,.16);color:var(--neutro)}
+.selo.mini{font-size:9px;padding:3px 6px}
+.tecs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tec{background:var(--superficie);border:1px solid var(--borda);border-radius:14px;padding:14px 16px;break-inside:avoid}
+.tec .cat{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--texto2);font-weight:700}
+.tec .nome{font:600 16px/1.3 "Space Grotesk",sans-serif;color:var(--titulo);margin-top:4px}
+
+.plano{display:grid;gap:22px}
+.fase h3{font-size:18px;display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.fase h3 .pt{width:10px;height:10px;border-radius:50%}
+.fase{break-inside:avoid}
+.fase table{width:100%;border-collapse:collapse;font-size:14px}
+.fase th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--texto2);padding:0 10px 8px;border-bottom:1px solid var(--borda)}
+.fase td{padding:11px 10px;border-bottom:1px solid var(--borda);vertical-align:top}
+.fase tr{break-inside:avoid}
+.fase td.acao{font-weight:700;color:var(--titulo)}
+
+.final{padding:72px 0 40px}
+.final h2{font-size:40px;max-width:640px;letter-spacing:-.01em}
+.final .texto{font-size:17px;color:#D9D7E6;max-width:620px;margin:18px 0 32px}
+.contatos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:760px}
+.contato{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);border-radius:16px;padding:16px 18px;text-decoration:none}
+.contato .rot{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--verde);font-weight:700}
+.contato .val{font:600 16px/1.3 "Space Grotesk",sans-serif;color:#fff;margin-top:6px;word-break:break-all}
+.rodape{margin-top:56px;padding-top:18px;border-top:1px solid rgba(255,255,255,.18);font-size:12px;color:#B9B7C8;display:flex;gap:24px;justify-content:space-between;align-items:flex-end}
+.rodape .logo{width:120px;flex:none}
+.rodape p{margin:0;max-width:560px}
+
+.convite{display:grid;grid-template-columns:200px 1fr;gap:36px;align-items:center;margin:22px 0 34px}
+.foto-anel{width:200px;height:200px;border-radius:50%;padding:5px;background:conic-gradient(from 200deg,#6025E1,#C00252,#04CD8F,#6025E1);box-shadow:0 18px 60px rgba(96,37,225,.45)}
+.foto-anel img{width:100%;height:100%;border-radius:50%;display:block;border:4px solid #121316;object-fit:cover}
+.convite h2{font-size:36px;letter-spacing:-.01em;max-width:none}
+.convite .texto{margin:14px 0 14px;max-width:none}
+.assinatura{display:flex;flex-direction:column;gap:2px}
+.assinatura b{font:600 17px/1.2 "Space Grotesk",sans-serif;color:#fff}
+.assinatura span{font-size:13px;color:#B9B7C8}
+.cta-bloco{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:24px;padding:26px}
+.cta-wa{display:flex;align-items:center;gap:14px;background:#04CD8F;color:#08140F;text-decoration:none;font:700 22px/1 "Space Grotesk",sans-serif;padding:20px 24px;border-radius:16px;box-shadow:0 12px 40px rgba(4,205,143,.35)}
+.cta-wa svg{width:30px;height:30px;flex:none}
+.cta-wa .seta{margin-left:auto;font-size:24px}
+.cta-num{font-size:13px;color:#C9C7D6;margin:10px 2px 16px}
+.na-conversa{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:14px;color:#E4E2EE}
+.na-conversa li{display:flex;gap:10px;align-items:flex-start}
+.na-conversa li::before{content:"";flex:none;width:8px;height:8px;margin-top:7px;border-radius:50%;background:linear-gradient(135deg,#6025E1,#C00252)}
+.qr{text-align:center;width:150px}
+.qr-img{background:#fff;border-radius:14px;padding:10px;width:150px;height:150px}
+.qr-img svg{width:100%;height:100%;display:block}
+.qr-leg{font-size:11.5px;line-height:1.35;color:#C9C7D6;margin-top:8px}
+.outros-contatos{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:22px;font-size:14px;color:#C9C7D6}
+.outros-contatos a{color:#fff;font-weight:700;text-decoration:none}
+.mascote-final{width:150px;margin:48px 0 0 auto;opacity:.9}
+.mascote-final path{fill:#fff}
+.exemplo{position:fixed;top:14px;right:14px;z-index:9;background:var(--vinho);color:#fff;font:700 12px/1 "Nunito",sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:8px 12px;border-radius:8px}
+
+@media (max-width:720px){
+  .wrap{padding:0 16px}
+  .capa h1{font-size:38px} .capa .miolo{flex-direction:column;align-items:flex-start} .capa .mascote{width:110px}
+  .notas,.metricas,.tecs,.contatos,.bons,.convite,.cta-bloco{grid-template-columns:1fr}
+  .foto-anel{width:150px;height:150px}
+  .convite h2{font-size:28px}
+  .qr{display:none}
+  .resumo-grid{grid-template-columns:1fr}
+  .item .linhas{grid-template-columns:1fr}
+  .final h2{font-size:30px}
+}
+
+/* ---------- Impressão / PDF: páginas internas claras ---------- */
+@page{size:A4;margin:16mm 14mm 18mm}
+@page capa{margin:0}
+@page final{margin:0}
+@media print{
+  body{font-size:10.5pt;background:#fff}
+  .wrap{max-width:none;padding:0}
+  .capa,.final-pag{page:capa}
+  .final-pag{page:final}
+  .capa{height:297mm;min-height:0;padding:20mm 18mm}
+  .capa .wrap{padding:0}
+  .final-pag{height:297mm;padding:22mm 18mm;display:flex;flex-direction:column}
+  .final-pag .wrap{padding:0;flex:1;display:flex;flex-direction:column}
+  .final-pag .rodape{margin-top:auto}
+  .mascote-final{margin:auto 0 auto auto;width:170px}
+  .final{padding:0}
+  .capa h1{font-size:40px}
+  .contatos{max-width:none}
+  .contato .val{font-size:14px;word-break:normal;white-space:nowrap}
+  .conteudo{
+    --bg:#fff; --superficie:#F7F6FB; --superficie2:#EEEBF7; --borda:#E2DFEC;
+    --texto:#23232B; --texto2:#5E5D6E; --titulo:#121316;
+    --ok:#03A372; --atencao:#6025E1; --problema:#C00252; --neutro:#77768A; --roxo-claro:#6025E1;
+    background:#fff;color:var(--texto)
+  }
+  .conteudo .chip.alta{color:#C00252;background:#FBE3EC}
+  .conteudo .chip.media{color:#6025E1;background:#ECE5FD}
+  .conteudo .chip.baixa{color:#037D58;background:#DDF7EE}
+  .conteudo .selo.medido{color:#037D58}
+  .conteudo .achado-top .impacto b{color:#037D58}
+  section.bloco{padding:10mm 0 0;break-before:auto}
+  section#resumo,section#plano{break-before:page;padding-top:0}
+  section#performance{break-before:page;padding-top:0}
+  .cab-secao,h3.sub-titulo{break-after:avoid;page-break-after:avoid}
+  .notas{gap:10px}
+  .nota{flex-direction:column;align-items:flex-start;gap:10px;padding:16px}
+  .anel{width:72px;height:72px}
+  .cab-secao{border-bottom:2px solid transparent;border-image:linear-gradient(90deg,var(--roxo),var(--vinho),var(--verde)) 1}
+  .exemplo{position:absolute}
+  .item,.metrica,.nota,.achado-top,.tec,.captura{box-shadow:none}
+}
+</style>
+</head>
+<body>
+{% if exemplo %}<div class="exemplo">Exemplo com dados fictícios</div>{% endif %}
+
+{# ================= CAPA ================= #}
+<header class="capa neon">
+  <div class="wrap">
+    <img class="logo" src="{{ assets.logo_branco }}" alt="Work Digital">
+    <div class="miolo">
+      <div style="flex:1">
+        <div class="kicker">Diagnóstico gratuito de site</div>
+        <h1>Como o seu site está trabalhando pelo seu negócio</h1>
+        <div class="empresa">{{ empresa }}</div>
+        <div class="url">{{ url }}</div>
+      </div>
+      <div class="mascote">{{ assets.mascote_svg | safe }}</div>
+    </div>
+    <div class="rodape-capa">
+      <span>Análise realizada em {{ data_extenso }}</span>
+      <span>workdigital.art.br</span>
+    </div>
+  </div>
+</header>
+
+<main class="conteudo">
+
+{# ================= RESUMO ================= #}
+<section class="bloco" id="resumo">
+  <div class="wrap">
+    <div class="cab-secao">
+      <div>
+        <div class="kicker">Resumo executivo</div>
+        <h2 style="margin-top:8px">O essencial em uma página</h2>
+      </div>
+    </div>
+
+    <div class="notas">
+    {% for n in notas %}
+      <div class="nota">
+        <div class="anel">
+          {% set cor = {'bom':'#04CD8F','medio':'#9B7BFF','ruim':'#FF4D8D','na':'#8A8A99'}[n.faixa] %}
+          <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="currentColor" stroke-opacity=".14" stroke-width="3.2"/>
+          {% if n.nota is not none %}<circle cx="18" cy="18" r="15.9" fill="none" stroke="{{ cor }}" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="{{ n.nota }} 100"/>{% endif %}</svg>
+          {% if n.nota is not none %}<div class="valor">{{ n.nota }}</div>{% else %}<div class="valor na">sem<br>medição</div>{% endif %}
+        </div>
+        <div>
+          <h3>{{ n.categoria }}</h3>
+          <div class="faixa f-{{ n.faixa }}">{{ n.rotulo }}</div>
+          <div class="cobertura">{{ n.cobertura }}</div>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+
+    <div class="resumo-grid">
+      <div>
+        <h3 class="sub-titulo" style="margin-top:0">Os 3 pontos que mais pesam hoje</h3>
+        <div class="top3">
+        {% for a in top3 %}
+          <div class="achado-top p-{{ a.prioridade }}">
+            <div class="barra"></div>
+            <div>
+              <h4>{{ a.titulo }}</h4>
+              <p>{{ a.o_que_vimos }}</p>
+              <p class="impacto"><b>Impacto provável:</b> {{ a.impacto }}</p>
+            </div>
+          </div>
+        {% else %}
+          <div class="achado-top p-media"><div class="barra"></div><div><h4>Nenhum problema crítico encontrado</h4><p>Os itens medidos não apontaram falhas graves. Veja nas próximas páginas os ajustes finos sugeridos.</p></div></div>
+        {% endfor %}
+        </div>
+      </div>
+      {% if captura_mobile %}
+      <div>
+        <div class="captura"><img src="{{ captura_mobile }}" alt="Primeira tela do site no celular"></div>
+        <div class="captura-leg">Primeira tela no celular, como o visitante vê</div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="legenda">
+      <span class="selo medido">Medido</span> dado coletado por ferramenta
+      <span class="selo avaliacao">Avaliação de especialista</span> leitura técnica, sujeita a contexto
+      <span class="selo nao_medido">Não foi possível medir</span> coleta falhou ou foi bloqueada
+    </div>
+  </div>
+</section>
+
+{# ================= SEÇÕES POR CATEGORIA ================= #}
+{% for s in secoes %}
+<section class="bloco" id="{{ s.id }}">
+  <div class="wrap">
+    <div class="cab-secao">
+      <div>
+        <div class="kicker">{{ s.kicker }}</div>
+        <h2 style="margin-top:8px">{{ s.titulo }}</h2>
+        <div class="sub">{{ s.intro }}</div>
+      </div>
+    </div>
+
+    {% if s.metricas %}
+      {% if s.dispositivos %}<div class="dispositivos">{% for d in s.dispositivos %}<span>{{ d.nome }}: <b>nota {{ d.nota }}</b></span>{% if not loop.last %}<span>·</span>{% endif %}{% endfor %}</div>{% endif %}
+      <div class="metricas">
+      {% for m in s.metricas %}
+        <div class="metrica">
+          <div class="topo">
+            <div class="nome">{{ m.nome }}<small>{{ m.explicacao }}</small></div>
+            <span class="selo {{ m.tipo }}">{{ {'medido':'Medido','avaliacao':'Avaliação','nao_medido':'Sem dado'}[m.tipo] }}</span>
+          </div>
+          <div class="num st-{{ m.status }}">{{ m.valor }}{% if m.unidade %}<small>{{ m.unidade }}</small>{% endif %}</div>
+          <div class="ref">{{ m.referencia }}</div>
+          <div class="frase">{{ m.frase }}</div>
+        </div>
+      {% endfor %}
+      </div>
+      {% if s.fonte %}<p class="fonte">{{ s.fonte }}</p>{% endif %}
+    {% endif %}
+
+    {% set acao = s.itens | selectattr('situacao', 'in', ['problema', 'atencao']) | list %}
+    {% set bons = s.itens | selectattr('situacao', 'equalto', 'ok') | list %}
+    {% set semdado = s.itens | selectattr('situacao', 'equalto', 'na') | list %}
+    {% if acao %}
+    <h3 class="sub-titulo">{{ s.titulo_itens or 'O que precisa de atenção' }}</h3>
+    <div class="itens">
+    {% for i in acao %}
+      <div class="item">
+        <div class="topo">
+          <h4><span class="status {{ i.situacao }}">{{ {'problema':'Corrigir','atencao':'Revisar'}[i.situacao] }}</span>{{ i.titulo }}</h4>
+          <span class="selo {{ i.tipo }}">{{ {'medido':'Medido','avaliacao':'Avaliação de especialista'}[i.tipo] }}</span>
+        </div>
+        <dl class="linhas">
+          <dt>O que vimos</dt><dd>{{ i.o_que_vimos }}{% if i.evidencia %}<div class="evid">Evidência: {{ i.evidencia | safe }}</div>{% endif %}</dd>
+          {% if i.significado %}<dt>O que significa</dt><dd>{{ i.significado }}</dd>{% endif %}
+          {% if i.correcao %}<dt>O que fazer</dt><dd>{{ i.correcao }}</dd>{% endif %}
+        </dl>
+        {% if i.prioridade %}
+        <div class="chips">
+          <span class="chip {{ i.prioridade }}">Prioridade {{ i.prioridade | replace('media','média') }}</span>
+          <span class="chip">Esforço: {{ i.esforco }}</span>
+        </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    {% if bons %}
+    <h3 class="sub-titulo">O que já está bom</h3>
+    <ul class="bons">
+    {% for i in bons %}
+      <li><span class="check">✓</span><div><b>{{ i.titulo }}</b>{% if i.tipo == 'avaliacao' %} <span class="selo avaliacao mini">Avaliação</span>{% endif %}<br><span>{{ i.o_que_vimos }}</span></div></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    {% if semdado %}
+    <h3 class="sub-titulo">Não foi possível medir</h3>
+    <ul class="bons semdado">
+    {% for i in semdado %}
+      <li><span class="check">–</span><div><b>{{ i.titulo }}</b><br><span>{{ i.o_que_vimos }}</span></div></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+</section>
+{% endfor %}
+
+{# ================= PLANO ================= #}
+<section class="bloco" id="plano">
+  <div class="wrap">
+    <div class="cab-secao">
+      <div>
+        <div class="kicker">Plano de ação sugerido</div>
+        <h2 style="margin-top:8px">Por onde começar</h2>
+        <div class="sub">Ordenado pelo impacto provável no negócio. Itens rápidos e de alto impacto vêm primeiro.</div>
+      </div>
+    </div>
+    <div class="plano">
+    {% for f in plano %}
+      {% if f.itens %}
+      <div class="fase">
+        <h3><span class="pt" style="background:{{ f.cor }}"></span>{{ f.nome }}</h3>
+        <table>
+          <thead><tr><th>Ação</th><th style="width:22%">Área</th><th style="width:18%">Esforço</th></tr></thead>
+          <tbody>
+          {% for a in f.itens %}<tr><td class="acao">{{ a.acao }}{% if a.avaliacao %} <span class="evid">(sugestão de especialista)</span>{% endif %}</td><td>{{ a.area }}</td><td>{{ a.esforco }}</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ================= TECNOLOGIAS ================= #}
+<section class="bloco continua" id="tecnologias">
+  <div class="wrap">
+    <h3 class="sub-titulo">Ferramentas detectadas no site</h3>
+    {% if tecnologias %}
+    <div class="tecs">
+      {% for t in tecnologias %}<div class="tec"><div class="cat">{{ t.categoria }}</div><div class="nome">{{ t.nome }}</div></div>{% endfor %}
+    </div>
+    <p class="evid" style="margin-top:10px">Listamos apenas o que foi identificado com segurança no código público do site.</p>
+    {% else %}
+    <p class="evid">Nenhuma ferramenta foi identificada com segurança.</p>
+    {% endif %}
+  </div>
+</section>
+
+</main>
+
+{# ================= PRÓXIMO PASSO ================= #}
+<footer class="final-pag neon">
+  <div class="wrap final">
+    <div class="kicker">Próximo passo</div>
+    <div class="convite">
+      <div class="foto-anel"><img src="{{ assets.foto }}" alt="{{ assinatura.nome or 'Work Digital' }}"></div>
+      <div>
+        <h2>Vamos conversar sobre o site{% if empresa %} da {{ empresa }}{% endif %}?</h2>
+        <p class="texto">{{ assinatura.apresentacao }} Revisei pessoalmente cada ponto deste diagnóstico. Numa conversa rápida pelo WhatsApp, te mostro por onde começar e o que traz mais retorno para o seu momento. Sem compromisso.</p>
+        <div class="assinatura"><b>{{ assinatura.nome or '[seu nome]' }}</b><span>{{ assinatura.cargo }} · Work Digital</span></div>
+      </div>
+    </div>
+
+    <div class="cta-bloco">
+      <div class="cta-lado">
+        <a class="cta-wa" href="{{ whatsapp_url }}">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3 29l6.9-2.2c1.9 1 4 1.6 6.1 1.6 7 0 12.7-5.7 12.7-12.7S23 3 16 3Zm0 23.1c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.3 1.3-4-.3-.4a10.4 10.4 0 0 1-1.6-5.6C5.5 9.8 10.2 5.2 16 5.2s10.5 4.6 10.5 10.4S21.8 26.1 16 26.1Zm5.8-7.8c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1-.3-.2-1.3-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2-.2-.3 0-.5.1-.7l.5-.6.3-.5c.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.6 5.8 5 .8.4 1.4.6 1.9.7.8.3 1.5.2 2.1.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4Z"/></svg>
+          <span>Conversar no WhatsApp</span>
+          <span class="seta">→</span>
+        </a>
+        <div class="cta-num">(11) 99391-6363 · a mensagem já vai pronta, é só enviar</div>
+        <ul class="na-conversa">
+          <li>Revisamos juntos os pontos prioritários deste relatório</li>
+          <li>Você sai com um caminho claro, mesmo que não contrate</li>
+          <li>Se fizer sentido, enviamos uma proposta sob medida</li>
+        </ul>
+      </div>
+      {% if qr_svg %}
+      <div class="qr">
+        <div class="qr-img">{{ qr_svg | safe }}</div>
+        <div class="qr-leg">Aponte a câmera do celular para abrir o WhatsApp</div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="outros-contatos">
+      <span>Prefere e-mail? <a href="mailto:hello@workdigital.art.br">hello@workdigital.art.br</a></span>
+      <span><a href="https://workdigital.art.br">workdigital.art.br</a></span>
+    </div>
+
+    <div class="rodape">
+      <p>© Work Digital 2026. Este diagnóstico é uma análise técnica automatizada com revisão especializada, baseada em dados públicos do site coletados em {{ data_extenso }}. Resultados podem variar conforme o momento da medição, o dispositivo e a conexão do visitante.</p>
+      <img class="logo" src="{{ assets.logo_branco }}" alt="Work Digital">
+    </div>
+  </div>
+</footer>
+</body>
+</html>
