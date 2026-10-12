@@ -26,7 +26,9 @@ INSTRUCOES = (
     "Campo 'situacao' aceita: ok, atencao, problema. 'prioridade': alta, media, baixa. "
     "Textos marcados com [RASCUNHO] são sugestões da ferramenta: reescreva ou apague a marcação para aceitar. "
     "O campo 'sinais_coletados' é só referência e não aparece no relatório. "
-    "Depois rode: python diagnostico.py URL --nome \"Empresa\" --versao revisada"
+    "Depois rode: python diagnostico.py URL --nome \"Empresa\" --versao revisada. "
+    "Na automação (Fase 2), salvar este arquivo já gera a versão revisada; para enviá-la ao lead, "
+    "troque 'enviar_ao_lead' para true."
 )
 
 
@@ -77,6 +79,7 @@ def criar_rascunho(r: dict, plano_fases: list[dict]) -> dict:
         "url": r["url_final"],
         "data_analise": r["data"],
         "demonstracao": False,
+        "enviar_ao_lead": False,
         "nota_pessoal": {"status": PENDENTE, "texto": _rascunho_nota_pessoal(r["empresa"], achados)},
         "avaliacoes": avaliacoes,
         "plano": {"status": PENDENTE, "itens": plano},
