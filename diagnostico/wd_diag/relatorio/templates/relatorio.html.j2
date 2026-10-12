@@ -450,7 +450,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
       <div class="foto-anel"><img src="{{ assets.foto }}" alt="{{ assinatura.nome or 'Work Digital' }}"></div>
       <div>
         <h2>Vamos conversar sobre o site{% if empresa %} da {{ empresa }}{% endif %}?</h2>
-        <p class="texto">Oi! Eu sou {{ assinatura.nome or '[seu nome]' }}, da Work Digital. Revisei pessoalmente cada ponto deste diagnóstico. Numa conversa rápida pelo WhatsApp, te mostro por onde começar e o que traz mais retorno para o seu momento. Sem compromisso.</p>
+        <p class="texto">{{ assinatura.apresentacao }} Revisei pessoalmente cada ponto deste diagnóstico. Numa conversa rápida pelo WhatsApp, te mostro por onde começar e o que traz mais retorno para o seu momento. Sem compromisso.</p>
         <div class="assinatura"><b>{{ assinatura.nome or '[seu nome]' }}</b><span>{{ assinatura.cargo }} · Work Digital</span></div>
       </div>
     </div>

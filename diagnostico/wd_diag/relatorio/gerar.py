@@ -67,7 +67,9 @@ def renderizar_html(contexto: dict, template: str = "relatorio.html.j2") -> str:
     import os
     ctx = {"assets": assets_embutidos(), "exemplo": False,
            "assinatura": {"nome": os.environ.get("ASSINATURA_NOME", "Vania Araripe").strip(),
-                          "cargo": os.environ.get("ASSINATURA_CARGO", "Gestão de projetos digitais").strip()},
+                          "cargo": os.environ.get("ASSINATURA_CARGO", "Gestão de projetos digitais").strip(),
+                          "apresentacao": os.environ.get("ASSINATURA_APRESENTACAO",
+                                                         "Olá! Eu sou a Vania, da Work Digital.").strip()},
            **contexto}
     if "whatsapp_url" not in ctx:
         ctx["whatsapp_url"] = link_whatsapp(ctx.get("empresa"))
