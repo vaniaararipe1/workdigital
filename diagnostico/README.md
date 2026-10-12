@@ -37,6 +37,7 @@ cp .env.exemplo .env                                # e preencha a chave
 | `PAGESPEED_API_KEY` | Recomendada | Chave da API do Google PageSpeed Insights. Sem ela, o Google limita as consultas e a ferramenta usa o Lighthouse local. |
 | `USAR_LIGHTHOUSE_LOCAL` | Não | `1` (padrão) usa o Lighthouse local se o PageSpeed falhar; `0` desliga. |
 | `CHROMIUM_PATH` | Não | Caminho de um Chromium já instalado, se não quiser usar o do Playwright. |
+| `ASSINATURA_NOME` / `ASSINATURA_CARGO` | Não | Nome e cargo na página final (padrão: Vania Araripe, Gestão de projetos digitais). |
 | `PASTA_RELATORIOS` | Não | Onde salvar os relatórios (padrão: `./relatorios`). |
 
 **Como criar a chave do PageSpeed:**
