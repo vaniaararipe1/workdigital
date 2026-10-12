@@ -81,6 +81,8 @@ section.bloco{padding:56px 0 24px}
 .selo.medido{color:var(--verde);border-color:rgba(4,205,143,.45);background:rgba(4,205,143,.08)}
 .selo.avaliacao{color:var(--roxo-claro);border-color:rgba(155,123,255,.45);background:rgba(96,37,225,.12)}
 .selo.nao_confirmado{color:#C9A227;border-color:rgba(201,162,39,.5);background:rgba(201,162,39,.1)}
+.etiqueta-capa.etiqueta-exemplo{background:#fff;color:#6025E1;border-color:#fff}
+.marca-exemplo{color:#B9B7C8;letter-spacing:.08em}
 .etiqueta-capa{display:inline-block;margin-top:22px;font:700 12px/1 "Space Grotesk",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#fff;border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:9px 14px}
 .formula{font-size:12.5px;color:var(--texto2);margin:-10px 0 18px;padding-left:10px;border-left:3px solid var(--roxo)}
 .nota-pessoal{display:grid;grid-template-columns:96px 1fr;gap:22px;align-items:start;background:var(--superficie);border:1px solid var(--borda);border-radius:18px;padding:22px;break-inside:avoid}
@@ -205,7 +207,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 }
 
 /* ---------- Impressão / PDF: páginas internas claras ---------- */
-@page{size:A4;margin:16mm 14mm 18mm;@bottom-left{content:"{{ rodape_texto }}";font:8pt Nunito,sans-serif;color:#77768A}@bottom-right{content:"workdigital.art.br";font:8pt Nunito,sans-serif;color:#77768A}}
+@page{size:A4;margin:16mm 14mm 18mm;{% if exemplo_ilustrativo %}@top-right{content:"Exemplo ilustrativo · dados fictícios";font:600 7.5pt "Space Grotesk",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9B7BFF}{% endif %}@bottom-left{content:"{{ rodape_texto }}";font:8pt Nunito,sans-serif;color:#77768A}@bottom-right{content:"workdigital.art.br";font:8pt Nunito,sans-serif;color:#77768A}}
 @page capa{margin:0}
 @page final{margin:0}
 @media print{
@@ -262,6 +264,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
         <div class="empresa">{{ empresa }}</div>
         <div class="url">{{ url }}</div>
         {% if versao == 'automatica' %}<div class="etiqueta-capa">Resultado técnico</div>{% endif %}
+        {% if exemplo_ilustrativo %}<div class="etiqueta-capa etiqueta-exemplo">Exemplo ilustrativo</div>{% endif %}
       </div>
       <div class="mascote">{{ assets.mascote_svg | safe }}</div>
     </div>
@@ -337,18 +340,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
   </div>
 </section>
 
-{% if versao == 'revisada' and nota_pessoal %}
-<section class="bloco continua" id="nota-pessoal">
-  <div class="wrap">
-    <h3 class="sub-titulo">Uma nota da especialista</h3>
-    <div class="nota-pessoal">
-      <img src="{{ assets.foto }}" alt="{{ assinatura.nome }}">
-      <div><div class="txt">{{ nota_pessoal }}</div>
-        <div class="ass">{{ assinatura.nome }}<span>{{ assinatura.cargo }} · Work Digital</span></div></div>
-    </div>
-  </div>
-</section>
-{% endif %}
+
 
 {# ================= SEÇÕES POR CATEGORIA ================= #}
 {% for s in secoes %}
@@ -439,6 +431,13 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
         <div class="sub">Ordenado pelo impacto provável no negócio. Itens rápidos e de alto impacto vêm primeiro.</div>
       </div>
     </div>
+    {% if nota_pessoal %}
+    <div class="nota-pessoal" style="margin-bottom:22px">
+      <img src="{{ assets.foto }}" alt="{{ assinatura.nome }}">
+      <div><div class="txt">{{ nota_pessoal }}</div>
+        <div class="ass">{{ assinatura.nome }}<span>{{ assinatura.cargo }} · Work Digital</span></div></div>
+    </div>
+    {% endif %}
     <div class="plano">
     {% for f in plano %}
       {% if f.itens %}
@@ -491,7 +490,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 {% if versao == 'revisada' %}
 <footer class="final-pag neon">
   <div class="wrap final">
-    <div class="kicker">Próximo passo</div>
+    <div class="kicker">Próximo passo{% if exemplo_ilustrativo %} <span class="marca-exemplo">· Exemplo ilustrativo · dados fictícios</span>{% endif %}</div>
     <div class="convite">
       <div class="foto-anel"><img src="{{ assets.foto }}" alt="{{ assinatura.nome or 'Work Digital' }}"></div>
       <div>
