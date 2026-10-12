@@ -50,7 +50,8 @@
   // ---------- contato direto ----------
   const contato = [...document.querySelectorAll('a[href]')].map(a => {
     const href = a.getAttribute('href') || '';
-    const tipo = WA_RE.test(href) ? 'whatsapp' : href.toLowerCase().startsWith('tel:') ? 'telefone' : null;
+    const h = href.toLowerCase();
+    const tipo = WA_RE.test(href) ? 'whatsapp' : h.startsWith('tel:') ? 'telefone' : h.startsWith('mailto:') ? 'email' : null;
     if (!tipo) return null;
     const vis = visivel(a);
     return { tipo, href: href.slice(0, 200), visivel: vis, fixo: vis && fixo(a), topo: vis ? Math.round(topoAbs(a)) : null, texto: texto(a).slice(0, 60) };
@@ -75,8 +76,17 @@
              nomes: campos.map(i => i.name || i.id || i.type).slice(0, 15) };
   }).filter(f => f.campos > 0 && !f.busca && !f.login);
 
-  const FORM_EXT = /(rdstation|hsforms|hubspot|typeform|forms\.gle|docs\.google\.com\/forms|jotform|tally\.so|formstack|leadster|cognitoforms)/i;
+  const FORM_EXT = /(rdstation|hsforms|hubspot|typeform|forms\.gle|docs\.google\.com\/forms|jotform|tally\.so|formstack|leadster|cognitoforms|calendly\.com)/i;
   const formulariosExternos = [...document.querySelectorAll('iframe[src]')].map(f => f.getAttribute('src')).filter(s => FORM_EXT.test(s)).map(s => s.slice(0, 160));
+
+  // Botões que provavelmente abrem um formulário em janela (modal/pop-up): não clicamos, só registramos.
+  const MODAL_TXT = /(orçamento|orcamento|proposta|fale conosco|contato|cotação|cotacao|solicit|agend|quero)/i;
+  const botoesModal = [...document.querySelectorAll('a, button, [role=button]')].filter(el => {
+    const href = (el.getAttribute('href') || '').trim();
+    const abreModal = el.matches('[data-toggle=modal], [data-bs-toggle=modal], [aria-haspopup=dialog], [data-popup], [data-modal]')
+      || /#elementor-action|popup|modal/i.test(href) || href === '#' || href === '' && el.tagName !== 'A' || href.startsWith('javascript:');
+    return abreModal && MODAL_TXT.test(texto(el)) && visivel(el);
+  }).map(el => texto(el).slice(0, 50)).slice(0, 8);
 
   // ---------- leitura no celular ----------
   let totalChars = 0, pequenos = 0;
@@ -125,6 +135,7 @@
     contato_direto: contato.slice(0, 20),
     formularios,
     formularios_externos: formulariosExternos,
+    botoes_modal: botoesModal,
     texto_total_chars: totalChars,
     texto_pequeno_chars: pequenos,
     alvos_total: alvos.length,

@@ -43,6 +43,12 @@ ASSINATURAS_HTML = [
     ("Yoast SEO", "Plugin de SEO", r"Yoast SEO plugin|yoast-schema-graph"),
     ("Rank Math", "Plugin de SEO", r"rank-math-schema|class=\"rank-math"),
     ("reCAPTCHA", "Proteção de formulário", r"google\.com/recaptcha/"),
+    ("WP Rocket", "Cache e otimização", r"/plugins/wp-rocket/|data-rocket-|<!-- This website is like a Rocket"),
+    ("LiteSpeed Cache", "Cache e otimização", r"/plugins/litespeed-cache/|<!-- Page optimized by LiteSpeed Cache|data-lazyloaded=\"1\""),
+    ("W3 Total Cache", "Cache e otimização", r"Performance optimized by W3 Total Cache|/plugins/w3-total-cache/"),
+    ("WP Super Cache", "Cache e otimização", r"WP-Super-Cache|/plugins/wp-super-cache/"),
+    ("Autoptimize", "Cache e otimização", r"/cache/autoptimize/"),
+    ("SiteGround Optimizer", "Cache e otimização", r"/plugins/sg-cachepress/"),
 ]
 
 ASSINATURAS_CABECALHO = [

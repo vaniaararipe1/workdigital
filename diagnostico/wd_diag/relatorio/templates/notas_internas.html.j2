@@ -38,33 +38,63 @@ code{background:#EEEBF7;padding:1px 5px;border-radius:4px;font-size:12.5px;word-
   <h1>{{ empresa }}</h1>
   <div class="meta">{{ url }}</div>
 
+  <h2>Como finalizar a versão revisada</h2>
+  <ol class="check">
+    <li>A <strong>versão automática</strong> (<code>relatorio.pdf</code>) já pode ser enviada ao lead: ela só tem dados medidos e avisa que a avaliação completa chega em até alguns dias úteis.</li>
+    <li>Abra <code>revisao.json</code> nesta pasta. Revise os rascunhos abaixo, reescreva o que quiser e apague as marcações <code>[RASCUNHO]</code>.</li>
+    <li>Troque cada <code>"status": "pendente de revisão"</code> por <code>"status": "revisado"</code> (nota pessoal, cada avaliação e o plano).</li>
+    <li>Rode <code>python diagnostico.py {{ url }} --nome "{{ empresa }}" --versao revisada</code>. Se faltar algo, a ferramenta lista o que falta e não gera o arquivo.</li>
+    <li>Confira <code>relatorio-revisado.pdf</code> e envie ao lead.</li>
+  </ol>
+
   <h2>Antes de enviar</h2>
   <ul class="check">
-    <li>Leia os {{ julgamento|length }} itens de avaliação abaixo e ajuste o texto do relatório se discordar.</li>
-    <li>Confira os itens de baixa confiança e os avisos da coleta.</li>
     <li>Abra a captura do celular (pasta <code>capturas/</code>) e confirme que o site carregou de verdade (sem tela de bloqueio, aviso de cookies cobrindo tudo ou página de manutenção).</li>
+    <li>Confira os itens de baixa confiança, não medidos ou não confirmados abaixo.</li>
     <li>Confirme o nome da empresa na capa.</li>
     {% if performance.mobile.get('fonte') == 'lighthouse_local' or performance.desktop.get('fonte') == 'lighthouse_local' %}
-    <li><strong>A velocidade foi medida pelo Lighthouse local, não pelo PageSpeed do Google.</strong> Se possível, rode de novo com a chave configurada. Os números do PageSpeed são os que o lead vai encontrar se pesquisar.</li>
+    <li><strong>A velocidade foi medida pelo Lighthouse local, não pelo PageSpeed do Google.</strong> Os números do PageSpeed são os que o lead vai encontrar se pesquisar.</li>
     {% endif %}
   </ul>
+
+  <h2>Achados mais fortes para abrir a conversa</h2>
+  {% for a in mais_fortes %}
+  <div class="card"><h3>{{ a.titulo }}</h3><p>{{ a.o_que_vimos }}</p><p class="pequeno"><strong>Impacto provável:</strong> {{ a.impacto }}</p></div>
+  {% else %}<p class="pequeno">Nenhum problema grave medido. Use a abordagem de evolução (ver sugestões comerciais).</p>{% endfor %}
+
+  <h2>O que foi medido</h2>
+  <table><thead><tr><th>Item</th><th>Situação</th><th>O que vimos</th></tr></thead><tbody>
+  {% for a in medidos %}<tr><td>{{ a.titulo }}</td><td><span class="tag {{ a.situacao }}">{{ {'ok':'ok','atencao':'atenção','problema':'problema','na':'—'}[a.situacao] }}</span></td><td>{{ a.o_que_vimos }}</td></tr>{% endfor %}
+  </tbody></table>
+
+  <h2>Rascunhos para a sua revisão</h2>
+  <p class="pequeno">Sugestões geradas pela ferramenta a partir de sinais no código. Elas NÃO aparecem para o lead até você revisar no <code>revisao.json</code>.</p>
+  {% if rascunho.nota_pessoal %}
+  <div class="card"><h3><span class="tag">{{ rascunho.nota_pessoal.status }}</span> Nota pessoal</h3><p>{{ rascunho.nota_pessoal.texto }}</p></div>
+  {% endif %}
+  {% for av in rascunho.avaliacoes or [] %}
+  <div class="card">
+    <h3><span class="tag">{{ av.status }}</span> {{ av.titulo }}</h3>
+    <p><strong>O que vimos:</strong> {{ av.o_que_vimos }}</p>
+    {% if av.o_que_significa %}<p><strong>O que significa:</strong> {{ av.o_que_significa }}</p>{% endif %}
+    {% if av.o_que_fazer %}<p><strong>O que fazer:</strong> {{ av.o_que_fazer }}</p>{% endif %}
+    {% if av.sinais_coletados %}<p class="pequeno">Sinais coletados: {{ av.sinais_coletados }}</p>{% endif %}
+  </div>
+  {% endfor %}
+  {% if rascunho.plano %}
+  <div class="card"><h3><span class="tag">{{ rascunho.plano.status }}</span> Plano "Por onde começar" (por impacto)</h3>
+    <table><thead><tr><th>Fase</th><th>Ação</th><th>Área</th><th>Esforço</th></tr></thead><tbody>
+    {% for it in rascunho.plano.itens %}<tr><td>{{ it.fase }}</td><td>{{ it.acao }}</td><td>{{ it.area }}</td><td>{{ it.esforco }}</td></tr>{% endfor %}
+    </tbody></table>
+  </div>
+  {% endif %}
 
   {% if avisos %}
   <h2>Avisos da coleta</h2>
   {% for a in avisos %}<div class="card"><p>{{ a }}</p></div>{% endfor %}
   {% endif %}
 
-  <h2>Itens que dependem de julgamento</h2>
-  {% for a in julgamento %}
-  <div class="card">
-    <h3><span class="tag {{ a.situacao }}">{{ {'ok':'parece ok','atencao':'revisar','problema':'problema','na':'sem dado'}[a.situacao] }}</span> {{ a.titulo }}</h3>
-    <p>{{ a.o_que_vimos }}</p>
-    {% if a.evidencia %}<p class="pequeno">Evidência: {{ a.evidencia|safe }}</p>{% endif %}
-    {% if a.nota_interna %}<p class="pequeno"><strong>Para você:</strong> {{ a.nota_interna }}</p>{% endif %}
-  </div>
-  {% else %}<p class="pequeno">Nenhum.</p>{% endfor %}
-
-  <h2>Achados de baixa confiança ou não medidos</h2>
+  <h2>Baixa confiança, não medidos ou não confirmados</h2>
   {% for a in baixa_confianca %}
   <div class="card">
     <h3><span class="tag {{ a.situacao }}">{{ a.tipo|replace('_',' ') }}</span> {{ a.titulo }}</h3>

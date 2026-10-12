@@ -48,14 +48,22 @@ def test_cta_nao_medido_sem_dados():
 def test_contato_direto_whatsapp_visivel_na_dobra():
     m = medidas(contato_direto=[{"tipo": "whatsapp", "href": "https://wa.me/5511999999999", "visivel": True,
                                  "fixo": True, "topo": 2000, "texto": ""}])
-    a = ux.contato_direto(m, [{"url": "https://ex.com/", "medidas": m}])
+    a = ux.whatsapp(m, [{"url": "https://ex.com/", "medidas": m}])
     assert a.situacao == "ok"
 
 
 def test_contato_direto_ausente_em_todas_as_paginas():
     m = medidas()
-    a = ux.contato_direto(m, [{"url": "https://ex.com/", "medidas": m}, {"url": "https://ex.com/contato", "medidas": m}])
+    a = ux.whatsapp(m, [{"url": "https://ex.com/", "medidas": m}, {"url": "https://ex.com/contato", "medidas": m}])
     assert a.situacao == "problema" and "2 páginas" in a.evidencia
+
+
+def test_telefone_e_email_clicaveis():
+    tel = {"tipo": "telefone", "href": "tel:+551199999", "visivel": True, "fixo": False, "topo": 900, "texto": ""}
+    mail = {"tipo": "email", "href": "mailto:oi@ex.com", "visivel": True, "fixo": False, "topo": 900, "texto": ""}
+    assert ux.telefone_email([{"url": "https://ex.com/", "medidas": medidas(contato_direto=[tel, mail])}]).situacao == "ok"
+    assert ux.telefone_email([{"url": "https://ex.com/", "medidas": medidas(contato_direto=[tel])}]).situacao == "atencao"
+    assert ux.telefone_email([{"url": "https://ex.com/", "medidas": medidas()}]).situacao == "problema"
 
 
 def test_formulario_longo_e_sem_rotulo():
@@ -188,7 +196,7 @@ def test_metricas_e_frases():
     ms = {m.id: m for m in performance.metricas(e, {"ok": False})}
     assert ms["lcp"].valor == "6,4" and ms["lcp"].status == "ruim"
     assert ms["cls"].status == "bom"
-    assert ms["inp"].tipo == "nao_medido" and "Não foi possível medir" in ms["inp"].frase
+    assert "inp" not in ms   # sem dado de visitantes reais, o cartão é omitido
     assert ms["bytes"].valor == "4,8" and ms["bytes"].status == "ruim"
 
 

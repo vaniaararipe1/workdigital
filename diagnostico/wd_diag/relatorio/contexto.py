@@ -67,9 +67,29 @@ def _data_uri(caminho: str | None) -> str | None:
     return "data:image/jpeg;base64," + base64.b64encode(Path(caminho).read_bytes()).decode()
 
 
-def montar(r: dict) -> dict:
-    """`r` é o resultado do pipeline (ver pipeline.executar_diagnostico)."""
-    achados: list[Achado] = r["achados"]
+RODAPE = {
+    "automatica": "Análise técnica automatizada. Avaliação especializada em revisão.",
+    "revisada": "Análise técnica automatizada com revisão especializada.",
+}
+
+FORMULA = {
+    "performance": "Como a nota foi formada: 70% da nota de velocidade do Google no celular e 30% no computador.",
+    "criterios": ("Como a nota foi formada: média ponderada dos {n} critérios medidos nesta área "
+                  "(ok vale 100, atenção vale 50, problema vale 0). Itens não medidos, não confirmados "
+                  "ou de avaliação de especialista ficam fora da conta."),
+}
+
+
+def montar(r: dict, versao: str = "automatica", revisao: dict | None = None, prazo_dias: int = 2) -> dict:
+    """`r` é o resultado do pipeline. `versao`: "automatica" ou "revisada" (exige `revisao` validada)."""
+    from .. import revisao as rv
+    if versao not in RODAPE:
+        raise ValueError(f"versão desconhecida: {versao}")
+    if versao == "revisada" and revisao is None:
+        raise ValueError("a versão revisada exige um revisao.json validado")
+
+    medidos = [a for a in r["achados"] if a.tipo != "avaliacao"]
+    achados = medidos + (rv.avaliacoes_como_achados(revisao) if versao == "revisada" else [])
     notas: dict[str, Nota] = r["notas"]
     perf_m, perf_d = r["performance"]["mobile"], r["performance"]["desktop"]
 
@@ -87,25 +107,39 @@ def montar(r: dict) -> dict:
     secoes = [
         {"id": "performance", "kicker": "Performance", "titulo": "Velocidade do site",
          "intro": "Quanto tempo o visitante espera até ver e usar a página. Sites lentos perdem visitas e ficam atrás no Google.",
+         "formula": FORMULA["performance"],
          "dispositivos": dispositivos, "fonte": r["performance"]["fonte_texto"],
          "metricas": [asdict(m) for m in r["metricas"]], "titulo_itens": "Principais oportunidades",
          "itens": _ordenar_itens(por_cat["performance"])},
         {"id": "ux", "kicker": "Experiência e conversão", "titulo": "O site ajuda o visitante a virar cliente?",
          "intro": "Verificamos se quem chega entende o que você oferece e consegue falar com você sem esforço, no celular e no computador.",
+         "formula": FORMULA["criterios"].format(n=notas["ux"].criterios_medidos),
          "itens": _ordenar_itens(por_cat["ux"])},
         {"id": "seo", "kicker": "SEO e visibilidade", "titulo": "Como o Google e as IAs encontram você",
          "intro": "Itens técnicos que ajudam o site a aparecer nas buscas do Google e nas respostas de assistentes como ChatGPT e Gemini.",
+         "formula": FORMULA["criterios"].format(n=notas["seo"].criterios_medidos),
          "itens": _ordenar_itens(por_cat["seo"])},
     ]
-    return {
+    ctx = {
         "exemplo": False,
+        "versao": versao,
+        "rodape_texto": RODAPE[versao],
+        "prazo_dias": prazo_dias,
         "empresa": r["empresa"],
         "url": r["url_final"],
         "data_extenso": r["data_extenso"],
         "captura_mobile": _data_uri(r.get("captura_mobile")),
         "notas": notas_ctx,
-        "top3": top3(achados),
+        "top3": top3(medidos),
         "secoes": secoes,
         "tecnologias": [asdict(t) for t in r["tecnologias"]],
-        "plano": plano(achados),
+        "paginas": [p for p in r.get("paginas_resumo", []) if str(p.get("situacao", "")).startswith("aberta")],
+        "plano": [],
+        "nota_pessoal": "",
+        "demonstracao": False,
     }
+    if versao == "revisada":
+        ctx["plano"] = rv.plano_revisado(revisao)
+        ctx["nota_pessoal"] = revisao["nota_pessoal"]["texto"].strip()
+        ctx["demonstracao"] = bool(revisao.get("demonstracao"))
+    return ctx
