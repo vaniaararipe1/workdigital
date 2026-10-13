@@ -61,7 +61,8 @@ def split(t):
     return head, body
 
 # sem o botão "Pausar animações" (pedido da Work); quem prefere menos movimento continua atendido pelo ajuste do sistema
-NO_PAUSE = [r'<button class="wd-pause"[^>]*>.*?</button>\s*', r'<script>\s*/\* Pausar animações.*?</script>\s*']
+NO_PAUSE = [r'<button class="wd-pause"[^>]*>.*?</button>\s*', r'<script>\s*/\* Pausar animações.*?</script>\s*',
+            r'\s*<div class="nav-item wd-language">.*?</div>\s*</div>']  # seletor PT/EN removido
 
 def clean(t):
     for p in STRIP + NO_PAUSE: t = re.sub(p, '', t, flags=re.S)
