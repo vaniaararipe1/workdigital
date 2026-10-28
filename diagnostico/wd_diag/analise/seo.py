@@ -74,6 +74,11 @@ def extrair_pagina(url: str, html: str) -> dict:
             links.append(absoluto)
 
     perguntas = [t for n, t in headings if n >= 2 and t.strip().endswith("?")]
+    og = {}
+    for prop in ("og:title", "og:description", "og:image"):
+        tag = sopa.find("meta", attrs={"property": prop}) or sopa.find("meta", attrs={"name": prop})
+        if tag and (tag.get("content") or "").strip():
+            og[prop] = tag["content"].strip()[:200]
     return {
         "url": url,
         "titulo": titulo,
@@ -88,6 +93,7 @@ def extrair_pagina(url: str, html: str) -> dict:
         "jsonld_invalido": jsonld_invalido,
         "links_internos": sorted(set(links)),
         "perguntas_em_titulos": perguntas,
+        "open_graph": og,
     }
 
 
@@ -395,6 +401,24 @@ def dados_estruturados(pags: list[dict]) -> list[Achado]:
     return out
 
 
+def open_graph(pags: list[dict]) -> Achado:
+    """Avaliado na página inicial: é o link mais compartilhado no WhatsApp e nas redes."""
+    og = pags[0].get("open_graph", {})
+    faltam = [p for p in ("og:title", "og:description", "og:image") if p not in og]
+    titulo = "Prévia ao compartilhar o link (Open Graph)"
+    signif = ("As marcações Open Graph definem o título, o texto e a imagem que aparecem quando alguém compartilha "
+              "o link do site no WhatsApp, Instagram ou LinkedIn.")
+    if not faltam:
+        return _a("seo-og", titulo, "ok", "A página inicial tem título, descrição e imagem para a prévia de compartilhamento.", 0.5,
+                  evidencia=f"imagem: {code(og['og:image'], 80)}.", significado=signif)
+    vimos = ("A página inicial não tem as marcações de prévia de compartilhamento." if len(faltam) == 3 else
+             f"A página inicial não tem {', '.join(faltam)} para a prévia de compartilhamento.")
+    return _a("seo-og", titulo, "atencao", vimos, 0.5, evidencia=f"ausentes: {', '.join(code(f) for f in faltam)}.",
+              significado=signif + " Sem elas, a prévia pode sair sem imagem ou com um texto aleatório.",
+              correcao="Configurar título, descrição e uma imagem de 1200×630 px para a prévia de compartilhamento.",
+              prioridade="baixa", esforco=ESFORCO_RAPIDO)
+
+
 def llms(dados: dict) -> Achado:
     return _a("geo-llms", "Arquivo de orientação para IAs (llms.txt)", "ok" if dados.get("existe") else "atencao",
               "O site tem arquivo llms.txt." if dados.get("existe") else "O site não tem arquivo llms.txt.", 0.25,
@@ -414,6 +438,7 @@ def analisar(paginas_html: list[dict], robots_d: dict, sitemap_d: dict, llms_d: 
     achados = [
         indexacao(pags), *titulos(pags), descricoes(pags), h1(pags), hierarquia(pags), canonical(pags),
         https(url_final, https_d), redirecionamentos(cadeia), robots(robots_d), sitemap(sitemap_d),
-        urls_amigaveis(pags), imagens_alt(pags), links_quebrados(links_d), *dados_estruturados(pags), llms(llms_d),
+        urls_amigaveis(pags), imagens_alt(pags), links_quebrados(links_d), open_graph(pags), *dados_estruturados(pags),
+        llms(llms_d),
     ]
     return achados, pags

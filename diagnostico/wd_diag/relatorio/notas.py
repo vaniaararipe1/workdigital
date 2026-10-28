@@ -35,10 +35,10 @@ def abordagens(r: dict) -> list[dict]:
         add("WordPress com Elementor pesado",
             "Combinação comum de sites lentos por excesso de plugins e estrutura. Ofereça otimização ou reconstrução enxuta.",
             "detectado: WordPress + Elementor")
-    if a.get("ux-contato") and a["ux-contato"].situacao in ("problema", "atencao"):
+    if a.get("ux-whatsapp") and a["ux-whatsapp"].situacao in ("problema", "atencao"):
         add("Ganho rápido: botão de WhatsApp",
             "Correção de poucas horas e efeito visível. Pode ser oferecida como primeira entrega para gerar confiança.",
-            a["ux-contato"].o_que_vimos)
+            a["ux-whatsapp"].o_que_vimos)
     if a.get("ux-cta-mobile") and a["ux-cta-mobile"].situacao == "problema":
         add("Home sem convite para ação no celular",
             "Proposta de reestruturação da página inicial focada em conversão, com antes e depois.",
@@ -66,10 +66,14 @@ def abordagens(r: dict) -> list[dict]:
     return out
 
 
-def montar(r: dict) -> dict:
+def montar(r: dict, rascunho: dict | None = None) -> dict:
+    from .contexto import top3
     achados: list[Achado] = r["achados"]
     julgamento = [a for a in achados if a.tipo == "avaliacao"]
-    baixa = [a for a in achados if a.tipo == "nao_medido" or a.confianca == "baixa" or a.nota_interna and a.tipo != "avaliacao"]
+    baixa = [a for a in achados if a.tipo in ("nao_medido", "nao_confirmado") or a.confianca == "baixa"
+             or a.nota_interna and a.tipo != "avaliacao"]
+    medidos = [a for a in achados if a.tipo == "medido"]
+    rascunho = rascunho or {}
     avisos = list(r.get("avisos", []))
     return {
         "empresa": r["empresa"],
@@ -77,6 +81,9 @@ def montar(r: dict) -> dict:
         "data_extenso": r["data_extenso"],
         "pasta": r.get("pasta", ""),
         "julgamento": [x.to_dict() for x in julgamento],
+        "medidos": [x.to_dict() for x in medidos],
+        "mais_fortes": top3(achados),
+        "rascunho": rascunho,
         "baixa_confianca": [x.to_dict() for x in baixa],
         "avisos": avisos,
         "abordagens": abordagens(r),

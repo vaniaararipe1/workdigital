@@ -45,6 +45,7 @@ class Config:
     max_links_verificados: int = 40
     portas_permitidas: tuple = (80, 443)
     user_agent: str = USER_AGENT
+    prazo_revisao_dias: int = 2             # "chega em até X dias úteis" na versão automática
     pasta_relatorios: Path = field(default_factory=lambda: RAIZ / "relatorios")
 
     @classmethod
@@ -55,4 +56,5 @@ class Config:
             chromium_path=_chromium_padrao(),
             usar_lighthouse_local=os.environ.get("USAR_LIGHTHOUSE_LOCAL", "1") != "0",
             pasta_relatorios=Path(os.environ.get("PASTA_RELATORIOS", RAIZ / "relatorios")),
+            prazo_revisao_dias=int(os.environ.get("PRAZO_REVISAO_DIAS", "2")),
         )

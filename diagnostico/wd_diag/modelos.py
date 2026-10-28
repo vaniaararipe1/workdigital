@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Literal
 
-Tipo = Literal["medido", "avaliacao", "nao_medido"]
+Tipo = Literal["medido", "avaliacao", "nao_medido", "nao_confirmado"]
 Situacao = Literal["ok", "atencao", "problema", "na"]
 Prioridade = Literal["alta", "media", "baixa", ""]
 
@@ -19,8 +19,9 @@ ESFORCO_PROJETO = "projeto (semanas)"
 class Achado:
     """Um item verificável do relatório.
 
-    tipo:      "medido" (dado coletado), "avaliacao" (julgamento, não entra na nota)
-               ou "nao_medido" (coleta falhou, não entra na nota).
+    tipo:      "medido" (dado coletado), "avaliacao" (julgamento humano: só a Vania preenche,
+               via revisao.json; nunca entra na nota), "nao_medido" (coleta falhou) ou
+               "nao_confirmado" (há sinais contraditórios). Os dois últimos ficam fora da nota.
     situacao:  ok / atencao / problema / na.
     evidencia: trecho em HTML seguro que aponta para o dado coletado.
     peso:      peso do critério na nota da categoria (ver CRITERIOS.md).

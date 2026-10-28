@@ -11,10 +11,12 @@ para um dado coletado (que fica registrado em `dados.json`).
   - **80 a 100:** Bom
   - **50 a 79:** Precisa melhorar
   - **0 a 49:** Crítico
-- Três tipos de item:
+- Quatro tipos de item:
   - **Medido:** dado coletado por ferramenta. É o único tipo que entra na nota.
-  - **Avaliação de especialista:** depende de julgamento, como prova social ou clareza da proposta de valor. Aparece no relatório com selo próprio, **nunca entra na nota** e vai para as notas internas para revisão.
-  - **Não foi possível medir:** a coleta falhou (site bloqueou, página não abriu, API fora do ar). **Sai do cálculo**, e o relatório mostra quantos critérios foram realmente medidos (por exemplo, "7 de 8 critérios medidos").
+  - **Avaliação de especialista:** depende de julgamento humano (prova social, clareza da proposta de valor). **A ferramenta nunca preenche:** ela só sugere rascunhos no `revisao.json`, e o item aparece apenas na versão revisada, com o texto da Vania. **Nunca entra na nota.**
+  - **Não foi possível medir:** a coleta falhou (site bloqueou, página não abriu, API fora do ar). **Sai do cálculo**, e o relatório mostra quantos critérios foram realmente medidos (por exemplo, "7 de 9 critérios medidos").
+  - **Não foi possível confirmar:** há sinais contraditórios (por exemplo, código de formulário do RD Station sem formulário visível). **Sai do cálculo.**
+- Cada seção do relatório traz uma linha "Como a nota foi formada", resumindo a regra abaixo.
 - Se nenhum critério de uma categoria puder ser medido, a nota aparece como "sem medição", e não como zero.
 
 ## Performance
@@ -35,7 +37,7 @@ para um dado coletado (que fica registrado em `dados.json`).
 |---|---|---|---|---|
 | Tempo até o conteúdo principal (LCP) | até 2,5 s | até 4 s | acima de 4 s | laboratório |
 | Estabilidade visual (CLS) | até 0,1 | até 0,25 | acima de 0,25 | laboratório |
-| Resposta ao toque (INP) | até 200 ms | até 500 ms | acima de 500 ms | **só dados reais** (Chrome UX Report); sem dados, aparece "não foi possível medir" |
+| Resposta ao toque (INP) | até 200 ms | até 500 ms | acima de 500 ms | **só dados reais** (Chrome UX Report); sem dados, o cartão é omitido |
 | Peso da página | até 2 MB | até 4 MB | acima de 4 MB | laboratório |
 
 **Oportunidades:** itens do Lighthouse com nota abaixo de 0,9 e economia estimada maior que zero, ordenados pela economia de tempo. Entram as 4 maiores. A prioridade segue a economia estimada:
@@ -51,13 +53,26 @@ Média ponderada: **ok vale 100, atenção vale 50, problema vale 0.**
 |---|---|---|---|---|
 | Chamada para ação na primeira tela, celular (390×844) | 3 | botão com verbo de ação visível sem rolar | só elementos clicáveis sem convite claro | nenhum botão de ação antes de rolar |
 | Chamada para ação na primeira tela, computador (1366×768) | 2 | idem | idem | idem |
-| WhatsApp ou telefone clicável | 3 | link `wa.me`/`api.whatsapp`/`tel:` na home do celular, visível na primeira tela ou fixo | existe, mas fora da primeira tela ou só em páginas internas | não existe em nenhuma página analisada |
-| Formulário de contato | 2 | até 6 campos, todos com rótulo (ou formulário externo incorporado) | 7 a 9 campos, campos sem rótulo, ou nenhum formulário quando há WhatsApp | mais de 9 campos, ou nenhum formulário e nenhum contato direto |
+| Link de WhatsApp | 3 | link `wa.me`/`api.whatsapp` na home do celular, visível na primeira tela ou fixo | existe, mas fora da primeira tela ou só em páginas internas | não existe em nenhuma página analisada |
+| Telefone e e-mail clicáveis | 1 | `tel:` e `mailto:` presentes | só um dos dois | nenhum |
+| Formulário de contato | 2 | até 6 campos, todos com rótulo (ou formulário externo incorporado) | 7 a 9 campos, campos sem rótulo, ou nenhum formulário quando há outro contato clicável | mais de 9 campos, ou nenhum formulário e nenhum contato clicável |
 | Site adaptado ao celular | 2 | viewport `width=device-width` e sem rolagem lateral | conteúdo mais largo que a tela | sem meta viewport |
 | Botões e links fáceis de tocar | 1 | até 10% dos alvos menores que 24×24 px | até 30% | mais de 30% |
 | Leitura confortável no celular | 1 | até 10% do texto abaixo de 12 px | até 40% | mais de 40% |
 
-Ficam **fora da nota** por serem avaliação de especialista:
+**Formulário de contato: quando dizemos "não há".** Antes de afirmar que não há formulário (MEDIDO), a ferramenta:
+1. espera a página terminar de carregar (rede ociosa e mais 3 segundos);
+2. procura `<form>` visível, `iframe` de formulário (RD Station, HubSpot, Typeform, Google Forms, Jotform, Calendly...) e código de formulários carregados por script (RD Station, HubSpot, Typeform, Google Forms, Elementor, Contact Form 7, WPForms, Gravity Forms, Calendly);
+3. procura botões que parecem abrir formulário em janela (modal/pop-up) e, se nenhum formulário estiver visível, **clica em no máximo um** desses botões (de preferência na página de contato) para abrir a janela, **sem preencher nem enviar nada**. Se o clique levar para outra página, o resultado é descartado;
+4. inclui a página de contato entre as analisadas: do menu, do rodapé ou do sitemap, ou tentando `/contato` e `/fale-conosco`.
+
+Quando o formulário é encontrado, o relatório diz onde: a página, ou o botão que abre a janela.
+
+Se houver qualquer sinal (passos 2 e 3) sem formulário visível, ou se a página de contato ou outra página não abrir, o item fica como **Não foi possível confirmar**. Só fica como MEDIDO quando nada foi encontrado em nenhuma das buscas.
+
+**A mesma cautela vale para as outras ausências de Experiência e conversão.** "Não há WhatsApp", "não há telefone/e-mail clicável" e "não há botão de ação" só saem como MEDIDO depois da renderização completa e da busca nas páginas-chave. Se alguma página não abriu, se a página de contato ficou inacessível, se há código de botão de WhatsApp sem link visível ou se a página não mostrou nenhum elemento clicável, o item fica como **Não foi possível confirmar**.
+
+Ficam **fora da nota** por serem avaliação de especialista (preenchidos só pela Vania):
 - **Prova social visível:** busca por palavras-chave e blocos de depoimentos.
 - **Clareza da proposta de valor:** leitura do H1. Títulos genéricos, como "Bem-vindo", ou com até 2 palavras são sinalizados para revisão.
 
@@ -89,6 +104,7 @@ Mesma regra: ok vale 100, atenção vale 50, problema vale 0, média ponderada. 
 | Dados estruturados (schema.org) | 1 | algum JSON-LD ou microdata | (não se aplica) | nenhum |
 | Empresa identificada para IA | 1 | tipo Organization, LocalBusiness ou subtipo | (não se aplica) | ausente |
 | Conteúdo que responde perguntas | 0,5 | FAQPage ou 3 ou mais subtítulos em forma de pergunta | 1 a 2 perguntas, ou nenhuma | (não se aplica) |
+| Prévia de compartilhamento (Open Graph) na home | 0,5 | og:title, og:description e og:image | algum ausente | (não se aplica) |
 | llms.txt | 0,25 | existe | não existe | (não se aplica) |
 
 **Notas técnicas:**
@@ -108,10 +124,24 @@ Mesma regra: ok vale 100, atenção vale 50, problema vale 0, média ponderada. 
 
 ## Os 3 achados mais importantes (resumo executivo)
 
-São escolhidos entre os itens **medidos** com problema, ou com atenção e prioridade alta, desde que tenham impacto de negócio descrito. A ordem é:
+Aparecem nas duas versões. São escolhidos entre os itens **medidos** com problema, ou com atenção e prioridade alta, desde que tenham impacto de negócio descrito. A ordem é:
 1. prioridade (alta, média, baixa);
 2. gravidade;
 3. categoria (conversão, depois performance, depois SEO);
 4. peso.
 
 Entra no máximo um item de performance, para evitar repetição. Avaliações de especialista nunca entram no resumo.
+
+## Versão automática e versão revisada
+
+| | Automática | Revisada |
+|---|---|---|
+| Quando | Na hora | Depois da revisão da Vania |
+| Itens medidos, velocidade, SEO, tecnologias | Sim ("o que vimos" e "o que significa") | Sim, mais "o que fazer", prioridade e esforço |
+| Avaliação de especialista | Não | Sim, com o texto da Vania |
+| Plano "Por onde começar" | Não | Sim, revisado pela Vania |
+| Nota pessoal e página de próximo passo | Não | Sim |
+| Etiqueta na capa | "Resultado técnico" | (sem etiqueta) |
+| Rodapé | "Análise técnica automatizada. Avaliação especializada em revisão." | "Análise técnica automatizada com revisão especializada." |
+
+As **notas são as mesmas** nas duas versões: avaliações de especialista nunca mudam a nota. A versão revisada só é gerada quando o `revisao.json` tem nota pessoal, todas as avaliações e o plano marcados como `"revisado"`, com texto e sem a marcação `[RASCUNHO]`.
