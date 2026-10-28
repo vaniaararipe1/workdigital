@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnóstico gratuito de site · Work Digital</title>
+<meta name="description" content="Análise gratuita do seu site: velocidade, experiência de quem visita e como o Google e as buscas com IA encontram você.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--roxo:#6025E1;--verde:#04CD8F;--vinho:#C00252;--preto:#16171B;--bg:#121316;--sup:#1C1D23;--borda:#2E2F38;--texto:#ECEBF2;--texto2:#A9A8B8}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--texto);font:400 16px/1.6 "Nunito",system-ui,sans-serif;position:relative;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(55% 45% at 0% 0%,rgba(96,37,225,.55),transparent 70%),
+             radial-gradient(40% 40% at 100% 15%,rgba(192,2,82,.4),transparent 70%),
+             radial-gradient(50% 45% at 85% 100%,rgba(4,205,143,.3),transparent 70%)}
+main{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:28px 16px 48px}
+h1,h2,h3{font-family:"Space Grotesk",system-ui,sans-serif;color:#fff;line-height:1.15;margin:0}
+.logo{width:150px;display:block;margin-bottom:36px}
+.kicker{font:600 12px/1 "Space Grotesk",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--verde)}
+h1{font-size:clamp(30px,6vw,42px);margin:12px 0 12px;letter-spacing:-.01em}
+.sub{color:var(--texto2);margin:0 0 26px}
+.cartao{background:rgba(28,29,35,.88);border:1px solid var(--borda);border-radius:20px;padding:24px;backdrop-filter:blur(6px)}
+label{display:block;font-weight:700;font-size:14px;margin:0 0 6px}
+.campo{margin-bottom:16px}
+input[type=text],input[type=email],input[type=url]{width:100%;font:inherit;color:#fff;background:#121316;border:1px solid #3A3B46;border-radius:12px;padding:13px 14px;outline:none}
+input:focus{border-color:var(--roxo);box-shadow:0 0 0 3px rgba(96,37,225,.35)}
+.site input{font-size:18px;font-weight:700}
+.ajuda{font-size:13px;color:var(--texto2);margin-top:6px}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--texto2);margin:6px 0 18px}
+.consent input{margin-top:4px;width:18px;height:18px;accent-color:var(--verde);flex:none}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+button{width:100%;font:700 19px/1 "Space Grotesk",sans-serif;color:#08140F;background:var(--verde);border:0;border-radius:14px;padding:18px 20px;cursor:pointer;box-shadow:0 10px 34px rgba(4,205,143,.3)}
+button:disabled{opacity:.6;cursor:wait}
+.erro{background:rgba(192,2,82,.15);border:1px solid rgba(192,2,82,.5);color:#FFB3CD;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:14.5px}
+.oculto{display:none}
+.passos{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:12px}
+.passos li{display:flex;gap:12px;align-items:center;color:var(--texto2)}
+.passos li .pt{width:12px;height:12px;border-radius:50%;border:2px solid #4A4B57;flex:none}
+.passos li.feito{color:#fff}.passos li.feito .pt{background:var(--verde);border-color:var(--verde)}
+.passos li.atual{color:#fff}.passos li.atual .pt{border-color:var(--verde);animation:pulso 1.2s infinite}
+@keyframes pulso{50%{box-shadow:0 0 0 6px rgba(4,205,143,.2)}}
+@media (prefers-reduced-motion:reduce){.passos li.atual .pt{animation:none}}
+.barra{height:6px;border-radius:6px;background:#2A2B33;overflow:hidden;margin-top:18px}
+.barra span{display:block;height:100%;width:5%;background:linear-gradient(90deg,var(--roxo),var(--vinho),var(--verde));transition:width 1s linear}
+.notas{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.nota{background:#121316;border:1px solid var(--borda);border-radius:16px;padding:14px 10px;text-align:center}
+.nota b{display:block;font:700 34px/1 "Space Grotesk",sans-serif;margin-bottom:6px}
+.nota span{font-size:12.5px;color:var(--texto2);line-height:1.3;display:block}
+.bom{color:var(--verde)}.medio{color:#B79BFF}.ruim{color:#FF4D8D}
+.convite{display:flex;gap:14px;align-items:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--borda)}
+.convite img{width:64px;height:64px;border-radius:50%;border:3px solid var(--roxo);flex:none;object-fit:cover}
+.convite a{color:var(--verde);font-weight:800;text-decoration:none}
+.rodape{font-size:12px;color:#8A8999;margin-top:26px;text-align:center}
+.rodape a{color:#B9B7C8}
+@media (max-width:420px){.notas{grid-template-columns:1fr}.cartao{padding:18px}}
+</style>
+</head>
+<body>
+<main>
+  <img class="logo" src="/logo.svg" alt="Work Digital">
+
+  <!-- Etapa 1: formulário -->
+  <section id="etapa-form">
+    <div class="kicker">Diagnóstico gratuito de site</div>
+    <h1 id="titulo">Seu relatório está a um clique</h1>
+    <p class="sub">Analisamos a velocidade, a experiência de quem visita e como o Google e as buscas com IA encontram o seu site. O resultado técnico chega no seu e-mail em poucos minutos.</p>
+    <form id="form" class="cartao" novalidate>
+      <div id="msg-erro" class="erro oculto" role="alert"></div>
+      <div class="campo site">
+        <label for="site">Site que vamos analisar</label>
+        <input id="site" name="site" type="text" inputmode="url" autocomplete="url" placeholder="suaempresa.com.br" required>
+      </div>
+      <div class="campo" id="bloco-email">
+        <label for="email">Seu e-mail</label>
+        <input id="email" name="email" type="email" autocomplete="email" placeholder="voce@empresa.com.br" required>
+        <div class="ajuda">É para onde enviamos o resultado.</div>
+      </div>
+      <div class="campo" id="bloco-nome">
+        <label for="nome">Seu nome</label>
+        <input id="nome" name="nome" type="text" autocomplete="name">
+      </div>
+      <div class="hp" aria-hidden="true"><label for="website_confirm">Não preencha</label><input id="website_confirm" name="website_confirm" tabindex="-1" autocomplete="off"></div>
+      <label class="consent" id="bloco-consent"><input type="checkbox" id="consentimento"> <span>Concordo em receber o resultado da análise e contato da Work Digital sobre ele. Posso cancelar quando quiser.</span></label>
+      <button type="submit" id="botao">Gerar meu relatório</button>
+    </form>
+  </section>
+
+  <!-- Etapa 2: processando -->
+  <section id="etapa-processando" class="oculto" aria-live="polite">
+    <div class="kicker">Analisando</div>
+    <h1>Estamos analisando o seu site</h1>
+    <p class="sub">Leva de 3 a 6 minutos. Pode deixar esta página aberta ou fechar: o resultado também vai para o seu e-mail.</p>
+    <div class="cartao">
+      <ul class="passos" id="passos">
+        <li data-p="0"><span class="pt"></span>Pedido recebido</li>
+        <li data-p="1"><span class="pt"></span>Abrindo o site no celular e no computador</li>
+        <li data-p="2"><span class="pt"></span>Medindo a velocidade com o Google</li>
+        <li data-p="3"><span class="pt"></span>Conferindo SEO e preparo para buscas com IA</li>
+        <li data-p="4"><span class="pt"></span>Montando o seu relatório</li>
+      </ul>
+      <div class="barra"><span id="barra"></span></div>
+    </div>
+  </section>
+
+  <!-- Etapa 3: resultado -->
+  <section id="etapa-pronto" class="oculto" aria-live="polite">
+    <div class="kicker">Resultado técnico</div>
+    <h1>Pronto! Veja as suas notas</h1>
+    <div class="cartao">
+      <div class="notas" id="notas"></div>
+      <p id="msg-envio"></p>
+      <p class="ajuda">Notas de 0 a 100. O relatório explica como cada uma foi calculada.</p>
+      <div class="convite">
+        <img src="/vania.webp" alt="Vania Araripe">
+        <div>A avaliação completa, revisada por mim, chega em até <b id="prazo">2</b> dias úteis. Quer adiantar a conversa?
+          <br><a id="link-wa" href="https://wa.me/5511993916363">Falar no WhatsApp</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Avisos: limite, erro, demora -->
+  <section id="etapa-aviso" class="oculto" aria-live="polite">
+    <div class="kicker">Diagnóstico gratuito de site</div>
+    <h1 id="aviso-titulo">Quase lá</h1>
+    <div class="cartao"><p id="aviso-texto"></p>
+      <p><a href="https://wa.me/5511993916363" style="color:var(--verde);font-weight:800;text-decoration:none">Falar no WhatsApp</a> · <a href="mailto:hello@workdigital.art.br" style="color:#fff">hello@workdigital.art.br</a></p></div>
+  </section>
+
+  <p class="rodape">Work Digital · <a href="https://workdigital.art.br">workdigital.art.br</a> · Usamos apenas dados públicos do site informado.</p>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var inicio = Date.now();
+  var PRAZO = 2;
+
+  // Dados vindos do popup do RD Station ou da landing: pelo endereço (?site=...) ou pelo cookie wd_lead.
+  function lerCookie() {
+    var m = document.cookie.match(/(?:^|;\s*)wd_lead=([^;]+)/);
+    if (!m) return {};
+    try { return JSON.parse(decodeURIComponent(m[1])); } catch (e) { return {}; }
+  }
+  var q = new URLSearchParams(location.search);
+  var ck = lerCookie();
+  function p() { for (var i = 0; i < arguments.length; i++) { var v = q.get(arguments[i]) || ck[arguments[i]]; if (v) return String(v).trim(); } return ""; }
+  var lead = {
+    site: p("site", "url", "site_url", "website"),
+    email: p("email", "e-mail"),
+    nome: p("nome", "name"),
+    empresa: p("empresa", "company"),
+    whatsapp: p("whatsapp", "telefone", "phone", "celular"),
+    segmento: p("segmento"),
+    cargo: p("cargo"),
+    origem: p("origem") || (Object.keys(ck).length ? "popup" : "site")
+  };
+  // O cookie só serve uma vez.
+  document.cookie = "wd_lead=; Max-Age=0; path=/; domain=.workdigital.art.br";
+  history.replaceState(null, "", location.pathname);
+
+  $("site").value = lead.site;
+  $("email").value = lead.email;
+  $("nome").value = lead.nome;
+  var veioDeFormulario = !!(lead.email && lead.site);
+  if (veioDeFormulario) {
+    // Já deu nome, e-mail e consentimento no formulário anterior: só confirmar o site.
+    $("bloco-email").classList.add("oculto");
+    $("bloco-nome").classList.add("oculto");
+    $("bloco-consent").classList.add("oculto");
+    $("consentimento").checked = true;
+    $("titulo").textContent = lead.nome ? lead.nome.split(" ")[0] + ", seu relatório está a um clique" : "Seu relatório está a um clique";
+    $("botao").textContent = "Pegue seu relatório";
+  }
+
+  function mostrar(etapa) {
+    ["etapa-form", "etapa-processando", "etapa-pronto", "etapa-aviso"].forEach(function (e) { $(e).classList.toggle("oculto", e !== etapa); });
+    window.scrollTo(0, 0);
+  }
+  function erro(msg) { var el = $("msg-erro"); el.textContent = msg; el.classList.remove("oculto"); }
+  function aviso(titulo, texto) { $("aviso-titulo").textContent = titulo; $("aviso-texto").textContent = texto; mostrar("etapa-aviso"); }
+
+  $("form").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    $("msg-erro").classList.add("oculto");
+    var site = $("site").value.trim(), email = $("email").value.trim();
+    if (!site) return erro("Informe o endereço do site.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { $("bloco-email").classList.remove("oculto"); return erro("Confira o seu e-mail."); }
+    if (!$("consentimento").checked) { $("bloco-consent").classList.remove("oculto"); return erro("Marque o consentimento para recebermos e enviarmos o resultado."); }
+    $("botao").disabled = true;
+    fetch("/api/diagnostico", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ site: site, email: email, nome: $("nome").value.trim(), empresa: lead.empresa,
+        whatsapp: lead.whatsapp, segmento: lead.segmento, cargo: lead.cargo, origem: lead.origem,
+        consentimento: true, website_confirm: $("website_confirm").value, t: inicio })
+    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (x) {
+        if (!x.ok) { $("botao").disabled = false; return erro(x.j.erro || "Não deu certo. Tente de novo."); }
+        $("msg-envio").textContent = "Enviamos o resultado técnico em PDF para " + email + ".";
+        acompanhar(x.j.id);
+      })
+      .catch(function () { $("botao").disabled = false; erro("Sem conexão. Tente de novo."); });
+  });
+
+  function acompanhar(id) {
+    mostrar("etapa-processando");
+    var t0 = Date.now(), LIMITE = 15 * 60 * 1000, ESPERADO = 5 * 60 * 1000;
+    var passos = document.querySelectorAll("#passos li");
+    function animar() {
+      var f = Math.min(0.95, (Date.now() - t0) / ESPERADO);
+      $("barra").style.width = Math.round(5 + f * 90) + "%";
+      var atual = Math.min(passos.length - 1, Math.floor(f * passos.length));
+      passos.forEach(function (li, i) { li.className = i < atual ? "feito" : (i === atual ? "atual" : ""); });
+    }
+    animar();
+    var anim = setInterval(animar, 1000);
+    function consultar() {
+      fetch("/api/status?id=" + encodeURIComponent(id)).then(function (r) { return r.json(); }).then(function (s) {
+        if (s.estado === "pronto") { clearInterval(anim); return pronto(s); }
+        if (s.estado === "limite") { clearInterval(anim); return aviso("Já recebemos este pedido", s.mensagem); }
+        if (s.estado === "erro") { clearInterval(anim); return aviso("Não conseguimos concluir agora", s.mensagem); }
+        if (Date.now() - t0 > LIMITE) {
+          clearInterval(anim);
+          return aviso("Está demorando mais que o normal", "Seu pedido está na fila. Assim que a análise terminar, o resultado vai para o seu e-mail.");
+        }
+        setTimeout(consultar, 8000);
+      }).catch(function () { setTimeout(consultar, 10000); });
+    }
+    setTimeout(consultar, 15000);
+  }
+
+  function pronto(s) {
+    var nomes = { performance: "Velocidade", ux: "Experiência e conversão", seo: "SEO e visibilidade" };
+    var html = "";
+    Object.keys(nomes).forEach(function (k) {
+      var n = s.notas ? s.notas[k] : null;
+      var cls = n == null ? "" : (n >= 80 ? "bom" : n >= 50 ? "medio" : "ruim");
+      html += '<div class="nota"><b class="' + cls + '">' + (n == null ? "—" : n) + "</b><span>" + nomes[k] + (n == null ? "<br>não foi possível medir" : "") + "</span></div>";
+    });
+    $("notas").innerHTML = html;
+    if (s.enviado_por_email === false) $("msg-envio").textContent = "O relatório será enviado para o seu e-mail.";
+    $("prazo").textContent = PRAZO;
+    mostrar("etapa-pronto");
+  }
+})();
+</script>
+</body>
+</html>

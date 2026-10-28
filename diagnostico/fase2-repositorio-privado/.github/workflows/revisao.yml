@@ -1,0 +1,84 @@
+# Quando a Vania salva um revisao.json (branch relatorios), gera a versão revisada.
+# Se o revisao.json tiver "enviar_ao_lead": true, envia ao lead (uma única vez).
+name: Revisão
+
+on:
+  push:
+    branches: [relatorios]
+    paths: ["relatorios/**/revisao.json"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: revisao
+  cancel-in-progress: false
+
+jobs:
+  revisao:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PAGESPEED_API_KEY: ${{ secrets.PAGESPEED_API_KEY }}
+      GMAIL_USER: ${{ secrets.GMAIL_USER }}
+      GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+      EMAIL_AVISO: ${{ secrets.EMAIL_AVISO }}
+      PRAZO_REVISAO_DIAS: ${{ vars.PRAZO_REVISAO_DIAS || '2' }}
+      BRANCH_DADOS: relatorios
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: relatorios
+          path: dados
+          fetch-depth: 2
+
+      - name: Arquivos alterados
+        id: alterados
+        working-directory: dados
+        run: |
+          ARQS=$(git diff --name-only HEAD^ HEAD -- 'relatorios/*/revisao.json' | tr '\n' ' ')
+          echo "arquivos=$ARQS" >> "$GITHUB_OUTPUT"
+
+      - name: Ferramenta (repositório público workdigital)
+        if: steps.alterados.outputs.arquivos != ''
+        uses: actions/checkout@v4
+        with:
+          repository: vaniaararipe1/workdigital
+          ref: ${{ vars.FERRAMENTA_REF || 'claude/keen-johnson-ok3fax' }}
+          path: ferramenta
+
+      - uses: actions/setup-python@v5
+        if: steps.alterados.outputs.arquivos != ''
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: ferramenta/diagnostico/requirements.txt
+
+      - name: Instalar dependências
+        if: steps.alterados.outputs.arquivos != ''
+        run: |
+          pip install -r ferramenta/diagnostico/requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Gerar versão revisada
+        if: steps.alterados.outputs.arquivos != ''
+        working-directory: ferramenta/diagnostico
+        env:
+          ARQUIVOS: ${{ steps.alterados.outputs.arquivos }}
+        run: |
+          python -m wd_diag.entrega.worker revisao --dados "$GITHUB_WORKSPACE/dados" --arquivos $ARQUIVOS
+
+      - name: Salvar
+        if: steps.alterados.outputs.arquivos != ''
+        working-directory: dados
+        run: |
+          git config user.name "diagnostico-bot"
+          git config user.email "diagnostico-bot@users.noreply.github.com"
+          git add -A relatorios
+          git diff --cached --quiet && exit 0
+          git commit -m "Versão revisada" -q
+          for i in 1 2 3 4 5; do
+            git pull --rebase -q origin relatorios && git push -q origin HEAD:relatorios && exit 0
+            sleep $((i * 3))
+          done
+          exit 1

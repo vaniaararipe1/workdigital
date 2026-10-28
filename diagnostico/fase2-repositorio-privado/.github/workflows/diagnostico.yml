@@ -1,0 +1,105 @@
+# Roda a versão automática do diagnóstico.
+# Disparado pela página do diagnóstico (repository_dispatch) ou à mão, pelo botão "Run workflow" (prospecção).
+name: Diagnóstico automático
+
+on:
+  repository_dispatch:
+    types: [diagnostico]
+  workflow_dispatch:
+    inputs:
+      site:
+        description: "Site a analisar (ex.: empresa.com.br)"
+        required: true
+      empresa:
+        description: "Nome da empresa (aparece na capa)"
+        required: true
+      email:
+        description: "E-mail do lead (opcional)"
+        required: false
+        default: ""
+      enviar_ao_lead:
+        description: "Enviar a versão automática ao lead agora?"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  diagnostico:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      # Dados do pedido sempre via variáveis de ambiente (nunca interpolados no script).
+      SITE: ${{ github.event.client_payload.site || inputs.site }}
+      EMPRESA: ${{ github.event.client_payload.empresa || inputs.empresa }}
+      NOME: ${{ github.event.client_payload.nome }}
+      EMAIL: ${{ github.event.client_payload.email || inputs.email }}
+      WHATSAPP: ${{ github.event.client_payload.whatsapp }}
+      SEGMENTO: ${{ github.event.client_payload.segmento }}
+      CARGO: ${{ github.event.client_payload.cargo }}
+      ORIGEM: ${{ github.event.client_payload.origem || 'prospeccao' }}
+      PEDIDO_ID: ${{ github.event.client_payload.id }}
+      ENVIAR: ${{ github.event_name == 'repository_dispatch' || inputs.enviar_ao_lead }}
+      PAGESPEED_API_KEY: ${{ secrets.PAGESPEED_API_KEY }}
+      GMAIL_USER: ${{ secrets.GMAIL_USER }}
+      GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+      EMAIL_AVISO: ${{ secrets.EMAIL_AVISO }}
+      LIMITE_DIARIO: ${{ vars.LIMITE_DIARIO || '20' }}
+      PRAZO_REVISAO_DIAS: ${{ vars.PRAZO_REVISAO_DIAS || '2' }}
+      BRANCH_DADOS: relatorios
+    steps:
+      - name: Dados (branch relatorios)
+        uses: actions/checkout@v4
+        with:
+          ref: relatorios
+          path: dados
+
+      - name: Ferramenta (repositório público workdigital)
+        uses: actions/checkout@v4
+        with:
+          repository: vaniaararipe1/workdigital
+          ref: ${{ vars.FERRAMENTA_REF || 'claude/keen-johnson-ok3fax' }}
+          path: ferramenta
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: ferramenta/diagnostico/requirements.txt
+
+      - name: Instalar dependências
+        run: |
+          pip install -r ferramenta/diagnostico/requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Rodar diagnóstico
+        working-directory: ferramenta/diagnostico
+        run: |
+          FLAG=""
+          if [ "$ENVIAR" = "true" ]; then FLAG="--enviar-ao-lead"; fi
+          python -m wd_diag.entrega.worker automatico --dados "$GITHUB_WORKSPACE/dados" \
+            --site "$SITE" --empresa "$EMPRESA" --nome "$NOME" --email "$EMAIL" --whatsapp "$WHATSAPP" \
+            --segmento "$SEGMENTO" --cargo "$CARGO" --origem "$ORIGEM" --id "$PEDIDO_ID" $FLAG
+
+      - name: Avisar falha
+        if: failure()
+        working-directory: ferramenta/diagnostico
+        run: |
+          python -m wd_diag.entrega.worker falha --dados "$GITHUB_WORKSPACE/dados" --id "$PEDIDO_ID" --site "$SITE" \
+            --execucao "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" || true
+
+      - name: Salvar relatório e status
+        if: always()
+        working-directory: dados
+        run: |
+          git config user.name "diagnostico-bot"
+          git config user.email "diagnostico-bot@users.noreply.github.com"
+          git add -A relatorios status 2>/dev/null || true
+          git diff --cached --quiet && exit 0
+          git commit -m "Diagnóstico: ${SITE}" -q
+          for i in 1 2 3 4 5; do
+            git pull --rebase -q origin relatorios && git push -q origin HEAD:relatorios && exit 0
+            sleep $((i * 3))
+          done
+          exit 1
