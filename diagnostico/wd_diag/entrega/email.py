@@ -4,7 +4,7 @@ Variáveis de ambiente:
     GMAIL_USER          conta que envia (ex.: hello@workdigital.art.br, se for Google Workspace)
     GMAIL_APP_PASSWORD  senha de app do Google (não é a senha normal da conta)
     EMAIL_AVISO         para onde vão os avisos internos (padrão: GMAIL_USER)
-    EMAIL_RESPONDER_PARA  endereço de resposta nos e-mails ao lead (padrão: hello@workdigital.art.br)
+    EMAIL_RESPONDER_PARA  endereço de resposta nos e-mails ao lead (padrão: vania@workdigital.art.br)
 
 Visual: os e-mails com layout ficam em templates/ (HTML com estilos inline, que é o que os leitores de
 e-mail aceitam). Logo e foto vão embutidos na mensagem (cid:logo, cid:foto), sem depender de hospedagem.
@@ -43,7 +43,7 @@ def _config() -> dict:
         "usuario": usuario,
         "senha": senha,
         "aviso": os.environ.get("EMAIL_AVISO", "").strip() or usuario,
-        "responder_para": os.environ.get("EMAIL_RESPONDER_PARA", "").strip() or "hello@workdigital.art.br",
+        "responder_para": os.environ.get("EMAIL_RESPONDER_PARA", "").strip() or "vania@workdigital.art.br",
     }
 
 
