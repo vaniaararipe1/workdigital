@@ -150,7 +150,7 @@ def achados(mobile: dict, desktop: dict) -> list[Achado]:
         out.append(Achado(
             "perf-lcp", "performance", f"O site leva {segundos(lcp)} s para mostrar o conteúdo principal no {disp}",
             "medido", "problema" if ruim else "atencao",
-            f"O conteúdo principal da página inicial só fica visível depois de {segundos(lcp)} s. O recomendado pelo Google é até 2,5 s.",
+            f"O conteúdo principal da página inicial só fica visível depois de {segundos(lcp)} s.",
             impacto=("parte dos visitantes que chegam pelo Google ou por anúncios desiste antes de ver o que você oferece."
                      if ruim else "o visitante espera mais que o ideal na primeira impressão."),
             prioridade="alta" if ruim else "media", esforco=ESFORCO_MEDIO, peso=0, area="Performance",
@@ -160,7 +160,7 @@ def achados(mobile: dict, desktop: dict) -> list[Achado]:
     if cls is not None and cls > LIMITES["cls"][1]:
         out.append(Achado(
             "perf-cls", "performance", "Elementos pulam de lugar enquanto a página carrega", "medido", "problema",
-            f"O índice de estabilidade visual ficou em {num(cls, 2)}. O recomendado é até 0,1.",
+            f"O índice de estabilidade visual ficou em {num(cls, 2)}.",
             impacto="o visitante pode tocar no botão errado ou perder o que estava lendo, o que passa sensação de site mal feito.",
             prioridade="media", esforco=ESFORCO_RAPIDO, peso=0, area="Performance",
             correcao="Reservar espaço fixo para imagens, banners e fontes antes de carregarem.", secao=False))

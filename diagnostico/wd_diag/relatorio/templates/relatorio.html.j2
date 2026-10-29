@@ -128,6 +128,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 .item .linhas dt{color:var(--texto2);font-weight:700}
 .item .linhas dd{margin:0}
 .evid{font-size:13px;color:var(--texto2)}
+.ref{font-size:13.5px}.ref span{color:var(--texto2)}
 .evid code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:var(--superficie2);padding:1px 5px;border-radius:4px;color:var(--texto);word-break:break-all}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .chip{font-size:12px;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--superficie2);color:var(--texto2)}
@@ -316,6 +317,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
             <div>
               <h4>{{ a.titulo }}</h4>
               <p>{{ a.o_que_vimos }}</p>
+              {% if a.referencia %}<p class="ref"><b>Recomendado:</b> {{ a.referencia.recomendado }}. <span>Fonte: {{ a.referencia.fonte }}.</span></p>{% endif %}
               <p class="impacto"><b>Impacto provável:</b> {{ a.impacto }}</p>
             </div>
           </div>
@@ -388,6 +390,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
         </div>
         <dl class="linhas">
           <dt>O que vimos</dt><dd>{{ i.o_que_vimos }}{% if i.evidencia %}<div class="evid">Evidência: {{ i.evidencia | safe }}</div>{% endif %}</dd>
+          {% if i.referencia %}<dt>Recomendado</dt><dd>{{ i.referencia.recomendado[:1] | upper }}{{ i.referencia.recomendado[1:] }}. <span class="evid">Fonte: {{ i.referencia.fonte }}.</span></dd>{% endif %}
           {% if i.significado %}<dt>O que significa</dt><dd>{{ i.significado }}</dd>{% endif %}
           {% if i.correcao and versao == 'revisada' %}<dt>O que fazer</dt><dd>{{ i.correcao }}</dd>{% endif %}
         </dl>

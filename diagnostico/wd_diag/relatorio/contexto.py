@@ -3,8 +3,10 @@ from __future__ import annotations
 
 import base64
 from dataclasses import asdict
+import re
 from pathlib import Path
 
+from ..analise.referencias import referencia
 from ..modelos import ESFORCO_MEDIO, ESFORCO_PROJETO, ESFORCO_RAPIDO, Achado, Nota
 
 ORDEM_PRIORIDADE = {"alta": 0, "media": 1, "baixa": 2, "": 3}
@@ -12,6 +14,11 @@ ORDEM_SITUACAO = {"problema": 0, "atencao": 1, "na": 2, "ok": 3}
 ORDEM_ESFORCO = {ESFORCO_RAPIDO: 0, ESFORCO_MEDIO: 1, ESFORCO_PROJETO: 2, "": 3}
 PESO_CATEGORIA = {"ux": 0, "performance": 1, "seo": 2}
 AREA_PADRAO = {"performance": "Performance", "ux": "Conversão", "seo": "SEO"}
+
+
+def _sem_recomendacao_antiga(texto: str) -> str:
+    """Relatórios antigos traziam "O recomendado ..." dentro do texto; agora a recomendação tem campo próprio."""
+    return re.sub(r"\s*O recomendado[^.]*\.\s*$", "", texto or "")
 
 
 def _nota_ctx(n: Nota, cobertura: str) -> dict:
@@ -30,8 +37,9 @@ def top3(achados: list[Achado]) -> list[dict]:
         if chave in ids:
             continue
         ids.add(chave)
-        escolhidos.append({"titulo": a.titulo, "o_que_vimos": a.o_que_vimos, "impacto": a.impacto,
-                           "prioridade": a.prioridade or "media"})
+        ref = referencia(a.id)
+        escolhidos.append({"titulo": a.titulo, "o_que_vimos": _sem_recomendacao_antiga(a.o_que_vimos) if ref else a.o_que_vimos,
+                           "impacto": a.impacto, "prioridade": a.prioridade or "media", "referencia": ref})
         if len(escolhidos) == 3:
             break
     return escolhidos
@@ -58,7 +66,14 @@ def plano(achados: list[Achado]) -> list[dict]:
 
 
 def _ordenar_itens(itens: list[Achado]) -> list[dict]:
-    return [a.to_dict() for a in sorted(itens, key=lambda a: (ORDEM_SITUACAO[a.situacao], ORDEM_PRIORIDADE[a.prioridade]))]
+    out = []
+    for a in sorted(itens, key=lambda a: (ORDEM_SITUACAO[a.situacao], ORDEM_PRIORIDADE[a.prioridade])):
+        ref = referencia(a.id) if a.tipo == "medido" else None
+        d = a.to_dict()
+        if ref:
+            d["o_que_vimos"] = _sem_recomendacao_antiga(d["o_que_vimos"])
+        out.append({**d, "referencia": ref})
+    return out
 
 
 def _data_uri(caminho: str | None) -> str | None:

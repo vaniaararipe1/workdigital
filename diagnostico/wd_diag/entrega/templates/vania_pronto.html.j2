@@ -48,7 +48,7 @@
   {% if principais %}
   <p style="margin:14px 0 6px"><b>Principais problemas medidos</b> (os que abrem o relatório):</p>
   <ul style="margin:0;padding-left:20px">
-    {% for p in principais %}<li style="margin:0 0 6px"><b>{{ p.titulo }}.</b> {{ p.o_que_vimos }}</li>{% endfor %}
+    {% for p in principais %}<li style="margin:0 0 6px"><b>{{ p.titulo }}.</b> {{ p.o_que_vimos }}{% if p.referencia %} <span style="color:#5E5D6E">Recomendado: {{ p.referencia.recomendado }} (fonte: {{ p.referencia.fonte }}).</span>{% endif %}</li>{% endfor %}
   </ul>
   {% endif %}
   <p style="margin:12px 0 0;font-size:13px;color:#77768A">Essa parte foi medida pela ferramenta e já está pronta. Você não precisa revisar.</p>

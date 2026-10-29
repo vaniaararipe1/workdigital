@@ -19,7 +19,7 @@
       <p style="margin:18px 0 8px"><b>Os pontos que mais pedem atenção:</b></p>
       <ul style="margin:0 0 18px;padding-left:20px">
 {% for p in principais %}
-        <li style="margin:0 0 6px">{{ p.titulo }}</li>
+        <li style="margin:0 0 10px"><b>{{ p.titulo }}.</b> {{ p.o_que_vimos }}{% if p.referencia %}<br><span style="color:#5E5D6E">Recomendado: {{ p.referencia.recomendado }} <span style="font-size:13px;color:#77768A">(fonte: {{ p.referencia.fonte }})</span>.</span>{% endif %}</li>
 {% endfor %}
       </ul>
 {% endif %}

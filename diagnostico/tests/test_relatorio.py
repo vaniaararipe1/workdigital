@@ -204,3 +204,21 @@ def test_previa_tem_marca_de_nao_enviar():
     html = renderizar_html(ctx)
     assert "Prévia para revisão" in html
     assert "Prévia para revisão" not in renderizar_html(contexto.montar(r, "revisada", rev, prazo_dias=2))
+
+
+
+def test_toda_referencia_tem_fonte_e_nao_atribui_o_que_nao_e_oficial():
+    from wd_diag.analise.referencias import MERCADO, REFERENCIAS, referencia
+    for chave, (recomendado, fonte) in REFERENCIAS.items():
+        assert recomendado and fonte, chave
+    # limites que não vêm de norma oficial ficam marcados como prática de mercado
+    for chave in ("seo-h1", "ux-whatsapp", "ux-tel-email", "seo-links", "geo-faq"):
+        assert MERCADO in REFERENCIAS[chave][1]
+    assert referencia("perf-op-unused-javascript")["fonte"].startswith("Google Lighthouse")
+    assert referencia("ux-social") is None  # avaliação de especialista não leva referência automática
+
+
+def test_relatorio_mostra_recomendado_nos_itens_medidos():
+    r = resultado()
+    html = renderizar_html(contexto.montar(r, "automatica", None, prazo_dias=2))
+    assert "Recomendado" in html and "Fonte:" in html

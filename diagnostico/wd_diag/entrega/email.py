@@ -25,7 +25,9 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 AQUI = Path(__file__).parent
 REMETENTE_NOME = "Vania Araripe · Work Digital"
-IMAGENS = {"logo": AQUI / "assets" / "logo-branco.png", "foto": AQUI / "assets" / "foto-vania.jpg"}
+IMAGENS = {"logo": AQUI / "assets" / "logo-branco.png", "foto": AQUI / "assets" / "foto-vania.jpg",
+           "logo_cor": AQUI / "assets" / "logo-cor.png", "facebook": AQUI / "assets" / "icone-facebook.png",
+           "instagram": AQUI / "assets" / "icone-instagram.png", "linkedin": AQUI / "assets" / "icone-linkedin.png"}
 
 
 class ConfigEmailAusente(RuntimeError):
@@ -46,8 +48,15 @@ def _config() -> dict:
 
 
 def assinatura() -> dict:
-    return {"nome": os.environ.get("ASSINATURA_NOME", "Vania Araripe").strip(),
-            "cargo": os.environ.get("ASSINATURA_CARGO", "Gestão de projetos digitais").strip()}
+    """Dados da assinatura. As redes sociais só aparecem quando o endereço estiver configurado."""
+    env = lambda k, padrao="": os.environ.get(k, padrao).strip()  # noqa: E731
+    redes = [(n, env(f"ASSINATURA_{n.upper()}")) for n in ("facebook", "instagram", "linkedin")]
+    return {"nome": env("ASSINATURA_NOME", "Vania Araripe"),
+            "cargo": env("ASSINATURA_CARGO", "Gestão de projetos digitais"),
+            "funcao": env("ASSINATURA_FUNCAO", "Projetos"),
+            "telefone": env("ASSINATURA_TELEFONE", "(11) 99391-6363"),
+            "email": env("ASSINATURA_EMAIL", "vania@workdigital.art.br"),
+            "redes": [{"nome": n, "url": u} for n, u in redes if u.startswith("https://")]}
 
 
 def renderizar(template: str, **ctx) -> str:
@@ -75,10 +84,11 @@ def montar(para: str, assunto: str, html: str, anexos: list[Path] | None = None,
     msg["Subject"] = assunto
     if responder_para:
         msg["Reply-To"] = responder_para
-    usadas = {n: p for n, p in IMAGENS.items() if f"cid:{n}" in html and p.exists()}
+    padrao = {n: re.compile(rf"cid:{n}(?!\w)") for n in IMAGENS}  # "cid:logo" não pode casar com "cid:logo_cor"
+    usadas = {n: p for n, p in IMAGENS.items() if padrao[n].search(html) and p.exists()}
     cids = {n: make_msgid(domain="workdigital.art.br") for n in usadas}
     for n, cid in cids.items():
-        html = html.replace(f"cid:{n}", "cid:" + cid[1:-1])
+        html = padrao[n].sub("cid:" + cid[1:-1], html)
     msg.set_content(unescape(_texto_puro(html)))
     msg.add_alternative(html, subtype="html")
     parte_html = msg.get_payload()[-1]

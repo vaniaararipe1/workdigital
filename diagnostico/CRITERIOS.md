@@ -145,3 +145,9 @@ Entra no máximo um item de performance, para evitar repetição. Avaliações d
 | Rodapé | "Análise técnica automatizada. Avaliação especializada em revisão." | "Análise técnica automatizada com revisão especializada." |
 
 As **notas são as mesmas** nas duas versões: avaliações de especialista nunca mudam a nota. A versão revisada só é gerada quando o `revisao.json` tem nota pessoal, todas as avaliações e o plano marcados como `"revisado"`, com texto e sem a marcação `[RASCUNHO]`.
+
+## Recomendação e fonte de cada critério
+
+Todo item medido mostra, no relatório e nos e-mails, o valor recomendado e de onde ele vem (ex.: "mostrar o conteúdo principal em até 2,5 s · Fonte: Google, Core Web Vitals"). A lista fica em `wd_diag/analise/referencias.py`.
+
+Regra: só citamos um órgão (Google, W3C, Meta etc.) quando a recomendação é dele de fato. Quando o limite usado pela ferramenta não vem de norma oficial (por exemplo, até 6 campos no formulário, um único H1, botão de WhatsApp), a fonte diz "boa prática de mercado (não há norma oficial)". Avaliações de especialista não recebem referência automática.

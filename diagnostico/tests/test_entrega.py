@@ -65,7 +65,18 @@ def test_emails_do_lead_tem_layout_apresentacao_e_escapam_dados():
     assert "cid:logo" in html and "cid:foto" in html
     assert "não foi possível medir" in html  # performance sem medição aparece como tal, sem nota inventada
     rev = worker.email_lead_revisado(r["empresa"], r["url_final"], "Ana")
-    assert "Olá, Ana!" in rev and "30 minutos" in rev
+    assert "Oi, Ana, tudo bem?" in rev and "30 minutos" in rev
+    assert "vania@workdigital.art.br" in rev and "cid:logo_cor" in rev and "workdigital.art.br" in rev
+    assert "cid:facebook" not in rev  # redes só aparecem com o endereço configurado
+
+
+def test_assinatura_mostra_redes_configuradas(monkeypatch):
+    monkeypatch.setenv("ASSINATURA_INSTAGRAM", "https://www.instagram.com/exemplo")
+    monkeypatch.setenv("ASSINATURA_FACEBOOK", "javascript:alert(1)")
+    html = worker.email_lead_revisado("Empresa", "https://ex.com/", "Ana")
+    assert "cid:instagram" in html and "cid:facebook" not in html
+    msg = mail.montar("a@b.com", "x", html)
+    assert sum(p.get_content_type() == "image/png" for p in msg.walk()) == 2  # logo e ícone do Instagram
 
 
 def test_imagens_vao_embutidas_na_mensagem(tmp_path):
@@ -112,3 +123,15 @@ def test_rascunho_intocado_nao_gera_aviso():
     assert not worker.tentou_aprovar({"nota_pessoal": {"status": "pendente de revisão"}, "avaliacoes": [{"status": "pendente de revisão"}]})
     assert worker.tentou_aprovar({"aprovar_rascunhos": True})
     assert worker.tentou_aprovar({"plano": {"status": "revisado"}})
+
+
+def test_pontos_do_email_trazem_recomendacao_e_fonte():
+    from tests.test_relatorio import resultado
+    from wd_diag.modelos import Achado
+    r = resultado()
+    r["achados"].append(Achado("perf-lcp", "performance", "O site leva 8,0 s para mostrar o conteúdo principal no celular",
+                               "medido", "problema", "O conteúdo principal só fica visível depois de 8,0 s. O recomendado pelo Google é até 2,5 s.",
+                               impacto="desistem", prioridade="alta", peso=0))
+    html = worker.email_lead_automatico(r, "Ana", 2)
+    assert "Recomendado: mostrar o conteúdo principal em até 2,5 s" in html and "Google, Core Web Vitals" in html
+    assert html.count("2,5 s") == 1  # a frase antiga não aparece duplicada
