@@ -66,6 +66,7 @@ def test_emails_do_lead_tem_layout_apresentacao_e_escapam_dados():
     assert "não foi possível medir" in html  # performance sem medição aparece como tal, sem nota inventada
     rev = worker.email_lead_revisado(r["empresa"], r["url_final"], "Ana")
     assert "Oi, Ana, tudo bem?" in rev and "30 minutos" in rev
+    assert rev.index("Muito obrigada") < rev.index("está em anexo")
     assert "vania@workdigital.art.br" in rev and "cid:logo_cor" in rev and "workdigital.art.br" in rev
     assert "cid:facebook" not in rev  # redes só aparecem com o endereço configurado
 
