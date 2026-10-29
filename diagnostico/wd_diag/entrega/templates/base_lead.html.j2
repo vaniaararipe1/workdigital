@@ -1,0 +1,44 @@
+{#- Layout dos e-mails que o lead recebe. Estilos inline e tabelas: é o que Gmail, Outlook e Apple Mail entendem.
+    Cores da marca: Roxo #6025E1 · Verde #04CD8F · Vinho #C00252 · Preto #121316 / #16171B. -#}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>{{ assunto }}</title>
+</head>
+<body style="margin:0;padding:0;background:#EFEDF5">
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;color:#EFEDF5">{{ preheader }}</span>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#EFEDF5">
+<tr><td align="center" style="padding:28px 12px">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px">
+    <tr><td style="background:#121316;border-radius:16px 16px 0 0;padding:26px 32px">
+      <img src="cid:logo" width="132" alt="Work Digital" style="display:block;width:132px;height:auto;border:0">
+    </td></tr>
+    <tr><td style="background:#121316;padding:0 32px 30px">
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#04CD8F">{{ kicker }}</div>
+      <h1 style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:27px;line-height:1.2;color:#FFFFFF">{{ titulo }}</h1>
+    </td></tr>
+    <tr><td style="background:#FFFFFF;padding:30px 32px 8px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#23232B">
+{% block conteudo %}{% endblock %}
+    </td></tr>
+    <tr><td style="background:#FFFFFF;padding:8px 32px 30px;border-radius:0 0 16px 16px">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #E6E3EE">
+        <tr>
+          <td width="76" valign="top" style="padding-top:22px"><img src="cid:foto" width="64" height="64" alt="{{ assinatura.nome }}" style="display:block;width:64px;height:64px;border-radius:32px;border:2px solid #6025E1"></td>
+          <td valign="top" style="padding-top:24px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#5E5D6E">
+            <b style="color:#16171B;font-size:15px">{{ assinatura.nome }}</b><br>{{ assinatura.cargo }} · Work Digital<br>
+            <a href="https://workdigital.art.br" style="color:#6025E1;text-decoration:none">workdigital.art.br</a> · WhatsApp (11) 99391-6363
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+    <tr><td align="center" style="padding:18px 20px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:#77768A">
+      Você recebeu este e-mail porque pediu a análise gratuita do site {{ host }}.<br>Usamos apenas dados públicos do site. Para não receber mais contatos, é só responder pedindo.
+    </td></tr>
+  </table>
+</td></tr>
+</table>
+</body>
+</html>

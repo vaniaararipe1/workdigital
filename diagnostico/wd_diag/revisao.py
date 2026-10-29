@@ -2,7 +2,8 @@
 
 Regra de integridade: a ferramenta só escreve RASCUNHOS, todos com status "pendente de revisão".
 A versão revisada só é gerada quando a Vania preencheu e marcou como "revisado" cada avaliação de
-especialista, a nota pessoal e o plano de ação.
+especialista, a nota pessoal e o plano de ação, OU quando ela marca "aprovar_rascunhos": true depois de ler
+a prévia (aprovação explícita dela: os rascunhos passam a valer como texto revisado).
 """
 from __future__ import annotations
 
@@ -21,7 +22,9 @@ FASES = ("Fazer primeiro", "Em seguida", "Quando possível")
 FASE_POR_PRIORIDADE = {"alta": "Fazer primeiro", "media": "Em seguida", "baixa": "Quando possível"}
 
 INSTRUCOES = (
-    "Edite os textos abaixo. Para cada bloco revisado, troque o status para \"revisado\". "
+    "Caminho rápido: leia a prévia (relatorio-revisado-previa.pdf), ajuste os textos que quiser e troque "
+    "'aprovar_rascunhos' para true; para enviar ao cliente, troque também 'enviar_ao_lead' para true. "
+    "Caminho detalhado: edite os textos abaixo. Para cada bloco revisado, troque o status para \"revisado\". "
     "A versão revisada só é gerada quando TODOS os blocos estiverem \"revisado\" e com texto. "
     "Campo 'situacao' aceita: ok, atencao, problema. 'prioridade': alta, media, baixa. "
     "Textos marcados com [RASCUNHO] são sugestões da ferramenta: reescreva ou apague a marcação para aceitar. "
@@ -79,6 +82,7 @@ def criar_rascunho(r: dict, plano_fases: list[dict]) -> dict:
         "url": r["url_final"],
         "data_analise": r["data"],
         "demonstracao": False,
+        "aprovar_rascunhos": False,
         "enviar_ao_lead": False,
         "nota_pessoal": {"status": PENDENTE, "texto": _rascunho_nota_pessoal(r["empresa"], achados)},
         "avaliacoes": avaliacoes,
@@ -92,6 +96,33 @@ def salvar_rascunho(caminho: Path, dados: dict, sobrescrever: bool = False) -> b
         return False
     caminho.write_text(json.dumps(dados, ensure_ascii=False, indent=2), encoding="utf-8")
     return True
+
+
+def _sem_marca(texto):
+    return re.sub(r"^\s*\[RASCUNHO\]\s*", "", texto, flags=re.I) if isinstance(texto, str) else texto
+
+
+def aplicar_aprovacao(rev: dict, forcar: bool = False) -> dict:
+    """Com "aprovar_rascunhos": true (ou forcar, para a prévia), os rascunhos viram texto revisado.
+
+    Devolve uma cópia: tira a marca [RASCUNHO] do início dos textos e marca os blocos como "revisado".
+    Sem a aprovação, devolve o arquivo como está (a validação normal decide)."""
+    import copy
+    if not (forcar or rev.get("aprovar_rascunhos") is True):
+        return rev
+    rev = copy.deepcopy(rev)
+    nota = rev.get("nota_pessoal") or {}
+    nota["texto"] = _sem_marca(nota.get("texto"))
+    nota["status"] = REVISADO
+    for av in rev.get("avaliacoes") or []:
+        for campo in ("o_que_vimos", "o_que_significa", "o_que_fazer"):
+            av[campo] = _sem_marca(av.get(campo))
+        av["status"] = REVISADO
+    plano = rev.get("plano") or {}
+    for it in plano.get("itens") or []:
+        it["acao"] = _sem_marca(it.get("acao"))
+    plano["status"] = REVISADO
+    return rev
 
 
 def _preenchido(texto) -> bool:
@@ -147,6 +178,7 @@ def carregar_validado(caminho: Path) -> dict:
         rev = json.loads(caminho.read_text(encoding="utf-8"))
     except ValueError as e:
         raise RevisaoIncompleta([f"{caminho.name} não é um JSON válido: {e}"]) from e
+    rev = aplicar_aprovacao(rev)
     pendencias = validar(rev)
     if pendencias:
         raise RevisaoIncompleta(pendencias)

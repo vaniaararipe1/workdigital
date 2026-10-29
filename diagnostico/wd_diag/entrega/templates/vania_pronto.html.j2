@@ -1,0 +1,119 @@
+{#- E-mail interno para a Vania: o que já foi analisado e o que ela precisa revisar antes de falar com o cliente. -#}
+{% macro titulo_secao(texto, cor) %}
+<tr><td style="padding:26px 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:{{ cor }}">{{ texto }}</td></tr>
+{% endmacro %}
+{% set rot_sit = {"ok": "ok", "atencao": "atenção", "problema": "problema"} %}
+{% set cor_sit = {"ok": "#04A776", "atencao": "#6025E1", "problema": "#C00252"} %}
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{ empresa }}</title></head>
+<body style="margin:0;padding:0;background:#EFEDF5">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#EFEDF5">
+<tr><td align="center" style="padding:22px 10px">
+<table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:640px;background:#FFFFFF;border-radius:14px">
+<tr><td style="background:#121316;border-radius:14px 14px 0 0;padding:22px 28px">
+  <img src="cid:logo" width="110" alt="Work Digital" style="display:block;width:110px;height:auto;border:0">
+  <div style="margin-top:16px;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#04CD8F">Diagnóstico pronto para a sua revisão</div>
+  <div style="margin-top:6px;font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:bold;line-height:1.25;color:#FFFFFF">{{ empresa }}</div>
+  <div style="margin-top:4px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#C1BECB"><a href="{{ url }}" style="color:#C1BECB">{{ url }}</a></div>
+</td></tr>
+<tr><td style="padding:6px 28px 28px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#23232B">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+
+{{ titulo_secao("Contato", "#6025E1") }}
+<tr><td>
+  {% if contato.nome %}<b>{{ contato.nome }}</b>{% if contato.cargo %} · {{ contato.cargo }}{% endif %}<br>{% endif %}
+  {% if contato.email %}<a href="mailto:{{ contato.email }}" style="color:#6025E1">{{ contato.email }}</a><br>{% endif %}
+  {% if contato.whatsapp %}WhatsApp {{ contato.whatsapp }}{% if contato.whatsapp_url %} · <a href="{{ contato.whatsapp_url }}" style="color:#04A776;font-weight:bold">abrir conversa</a>{% endif %}<br>{% endif %}
+  {% if not (contato.nome or contato.email or contato.whatsapp) %}Sem dados de contato (prospecção).<br>{% endif %}
+  <span style="color:#77768A;font-size:13px">Origem: {{ origem }}{% if contato.segmento %} · Segmento: {{ contato.segmento }}{% endif %} ·
+  {% if enviado %}a versão automática <b>já foi enviada</b> ao lead{% else %}a versão automática <b>não</b> foi enviada ao lead{% endif %}</span>
+</td></tr>
+
+{{ titulo_secao("O que já foi analisado (automático, medido)", "#04A776") }}
+<tr><td>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+    {% for n in notas %}
+      <td width="33%" align="center" style="padding:{% if not loop.first %}0 0 0 6px{% else %}0{% endif %}">
+        <div style="border:1px solid #E6E3EE;border-radius:10px;padding:12px 4px;background:#FAF9FD">
+          <div style="font-size:26px;font-weight:bold;line-height:1;color:{{ n.cor }}">{{ n.valor }}</div>
+          <div style="margin-top:6px;font-size:12px;color:#5E5D6E">{{ n.nome }}</div>
+          <div style="margin-top:4px;font-size:11px;color:#8A889A">{{ n.contagem }}</div>
+        </div>
+      </td>
+    {% endfor %}
+    </tr>
+  </table>
+  {% if principais %}
+  <p style="margin:14px 0 6px"><b>Principais problemas medidos</b> (os que abrem o relatório):</p>
+  <ul style="margin:0;padding-left:20px">
+    {% for p in principais %}<li style="margin:0 0 6px"><b>{{ p.titulo }}.</b> {{ p.o_que_vimos }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+  <p style="margin:12px 0 0;font-size:13px;color:#77768A">Esses itens são dados coletados do site e entram nas notas. Não precisam de revisão, a não ser que algo pareça errado.</p>
+</td></tr>
+
+{{ titulo_secao("O que você precisa analisar", "#C00252") }}
+<tr><td>
+  <p style="margin:0 0 12px">A ferramenta já escreveu tudo como rascunho. Leia, ajuste se precisar e aprove. A prévia da versão completa, como o cliente vai receber, está em anexo (<b>relatorio-revisado-previa.pdf</b>).</p>
+
+  {% for av in avaliacoes %}
+  <div style="border-left:3px solid {{ cor_sit.get(av.situacao, '#6025E1') }};padding:2px 0 2px 14px;margin:0 0 16px">
+    <b>{{ av.titulo }}</b> <span style="font-size:12px;color:{{ cor_sit.get(av.situacao, '#6025E1') }};font-weight:bold;text-transform:uppercase">sugestão: {{ rot_sit.get(av.situacao, av.situacao) }}</span><br>
+    {{ av.o_que_vimos }}{% if av.o_que_significa %} {{ av.o_que_significa }}{% endif %}
+    {% if av.o_que_fazer %}<br><i>O que fazer:</i> {{ av.o_que_fazer }}{% endif %}
+    {% if av.sinais %}<br><span style="font-size:12px;color:#8A889A">Base: {{ av.sinais }}</span>{% endif %}
+  </div>
+  {% endfor %}
+
+  <div style="border-left:3px solid #6025E1;padding:2px 0 2px 14px;margin:0 0 16px">
+    <b>Nota pessoal</b> (aparece no topo do plano)<br>{{ nota_pessoal }}
+  </div>
+
+  <div style="border-left:3px solid #6025E1;padding:2px 0 2px 14px;margin:0 0 16px">
+    <b>Plano "Por onde começar"</b> ({{ plano_total }} ações)
+    {% for f in plano %}{% if f.itens %}
+    <div style="margin-top:8px;font-size:13px;font-weight:bold;color:#5E5D6E">{{ f.nome }}</div>
+    <ul style="margin:2px 0 0;padding-left:20px">{% for it in f.itens %}<li style="margin:0 0 4px">{{ it }}</li>{% endfor %}</ul>
+    {% endif %}{% endfor %}
+  </div>
+
+  {% if conferir %}
+  <p style="margin:4px 0 6px"><b>Também vale conferir no site</b> (a ferramenta não conseguiu confirmar sozinha):</p>
+  <ul style="margin:0 0 6px;padding-left:20px">
+    {% for c in conferir %}<li style="margin:0 0 6px"><b>{{ c.titulo }}.</b> {{ c.o_que_vimos }}{% if c.nota_interna %} <span style="font-size:12px;color:#8A889A">({{ c.nota_interna }})</span>{% endif %}</li>{% endfor %}
+  </ul>
+  {% endif %}
+</td></tr>
+
+{{ titulo_secao("Como aprovar e enviar", "#6025E1") }}
+<tr><td>
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px">
+    <tr><td style="background:#6025E1;border-radius:8px"><a href="{{ link_editar }}" style="display:inline-block;padding:12px 20px;font-size:14px;font-weight:bold;color:#FFFFFF;text-decoration:none">Abrir a revisão no GitHub</a></td></tr>
+  </table>
+  <ol style="margin:0;padding-left:20px">
+    <li style="margin:0 0 6px">Se quiser mudar algum texto, edite no arquivo que abrir (ele traz os mesmos textos acima).</li>
+    <li style="margin:0 0 6px">Troque <code>"aprovar_rascunhos": false</code> para <code>true</code>.</li>
+    <li style="margin:0 0 6px">Para enviar ao cliente na mesma hora, troque também <code>"enviar_ao_lead": false</code> para <code>true</code>.</li>
+    <li style="margin:0 0 6px">Clique em <b>Commit changes</b>. Em uns 2 minutos a versão revisada é gerada{% if contato.email %} e, se você marcou o envio, vai para {{ contato.email }}{% endif %}. Você recebe uma cópia.</li>
+  </ol>
+</td></tr>
+
+{% if abordagens %}
+{{ titulo_secao("Para a conversa com o cliente", "#04A776") }}
+<tr><td>
+  <ul style="margin:0;padding-left:20px">
+    {% for ab in abordagens %}<li style="margin:0 0 8px"><b>{{ ab.titulo }}.</b> {{ ab.texto }} <span style="font-size:12px;color:#8A889A">Base: {{ ab.base }}</span></li>{% endfor %}
+  </ul>
+</td></tr>
+{% endif %}
+
+<tr><td style="padding-top:24px;font-size:12px;color:#8A889A">Em anexo: versão automática (relatorio.pdf), prévia da versão completa (relatorio-revisado-previa.pdf) e notas internas. Pasta completa: <a href="{{ link_pasta }}" style="color:#6025E1">{{ pasta }}</a></td></tr>
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>

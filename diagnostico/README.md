@@ -69,11 +69,15 @@ A versão automática leva de 2 a 4 minutos, e a maior parte do tempo é a medi�
 **Fluxo de revisão:**
 1. Rode a versão automática e envie o `relatorio.pdf` ao lead, se quiser. Ele avisa que a avaliação completa chega em até `PRAZO_REVISAO_DIAS` dias úteis.
 2. Abra `notas-internas.html`. Lá estão o que foi medido, os achados para abrir a conversa e os rascunhos das avaliações e do plano.
-3. Edite o `revisao.json`:
-   - reescreva ou aceite os rascunhos, apagando a marcação `[RASCUNHO]`;
-   - troque cada `"pendente de revisão"` por `"revisado"`.
+3. Edite o `revisao.json`. Há dois caminhos:
+   - **rápido:** leia a prévia (`relatorio-revisado-previa.pdf`, marcada "Prévia para revisão: não enviar"), ajuste os textos que quiser e troque `"aprovar_rascunhos"` para `true`. Os rascunhos passam a valer como texto revisado por você;
+   - **detalhado:** reescreva ou aceite cada rascunho, apagando a marcação `[RASCUNHO]`, e troque cada `"pendente de revisão"` por `"revisado"`.
+
+   Nos dois casos, avaliação com situação "atencao" ou "problema" continua exigindo o campo `o_que_fazer`.
 4. Rode com `--versao revisada`. Se faltar algo, a ferramenta **recusa** e lista exatamente o que falta.
 5. Confira e envie o `relatorio-revisado.pdf`.
+
+**E-mails (Fase 2):** o visual fica em `wd_diag/entrega/templates/` (`lead_automatico`, `lead_revisado`, `vania_pronto`, com a moldura comum em `base_lead`). São HTML com estilos inline, que é o que os leitores de e-mail aceitam. O logo e a foto vão embutidos na mensagem (`wd_diag/entrega/assets/`). O e-mail interno separa "O que já foi analisado" (medido, entra na nota) de "O que você precisa analisar" (rascunhos por extenso, itens não confirmados e o caminho para aprovar), com a prévia da versão completa em anexo.
 
 ## Como testar
 

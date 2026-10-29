@@ -21,8 +21,11 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from ..config import Config
-from ..pipeline import executar_diagnostico, gerar_revisada, nome_pasta
-from ..revisao import RevisaoIncompleta
+from ..pipeline import executar_diagnostico, gerar_previa, gerar_revisada, nome_pasta
+from ..relatorio.contexto import top3
+from ..relatorio.gerar import link_whatsapp
+from ..relatorio.notas import abordagens
+from ..revisao import FASES, RevisaoIncompleta, aplicar_aprovacao
 from ..seguranca import UrlInvalida, validar_entrada
 from . import email as mail
 from .email import e
@@ -53,6 +56,88 @@ def _link_github(caminho: str, editar: bool = False) -> str:
         return caminho
     modo = "edit" if editar else "blob"
     return f"https://github.com/{REPO}/{modo}/{BRANCH_DADOS}/{caminho}"
+
+
+NOMES_NOTA = {"performance": "Velocidade", "ux": "Experiência e conversão", "seo": "SEO e visibilidade"}
+ROTULO_ORIGEM = {"popup": "popup do site", "landing": "landing page", "site": "página do diagnóstico",
+                 "prospeccao": "prospecção (você mesma)"}
+
+
+def _cor_nota(n) -> str:
+    if n is None:
+        return "#8A889A"
+    return "#04A776" if n >= 80 else ("#6025E1" if n >= 50 else "#C00252")
+
+
+def notas_email(notas: dict) -> list[dict]:
+    return [{"nome": nome, "valor": "—" if notas.get(k) is None else notas[k], "cor": _cor_nota(notas.get(k))}
+            for k, nome in NOMES_NOTA.items()]
+
+
+def link_whatsapp_lead(numero: str) -> str:
+    d = re.sub(r"\D", "", numero or "")
+    if len(d) in (10, 11):
+        d = "55" + d
+    return f"https://wa.me/{d}" if 12 <= len(d) <= 15 else ""
+
+
+def _primeiro_nome(nome: str) -> str:
+    partes = (nome or "").split()
+    return partes[0].capitalize() if partes else ""
+
+
+def _sem_marca(t: str) -> str:
+    return re.sub(r"^\s*\[RASCUNHO\]\s*", "", t or "", flags=re.I).strip()
+
+
+def email_lead_automatico(r: dict, nome: str, prazo_dias: int) -> str:
+    host = _host(r["url_final"])
+    return mail.renderizar(
+        "lead_automatico.html.j2", assunto=f"Seu resultado técnico: {host}", host=host,
+        preheader="As notas do seu site e o relatório completo em PDF.", kicker="Resultado técnico",
+        titulo=f"A análise do site {host} está pronta", primeiro_nome=_primeiro_nome(nome),
+        notas=notas_email({k: v.nota for k, v in r["notas"].items()}),
+        principais=top3(r["achados"]), prazo_dias=prazo_dias, whatsapp_url=link_whatsapp(r["empresa"]))
+
+
+def email_lead_revisado(empresa: str, url: str, nome: str) -> str:
+    host = _host(url)
+    return mail.renderizar(
+        "lead_revisado.html.j2", assunto=f"Sua avaliação completa: {host}", host=host,
+        preheader="A avaliação completa do seu site, com o plano por onde começar.", kicker="Avaliação completa",
+        titulo=f"A avaliação completa do site {host}", primeiro_nome=_primeiro_nome(nome),
+        whatsapp_url=link_whatsapp(empresa))
+
+
+def email_vania(r: dict, rev: dict, lead: dict, enviado: bool, rel: str) -> str:
+    """O que já foi medido (resumo) e o que a Vania precisa revisar, com os rascunhos por extenso."""
+    achados = r["achados"]
+    medidos = [x for x in achados if x.tipo == "medido"]
+    notas = notas_email({k: v.nota for k, v in r["notas"].items()})
+    for n, cat in zip(notas, NOMES_NOTA):
+        c = [x.situacao for x in medidos if x.categoria == cat]
+        partes = [f"{c.count(s)} {rot if c.count(s) == 1 else plural}"
+                  for s, rot, plural in (("ok", "ok", "ok"), ("atencao", "em atenção", "em atenção"),
+                                         ("problema", "problema", "problemas")) if c.count(s)]
+        n["contagem"] = " · ".join(partes) or "nada medido"
+    aprovado = aplicar_aprovacao(rev, forcar=True)
+    avaliacoes = [{"titulo": av.get("titulo", ""), "situacao": av.get("situacao", ""),
+                   "o_que_vimos": av.get("o_que_vimos", ""), "o_que_significa": av.get("o_que_significa", ""),
+                   "o_que_fazer": av.get("o_que_fazer", ""), "sinais": (av.get("sinais_coletados") or "")[:300]}
+                  for av in aprovado.get("avaliacoes", [])]
+    itens = aprovado.get("plano", {}).get("itens", [])
+    plano = [{"nome": f, "itens": [it.get("acao", "") for it in itens if it.get("fase") == f]} for f in FASES]
+    conferir = [{"titulo": x.titulo, "o_que_vimos": x.o_que_vimos, "nota_interna": x.nota_interna}
+                for x in achados if x.tipo in ("nao_confirmado", "nao_medido")]
+    contato = {k: lead.get(k) or "" for k in ("nome", "email", "whatsapp", "cargo", "segmento")}
+    contato["whatsapp_url"] = link_whatsapp_lead(contato["whatsapp"])
+    return mail.renderizar(
+        "vania_pronto.html.j2", empresa=r["empresa"], url=r["url_final"], contato=contato,
+        origem=ROTULO_ORIGEM.get(lead.get("origem", ""), lead.get("origem", "")), enviado=enviado,
+        notas=notas, principais=top3(achados), avaliacoes=avaliacoes,
+        nota_pessoal=(aprovado.get("nota_pessoal") or {}).get("texto", ""), plano=plano, plano_total=len(itens),
+        conferir=conferir, abordagens=abordagens(r), link_editar=_link_github(rel + "/revisao.json", editar=True),
+        link_pasta=_link_github(rel), pasta=rel)
 
 
 def verificar_limites(dados: Path, url: str, origem: str, limite_diario: int, dias_repeticao: int = 7) -> str | None:
@@ -119,30 +204,25 @@ def cmd_automatico(a) -> int:
     notas = {k: v.nota for k, v in r["notas"].items()}
     rel = pasta.relative_to(dados).as_posix()
 
+    try:
+        previa = gerar_previa(pasta, config)
+    except Exception:  # noqa: BLE001  a prévia ajuda, mas não pode impedir a entrega
+        traceback.print_exc()
+        previa = None
+
     enviado = False
     if a.email and a.enviar_ao_lead:
-        mail.enviar(a.email, f"Seu resultado técnico: análise do site {_host(url)}", mail.corpo(
-            f"Olá{(' ' + e(a.nome.split()[0])) if a.nome else ''}!",
-            f"Segue em anexo o resultado técnico da análise do site <b>{e(url)}</b>. Ele traz o que medimos "
-            "automaticamente: velocidade, experiência de quem visita e como o Google e as buscas com IA encontram o site.",
-            f"A avaliação completa, revisada por mim, chega em até {config.prazo_revisao_dias} dias úteis, com as "
-            "prioridades e um plano de ação.",
-            "Qualquer dúvida, é só responder este e-mail.",
-        ), [pasta / "relatorio.pdf"], para_lead=True)
+        mail.enviar(a.email, f"Seu resultado técnico: análise do site {_host(url)}",
+                    email_lead_automatico(r, a.nome, config.prazo_revisao_dias), [pasta / "relatorio.pdf"], para_lead=True)
         enviado = True
     _salvar_json(pasta / "envio.json", {"automatica_enviada_em": datetime.now().isoformat(timespec="seconds") if enviado else None,
                                         "revisada_enviada_em": None})
 
-    contato = " · ".join(x for x in (a.nome, a.email, a.whatsapp) if x) or "sem dados de contato (prospecção)"
-    mail.enviar(mail.email_aviso(), f"[Diagnóstico] {empresa} ({_host(url)}) pronto para revisão", mail.corpo(
-        f"<b>{e(empresa)}</b> · {e(url)}<br>Origem: {e(a.origem)} · Contato: {e(contato)}",
-        f"Notas: performance {notas['performance']}, experiência e conversão {notas['ux']}, SEO e visibilidade {notas['seo']}.",
-        ("A versão automática <b>já foi enviada ao lead</b>." if enviado else "A versão automática <b>não</b> foi enviada ao lead."),
-        f'Para revisar: <a href="{_link_github(rel + "/revisao.json", editar=True)}">abrir o revisao.json para edição</a>. '
-        "Ao salvar, a versão revisada é gerada e chega aqui para você conferir. Para enviá-la ao lead, troque "
-        "<code>enviar_ao_lead</code> para <code>true</code>.",
-        f'Pasta completa: <a href="{_link_github(rel)}">{e(rel)}</a>. Em anexo: versão automática e notas internas.',
-    ), [pasta / "relatorio.pdf", pasta / "notas-internas.html"])
+    lead = json.loads((pasta / "lead.json").read_text(encoding="utf-8"))
+    rev = json.loads((pasta / "revisao.json").read_text(encoding="utf-8"))
+    mail.enviar(mail.email_aviso(), f"[Diagnóstico] {empresa} ({_host(url)}): pronto para a sua revisão",
+                email_vania(r, rev, lead, enviado, rel),
+                [pasta / "relatorio.pdf"] + ([previa] if previa else []) + [pasta / "notas-internas.html"])
 
     status(dados, a.id, estado="pronto", notas=notas, enviado_por_email=enviado)
     print(f"ok: {rel}")
@@ -178,14 +258,8 @@ def cmd_revisao(a) -> int:
                 mail.enviar(mail.email_aviso(), f"[Diagnóstico] {empresa}: sem e-mail do lead", mail.corpo(
                     "A versão revisada está pronta (em anexo), mas não há e-mail do lead. Envie você mesma."), [pdf])
             else:
-                nome = (lead.get("nome") or "").split()
-                mail.enviar(lead["email"], f"Sua avaliação completa: site {_host(rev.get('url', ''))}", mail.corpo(
-                    f"Olá{(' ' + e(nome[0])) if nome else ''}!",
-                    "Como combinado, segue em anexo a avaliação completa do seu site, revisada por mim, com as prioridades "
-                    "e um plano de ação em ordem de impacto.",
-                    "Se quiser, a gente conversa 30 minutos para eu te mostrar por onde começar. É só responder este e-mail "
-                    "ou chamar no WhatsApp (11) 99391-6363.",
-                ), [pdf], para_lead=True)
+                mail.enviar(lead["email"], f"Sua avaliação completa: site {_host(rev.get('url', ''))}",
+                            email_lead_revisado(empresa, rev.get("url", ""), lead.get("nome", "")), [pdf], para_lead=True)
                 envio["revisada_enviada_em"] = datetime.now().isoformat(timespec="seconds")
                 _salvar_json(envio_arq, envio)
                 mail.enviar(mail.email_aviso(), f"[Diagnóstico] {empresa}: versão revisada enviada ao lead",

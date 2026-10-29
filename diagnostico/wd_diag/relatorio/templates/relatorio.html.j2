@@ -207,7 +207,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 }
 
 /* ---------- Impressão / PDF: páginas internas claras ---------- */
-@page{size:A4;margin:16mm 14mm 18mm;{% if exemplo_ilustrativo %}@top-right{content:"Exemplo ilustrativo · dados fictícios";font:600 7.5pt "Space Grotesk",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9B7BFF}{% endif %}@bottom-left{content:"{{ rodape_texto }}";font:8pt Nunito,sans-serif;color:#77768A}@bottom-right{content:"workdigital.art.br";font:8pt Nunito,sans-serif;color:#77768A}}
+@page{size:A4;margin:16mm 14mm 18mm;{% if previa %}@top-right{content:"Prévia para revisão · não enviar";font:600 7.5pt "Space Grotesk",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#C00252}{% endif %}{% if exemplo_ilustrativo %}@top-right{content:"Exemplo ilustrativo · dados fictícios";font:600 7.5pt "Space Grotesk",sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9B7BFF}{% endif %}@bottom-left{content:"{{ rodape_texto }}";font:8pt Nunito,sans-serif;color:#77768A}@bottom-right{content:"workdigital.art.br";font:8pt Nunito,sans-serif;color:#77768A}}
 @page capa{margin:0}
 @page final{margin:0}
 @media print{
@@ -252,6 +252,7 @@ h3.sub-titulo{font-size:19px;margin:28px 0 12px}
 <body>
 {% if exemplo %}<div class="exemplo">Exemplo com dados fictícios</div>{% endif %}
 {% if demonstracao %}<div class="exemplo">Demonstração: revisão simulada, não enviar</div>{% endif %}
+{% if previa %}<div class="exemplo">Prévia para revisão: não enviar</div>{% endif %}
 
 {# ================= CAPA ================= #}
 <header class="capa neon">

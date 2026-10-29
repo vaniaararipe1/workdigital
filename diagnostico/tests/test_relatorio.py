@@ -160,3 +160,47 @@ def test_notas_internas_trazem_rascunhos_e_abordagem():
     titulos = [a["titulo"] for a in notas.abordagens(r)]
     assert "Home sem convite para ação no celular" in titulos
     assert "Sem medição de visitas detectada" in titulos
+
+
+# ---------------- aprovação rápida dos rascunhos ----------------
+
+def test_aprovar_rascunhos_aceita_os_textos_da_ferramenta(tmp_path):
+    r = resultado()
+    rev = rv.criar_rascunho(r, contexto.plano(r["achados"]))
+    assert rev["aprovar_rascunhos"] is False
+    arq = tmp_path / "revisao.json"
+    arq.write_text(json.dumps(rev), encoding="utf-8")
+    with pytest.raises(rv.RevisaoIncompleta):
+        rv.carregar_validado(arq)
+    rev["aprovar_rascunhos"] = True
+    arq.write_text(json.dumps(rev), encoding="utf-8")
+    ok = rv.carregar_validado(arq)
+    assert ok["nota_pessoal"]["status"] == rv.REVISADO
+    ok.pop("_instrucoes")
+    assert "[RASCUNHO]" not in json.dumps(ok, ensure_ascii=False)
+    # o arquivo original não é reescrito: a aprovação vale só para a geração
+    assert "[RASCUNHO]" in arq.read_text(encoding="utf-8")
+
+
+def test_aprovar_rascunhos_ainda_exige_o_que_fazer():
+    r = resultado()
+    rev = rv.criar_rascunho(r, contexto.plano(r["achados"]))
+    rev["aprovar_rascunhos"] = True
+    rev["avaliacoes"][0].update(situacao="problema", o_que_fazer="")
+    assert any("o_que_fazer" in p for p in rv.validar(rv.aplicar_aprovacao(rev)))
+
+
+def test_sem_aprovacao_nada_muda():
+    r = resultado()
+    rev = rv.criar_rascunho(r, contexto.plano(r["achados"]))
+    assert rv.aplicar_aprovacao(rev) is rev
+
+
+def test_previa_tem_marca_de_nao_enviar():
+    r = resultado()
+    rev = rv.aplicar_aprovacao(rv.criar_rascunho(r, contexto.plano(r["achados"])), forcar=True)
+    ctx = contexto.montar(r, "revisada", rev, prazo_dias=2)
+    ctx["previa"] = True
+    html = renderizar_html(ctx)
+    assert "Prévia para revisão" in html
+    assert "Prévia para revisão" not in renderizar_html(contexto.montar(r, "revisada", rev, prazo_dias=2))

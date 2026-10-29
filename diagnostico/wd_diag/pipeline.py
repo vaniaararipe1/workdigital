@@ -271,6 +271,26 @@ def gerar_revisada(pasta: Path, config: Config | None = None, gerar_pdf: bool = 
     return r
 
 
+def gerar_previa(pasta: Path, config: Config | None = None, gerar_pdf: bool = True) -> Path:
+    """Prévia da versão revisada montada com os rascunhos atuais, marcada "Prévia: não enviar".
+
+    Serve para a Vania ler o relatório completo antes de aprovar. Nunca é enviada ao lead."""
+    import json as _json
+
+    from . import revisao as rv
+    config = config or Config.do_ambiente()
+    rev = rv.aplicar_aprovacao(_json.loads((pasta / ARQ_REVISAO).read_text(encoding="utf-8")), forcar=True)
+    r = carregar_resultado(pasta)
+    ctx = ctx_relatorio.montar(r, "revisada", rev, prazo_dias=config.prazo_revisao_dias)
+    ctx["previa"] = True
+    destino = pasta / f"{ARQ_REVISADO}-previa.html"
+    destino.write_text(renderizar_html(ctx), encoding="utf-8")
+    if gerar_pdf:
+        html_para_pdf(destino, destino.with_suffix(".pdf"), config.chromium_path)
+        return destino.with_suffix(".pdf")
+    return destino
+
+
 def localizar_pasta(url: str, config: Config) -> Path | None:
     """Pasta mais recente de um domínio em relatorios/ (para gerar a versão revisada pela URL)."""
     host = (urlsplit(url if "://" in url else "https://" + url).hostname or "").removeprefix("www.")

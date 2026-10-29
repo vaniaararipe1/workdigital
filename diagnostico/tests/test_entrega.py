@@ -53,3 +53,45 @@ def test_email_com_anexo_e_resposta_para(tmp_path):
     assert msg["Reply-To"] == "hello@workdigital.art.br"
     assert any(p.get_filename() == "relatorio.pdf" for p in msg.iter_attachments())
     assert "Vania Araripe" in msg["From"]
+
+
+def test_emails_do_lead_tem_layout_apresentacao_e_escapam_dados():
+    from tests.test_relatorio import resultado
+    r = resultado()
+    html = worker.email_lead_automatico(r, "<script>Ana</script> Souza", 2)
+    assert "<script>Ana" not in html and "&lt;script&gt;" in html
+    assert "Prazer, eu sou a Vania Araripe" in html
+    assert html.index("Prazer, eu sou a") < html.index("revisada por mim")
+    assert "cid:logo" in html and "cid:foto" in html
+    assert "não foi possível medir" in html  # performance sem medição aparece como tal, sem nota inventada
+    rev = worker.email_lead_revisado(r["empresa"], r["url_final"], "Ana")
+    assert "Olá, Ana!" in rev and "30 minutos" in rev
+
+
+def test_imagens_vao_embutidas_na_mensagem(tmp_path):
+    from tests.test_relatorio import resultado
+    msg = mail.montar("lead@ex.com", "A", worker.email_lead_automatico(resultado(), "Ana", 2))
+    tipos = [p.get_content_type() for p in msg.walk()]
+    assert "multipart/related" in tipos and "image/png" in tipos and "image/jpeg" in tipos
+    html = next(p for p in msg.walk() if p.get_content_type() == "text/html").get_content()
+    assert "cid:logo" not in html  # trocado pelo Content-ID real
+
+
+def test_email_da_vania_separa_medido_do_que_revisar():
+    from tests.test_relatorio import resultado
+    from wd_diag import revisao as rv
+    from wd_diag.relatorio import contexto
+    r = resultado()
+    rev = rv.criar_rascunho(r, contexto.plano(r["achados"]))
+    lead = {"nome": "Ana", "email": "ana@ex.com", "whatsapp": "(11) 98888-7777", "origem": "landing"}
+    html = worker.email_vania(r, rev, lead, True, "relatorios/ex.com-2026-10-12")
+    assert html.index("O que já foi analisado") < html.index("O que você precisa analisar")
+    assert "Clareza da proposta de valor" in html and "[RASCUNHO]" not in html
+    assert "aprovar_rascunhos" in html and "https://wa.me/5511988887777" in html
+    assert "Formulário de contato" in html  # item não confirmado vai para "vale conferir"
+
+
+def test_link_whatsapp_do_lead():
+    assert worker.link_whatsapp_lead("(11) 98888-7777") == "https://wa.me/5511988887777"
+    assert worker.link_whatsapp_lead("+55 11 98888-7777") == "https://wa.me/5511988887777"
+    assert worker.link_whatsapp_lead("123") == ""

@@ -5,19 +5,27 @@ Variáveis de ambiente:
     GMAIL_APP_PASSWORD  senha de app do Google (não é a senha normal da conta)
     EMAIL_AVISO         para onde vão os avisos internos (padrão: GMAIL_USER)
     EMAIL_RESPONDER_PARA  endereço de resposta nos e-mails ao lead (padrão: hello@workdigital.art.br)
+
+Visual: os e-mails com layout ficam em templates/ (HTML com estilos inline, que é o que os leitores de
+e-mail aceitam). Logo e foto vão embutidos na mensagem (cid:logo, cid:foto), sem depender de hospedagem.
 """
 from __future__ import annotations
 
 import mimetypes
 import os
+import re
 import smtplib
 import ssl
 from email.message import EmailMessage
-from email.utils import formataddr
+from email.utils import formataddr, make_msgid
 from html import escape
 from pathlib import Path
 
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+
+AQUI = Path(__file__).parent
 REMETENTE_NOME = "Vania Araripe · Work Digital"
+IMAGENS = {"logo": AQUI / "assets" / "logo-branco.png", "foto": AQUI / "assets" / "foto-vania.jpg"}
 
 
 class ConfigEmailAusente(RuntimeError):
@@ -37,18 +45,48 @@ def _config() -> dict:
     }
 
 
+def assinatura() -> dict:
+    return {"nome": os.environ.get("ASSINATURA_NOME", "Vania Araripe").strip(),
+            "cargo": os.environ.get("ASSINATURA_CARGO", "Gestão de projetos digitais").strip()}
+
+
+def renderizar(template: str, **ctx) -> str:
+    """HTML de um e-mail com layout (templates/*.html.j2). Dados do lead são escapados automaticamente."""
+    env = Environment(loader=FileSystemLoader(AQUI / "templates"), autoescape=select_autoescape(["html", "j2"]),
+                      trim_blocks=True, lstrip_blocks=True)
+    return env.get_template(template).render(assinatura=assinatura(), **ctx)
+
+
+def _texto_puro(html: str) -> str:
+    t = re.sub(r"(?is)<(style|title)[^>]*>.*?</\1>", "", html)
+    t = re.sub(r"(?i)<br\s*/?>|</p>|</tr>|</h\d>|</li>", "\n", t)
+    t = re.sub(r"<[^>]+>", "", t)
+    t = re.sub(r"&nbsp;", " ", t)
+    t = re.sub(r"[ \t]+", " ", t)
+    return re.sub(r"\n\s*\n+", "\n\n", t).strip()
+
+
 def montar(para: str, assunto: str, html: str, anexos: list[Path] | None = None,
            responder_para: str | None = None, remetente: str = "") -> EmailMessage:
+    from html import unescape
     msg = EmailMessage()
     msg["From"] = formataddr((REMETENTE_NOME, remetente)) if remetente else REMETENTE_NOME
     msg["To"] = para
     msg["Subject"] = assunto
     if responder_para:
         msg["Reply-To"] = responder_para
-    texto = (html.replace("<br>", "\n").replace("</p>", "\n\n").replace("</li>", "\n"))
-    import re
-    msg.set_content(re.sub(r"<[^>]+>", "", texto))
+    usadas = {n: p for n, p in IMAGENS.items() if f"cid:{n}" in html and p.exists()}
+    cids = {n: make_msgid(domain="workdigital.art.br") for n in usadas}
+    for n, cid in cids.items():
+        html = html.replace(f"cid:{n}", "cid:" + cid[1:-1])
+    msg.set_content(unescape(_texto_puro(html)))
     msg.add_alternative(html, subtype="html")
+    parte_html = msg.get_payload()[-1]
+    for n, caminho in usadas.items():
+        tipo, _ = mimetypes.guess_type(caminho.name)
+        principal, sub = (tipo or "image/png").split("/", 1)
+        parte_html.add_related(caminho.read_bytes(), maintype=principal, subtype=sub, cid=cids[n],
+                               disposition="inline", filename=caminho.name)
     for arq in anexos or []:
         tipo, _ = mimetypes.guess_type(arq.name)
         principal, sub = (tipo or "application/octet-stream").split("/", 1)
@@ -58,7 +96,8 @@ def montar(para: str, assunto: str, html: str, anexos: list[Path] | None = None,
 
 def enviar(para: str, assunto: str, html: str, anexos: list[Path] | None = None, para_lead: bool = False) -> None:
     cfg = _config()
-    msg = montar(para, assunto, html, anexos, cfg["responder_para"] if para_lead else None, cfg["usuario"])
+    msg = montar(para, assunto, html, [a for a in (anexos or []) if a.exists()],
+                 cfg["responder_para"] if para_lead else None, cfg["usuario"])
     contexto = ssl.create_default_context()
     with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=contexto, timeout=60) as smtp:
         smtp.login(cfg["usuario"], cfg["senha"])
@@ -70,7 +109,7 @@ def email_aviso() -> str:
 
 
 def corpo(*paragrafos: str) -> str:
-    """HTML simples e legível em qualquer leitor de e-mail. Parágrafos já devem vir escapados."""
+    """HTML simples para avisos internos curtos. Parágrafos já devem vir escapados."""
     p = "".join(f'<p style="margin:0 0 14px">{x}</p>' for x in paragrafos)
     return (f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#23232B;max-width:560px">'
             f'{p}<p style="margin:22px 0 0;font-size:13px;color:#5E5D6E">Vania Araripe · Gestão de projetos digitais<br>'
