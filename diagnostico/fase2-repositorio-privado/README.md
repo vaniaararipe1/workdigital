@@ -16,10 +16,10 @@ A ferramenta de análise fica no repositório público `vaniaararipe1/workdigita
 
 | Arquivo | Endereço | Para quê |
 |---|---|---|
-| `web/index.html` | `/` | **Landing** (visual e textos feitos no ChatGPT). Os dois formulários disparam a análise e mostram as notas na tela |
+| `web/index.html` | `/` | **Landing** (visual e textos feitos no ChatGPT). Os dois formulários disparam a análise e levam o visitante para `/relatorio?id=...` |
 | `web/integracao.js` | | Liga a landing ao diagnóstico. **Não precisa mexer.** Toda nova versão da landing precisa manter a linha `<script src="/integracao.js" defer></script>`, a classe `lead-form` dos formulários, um `<p class="form-status">` em cada um e os nomes dos campos (`nome`, `email`, `whatsapp`, `site_url`, `segmento`, `cargo`, `consentimento_lgpd`) |
 | `web/revisar.html` + `web/api/revisao.js` | `/revisar` | Página de revisão da Vania. Só abre com o link do e-mail interno (chave aleatória por diagnóstico) |
-| `web/relatorio.html` | `/relatorio` | Página de um clique ("Pegue seu relatório") para quem já deu os dados no popup do RD. Quem chega em `/` com o cookie do popup ou com `site` e `email` no endereço é levado para cá automaticamente |
+| `web/relatorio.html` | `/relatorio` | Acompanhamento e resultado. Com `?id=` (vindo da landing), só acompanha aquele pedido, sem criar outro; recarregar a página continua acompanhando. Sem `id`, é a página de um clique ("Pegue seu relatório") para quem já deu os dados no popup do RD. Quem chega em `/` com o cookie do popup ou com `site` e `email` no endereço é levado para cá automaticamente |
 
 ## Como funciona
 

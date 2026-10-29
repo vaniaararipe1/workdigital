@@ -162,7 +162,10 @@ button:disabled{opacity:.6;cursor:wait}
   };
   // O cookie só serve uma vez.
   document.cookie = "wd_lead=; Max-Age=0; path=/; domain=.workdigital.art.br";
-  history.replaceState(null, "", location.pathname);
+  // Pedido já criado na landing (/relatorio?id=...): só acompanhar, sem iniciar outra análise.
+  var idPedido = q.get("id") || "";
+  if (!/^[A-Za-z0-9-]{8,64}$/.test(idPedido)) idPedido = "";
+  history.replaceState(null, "", location.pathname + (idPedido ? "?id=" + encodeURIComponent(idPedido) : ""));
 
   $("site").value = lead.site;
   $("email").value = lead.email;
@@ -202,12 +205,13 @@ button:disabled{opacity:.6;cursor:wait}
       .then(function (x) {
         if (!x.ok) { $("botao").disabled = false; return erro(x.j.erro || "Não deu certo. Tente de novo."); }
         $("msg-envio").textContent = "Enviamos o resultado técnico em PDF para " + email + ".";
+        history.replaceState(null, "", location.pathname + "?id=" + encodeURIComponent(x.j.id));
         acompanhar(x.j.id);
       })
       .catch(function () { $("botao").disabled = false; erro("Sem conexão. Tente de novo."); });
   });
 
-  function acompanhar(id) {
+  function acompanhar(id, primeiraConsulta) {
     mostrar("etapa-processando");
     var t0 = Date.now(), LIMITE = 15 * 60 * 1000, ESPERADO = 5 * 60 * 1000;
     var passos = document.querySelectorAll("#passos li");
@@ -231,7 +235,7 @@ button:disabled{opacity:.6;cursor:wait}
         setTimeout(consultar, 8000);
       }).catch(function () { setTimeout(consultar, 10000); });
     }
-    setTimeout(consultar, 15000);
+    setTimeout(consultar, primeiraConsulta || 15000);
   }
 
   function pronto(s) {
@@ -244,9 +248,11 @@ button:disabled{opacity:.6;cursor:wait}
     });
     $("notas").innerHTML = html;
     if (s.enviado_por_email === false) $("msg-envio").textContent = "O relatório será enviado para o seu e-mail.";
+    else if (!$("msg-envio").textContent) $("msg-envio").textContent = "Enviamos o resultado técnico em PDF para o seu e-mail.";
     $("prazo").textContent = PRAZO;
     mostrar("etapa-pronto");
   }
+  if (idPedido) acompanhar(idPedido, 1500);
 })();
 </script>
 </body>
