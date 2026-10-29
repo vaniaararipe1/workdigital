@@ -1,253 +1,401 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Diagnóstico gratuito de site · Work Digital</title>
-<meta name="description" content="Análise gratuita do seu site: velocidade, experiência de quem visita e como o Google e as buscas com IA encontram você.">
-<meta name="robots" content="noindex">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{--roxo:#6025E1;--verde:#04CD8F;--vinho:#C00252;--preto:#16171B;--bg:#121316;--sup:#1C1D23;--borda:#2E2F38;--texto:#ECEBF2;--texto2:#A9A8B8}
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%}
-body{background:var(--bg);color:var(--texto);font:400 16px/1.6 "Nunito",system-ui,sans-serif;position:relative;overflow-x:hidden}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(55% 45% at 0% 0%,rgba(96,37,225,.55),transparent 70%),
-             radial-gradient(40% 40% at 100% 15%,rgba(192,2,82,.4),transparent 70%),
-             radial-gradient(50% 45% at 85% 100%,rgba(4,205,143,.3),transparent 70%)}
-main{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:28px 16px 48px}
-h1,h2,h3{font-family:"Space Grotesk",system-ui,sans-serif;color:#fff;line-height:1.15;margin:0}
-.logo{width:150px;display:block;margin-bottom:36px}
-.kicker{font:600 12px/1 "Space Grotesk",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--verde)}
-h1{font-size:clamp(30px,6vw,42px);margin:12px 0 12px;letter-spacing:-.01em}
-.sub{color:var(--texto2);margin:0 0 26px}
-.cartao{background:rgba(28,29,35,.88);border:1px solid var(--borda);border-radius:20px;padding:24px;backdrop-filter:blur(6px)}
-label{display:block;font-weight:700;font-size:14px;margin:0 0 6px}
-.campo{margin-bottom:16px}
-input[type=text],input[type=email],input[type=url]{width:100%;font:inherit;color:#fff;background:#121316;border:1px solid #3A3B46;border-radius:12px;padding:13px 14px;outline:none}
-input:focus{border-color:var(--roxo);box-shadow:0 0 0 3px rgba(96,37,225,.35)}
-.site input{font-size:18px;font-weight:700}
-.ajuda{font-size:13px;color:var(--texto2);margin-top:6px}
-.consent{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--texto2);margin:6px 0 18px}
-.consent input{margin-top:4px;width:18px;height:18px;accent-color:var(--verde);flex:none}
-.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-button{width:100%;font:700 19px/1 "Space Grotesk",sans-serif;color:#08140F;background:var(--verde);border:0;border-radius:14px;padding:18px 20px;cursor:pointer;box-shadow:0 10px 34px rgba(4,205,143,.3)}
-button:disabled{opacity:.6;cursor:wait}
-.erro{background:rgba(192,2,82,.15);border:1px solid rgba(192,2,82,.5);color:#FFB3CD;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:14.5px}
-.oculto{display:none}
-.passos{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:12px}
-.passos li{display:flex;gap:12px;align-items:center;color:var(--texto2)}
-.passos li .pt{width:12px;height:12px;border-radius:50%;border:2px solid #4A4B57;flex:none}
-.passos li.feito{color:#fff}.passos li.feito .pt{background:var(--verde);border-color:var(--verde)}
-.passos li.atual{color:#fff}.passos li.atual .pt{border-color:var(--verde);animation:pulso 1.2s infinite}
-@keyframes pulso{50%{box-shadow:0 0 0 6px rgba(4,205,143,.2)}}
-@media (prefers-reduced-motion:reduce){.passos li.atual .pt{animation:none}}
-.barra{height:6px;border-radius:6px;background:#2A2B33;overflow:hidden;margin-top:18px}
-.barra span{display:block;height:100%;width:5%;background:linear-gradient(90deg,var(--roxo),var(--vinho),var(--verde));transition:width 1s linear}
-.notas{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
-.nota{background:#121316;border:1px solid var(--borda);border-radius:16px;padding:14px 10px;text-align:center}
-.nota b{display:block;font:700 34px/1 "Space Grotesk",sans-serif;margin-bottom:6px}
-.nota span{font-size:12.5px;color:var(--texto2);line-height:1.3;display:block}
-.bom{color:var(--verde)}.medio{color:#B79BFF}.ruim{color:#FF4D8D}
-.convite{display:flex;gap:14px;align-items:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--borda)}
-.convite img{width:64px;height:64px;border-radius:50%;border:3px solid var(--roxo);flex:none;object-fit:cover}
-.convite a{color:var(--verde);font-weight:800;text-decoration:none}
-.rodape{font-size:12px;color:#8A8999;margin-top:26px;text-align:center}
-.rodape a{color:#B9B7C8}
-@media (max-width:420px){.notas{grid-template-columns:1fr}.cartao{padding:18px}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Análise Gratuita de Site | Work Digital</title>
+  <meta name="description" content="Analise seu site gratuitamente. Receba o resultado técnico automatizado por e-mail em instantes e a avaliação completa de Vania Araripe em até 2 dias úteis.">
+  <meta name="theme-color" content="#121316">
+  <!-- PUBLICAÇÃO: substituir https://diagnostico.workdigital.art.br/ e [INSERIR URL DA IMAGEM OG] por URLs absolutas. -->
+  <link rel="canonical" href="https://diagnostico.workdigital.art.br/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Work Digital">
+  <meta property="og:title" content="Faça agora a análise do seu site">
+  <meta property="og:description" content="Resultado técnico agora. Avaliação completa em 2 dias úteis. Sem compromisso.">
+  <meta property="og:url" content="https://diagnostico.workdigital.art.br/">
+  <meta property="og:image" content="[INSERIR URL DA IMAGEM OG]">
+  <meta property="og:image:alt" content="Análise Gratuita de Site — Work Digital">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- GOOGLE TAG MANAGER: inserir aqui o script oficial do contêiner [INSERIR ID GTM].
+       Configurar consentimento de analytics antes de carregar tags não essenciais.
+       O consentimento do formulário não equivale ao consentimento de cookies. -->
+  <style>
+/* ===== TOKENS DA MARCA / BASE ===== */
+:root{--purple:#6025E1;--green:#04CD8F;--pink:#C00252;--black:#16171B;--bg:#121316;--white:#fff;--muted:#c1becb;--line:rgba(255,255,255,.15);--radius:16px;--cta:linear-gradient(100deg,#CBFFFC 0%,#EDFFFE 26.25%,#FFFDFA 47.57%,#FAD1FF 88.96%);--heading:'Space Grotesk',sans-serif;--body:'Nunito',sans-serif}
+*,*::before,*::after{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:32px}body{margin:0;background:var(--bg);color:var(--white);font-family:var(--body);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}::selection{background:#6025E1;color:#fff}img{max-width:100%;height:auto;display:block}a{color:inherit}button,input,select{font:inherit}button,a,input,select,summary{touch-action:manipulation}button{cursor:pointer}h1,h2,h3,p{margin:0}h1,h2,h3{font-family:var(--heading);font-weight:700}h1{font-size:clamp(40px,5.05vw,73px);line-height:1.055;letter-spacing:-.055em}h2{font-size:clamp(32px,3.5vw,50px);line-height:1.13;letter-spacing:-.045em}h3{font-size:24px;line-height:1.22;letter-spacing:-.025em}p{color:var(--muted)}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--green);outline-offset:5px}input:focus-visible,select:focus-visible{outline-offset:2px}a{text-underline-offset:4px}.wrap{width:min(1240px,calc(100% - 40px));margin-inline:auto}.section{padding:76px 0}.eyebrow{display:block;font-family:var(--heading);font-size:12px;line-height:1.5;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#d3b9ff;margin-bottom:20px}.intro{max-width:680px;margin-top:22px;font-size:18px;line-height:1.65}.underline{position:relative;display:inline;text-decoration:underline;text-decoration-color:#a874ff;text-decoration-thickness:3px;text-underline-offset:8px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:18px;min-height:52px;border:0;border-radius:6px;padding:14px 23px;background:var(--cta);background-size:180% 100%;background-position:0% 50%;color:#16171B;text-decoration:none;font-family:var(--heading);font-size:14px;font-weight:700;line-height:1.3;transition:background-position .5s,transform .25s,box-shadow .25s}.btn:hover{background-position:100% 50%;transform:translateY(-2px);box-shadow:0 8px 30px #6025e12b}.btn:active{transform:translateY(0)}.btn svg{width:18px;height:18px;flex-shrink:0}.btn:disabled{cursor:wait;opacity:.7;transform:none}.skip{position:absolute;top:12px;left:20px;z-index:10;transform:translateY(-180%);background:#fff;color:#121316;padding:10px 20px}.skip:focus{transform:none}.logo{width:190px;height:auto}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}.hairline{border-top:1px solid var(--line)}
+/* ===== TOPO E HERO ===== */
+.hero-shell{position:relative;isolation:isolate;background:radial-gradient(ellipse at 7% 5%,#6025e13d,transparent 47%),radial-gradient(ellipse at 95% 36%,#c0025238,transparent 45%),radial-gradient(ellipse at 36% 105%,#04cd8f16,transparent 48%),var(--bg)}.hero-shell::before{content:'';position:absolute;z-index:-1;inset:0;pointer-events:none;background:radial-gradient(ellipse at 48% 54%,#6025e12b,transparent 56%);filter:blur(30px)}.topbar{padding:28px 0;display:flex;align-items:center;justify-content:space-between;gap:22px}.topbar .btn{font-size:12px;min-height:46px;padding:12px 17px}.hero{display:grid;gap:38px;padding-top:46px;padding-bottom:72px;align-items:center}.hero-copy{max-width:660px}.hero .eyebrow{color:#ddd0f7}.hero-lead{font-size:19px;line-height:1.6;margin-top:28px;max-width:570px;color:#dedbe6}.hero-points{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:12px 22px;font-size:14px;color:#e5e2eb}.hero-points li{display:flex;align-items:center;gap:8px}.check{width:16px;height:16px;color:var(--green);flex-shrink:0}.slogan{font-family:var(--heading);font-size:29px;font-weight:500;line-height:1.1;letter-spacing:-.04em;margin-top:48px;background:linear-gradient(100deg,#c7f0e4,#d8befa 45%,#eaa6c1);background-clip:text;-webkit-background-clip:text;color:transparent;display:inline-block}.hero-note{font-size:13px;margin-top:14px;max-width:420px}.form-panel{border:1px solid #c9b4f04a;border-radius:var(--radius);padding:26px 22px;background:linear-gradient(135deg,#262030df,#18181feb);box-shadow:0 24px 90px #0003,0 0 55px #6025e114;min-width:0}.form-panel h2{font-size:26px;letter-spacing:-.04em}.form-panel .form-intro{margin-top:8px;font-size:14px;line-height:1.5}.free-tag{font-family:var(--heading);font-size:11px;letter-spacing:.11em;font-weight:600;color:#b2f5df;text-transform:uppercase;display:block;margin-bottom:11px}.lead-form{margin-top:21px}.field-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:15px}.field{min-width:0}.field label{display:block;font-size:13px;font-weight:800;margin-bottom:6px;color:#eeeaf5}.field label span{font-weight:400;color:#bdb7c9}.field input,.field select{display:block;width:100%;min-width:0;height:46px;border:1px solid #777181;border-radius:6px;background:#15151b;color:#fff;padding:10px 12px;font-size:15px;line-height:1.3}.field input::placeholder{color:#a6a0b1;opacity:1}.field select{padding-right:28px;cursor:pointer}.field input:hover,.field select:hover{border-color:#b5a4ce}.field input[aria-invalid=true],.field select[aria-invalid=true]{border-color:#ffabbf}.field-error{display:block;font-size:12px;color:#ffb6c8;line-height:1.45;margin-top:4px}.field-error:empty{display:none}.consent{display:flex;gap:10px;align-items:flex-start;margin:18px 0;color:#c9c3d4;font-size:12px;line-height:1.55}.consent input{width:17px;height:17px;margin:3px 0 0;accent-color:var(--purple);flex:0 0 17px}.consent a{color:#e8e1f5}.lead-form .btn{width:100%;font-size:13px;min-height:52px;gap:12px}.microcopy{font-size:11px;text-align:center;margin-top:10px;color:#c1bacd;line-height:1.5}.form-status{font-size:14px;line-height:1.6;margin-top:14px;border-radius:8px}.form-status:not(:empty){padding:12px 14px;background:#0b291f;border:1px solid #04cd8f5c;color:#c6ffe9}.form-status[data-state=error]:not(:empty){background:#361524;border-color:#c0025280;color:#ffd5e3}.privacy-status{font-size:12px;color:#ffb6c8}.privacy-status:empty{display:none}
+/* ===== DUAS ETAPAS: novo bloco após o hero ===== */
+.two-stages{padding-top:50px;padding-bottom:65px}
+.stage-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;margin-top:35px}
+.stage-card{padding:30px 26px;border:1px solid #84709870;border-radius:var(--radius);background:linear-gradient(150deg,#26203085,#19191d);min-width:0}
+.stage-card.human{background:linear-gradient(150deg,#09372b52,#19191d);border-color:#4774647d}
+.stage-card h3{font-size:29px}.stage-card p{font-size:16px;margin-top:17px}.stage-card ul{padding:0;list-style:none;margin:22px 0 0;color:#e4dfea;font-size:15px;line-height:1.6}.stage-card li{position:relative;padding-left:17px}.stage-card li+li{margin-top:9px}.stage-card li::before{content:'–';position:absolute;left:0;color:#ba9df0}
+@media(min-width:768px){.stage-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px}.stage-card{padding:34px 32px}}
+/* ===== A DOR ===== */
+.pain .heading-row{display:grid;gap:24px;margin-bottom:42px}.pain .intro{margin:0}.pain-list{display:grid;gap:26px}.pain-item{border-top:1px solid var(--line);padding-top:23px}.icon{width:30px;height:30px;color:#b59aea;stroke:#b59aea;margin-bottom:20px}.pain-item p{font-size:16px;margin-top:13px;max-width:340px}.pain-item h3{font-size:23px}
+/* ===== DADOS DE CONTEXTO ===== */
+.context{position:relative;background:radial-gradient(ellipse at 10% 65%,#6025e13d,transparent 60%),radial-gradient(ellipse at 94% 0%,#c0025228,transparent 50%),#16171B;padding:58px 0 70px}.stats{display:grid;gap:30px;margin-top:25px}.stat{border-left:1px solid #b6a0dc6b;padding-left:24px}.stat strong{font-family:var(--heading);font-size:clamp(54px,5.2vw,76px);line-height:1;letter-spacing:-.065em;display:block;font-weight:600}.stat strong span{font-size:24px;letter-spacing:-.03em}.stat p{font-size:16px;line-height:1.5;max-width:280px;margin-top:13px;color:#e0dbe9}.source{display:block;font-size:11px;color:#b9b2c6;line-height:1.55;margin-top:12px}.context-question{font-family:var(--heading);font-size:clamp(27px,3.2vw,44px);line-height:1.22;letter-spacing:-.04em;max-width:980px;margin-top:54px;color:#fff}.context-question em{font-style:normal;color:#d6b8ff}
+/* ===== O QUE VOCÊ RECEBE ===== */
+.deliverables .intro{max-width:640px}.cards{display:grid;gap:18px;margin-top:42px}.report-card{position:relative;padding:30px 26px;border:1px solid #84709870;border-radius:var(--radius);background:linear-gradient(150deg,#26203085,#19191d);min-width:0}.report-card:nth-child(2){background:linear-gradient(150deg,#09372b52,#19191d);border-color:#4774647d}.report-card:nth-child(3){background:linear-gradient(150deg,#3e142b52,#19191d);border-color:#83526670}.report-card .icon{width:34px;height:34px;margin-bottom:28px}.report-card:nth-child(2) .icon{color:#76e4bd;stroke:#76e4bd}.report-card:nth-child(3) .icon{color:#ed99bc;stroke:#ed99bc}.report-card p{margin-top:16px;font-size:16px}.report-card h3{font-size:23px}.report-card ul{margin:22px 0 0;padding:19px 0 0;border-top:1px solid var(--line);list-style:none;color:#e0dce8;font-size:14px;line-height:1.65}.report-card li+li{margin-top:8px}.report-card li::before{content:'–';margin-right:8px;color:#b89bdd}.delivery-note{display:flex;gap:12px;align-items:flex-start;margin-top:24px;font-size:14px;color:#c7c0d3}.delivery-note svg{width:20px;height:20px;flex-shrink:0;margin-top:2px;stroke:#ba9df0}
+/* ===== COMO FUNCIONA ===== */
+.process{padding:56px 0 70px}.process-inner{border-top:1px solid var(--line);padding-top:54px}.steps{display:grid;gap:28px;margin-top:38px;list-style:none;padding:0}.step{padding-left:23px;position:relative}.step::before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;background:#b28be9;border-radius:1px}.step h3{font-size:21px}.step p{margin-top:12px;font-size:16px}.deadline{display:inline-flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:22px;margin-top:25px;color:#d0cad9;font-size:14px}.deadline svg{width:19px;height:19px}
+/* ===== PROVA SOCIAL / CASES ===== */
+.trust{background:radial-gradient(ellipse at 90% 60%,#6025e123,transparent 65%),#16171B}.trust-intro{max-width:660px}.clients{display:grid;gap:32px;align-items:center;margin:40px 0 50px;padding:32px 0;border-block:1px solid var(--line);justify-items:center}.clients img{max-height:65px;max-width:190px;width:auto;object-fit:contain}.clients .client-stw{max-height:75px;background:#fff;border-radius:5px;padding:5px 12px}.clients .client-cbpq{max-width:235px}.cases-label{font-family:var(--heading);font-size:15px;margin-bottom:20px;color:#d3c8e5}.case-grid{display:grid;gap:18px}.case{border:1px solid var(--line);border-radius:12px;padding:25px;background:#1213166b}.case .case-name{font-size:26px;letter-spacing:-.03em}.case .industry{display:block;font-size:12px;color:#b4a8c6;margin-top:7px}.pending{font-size:13px;line-height:1.6;color:#c1b6d2;border-left:2px solid #7955a8;padding-left:12px;margin-top:24px;overflow-wrap:anywhere}.testimonial-pending{margin-top:27px;padding:22px;border-top:1px solid var(--line);font-size:14px;color:#bdb3cc}
+/* ===== CREDENCIAIS ===== */
+.credentials{padding:32px 0;border-bottom:1px solid var(--line)}.credentials .wrap{display:flex;flex-direction:column;gap:20px}.credentials p{font-size:12px;line-height:1.5;max-width:250px}.credential-list{display:flex;gap:22px 30px;flex-wrap:wrap;align-items:center;font-family:var(--heading);font-size:20px;font-weight:600;color:#d6d1dd;list-style:none;padding:0;margin:0}.credential-list li:last-child{font-size:17px}
+/* ===== FORMULÁRIO FINAL ===== */
+.final{position:relative;isolation:isolate;background:radial-gradient(ellipse at 4% 42%,#6025e136,transparent 57%),radial-gradient(ellipse at 95% 83%,#c002522b,transparent 55%),radial-gradient(ellipse at 64% 100%,#04cd8f0f,transparent 50%)}.final-grid{display:grid;gap:35px;align-items:center}.final-copy h2{max-width:630px}.final-copy .intro{max-width:490px}.final-copy .promise{margin-top:26px;display:flex;align-items:flex-start;gap:11px;color:#e9e4f1;font-size:15px}.promise svg{margin-top:5px}.final-copy .slogan{font-size:34px}.final .form-panel{background:linear-gradient(135deg,#272031ed,#18181ff7)}
+/* ===== FAQ E RODAPÉ ===== */
+.faq-layout{display:grid;gap:35px}.faq-intro{font-size:16px;margin-top:18px;max-width:310px}.accordion{border-top:1px solid var(--line)}details{border-bottom:1px solid var(--line)}summary{position:relative;cursor:pointer;list-style:none;font-family:var(--heading);font-size:18px;line-height:1.5;font-weight:500;padding:22px 38px 22px 0}summary::-webkit-details-marker{display:none}summary::after{content:'+';position:absolute;right:4px;top:21px;font-size:25px;color:#d3b9ff;font-weight:400;line-height:1}details[open] summary::after{content:'−'}details p{padding:0 35px 23px 0;font-size:16px;max-width:640px}footer{border-top:1px solid var(--line);padding:35px 0 25px}.footer-row{display:flex;flex-direction:column;gap:28px;justify-content:space-between}.footer-logo{width:165px}.contact{display:flex;flex-wrap:wrap;gap:10px 25px;font-size:14px;color:#c7c1d3}.contact a{text-decoration:none}.contact a:hover{text-decoration:underline;color:#fff}.copyright{font-size:12px;color:#a7a1b2;margin-top:28px}
+/* ===== RESPONSIVO / MOVIMENTO ===== */
+@media(min-width:540px){.wrap{width:min(1240px,calc(100% - 64px))}.field-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.field.wide{grid-column:1/-1}.form-panel{padding:30px}.clients{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.clients img{max-width:150px}.clients .client-cbpq{max-width:180px}.topbar .btn{font-size:13px}}
+@media(min-width:768px){.section{padding:92px 0}.pain-list,.stats,.cards,.steps,.case-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.pain .heading-row{grid-template-columns:1.1fr 1fr;align-items:end;gap:65px}.pain .intro{font-size:17px}.cards{gap:20px}.report-card{padding:30px 23px}.report-card h3{font-size:22px}.clients img{max-width:190px}.clients .client-cbpq{max-width:240px}.credentials .wrap{flex-direction:row;align-items:center;justify-content:space-between}.footer-row{flex-direction:row;align-items:center}.contact{justify-content:flex-end}.hero{padding-top:55px;padding-bottom:82px}.logo{width:210px}.faq-layout{grid-template-columns:.75fr 1.4fr;gap:70px}.context{padding:65px 0 80px}.steps{gap:35px}.stat{padding-left:26px}}
+@media(min-width:1024px){.wrap{width:min(1240px,calc(100% - 96px))}.hero,.final-grid{grid-template-columns:minmax(0,1.18fr) minmax(0,1fr);gap:70px}.hero{padding-top:38px;padding-bottom:90px}.hero-copy{padding:15px 0 20px}.hero-lead{font-size:19px}.topbar{padding:32px 0}.form-panel{padding:29px 30px}.final-grid{gap:85px}.hero .slogan{margin-top:62px}.form-panel h2{font-size:27px}.hero-points{max-width:520px;gap:13px 23px}.report-card{padding:34px 30px}.clients{max-width:960px;margin-inline:auto}.trust-intro{max-width:760px}.credentials p{max-width:300px}.credential-list{gap:44px}}
+@media(max-width:539px){.topbar{align-items:center;gap:13px;padding:22px 0}.topbar .logo{width:132px}.topbar .btn{max-width:154px;padding:11px 12px;font-size:11px;min-height:46px;gap:0}.topbar .btn svg{display:none}.hero{padding-top:30px;gap:35px}.hero h1{font-size:42px}.hero-lead{font-size:17px}.hero-points{font-size:13px;gap:11px 18px}.slogan{margin-top:30px;font-size:29px}.context-question{font-size:29px}.report-card{padding:29px 25px}.final-copy .slogan{font-size:30px}.contact{flex-direction:column}.underline{text-underline-offset:6px}.form-panel{padding:25px 20px}.case-name{overflow-wrap:anywhere}}
+@media(prefers-reduced-motion:no-preference){.reveal-ready .reveal{opacity:0;transform:translateY(18px);transition:opacity .65s,transform .65s}.reveal-ready .reveal.visible{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.btn:hover{transform:none}}
+  </style>
 </head>
 <body>
-<main>
-  <img class="logo" src="/logo.svg" alt="Work Digital">
-
-  <!-- Etapa 1: formulário -->
-  <section id="etapa-form">
-    <div class="kicker">Diagnóstico gratuito de site</div>
-    <h1 id="titulo">Seu relatório está a um clique</h1>
-    <p class="sub">Analisamos a velocidade, a experiência de quem visita e como o Google e as buscas com IA encontram o seu site. O resultado técnico chega no seu e-mail em poucos minutos.</p>
-    <form id="form" class="cartao" novalidate>
-      <div id="msg-erro" class="erro oculto" role="alert"></div>
-      <div class="campo site">
-        <label for="site">Site que vamos analisar</label>
-        <input id="site" name="site" type="text" inputmode="url" autocomplete="url" placeholder="suaempresa.com.br" required>
-      </div>
-      <div class="campo" id="bloco-email">
-        <label for="email">Seu e-mail</label>
-        <input id="email" name="email" type="email" autocomplete="email" placeholder="voce@empresa.com.br" required>
-        <div class="ajuda">É para onde enviamos o resultado.</div>
-      </div>
-      <div class="campo" id="bloco-nome">
-        <label for="nome">Seu nome</label>
-        <input id="nome" name="nome" type="text" autocomplete="name">
-      </div>
-      <div class="hp" aria-hidden="true"><label for="website_confirm">Não preencha</label><input id="website_confirm" name="website_confirm" tabindex="-1" autocomplete="off"></div>
-      <label class="consent" id="bloco-consent"><input type="checkbox" id="consentimento"> <span>Concordo em receber o resultado da análise e contato da Work Digital sobre ele. Posso cancelar quando quiser.</span></label>
-      <button type="submit" id="botao">Gerar meu relatório</button>
+<!-- GOOGLE TAG MANAGER: inserir o noscript oficial do contêiner logo após <body>. -->
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<!-- Ícones locais, decorativos. Não são logos nem imagens de marca. -->
+<svg xmlns="http://www.w3.org/2000/svg" class="sr-only" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-speed" viewBox="0 0 32 32"><path d="M5 25a13 13 0 1 1 22 0M16 16l7-7M7 16h3m12 0h3M16 5v3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="16" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+<symbol id="i-route" viewBox="0 0 32 32"><path d="M5 7h11a6 6 0 0 1 0 12H9a5 5 0 0 0 0 10h14m-5-5 5 5-5 5" transform="translate(0 -4)" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5" cy="3" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+<symbol id="i-search" viewBox="0 0 32 32"><circle cx="13" cy="13" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m20 20 8 8M9 13h8m-4-4v8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+<symbol id="i-file" viewBox="0 0 32 32"><path d="M7 3h12l6 6v20H7V3Zm12 0v7h6M12 16h8m-8 5h8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+</defs></svg>
+<div class="hero-shell">
+<!-- ===== TOPO: apenas marca e CTA para o formulário ===== -->
+<header class="topbar wrap">
+  <img class="logo" src="https://workdigital.art.br/wp-content/themes/workdigital/assets/ativos-externos/logo-work-digital-branco-criacao-de-site-sp.svg" width="4286" height="1279" alt="Work Digital">
+  <a class="btn" href="#form-diagnostico">Analisar meu site <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+</header>
+</div>
+<main id="conteudo">
+<div class="hero-shell">
+<!-- ===== HERO / MOTE APROVADO: arquivo original negativo da marca ===== -->
+<section class="hero wrap" aria-labelledby="hero-title">
+  <div class="hero-copy">
+    <span class="eyebrow">Análise gratuita de site</span>
+    <h1 id="hero-title">Faça agora a <span class="underline">análise</span> do seu site</h1>
+    <p class="hero-lead">Resultado técnico agora. Avaliação completa em 2 dias úteis.</p>
+    <ul class="hero-points"><li><svg class="check" aria-hidden="true"><use href="#i-check"/></svg>Resultado técnico automatizado</li><li><svg class="check" aria-hidden="true"><use href="#i-check"/></svg>Revisão humana e prioridades</li><li><svg class="check" aria-hidden="true"><use href="#i-check"/></svg>Sem compromisso</li></ul>
+    <p class="slogan">Be beyond. Be digital.</p>
+    <p class="hero-note">Para donos de negócio e líderes de marketing que querem resultado, não só um site bonito.</p>
+  </div>
+  <div class="form-panel" id="diagnostico-hero">
+    <span class="free-tag">Seu próximo passo começa aqui</span>
+    <h2>Vamos olhar para o seu site?</h2>
+    <p class="form-intro">Informe seu site. O resultado técnico chega por e-mail em instantes. Depois, Vania Araripe revisa o caso pessoalmente.</p>
+    <!-- FORMULÁRIO HERO: trocar action="[URL DO RD STATION]" pelo endpoint autorizado.
+         IDs exclusivos; mesmos nomes de campos do formulário final. -->
+    <form id="form-diagnostico-hero" class="lead-form" action="[URL DO RD STATION]" method="post" aria-label="Analisar meu site — início da página">
+      <!-- Origem fixa e UTMs preenchidas por JS, sem armazenamento local. -->
+      <input type="hidden" name="origem" value="landing-analise">
+      <input type="hidden" name="utm_source" value="">
+      <input type="hidden" name="utm_medium" value="">
+      <input type="hidden" name="utm_campaign" value="">
+      <div class="field-grid">
+<div class="field"><label for="hero-nome">Nome</label><input id="hero-nome" name="nome" type="text" placeholder="Seu nome" autocomplete="name" spellcheck="false" maxlength="80" required aria-describedby="hero-nome-erro"><span class="field-error" id="hero-nome-erro"></span></div>
+<div class="field"><label for="hero-email">E-mail corporativo</label><input id="hero-email" name="email" type="email" placeholder="voce@suaempresa.com.br" autocomplete="email" inputmode="email" spellcheck="false" maxlength="200" required aria-describedby="hero-email-erro"><span class="field-error" id="hero-email-erro"></span></div>
+<div class="field"><label for="hero-whatsapp">WhatsApp</label><input id="hero-whatsapp" name="whatsapp" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" inputmode="tel" spellcheck="false" maxlength="80" required aria-describedby="hero-whatsapp-erro"><span class="field-error" id="hero-whatsapp-erro"></span></div>
+<div class="field wide"><label for="hero-site_url">Link do site atual</label><input id="hero-site_url" name="site_url" type="text" inputmode="url" placeholder="suaempresa.com.br" autocomplete="url" spellcheck="false" maxlength="200" required aria-describedby="hero-site_url-erro"><span class="field-error" id="hero-site_url-erro"></span></div>
+<div class="field"><label for="hero-segmento">Segmento</label><select id="hero-segmento" name="segmento" required aria-describedby="hero-segmento-erro"><option value="">Selecione</option><option value="industria-b2b">Indústria e B2B</option><option value="varejo-alimentacao-online">Varejo e alimentação com loja online</option><option value="servicos-profissionais">Serviços profissionais</option><option value="outro">Outro</option></select><span class="field-error" id="hero-segmento-erro"></span></div>
+<div class="field"><label for="hero-cargo">Cargo <span>(opcional)</span></label><input id="hero-cargo" name="cargo" type="text" placeholder="Seu cargo" autocomplete="organization-title" maxlength="100" aria-describedby="hero-cargo-erro"><span class="field-error" id="hero-cargo-erro"></span></div></div>
+<div class="consent"><input id="hero-consentimento" name="consentimento_lgpd" type="checkbox" value="sim" required aria-describedby="hero-consentimento-erro"><label for="hero-consentimento">Concordo em receber o resultado da análise e contato da Work Digital sobre ele. Posso cancelar quando quiser. <span><a class="privacy-link" href="https://workdigital.art.br/politica-de-privacidade/" target="_blank" rel="noopener">Política de Privacidade</a>.</span></label></div><span id="hero-consentimento-erro" class="field-error"></span><p class="privacy-status" role="status"></p>
+<button class="btn" type="submit">Analisar meu site <svg aria-hidden="true"><use href="#i-arrow"/></svg></button><p class="microcopy">Sem compromisso. Resultado técnico em instantes.<br>Avaliação completa em até 2 dias úteis.</p><p class="form-status" role="status" aria-live="polite" aria-atomic="true"></p>
     </form>
-  </section>
-
-  <!-- Etapa 2: processando -->
-  <section id="etapa-processando" class="oculto" aria-live="polite">
-    <div class="kicker">Analisando</div>
-    <h1>Estamos analisando o seu site</h1>
-    <p class="sub">Leva de 3 a 6 minutos. Pode deixar esta página aberta ou fechar: o resultado também vai para o seu e-mail.</p>
-    <div class="cartao">
-      <ul class="passos" id="passos">
-        <li data-p="0"><span class="pt"></span>Pedido recebido</li>
-        <li data-p="1"><span class="pt"></span>Abrindo o site no celular e no computador</li>
-        <li data-p="2"><span class="pt"></span>Medindo a velocidade com o Google</li>
-        <li data-p="3"><span class="pt"></span>Conferindo SEO e preparo para buscas com IA</li>
-        <li data-p="4"><span class="pt"></span>Montando o seu relatório</li>
-      </ul>
-      <div class="barra"><span id="barra"></span></div>
-    </div>
-  </section>
-
-  <!-- Etapa 3: resultado -->
-  <section id="etapa-pronto" class="oculto" aria-live="polite">
-    <div class="kicker">Resultado técnico</div>
-    <h1>Pronto! Veja as suas notas</h1>
-    <div class="cartao">
-      <div class="notas" id="notas"></div>
-      <p id="msg-envio"></p>
-      <p class="ajuda">Notas de 0 a 100. O relatório explica como cada uma foi calculada.</p>
-      <div class="convite">
-        <img src="/vania.webp" alt="Vania Araripe">
-        <div>A avaliação completa, revisada por mim, chega em até <b id="prazo">2</b> dias úteis. Quer adiantar a conversa?
-          <br><a id="link-wa" href="https://wa.me/5511993916363">Falar no WhatsApp</a></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Avisos: limite, erro, demora -->
-  <section id="etapa-aviso" class="oculto" aria-live="polite">
-    <div class="kicker">Diagnóstico gratuito de site</div>
-    <h1 id="aviso-titulo">Quase lá</h1>
-    <div class="cartao"><p id="aviso-texto"></p>
-      <p><a href="https://wa.me/5511993916363" style="color:var(--verde);font-weight:800;text-decoration:none">Falar no WhatsApp</a> · <a href="mailto:hello@workdigital.art.br" style="color:#fff">hello@workdigital.art.br</a></p></div>
-  </section>
-
-  <p class="rodape">Work Digital · <a href="https://workdigital.art.br">workdigital.art.br</a> · Usamos apenas dados públicos do site informado.</p>
+  </div>
+</section>
+</div>
+<!-- ===== CONTEÚDO PRINCIPAL: continuação após o hero ===== -->
+<div id="restante-conteudo">
+<!-- ===== ENTREGA EM DUAS ETAPAS ===== -->
+<section class="section two-stages" aria-labelledby="stages-title"><div class="wrap reveal">
+  <span class="eyebrow">Duas entregas. Um próximo passo mais claro.</span>
+  <h2 id="stages-title">Tecnologia para medir.<br>Uma especialista para orientar.</h2>
+  <div class="stage-grid">
+    <article class="stage-card"><span class="free-tag">Análise automatizada</span><h3>Na hora</h3>
+      <p>Ao enviar o formulário, você recebe por e-mail o resultado técnico gerado automaticamente, em instantes.</p>
+      <p>A organização que ajuda os buscadores a entenderem suas páginas é a otimização para buscas (SEO). O resultado reúne três notas:</p>
+      <ul><li>Performance</li><li>Experiência e conversão</li><li>SEO e visibilidade</li></ul>
+      <p>Cada ponto medido no site vem explicado em linguagem simples. Essa é a primeira leitura técnica; a avaliação completa chega após a revisão humana.</p>
+    </article>
+    <article class="stage-card human"><span class="free-tag">Revisão humana · Vania Araripe</span><h3>Em até 2 dias úteis</h3>
+      <p>Vania Araripe, sócia-fundadora da Work Digital, revisa o seu caso pessoalmente e envia a avaliação completa.</p>
+      <ul><li>Leitura de especialista sobre prova social e clareza da proposta</li><li>Plano “Por onde começar”, ordenado por impacto</li><li>Uma nota pessoal sobre o seu site</li><li>Convite para uma conversa de 30 minutos, sem compromisso</li></ul>
+      <p>Uma pessoa interpreta o contexto do negócio e transforma os dados em recomendações.</p>
+    </article>
+  </div>
+</div></section>
+<!-- ===== A DOR ===== -->
+<section class="section pain" aria-labelledby="pain-title"><div class="wrap reveal">
+  <div class="heading-row"><div><span class="eyebrow">Parece familiar?</span><h2 id="pain-title">Seu site está no ar.<br>Mas o negócio não anda.</h2></div><p class="intro">Nem sempre o problema é falta de visitas. Às vezes, seu site coloca obstáculos entre o interesse do cliente e o primeiro contato.</p></div>
+  <div class="pain-list">
+    <article class="pain-item"><svg class="icon" aria-hidden="true"><use href="#i-speed"/></svg><h3>Demora para abrir.<br>É fácil desistir.</h3><p>O cliente clica, espera e vai embora. Principalmente no celular, cada demora pode custar uma oportunidade.</p></article>
+    <article class="pain-item"><svg class="icon" aria-hidden="true"><use href="#i-route"/></svg><h3>Tem visita.<br>Não tem contato.</h3><p>As pessoas entram, mas não entendem sua oferta ou não encontram um caminho simples para falar com você.</p></article>
+    <article class="pain-item"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><h3>Procuram sua solução.<br>Encontram outra empresa.</h3><p>Seu negócio tem o que o cliente precisa. Mas o site pode não estar preparado para aparecer nas buscas do Google.</p></article>
+  </div>
+</div></section>
+<!-- ===== DADOS: texto e atribuições fornecidos no briefing, sem extrapolação ===== -->
+<section class="context" aria-labelledby="context-title"><div class="wrap reveal">
+  <span class="eyebrow" id="context-title">Seu cliente já está online</span>
+  <div class="stats">
+    <div class="stat"><strong aria-label="185 milhões">185 <span>milhões</span></strong><p>de pessoas ativas na internet no Brasil</p><small class="source">Fonte: Digital 2026 Global Overview Report</small></div>
+    <div class="stat"><strong>84%</strong><p>das pessoas pesquisam produtos online antes de comprar</p><small class="source">Fonte: Think with Google</small></div>
+    <div class="stat"><strong>51%</strong><p>dos ativos são consumidores digitais</p><small class="source">Fonte: ABComm</small></div>
+  </div>
+  <p class="context-question">Onde sua empresa está quando seu cliente procura pelas <em>soluções que ela oferece?</em></p>
+</div></section>
+<!-- ===== O QUE VOCÊ RECEBE: três notas técnicas + avaliação humana ===== -->
+<section class="section deliverables" aria-labelledby="recebe-title"><div class="wrap reveal">
+  <span class="eyebrow">Da medição à decisão</span><h2 id="recebe-title">Entenda os dados.<br>Saiba <span class="underline">por onde começar.</span></h2>
+  <p class="intro">Primeiro, uma análise automatizada mede pontos técnicos do site e explica cada um. Depois, Vania Araripe conecta esses dados ao contexto do seu negócio e define as prioridades.</p>
+  <div class="cards">
+    <article class="report-card"><svg class="icon" aria-hidden="true"><use href="#i-speed"/></svg><h3>Seu site abre rápido?</h3><p>O tempo para carregar e responder mostra como o site funciona para quem chega. Isso é <strong>performance</strong>.</p><ul><li>Nota de Performance na análise automatizada</li><li>Pontos medidos e explicados em linguagem simples</li><li>Leitura técnica sobre a velocidade do site</li></ul></article>
+    <article class="report-card"><svg class="icon" aria-hidden="true"><use href="#i-route"/></svg><h3>É fácil virar cliente?</h3><p>Encontrar a oferta e o caminho para entrar em contato faz parte da <strong>experiência e conversão</strong>. A análise automática verifica os sinais que consegue medir.</p><ul><li>Nota de Experiência e conversão</li><li>Explicação dos pontos medidos no site</li><li>Clareza da proposta e prova social avaliadas por Vania na revisão humana</li></ul></article>
+    <article class="report-card"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><h3>O Google entende seu site?</h3><p>Organizar suas páginas para os buscadores encontrarem e entenderem o conteúdo é a <strong>otimização para buscas (SEO)</strong>.</p><ul><li>Nota de SEO e visibilidade</li><li>Pontos técnicos medidos e explicados</li><li>Recomendações priorizadas na avaliação completa</li></ul></article>
+  </div>
+  <p class="delivery-note"><svg aria-hidden="true"><use href="#i-file"/></svg>A avaliação completa inclui a leitura de especialista, o plano “Por onde começar” ordenado por impacto, uma nota pessoal de Vania e um convite para conversar por 30 minutos, sem compromisso.</p>
+</div></section>
+<!-- ===== COMO FUNCIONA: passos sem numeração decorativa ===== -->
+<section class="process" aria-labelledby="process-title"><div class="wrap process-inner reveal">
+  <span class="eyebrow">Do site ao próximo passo</span><h2 id="process-title">Um envio.<br>Duas entregas para você.</h2>
+  <ul class="steps"><li class="step"><h3>Você informa o site</h3><p>Envie a URL pública e preencha seus dados. Não precisamos de senha nem acesso ao painel.</p></li><li class="step"><h3>Resultado técnico na hora</h3><p>A análise automatizada gera três notas e explica cada ponto medido. O resultado chega por e-mail em instantes.</p></li><li class="step"><h3>Avaliação completa revisada</h3><p>Em até 2 dias úteis, Vania Araripe revisa o caso pessoalmente e envia sua leitura, as prioridades e o convite para uma conversa opcional.</p></li></ul>
+  <p class="deadline"><svg aria-hidden="true"><use href="#i-clock"/></svg>Resultado técnico em instantes. Avaliação completa em até 2 dias úteis.</p>
+</div></section>
+<!-- ===== PROVA SOCIAL: somente Bacio di Latte, STW Brasil e CBPq ===== -->
+<section class="section trust" aria-labelledby="trust-title"><div class="wrap reveal">
+  <div class="trust-intro"><span class="eyebrow">Confiança construída em projetos</span><h2 id="trust-title">Marcas que já fizeram<br>esse caminho com a Work.</h2><p class="intro">Sites pensados para conectar o que a empresa oferece ao que o cliente procura.</p></div>
+  <div class="clients" aria-label="Clientes Work Digital"><img src="https://workdigital.art.br/wp-content/themes/workdigital/assets/img/inline/dcef6897584c.png" width="150" height="67" loading="lazy" alt="Bacio di Latte"><img class="client-stw" src="https://stwbrasil.com/wp-content/uploads/2023/12/logo-site-stw-1.svg" width="180" height="81" loading="lazy" alt="STW Brasil"><img class="client-cbpq" src="https://workdigital.art.br/wp-content/themes/workdigital/assets/img/inline/679f93e77513.png" width="150" height="33" loading="lazy" alt="Confederação Brasileira de Paraquedismo — CBPq"></div>
+  <p class="cases-label">Cases recentes</p>
+  <div class="case-grid"><article class="case"><h3 class="case-name">Mara Embalagens</h3><span class="industry">Embalagens</span><p class="pending">[INSERIR RESULTADO REAL]</p></article><article class="case"><h3 class="case-name">Serur</h3><span class="industry">Advocacia</span><p class="pending">[INSERIR RESULTADO REAL]</p></article><article class="case"><h3 class="case-name">Garrom</h3><span class="industry">Eletrônica</span><p class="pending">[INSERIR RESULTADO REAL]</p></article></div>
+  <p class="testimonial-pending">[INSERIR depoimento autorizado, nome, cargo e empresa do cliente]</p>
+</div></section>
+<!-- ===== CREDENCIAIS: referências de trabalho, sem alegar certificações não fornecidas ===== -->
+<section class="credentials" aria-label="Ferramentas e padrões"><div class="wrap"><p>Ferramentas e padrões para a web, definidos pelo World Wide Web Consortium (W3C).</p><ul class="credential-list"><li>HubSpot</li><li>Semrush</li><li>RD Station</li><li>Validação W3C</li></ul></div></section>
+<!-- ===== FORMULÁRIO FINAL / ID PEDIDO ===== -->
+<section class="section final" aria-labelledby="final-title"><div class="wrap final-grid reveal">
+  <div class="final-copy"><span class="eyebrow">Transforme dúvida em direção</span><h2 id="final-title">Seu site pode fazer mais pelo <span class="underline">seu negócio.</span></h2><p class="intro">Receba o resultado técnico automatizado em instantes. Em até 2 dias úteis, Vania Araripe envia a avaliação completa, revisada pessoalmente. A análise é gratuita e a decisão de conversar é sua.</p><p class="promise"><svg class="check" aria-hidden="true"><use href="#i-check"/></svg>Atendimento 100% remoto, para empresas de todo o Brasil.</p><p class="slogan">Be beyond. Be digital.</p></div>
+  <div class="form-panel"><span class="free-tag">Análise gratuita · duas entregas</span><h2>Comece a análise do seu site</h2><p class="form-intro">Resultado técnico por e-mail em instantes. Avaliação completa em até 2 dias úteis. Cargo é opcional.</p><form id="form-diagnostico" class="lead-form" action="[URL DO RD STATION]" method="post" aria-label="Analisar meu site — final da página">
+      <!-- Origem fixa e UTMs preenchidas por JS, sem armazenamento local. -->
+      <input type="hidden" name="origem" value="landing-analise">
+      <input type="hidden" name="utm_source" value="">
+      <input type="hidden" name="utm_medium" value="">
+      <input type="hidden" name="utm_campaign" value=""><div class="field-grid">
+<div class="field"><label for="final-nome">Nome</label><input id="final-nome" name="nome" type="text" placeholder="Seu nome" autocomplete="name" spellcheck="false" maxlength="80" required aria-describedby="final-nome-erro"><span class="field-error" id="final-nome-erro"></span></div>
+<div class="field"><label for="final-email">E-mail corporativo</label><input id="final-email" name="email" type="email" placeholder="voce@suaempresa.com.br" autocomplete="email" inputmode="email" spellcheck="false" maxlength="200" required aria-describedby="final-email-erro"><span class="field-error" id="final-email-erro"></span></div>
+<div class="field"><label for="final-whatsapp">WhatsApp</label><input id="final-whatsapp" name="whatsapp" type="tel" placeholder="(11) 99999-9999" autocomplete="tel" inputmode="tel" spellcheck="false" maxlength="80" required aria-describedby="final-whatsapp-erro"><span class="field-error" id="final-whatsapp-erro"></span></div>
+<div class="field wide"><label for="final-site_url">Link do site atual</label><input id="final-site_url" name="site_url" type="text" inputmode="url" placeholder="suaempresa.com.br" autocomplete="url" spellcheck="false" maxlength="200" required aria-describedby="final-site_url-erro"><span class="field-error" id="final-site_url-erro"></span></div>
+<div class="field"><label for="final-segmento">Segmento</label><select id="final-segmento" name="segmento" required aria-describedby="final-segmento-erro"><option value="">Selecione</option><option value="industria-b2b">Indústria e B2B</option><option value="varejo-alimentacao-online">Varejo e alimentação com loja online</option><option value="servicos-profissionais">Serviços profissionais</option><option value="outro">Outro</option></select><span class="field-error" id="final-segmento-erro"></span></div>
+<div class="field"><label for="final-cargo">Cargo <span>(opcional)</span></label><input id="final-cargo" name="cargo" type="text" placeholder="Seu cargo" autocomplete="organization-title" maxlength="100" aria-describedby="final-cargo-erro"><span class="field-error" id="final-cargo-erro"></span></div></div>
+<div class="consent"><input id="final-consentimento" name="consentimento_lgpd" type="checkbox" value="sim" required aria-describedby="final-consentimento-erro"><label for="final-consentimento">Concordo em receber o resultado da análise e contato da Work Digital sobre ele. Posso cancelar quando quiser. <span><a class="privacy-link" href="https://workdigital.art.br/politica-de-privacidade/" target="_blank" rel="noopener">Política de Privacidade</a>.</span></label></div><span id="final-consentimento-erro" class="field-error"></span><p class="privacy-status" role="status"></p>
+<button class="btn" type="submit">Analisar meu site <svg aria-hidden="true"><use href="#i-arrow"/></svg></button><p class="microcopy">Sem compromisso. Resultado técnico em instantes.<br>Avaliação completa em até 2 dias úteis.</p><p class="form-status" role="status" aria-live="polite" aria-atomic="true"></p></form></div>
+</div></section>
+<!-- ===== FAQ: details/summary oferecem teclado e semântica nativos ===== -->
+<section class="section faq" aria-labelledby="faq-title"><div class="wrap faq-layout reveal"><div><span class="eyebrow">Antes de enviar</span><h2 id="faq-title">Dúvidas?<br>Vamos esclarecer.</h2><p class="faq-intro">Você precisa de informação para decidir. Não de pressão para contratar.</p></div>
+<div class="accordion">
+  <details><summary>É gratuito?</summary><p>Sim. Tanto o resultado técnico automatizado quanto a avaliação completa feita por Vania Araripe são gratuitos. Você não assume compromisso de contratação ao enviar o formulário.</p></details>
+  <details><summary>Preciso passar senha ou acesso?</summary><p>Não. Precisamos apenas da URL pública do site. Não envie senhas nem credenciais de acesso. A análise utiliza as páginas disponíveis publicamente.</p></details>
+  <details><summary>O que acontece depois do resultado?</summary><p>Você recebe as informações por e-mail. Nada é cobrado. Na avaliação completa, Vania inclui recomendações e um convite para uma conversa de 30 minutos. O contato é opcional e você decide se quer seguir.</p></details>
+  <details><summary>Quanto tempo leva a avaliação completa?</summary><p>O resultado técnico chega por e-mail em instantes, após a análise automatizada. A avaliação completa chega em até 2 dias úteis, com a revisão pessoal de Vania Araripe.</p></details>
+  <details><summary>Meus dados estão seguros?</summary><p>Seus dados são usados para entregar a análise e entrar em contato sobre ela. O tratamento deve seguir a Lei Geral de Proteção de Dados (LGPD) e a Política de Privacidade. Você pode cancelar o contato quando quiser e solicitar informações sobre seus dados pelo e-mail hello@workdigital.art.br.</p></details>
+  <details><summary>A análise serve para qualquer tipo de site?</summary><p>A análise parte de páginas públicas de sites institucionais, lojas virtuais e páginas de campanha. Conteúdos protegidos por senha ou bloqueios de acesso podem limitar os pontos medidos. Na revisão humana, Vania considera o tipo de negócio e o objetivo do site.</p></details>
+</div></div></section>
+</div>
 </main>
-
+<!-- ===== RODAPÉ ENXUTO ===== -->
+<footer><div class="wrap"><div class="footer-row"><img class="footer-logo" src="https://workdigital.art.br/wp-content/themes/workdigital/assets/ativos-externos/logo-work-digital-branco-criacao-de-site-sp.svg" width="4286" height="1279" loading="lazy" alt="Work Digital"><div class="contact"><span>hello@workdigital.art.br</span><span>workdigital.art.br</span></div></div><p class="copyright">Work Digital · Be beyond. Be digital.<br>© Work Digital 2026.</p></div></footer>
+<!-- RD STATION: inserir aqui o script oficial de tracking e/ou integração fornecido pela conta.
+     Não adicionar outro formulário visual nem expor tokens privados no front-end.
+     Mapear: nome, email, whatsapp, site_url, segmento, cargo, consentimento_lgpd, origem, utm_source, utm_medium, utm_campaign.
+     O endpoint deve confirmar o recebimento e disparar a análise automatizada e o envio por e-mail.
+     A revisão pessoal de Vania e a entrega em 2 dias úteis dependem do fluxo operacional configurado.
+     Para integração via SDK, definir window.WORK_DIAGNOSTICO_SUBMIT = async (dados, form) => ...;
+     O adapter deve retornar {success: true} APENAS após confirmação real do RD Station.
+     Alternativa: action aponta para endpoint HTTPS próprio que recebe FormData e retorna
+     JSON {success:true}. Confirmar CORS, antispam e validação do lado do servidor.
+     A URL de uma landing page RD não é necessariamente um endpoint de submissão.
+-->
 <script>
-(function () {
-  "use strict";
-  var $ = function (id) { return document.getElementById(id); };
-  var inicio = Date.now();
-  var PRAZO = 2;
-
-  // Dados vindos do popup do RD Station ou da landing: pelo endereço (?site=...) ou pelo cookie wd_lead.
-  function lerCookie() {
-    var m = document.cookie.match(/(?:^|;\s*)wd_lead=([^;]+)/);
-    if (!m) return {};
-    try { return JSON.parse(decodeURIComponent(m[1])); } catch (e) { return {}; }
+/* ===== VALIDAÇÃO, ENVIO, FEEDBACK E ANIMAÇÃO ===== */
+(() => {
+  'use strict';
+  const forms = [...document.querySelectorAll('.lead-form')];
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function setStatus(form, message, state) {
+    const node = form.querySelector('.form-status');
+    node.dataset.state = state;
+    node.textContent = message;
+    node.setAttribute('role', state === 'error' ? 'alert' : 'status');
   }
-  var q = new URLSearchParams(location.search);
-  var ck = lerCookie();
-  function p() { for (var i = 0; i < arguments.length; i++) { var v = q.get(arguments[i]) || ck[arguments[i]]; if (v) return String(v).trim(); } return ""; }
-  var lead = {
-    site: p("site", "url", "site_url", "website"),
-    email: p("email", "e-mail"),
-    nome: p("nome", "name"),
-    empresa: p("empresa", "company"),
-    whatsapp: p("whatsapp", "telefone", "phone", "celular"),
-    segmento: p("segmento"),
-    cargo: p("cargo"),
-    origem: p("origem") || (Object.keys(ck).length ? "popup" : "site")
-  };
-  // O cookie só serve uma vez.
-  document.cookie = "wd_lead=; Max-Age=0; path=/; domain=.workdigital.art.br";
-  history.replaceState(null, "", location.pathname);
-
-  $("site").value = lead.site;
-  $("email").value = lead.email;
-  $("nome").value = lead.nome;
-  var veioDeFormulario = !!(lead.email && lead.site);
-  if (veioDeFormulario) {
-    // Já deu nome, e-mail e consentimento no formulário anterior: só confirmar o site.
-    $("bloco-email").classList.add("oculto");
-    $("bloco-nome").classList.add("oculto");
-    $("bloco-consent").classList.add("oculto");
-    $("consentimento").checked = true;
-    $("titulo").textContent = lead.nome ? lead.nome.split(" ")[0] + ", seu relatório está a um clique" : "Seu relatório está a um clique";
-    $("botao").textContent = "Pegue seu relatório";
-  }
-
-  function mostrar(etapa) {
-    ["etapa-form", "etapa-processando", "etapa-pronto", "etapa-aviso"].forEach(function (e) { $(e).classList.toggle("oculto", e !== etapa); });
-    window.scrollTo(0, 0);
-  }
-  function erro(msg) { var el = $("msg-erro"); el.textContent = msg; el.classList.remove("oculto"); }
-  function aviso(titulo, texto) { $("aviso-titulo").textContent = titulo; $("aviso-texto").textContent = texto; mostrar("etapa-aviso"); }
-
-  $("form").addEventListener("submit", function (ev) {
-    ev.preventDefault();
-    $("msg-erro").classList.add("oculto");
-    var site = $("site").value.trim(), email = $("email").value.trim();
-    if (!site) return erro("Informe o endereço do site.");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { $("bloco-email").classList.remove("oculto"); return erro("Confira o seu e-mail."); }
-    if (!$("consentimento").checked) { $("bloco-consent").classList.remove("oculto"); return erro("Marque o consentimento para recebermos e enviarmos o resultado."); }
-    $("botao").disabled = true;
-    fetch("/api/diagnostico", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ site: site, email: email, nome: $("nome").value.trim(), empresa: lead.empresa,
-        whatsapp: lead.whatsapp, segmento: lead.segmento, cargo: lead.cargo, origem: lead.origem,
-        consentimento: true, website_confirm: $("website_confirm").value, t: inicio })
-    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
-      .then(function (x) {
-        if (!x.ok) { $("botao").disabled = false; return erro(x.j.erro || "Não deu certo. Tente de novo."); }
-        $("msg-envio").textContent = "Enviamos o resultado técnico em PDF para " + email + ".";
-        acompanhar(x.j.id);
-      })
-      .catch(function () { $("botao").disabled = false; erro("Sem conexão. Tente de novo."); });
-  });
-
-  function acompanhar(id) {
-    mostrar("etapa-processando");
-    var t0 = Date.now(), LIMITE = 15 * 60 * 1000, ESPERADO = 5 * 60 * 1000;
-    var passos = document.querySelectorAll("#passos li");
-    function animar() {
-      var f = Math.min(0.95, (Date.now() - t0) / ESPERADO);
-      $("barra").style.width = Math.round(5 + f * 90) + "%";
-      var atual = Math.min(passos.length - 1, Math.floor(f * passos.length));
-      passos.forEach(function (li, i) { li.className = i < atual ? "feito" : (i === atual ? "atual" : ""); });
+  function validateField(field) {
+    field.setCustomValidity('');
+    if (field.name === 'whatsapp' && field.value.trim()) {
+      const digits = field.value.replace(/\D/g, '');
+      if (digits.length < 10 || digits.length > 15) field.setCustomValidity('Informe um WhatsApp válido com DDD.');
     }
-    animar();
-    var anim = setInterval(animar, 1000);
-    function consultar() {
-      fetch("/api/status?id=" + encodeURIComponent(id)).then(function (r) { return r.json(); }).then(function (s) {
-        if (s.estado === "pronto") { clearInterval(anim); return pronto(s); }
-        if (s.estado === "limite") { clearInterval(anim); return aviso("Já recebemos este pedido", s.mensagem); }
-        if (s.estado === "erro") { clearInterval(anim); return aviso("Não conseguimos concluir agora", s.mensagem); }
-        if (Date.now() - t0 > LIMITE) {
-          clearInterval(anim);
-          return aviso("Está demorando mais que o normal", "Seu pedido está na fila. Assim que a análise terminar, o resultado vai para o seu e-mail.");
-        }
-        setTimeout(consultar, 8000);
-      }).catch(function () { setTimeout(consultar, 10000); });
+    if (field.name === 'nome' && field.value && field.value.trim().length < 2) field.setCustomValidity('Informe seu nome.');
+    if (field.name === 'site_url' && field.value.trim()) {
+      try {
+        const raw = field.value.trim();
+        const normalized = /^https?:\/\//i.test(raw) ? raw : 'https://' + raw;
+        const url = new URL(normalized);
+        if (!['http:', 'https:'].includes(url.protocol) || !url.hostname.includes('.') || url.username || url.password || /\s/.test(raw)) throw new Error();
+        field.value = url.href;
+      } catch { field.setCustomValidity('Informe um site válido, como suaempresa.com.br ou https://suaempresa.com.br.'); }
     }
-    setTimeout(consultar, 15000);
+    const valid = field.checkValidity();
+    const error = field.closest('.field')?.querySelector('.field-error') || (field.name === 'consentimento_lgpd' ? document.getElementById(field.getAttribute('aria-describedby')) : null);
+    if (!valid) {
+      field.setAttribute('aria-invalid', 'true');
+      if (error) error.textContent = field.validationMessage;
+    } else {
+      field.removeAttribute('aria-invalid');
+      if (error) error.textContent = '';
+    }
+    return valid;
   }
-
-  function pronto(s) {
-    var nomes = { performance: "Velocidade", ux: "Experiência e conversão", seo: "SEO e visibilidade" };
-    var html = "";
-    Object.keys(nomes).forEach(function (k) {
-      var n = s.notas ? s.notas[k] : null;
-      var cls = n == null ? "" : (n >= 80 ? "bom" : n >= 50 ? "medio" : "ruim");
-      html += '<div class="nota"><b class="' + cls + '">' + (n == null ? "—" : n) + "</b><span>" + nomes[k] + (n == null ? "<br>não foi possível medir" : "") + "</span></div>";
+  forms.forEach(form => {
+    // Sem JS, a validação HTML continua disponível. JS usa mensagens por campo.
+    form.noValidate = true;
+    const fields = [...form.querySelectorAll('input:not([type="hidden"]),select')];
+    const params = new URLSearchParams(window.location.search);
+    ['utm_source','utm_medium','utm_campaign'].forEach(name => {
+      form.elements.namedItem(name).value = (params.get(name) || '').slice(0,200);
     });
-    $("notas").innerHTML = html;
-    if (s.enviado_por_email === false) $("msg-envio").textContent = "O relatório será enviado para o seu e-mail.";
-    $("prazo").textContent = PRAZO;
-    mostrar("etapa-pronto");
+    fields.forEach(field => {
+      field.addEventListener('blur', () => validateField(field));
+      field.addEventListener('change', () => validateField(field));
+      field.addEventListener('input', () => {
+        field.setCustomValidity('');
+        if (field.hasAttribute('aria-invalid')) validateField(field);
+      });
+    });
+    form.querySelector('.privacy-link').addEventListener('click', event => {
+      if (event.currentTarget.getAttribute('href').includes('[INSERIR')) {
+        event.preventDefault();
+        form.querySelector('.privacy-status').textContent = 'A política de privacidade ainda precisa ser vinculada antes da abertura das inscrições.';
+      }
+    });
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (form.dataset.submitting === 'true' || form.dataset.sent === 'true') return;
+      let firstInvalid = null;
+      fields.forEach(field => { if (!validateField(field) && !firstInvalid) firstInvalid = field; });
+      if (firstInvalid) {
+        setStatus(form, 'Revise os campos indicados antes de enviar. O consentimento também é obrigatório.', 'error');
+        firstInvalid.focus();
+        return;
+      }
+      const adapter = window.WORK_DIAGNOSTICO_SUBMIT;
+      const action = form.getAttribute('action');
+      if (typeof adapter !== 'function' && (!action || action.includes('['))) {
+        setStatus(form, 'O envio ainda não está disponível. A integração com o RD Station precisa ser configurada.', 'error');
+        return;
+      }
+      // Também bloquear envio enquanto o link obrigatório da política não estiver configurado.
+      if (form.querySelector('.privacy-link').getAttribute('href').includes('[INSERIR')) {
+        setStatus(form, 'A política de privacidade precisa ser vinculada antes do envio.', 'error');
+        return;
+      }
+      const button = form.querySelector('button[type="submit"]');
+      const originalLabel = button.innerHTML;
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+      form.dataset.submitting = 'true';
+      form.setAttribute('aria-busy', 'true');
+      button.disabled = true;
+      button.textContent = 'Enviando…';
+      setStatus(form, '', 'pending');
+      try {
+        const data = new FormData(form);
+        let result;
+        if (typeof adapter === 'function') {
+          // O adapter recebe um signal para respeitar o timeout e evitar repetição incerta.
+          const abortPromise = new Promise((_, reject) => controller.signal.addEventListener('abort', () => reject(new DOMException('Timeout', 'AbortError')), {once:true}));
+          result = await Promise.race([adapter(Object.fromEntries(data.entries()), form, controller.signal), abortPromise]);
+        } else {
+          const endpoint = new URL(action, location.href);
+          if (endpoint.protocol !== 'https:') throw new Error('Endpoint inválido');
+          const response = await fetch(endpoint.href, {method:'POST', body:data, signal:controller.signal, headers:{Accept:'application/json'}});
+          if (!response.ok) throw new Error('Falha no recebimento');
+          result = await response.json();
+        }
+        if (result?.success !== true) throw new Error('Recebimento não confirmado');
+        form.dataset.sent = 'true';
+        form.reset();
+        setStatus(form, 'Estamos analisando o seu site. O resultado técnico chega no seu e-mail em instantes, e a avaliação completa em até 2 dias úteis.', 'success');
+        button.textContent = 'Solicitação enviada';
+        // Sem dados pessoais no evento. Carregar GTM apenas conforme consentimento de analytics.
+        if (Array.isArray(window.dataLayer)) window.dataLayer.push({event:'analise_enviada', form_id:form.id});
+      } catch (error) {
+        const message = error.name === 'AbortError' ? 'O prazo de confirmação terminou. Não conseguimos confirmar o recebimento. Aguarde antes de tentar novamente.' : 'Não foi possível confirmar o envio. Confira sua conexão e tente novamente.';
+        setStatus(form, message, 'error');
+        button.innerHTML = originalLabel;
+      } finally {
+        clearTimeout(timeout);
+        form.dataset.submitting = 'false';
+        form.removeAttribute('aria-busy');
+        button.disabled = form.dataset.sent === 'true';
+      }
+    });
+  });
+  // Manter os campos em sincronia entre os dois pontos de entrada, sem armazenamento local.
+  // O consentimento é específico de cada formulário e nunca é marcado automaticamente.
+  forms.forEach(source => source.addEventListener('input', event => {
+    const field = event.target;
+    if (!field.name || field.type === 'checkbox') return;
+    forms.filter(other => other !== source).forEach(other => {
+      const target = other.elements.namedItem(field.name);
+      if (target) { target.value = field.value; target.setCustomValidity(''); target.removeAttribute('aria-invalid'); const error = target.closest('.field')?.querySelector('.field-error'); if (error) error.textContent = ''; }
+    });
+  }));
+  // Prevenir pedidos duplicados pela segunda instância após sucesso confirmado.
+  forms.forEach(source => new MutationObserver(() => {
+    if (source.dataset.sent !== 'true') return;
+    forms.filter(other => other !== source && other.dataset.sent !== 'true').forEach(other => {
+      other.dataset.sent = 'true';
+      other.querySelector('button[type="submit"]').disabled = true;
+      other.querySelector('button[type="submit"]').textContent = 'Solicitação enviada';
+      setStatus(other, 'Estamos analisando o seu site. O resultado técnico chega no seu e-mail em instantes, e a avaliação completa em até 2 dias úteis.', 'success');
+    });
+  }).observe(source, {attributes:true, attributeFilter:['data-sent']}));
+  if (!reducedMotion && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) {entry.target.classList.add('visible'); observer.unobserve(entry.target);}
+    }), {threshold:0.08});
+    document.documentElement.classList.add('reveal-ready');
+    document.querySelectorAll('.reveal').forEach(node => observer.observe(node));
   }
 })();
 </script>
+<!-- INTEGRAÇÃO COM O DIAGNÓSTICO: manter esta linha em qualquer nova versão da página.
+     Ela liga os dois formulários (.lead-form) ao /api/diagnostico e mostra as notas na tela. -->
+<script src="/integracao.js" defer></script>
+<!-- ===== PENDÊNCIAS DE PUBLICAÇÃO =====
+[INSERIR RESULTADO REAL]
+[INSERIR RESULTADO REAL]
+[INSERIR RESULTADO REAL]
+[INSERIR depoimento autorizado, nome, cargo e empresa do cliente]
+https://workdigital.art.br/politica-de-privacidade/
+https://diagnostico.workdigital.art.br/
+[INSERIR URL DA IMAGEM OG]
+[INSERIR ID GTM]
+[URL DO RD STATION] + script/adapter autorizado da conta.
+2 dias úteis para a avaliação completa revisada por Vania.
+[INSERIR FLUXO DE ANÁLISE AUTOMATIZADA E ENVIO DOS E-MAILS] no backend/integração.
+[INSERIR FLUXO DE REVISÃO HUMANA] na operação.
+--> 
 </body>
 </html>

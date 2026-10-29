@@ -1,6 +1,6 @@
 # Como ligar o popup do RD Station e a landing à página do diagnóstico
 
-A página do diagnóstico fica em **https://diagnostico.workdigital.art.br**. Ela aceita os dados do lead de duas formas e já mostra o site preenchido, com o botão **"Pegue seu relatório"**:
+A landing fica em **https://diagnostico.workdigital.art.br** e já tem o formulário ligado à análise. Os links abaixo continuam valendo: quem chega com os dados do lead é levado para a página de um clique (`/relatorio`), que aceita os dados do lead de duas formas e já mostra o site preenchido, com o botão **"Pegue seu relatório"**:
 
 1. **Pelo endereço (recomendado para a landing):**
    ```

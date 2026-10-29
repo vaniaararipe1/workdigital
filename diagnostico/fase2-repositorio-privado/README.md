@@ -6,18 +6,27 @@ A ferramenta de análise fica no repositório público `vaniaararipe1/workdigita
 
 | Pasta / branch | O que é |
 |---|---|
-| `web/` (branch `main`) | Página do diagnóstico e API. Publicada no Vercel em `diagnostico.workdigital.art.br` |
+| `web/` (branch `main`) | Landing, página de um clique e API. Publicada no Vercel em `diagnostico.workdigital.art.br` |
 | `.github/workflows/diagnostico.yml` | Roda a versão automática: envia o PDF ao lead e avisa a Vania |
 | `.github/workflows/revisao.yml` | Quando a Vania salva um `revisao.json`, gera a versão revisada e, se pedido, envia ao lead |
 | branch `relatorios` | Os relatórios: `relatorios/<site>-<data>/` e `status/<id>.json` |
 | `docs/integracao-formularios.md` | Como ligar o popup do RD Station e a landing à página |
+
+## As páginas
+
+| Arquivo | Endereço | Para quê |
+|---|---|---|
+| `web/index.html` | `/` | **Landing** (visual e textos feitos no ChatGPT). Os dois formulários disparam a análise e mostram as notas na tela |
+| `web/integracao.js` | | Liga a landing ao diagnóstico. **Não precisa mexer.** Toda nova versão da landing precisa manter a linha `<script src="/integracao.js" defer></script>`, a classe `lead-form` dos formulários, um `<p class="form-status">` em cada um e os nomes dos campos (`nome`, `email`, `whatsapp`, `site_url`, `segmento`, `cargo`, `consentimento_lgpd`) |
+| `web/relatorio.html` | `/relatorio` | Página de um clique ("Pegue seu relatório") para quem já deu os dados no popup do RD. Quem chega em `/` com o cookie do popup ou com `site` e `email` no endereço é levado para cá automaticamente |
 
 ## Como funciona
 
 ```
 Popup RD / landing / página → /api/diagnostico (Vercel) → GitHub Actions "Diagnóstico automático"
    → lead recebe relatorio.pdf (resultado técnico) e a Vania recebe o aviso com o link para revisar
-   → a Vania edita relatorios/<pasta>/revisao.json (pelo GitHub, até no celular)
+   → o e-mail da Vania traz o que já foi medido, o que ela precisa revisar (rascunhos por extenso) e a prévia em PDF
+   → a Vania ajusta o que quiser e troca "aprovar_rascunhos" para true no revisao.json (pelo GitHub, até no celular)
    → "Revisão" gera relatorio-revisado.pdf e manda para a Vania conferir
    → com "enviar_ao_lead": true, o lead recebe a versão revisada (uma única vez)
 ```
