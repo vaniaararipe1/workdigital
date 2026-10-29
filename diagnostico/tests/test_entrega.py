@@ -87,7 +87,10 @@ def test_email_da_vania_separa_medido_do_que_revisar():
     html = worker.email_vania(r, rev, lead, True, "relatorios/ex.com-2026-10-12")
     assert html.index("O que já foi analisado") < html.index("O que você precisa analisar")
     assert "Clareza da proposta de valor" in html and "[RASCUNHO]" not in html
-    assert "aprovar_rascunhos" in html and "https://wa.me/5511988887777" in html
+    assert "Revisar e aprovar" in html and "https://wa.me/5511988887777" in html
+    assert "/revisar?p=ex.com-2026-10-12&amp;k=" in html
+    for tecnico in ("revisao.json", "aprovar_rascunhos", "enviar_ao_lead", "GitHub", "true"):
+        assert tecnico not in html
     assert "Formulário de contato" in html  # item não confirmado vai para "vale conferir"
 
 
@@ -95,3 +98,17 @@ def test_link_whatsapp_do_lead():
     assert worker.link_whatsapp_lead("(11) 98888-7777") == "https://wa.me/5511988887777"
     assert worker.link_whatsapp_lead("+55 11 98888-7777") == "https://wa.me/5511988887777"
     assert worker.link_whatsapp_lead("123") == ""
+
+
+def test_chave_de_revisao_e_criada_uma_vez(tmp_path):
+    arq = tmp_path / "revisao.json"
+    arq.write_text("{}", encoding="utf-8")
+    k = worker.garantir_chave(arq)
+    assert len(k) == 32 and worker.garantir_chave(arq) == k
+    assert worker.link_revisar(tmp_path / "ex.com-2026-10-12", k).endswith(f"/revisar?p=ex.com-2026-10-12&k={k}")
+
+
+def test_rascunho_intocado_nao_gera_aviso():
+    assert not worker.tentou_aprovar({"nota_pessoal": {"status": "pendente de revisão"}, "avaliacoes": [{"status": "pendente de revisão"}]})
+    assert worker.tentou_aprovar({"aprovar_rascunhos": True})
+    assert worker.tentou_aprovar({"plano": {"status": "revisado"}})

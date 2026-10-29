@@ -18,6 +18,7 @@ A ferramenta de análise fica no repositório público `vaniaararipe1/workdigita
 |---|---|---|
 | `web/index.html` | `/` | **Landing** (visual e textos feitos no ChatGPT). Os dois formulários disparam a análise e mostram as notas na tela |
 | `web/integracao.js` | | Liga a landing ao diagnóstico. **Não precisa mexer.** Toda nova versão da landing precisa manter a linha `<script src="/integracao.js" defer></script>`, a classe `lead-form` dos formulários, um `<p class="form-status">` em cada um e os nomes dos campos (`nome`, `email`, `whatsapp`, `site_url`, `segmento`, `cargo`, `consentimento_lgpd`) |
+| `web/revisar.html` + `web/api/revisao.js` | `/revisar` | Página de revisão da Vania. Só abre com o link do e-mail interno (chave aleatória por diagnóstico) |
 | `web/relatorio.html` | `/relatorio` | Página de um clique ("Pegue seu relatório") para quem já deu os dados no popup do RD. Quem chega em `/` com o cookie do popup ou com `site` e `email` no endereço é levado para cá automaticamente |
 
 ## Como funciona
@@ -26,7 +27,8 @@ A ferramenta de análise fica no repositório público `vaniaararipe1/workdigita
 Popup RD / landing / página → /api/diagnostico (Vercel) → GitHub Actions "Diagnóstico automático"
    → lead recebe relatorio.pdf (resultado técnico) e a Vania recebe o aviso com o link para revisar
    → o e-mail da Vania traz o que já foi medido, o que ela precisa revisar (rascunhos por extenso) e a prévia em PDF
-   → a Vania ajusta o que quiser e troca "aprovar_rascunhos" para true no revisao.json (pelo GitHub, até no celular)
+   → o botão "Revisar e aprovar" abre /revisar (link com chave só dela): ela corrige os textos e clica em
+     "Aprovar" ou "Aprovar e enviar ao cliente"; a página grava o revisao.json no branch relatorios
    → "Revisão" gera relatorio-revisado.pdf e manda para a Vania conferir
    → com "enviar_ao_lead": true, o lead recebe a versão revisada (uma única vez)
 ```

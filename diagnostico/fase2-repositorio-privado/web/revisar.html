@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revisar diagnóstico · Work Digital</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--roxo:#6025E1;--verde:#04CD8F;--vinho:#C00252;--bg:#121316;--sup:#1C1D23;--borda:#2E2F38;--texto:#ECEBF2;--texto2:#A9A8B8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--texto);font:400 16px/1.6 "Nunito",system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:28px 16px 120px}
+h1,h2,h3{font-family:"Space Grotesk",system-ui,sans-serif;color:#fff;line-height:1.2;margin:0}
+.logo{width:130px;display:block;margin-bottom:28px}
+.kicker{font:600 12px/1 "Space Grotesk",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--verde)}
+h1{font-size:clamp(26px,5vw,36px);margin:10px 0 6px}
+.sub{color:var(--texto2);margin:0 0 22px}
+.sub a{color:var(--texto2)}
+.cartao{background:var(--sup);border:1px solid var(--borda);border-radius:16px;padding:20px;margin:0 0 16px}
+.cartao h2{font-size:20px;margin-bottom:4px}
+.cartao .dica{color:var(--texto2);font-size:14px;margin:0 0 14px}
+.secao{font:600 13px/1 "Space Grotesk",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#CBB8FF;margin:30px 0 12px}
+label{display:block;font-weight:800;font-size:14px;margin:12px 0 6px}
+label .opc{font-weight:400;color:var(--texto2)}
+textarea,select{width:100%;font:inherit;color:#fff;background:#121316;border:1px solid #3A3B46;border-radius:10px;padding:11px 12px;outline:none}
+textarea{min-height:76px;resize:vertical;line-height:1.5}
+textarea:focus,select:focus{border-color:var(--roxo);box-shadow:0 0 0 3px rgba(96,37,225,.35)}
+.situacoes{display:flex;flex-wrap:wrap;gap:8px}
+.situacoes label{margin:0;font-weight:700;border:1px solid #3A3B46;border-radius:999px;padding:7px 14px;cursor:pointer;font-size:14px}
+.situacoes input{position:absolute;opacity:0;pointer-events:none}
+.situacoes input:checked+span{color:#fff}
+.situacoes label:has(input:checked){border-color:var(--verde);background:rgba(4,205,143,.14)}
+.situacoes label:has(input:focus-visible){outline:2px solid var(--verde);outline-offset:2px}
+.encontrado{margin-top:12px;font-size:13px;color:var(--texto2);border-left:2px solid #4A4B57;padding-left:10px}
+.acao{padding:0 0 14px;margin:0 0 14px;border-bottom:1px solid var(--borda)}
+.acao .linha2{display:flex;gap:8px;margin-top:8px}
+.acao select{flex:1;width:auto;font-size:14px;padding:9px 10px}
+.btn-sec{font:700 14px/1 "Nunito",sans-serif;color:#fff;background:transparent;border:1px solid #4A4B57;border-radius:10px;padding:10px 14px;cursor:pointer}
+.btn-sec:hover{border-color:#fff}
+.fase{font:700 14px/1.3 "Space Grotesk",sans-serif;margin:16px 0 8px;color:#fff}
+.fase:first-of-type{margin-top:4px}
+.barra-acoes{position:fixed;left:0;right:0;bottom:0;background:rgba(18,19,22,.96);border-top:1px solid var(--borda);padding:12px 16px;z-index:5}
+.barra-acoes .dentro{max-width:760px;margin:0 auto;display:flex;gap:10px;flex-wrap:wrap}
+.barra-acoes button{flex:1 1 220px;font:700 16px/1.2 "Space Grotesk",sans-serif;border:0;border-radius:12px;padding:15px 16px;cursor:pointer}
+#aprovar{background:#2A2B33;color:#fff;border:1px solid #4A4B57}
+#enviar{background:var(--verde);color:#08140F}
+button:disabled{opacity:.6;cursor:wait}
+.erro{background:rgba(192,2,82,.15);border:1px solid rgba(192,2,82,.5);color:#FFB3CD;border-radius:12px;padding:12px 14px;margin:0 0 16px}
+.erro ul{margin:6px 0 0;padding-left:20px}
+.ok{background:rgba(4,205,143,.12);border:1px solid rgba(4,205,143,.5);color:#C6FFE9;border-radius:12px;padding:16px;margin:0 0 16px}
+.oculto{display:none}
+.campo-invalido{border-color:#FF6FA3!important}
+</style>
+</head>
+<body>
+<main>
+  <img class="logo" src="/logo.svg" alt="Work Digital">
+  <div id="carregando" class="sub">Carregando…</div>
+  <div id="falha" class="erro oculto"></div>
+
+  <div id="conteudo" class="oculto">
+    <div class="kicker">Revisão do diagnóstico</div>
+    <h1 id="empresa"></h1>
+    <p class="sub" id="detalhes"></p>
+
+    <div id="ja-enviada" class="ok oculto">O relatório final deste diagnóstico já foi enviado ao cliente. Se você aprovar de novo, a nova versão chega só para você.</div>
+
+    <div class="cartao">
+      <h2>Como funciona</h2>
+      <p class="dica" style="margin:0">Abaixo estão os pontos que só você pode avaliar. A ferramenta já escreveu uma sugestão em cada campo: leia, mude o que quiser e, no fim, clique em <b>Aprovar</b> (a versão final chega no seu e-mail para conferir) ou <b>Aprovar e enviar ao cliente</b>. A parte medida (velocidade, SEO etc.) já está pronta e não aparece aqui.</p>
+    </div>
+
+    <div class="secao">Sua nota pessoal</div>
+    <div class="cartao">
+      <p class="dica">Aparece no topo do plano, assinada por você.</p>
+      <textarea id="nota" rows="5" aria-label="Nota pessoal"></textarea>
+    </div>
+
+    <div class="secao">Sua avaliação de especialista</div>
+    <div id="avaliacoes"></div>
+
+    <div class="secao">Plano "Por onde começar"</div>
+    <div class="cartao">
+      <p class="dica">Ações em ordem de impacto. Mude o texto, troque a etapa ou remova o que não fizer sentido.</p>
+      <div id="plano"></div>
+      <button type="button" class="btn-sec" id="add-acao">+ Adicionar ação</button>
+    </div>
+
+    <div id="msg"></div>
+  </div>
+</main>
+
+<div class="barra-acoes oculto" id="barra">
+  <div class="dentro">
+    <button type="button" id="aprovar">Aprovar</button>
+    <button type="button" id="enviar">Aprovar e enviar ao cliente</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var q = new URLSearchParams(location.search);
+  var P = q.get("p") || "", K = q.get("k") || "";
+  var FASES = ["Fazer primeiro", "Em seguida", "Quando possível"];
+  var SIT = [["ok", "Está bom"], ["atencao", "Pode melhorar"], ["problema", "É um problema"]];
+  var dados = null;
+
+  function txt(tag, texto, cls) { var e = document.createElement(tag); if (cls) e.className = cls; e.textContent = texto; return e; }
+  function area(valor, rotulo, rows) {
+    var t = document.createElement("textarea"); t.value = valor || ""; t.setAttribute("aria-label", rotulo);
+    t.rows = Math.max(rows || 3, Math.ceil(t.value.length / 55) + 1);
+    return t;
+  }
+
+  fetch("/api/revisao?p=" + encodeURIComponent(P) + "&k=" + encodeURIComponent(K))
+    .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+    .then(function (x) {
+      $("carregando").classList.add("oculto");
+      if (!x.ok) { $("falha").textContent = x.j.erro || "Não foi possível abrir esta revisão."; $("falha").classList.remove("oculto"); return; }
+      dados = x.j; montar();
+    })
+    .catch(function () { $("carregando").textContent = "Sem conexão. Recarregue a página."; });
+
+  function montar() {
+    $("empresa").textContent = dados.empresa;
+    var det = document.createDocumentFragment();
+    var a = document.createElement("a"); a.href = dados.url; a.textContent = dados.url; a.target = "_blank"; a.rel = "noopener";
+    det.appendChild(a);
+    if (dados.contato.nome || dados.contato.email) det.appendChild(document.createTextNode(" · Cliente: " + [dados.contato.nome, dados.contato.email].filter(Boolean).join(" · ")));
+    $("detalhes").appendChild(det);
+    if (dados.ja_enviada) { $("ja-enviada").classList.remove("oculto"); $("enviar").classList.add("oculto"); }
+    if (!dados.contato.email) $("enviar").classList.add("oculto");
+    $("nota").value = dados.nota_pessoal;
+
+    dados.avaliacoes.forEach(function (av) {
+      var c = document.createElement("div"); c.className = "cartao"; c.dataset.id = av.id;
+      c.appendChild(txt("h2", av.titulo));
+      c.appendChild(txt("label", "Como está?"));
+      var s = document.createElement("div"); s.className = "situacoes"; s.setAttribute("role", "radiogroup");
+      SIT.forEach(function (op) {
+        var l = document.createElement("label"); var i = document.createElement("input");
+        i.type = "radio"; i.name = "sit-" + av.id; i.value = op[0]; i.checked = av.situacao === op[0];
+        i.addEventListener("change", function () { ajustarFazer(c); });
+        l.appendChild(i); l.appendChild(txt("span", op[1])); s.appendChild(l);
+      });
+      c.appendChild(s);
+      c.appendChild(txt("label", "O que vimos")); var v = area(av.o_que_vimos, "O que vimos"); v.dataset.campo = "o_que_vimos"; c.appendChild(v);
+      var l2 = txt("label", "Por que isso importa "); l2.appendChild(txt("span", "(opcional)", "opc")); c.appendChild(l2);
+      var g = area(av.o_que_significa, "Por que isso importa"); g.dataset.campo = "o_que_significa"; c.appendChild(g);
+      var l3 = txt("label", "O que fazer"); l3.dataset.rotuloFazer = "1"; c.appendChild(l3);
+      var f = area(av.o_que_fazer, "O que fazer"); f.dataset.campo = "o_que_fazer"; c.appendChild(f);
+      if (av.encontrado) c.appendChild(txt("div", "O que a ferramenta encontrou no site: " + av.encontrado, "encontrado"));
+      $("avaliacoes").appendChild(c);
+      ajustarFazer(c);
+    });
+
+    var porFase = {}; FASES.forEach(function (f) { porFase[f] = []; });
+    dados.plano.forEach(function (it) { (porFase[it.fase] || porFase["Em seguida"]).push(it); });
+    FASES.forEach(function (f) { porFase[f].forEach(function (it) { novaAcao(it); }); });
+    $("add-acao").addEventListener("click", function () { var el = novaAcao({ fase: "Em seguida", acao: "" }); el.querySelector("textarea").focus(); });
+
+    $("conteudo").classList.remove("oculto");
+    $("barra").classList.remove("oculto");
+  }
+
+  function ajustarFazer(c) {
+    var sel = c.querySelector("input[type=radio]:checked");
+    var ok = sel && sel.value === "ok";
+    var l = c.querySelector("[data-rotulo-fazer]");
+    l.textContent = "O que fazer ";
+    l.appendChild(txt("span", ok ? "(opcional quando está bom)" : "(obrigatório)", "opc"));
+  }
+
+  function novaAcao(it) {
+    var d = document.createElement("div"); d.className = "acao";
+    if (Number.isInteger(it.i)) d.dataset.i = it.i;
+    var t = area(it.acao, "Ação do plano", 2);
+    var s = document.createElement("select"); s.setAttribute("aria-label", "Etapa");
+    FASES.forEach(function (f) { var o = document.createElement("option"); o.value = f; o.textContent = f; o.selected = f === it.fase; s.appendChild(o); });
+    var linha = document.createElement("div"); linha.className = "linha2";
+    var rm = txt("button", "Remover", "btn-sec"); rm.type = "button";
+    rm.addEventListener("click", function () { d.remove(); });
+    linha.appendChild(s); linha.appendChild(rm);
+    d.appendChild(t); d.appendChild(linha);
+    $("plano").appendChild(d);
+    return d;
+  }
+
+  function coletar() {
+    var av = [];
+    document.querySelectorAll("#avaliacoes .cartao").forEach(function (c) {
+      var sel = c.querySelector("input[type=radio]:checked");
+      var o = { id: c.dataset.id, situacao: sel ? sel.value : "" };
+      c.querySelectorAll("textarea").forEach(function (t) { o[t.dataset.campo] = t.value; });
+      av.push(o);
+    });
+    var plano = [];
+    document.querySelectorAll("#plano .acao").forEach(function (d) {
+      var o = { fase: d.querySelector("select").value, acao: d.querySelector("textarea").value };
+      if (d.dataset.i !== undefined) o.i = Number(d.dataset.i);
+      plano.push(o);
+    });
+    return { nota_pessoal: $("nota").value, avaliacoes: av, plano: plano };
+  }
+
+  function checar(c) {
+    var faltas = [];
+    document.querySelectorAll(".campo-invalido").forEach(function (e) { e.classList.remove("campo-invalido"); });
+    if (!c.nota_pessoal.trim()) { faltas.push("Escreva a nota pessoal."); $("nota").classList.add("campo-invalido"); }
+    document.querySelectorAll("#avaliacoes .cartao").forEach(function (card, i) {
+      var a = c.avaliacoes[i], titulo = card.querySelector("h2").textContent;
+      if (!a.o_que_vimos.trim()) { faltas.push('"' + titulo + '": preencha o que vimos.'); card.querySelector("[data-campo=o_que_vimos]").classList.add("campo-invalido"); }
+      if (a.situacao !== "ok" && !a.o_que_fazer.trim()) { faltas.push('"' + titulo + '": preencha o que fazer.'); card.querySelector("[data-campo=o_que_fazer]").classList.add("campo-invalido"); }
+    });
+    if (!c.plano.some(function (x) { return x.acao.trim(); })) faltas.push("O plano precisa de pelo menos uma ação.");
+    return faltas;
+  }
+
+  function mostrarMsg(classe, titulo, lista) {
+    var m = $("msg"); m.innerHTML = ""; var box = document.createElement("div"); box.className = classe;
+    box.appendChild(txt("b", titulo));
+    if (lista && lista.length) { var ul = document.createElement("ul"); lista.forEach(function (f) { ul.appendChild(txt("li", f)); }); box.appendChild(ul); }
+    m.appendChild(box); box.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function enviar(acao) {
+    var c = coletar(); var faltas = checar(c);
+    if (faltas.length) return mostrarMsg("erro", "Falta preencher:", faltas);
+    if (acao === "aprovar_enviar" && !confirm("Enviar o relatório final para " + dados.contato.email + "?")) return;
+    $("aprovar").disabled = $("enviar").disabled = true;
+    c.p = P; c.k = K; c.acao = acao;
+    fetch("/api/revisao", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(c) })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (x) {
+        if (!x.ok) { $("aprovar").disabled = $("enviar").disabled = false; return mostrarMsg("erro", x.j.erro || "Não deu certo. Tente de novo.", x.j.faltas); }
+        $("barra").classList.add("oculto");
+        mostrarMsg("ok", x.j.enviar && !dados.ja_enviada
+          ? "Aprovado! Em uns 3 minutos o relatório final vai para " + dados.contato.email + " e você recebe uma cópia."
+          : "Aprovado! Em uns 3 minutos o relatório final chega no seu e-mail para você conferir. Para enviar depois, abra este mesmo link e clique em \"Aprovar e enviar ao cliente\".");
+      })
+      .catch(function () { $("aprovar").disabled = $("enviar").disabled = false; mostrarMsg("erro", "Sem conexão. Tente de novo."); });
+  }
+  $("aprovar").addEventListener("click", function () { enviar("aprovar"); });
+  $("enviar").addEventListener("click", function () { enviar("aprovar_enviar"); });
+})();
+</script>
+</body>
+</html>

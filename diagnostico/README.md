@@ -70,7 +70,7 @@ A versão automática leva de 2 a 4 minutos, e a maior parte do tempo é a medi�
 1. Rode a versão automática e envie o `relatorio.pdf` ao lead, se quiser. Ele avisa que a avaliação completa chega em até `PRAZO_REVISAO_DIAS` dias úteis.
 2. Abra `notas-internas.html`. Lá estão o que foi medido, os achados para abrir a conversa e os rascunhos das avaliações e do plano.
 3. Edite o `revisao.json`. Há dois caminhos:
-   - **rápido:** leia a prévia (`relatorio-revisado-previa.pdf`, marcada "Prévia para revisão: não enviar"), ajuste os textos que quiser e troque `"aprovar_rascunhos"` para `true`. Os rascunhos passam a valer como texto revisado por você;
+   - **rápido:** leia a prévia (`previa-relatorio-completo.pdf`, marcada "Prévia para revisão: não enviar"), ajuste os textos que quiser e troque `"aprovar_rascunhos"` para `true`. Os rascunhos passam a valer como texto revisado por você;
    - **detalhado:** reescreva ou aceite cada rascunho, apagando a marcação `[RASCUNHO]`, e troque cada `"pendente de revisão"` por `"revisado"`.
 
    Nos dois casos, avaliação com situação "atencao" ou "problema" continua exigindo o campo `o_que_fazer`.

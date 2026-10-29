@@ -2,7 +2,7 @@
 {% macro titulo_secao(texto, cor) %}
 <tr><td style="padding:26px 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:{{ cor }}">{{ texto }}</td></tr>
 {% endmacro %}
-{% set rot_sit = {"ok": "ok", "atencao": "atenção", "problema": "problema"} %}
+{% set rot_sit = {"ok": "está bom", "atencao": "pode melhorar", "problema": "problema"} %}
 {% set cor_sit = {"ok": "#04A776", "atencao": "#6025E1", "problema": "#C00252"} %}
 <!doctype html>
 <html lang="pt-BR">
@@ -13,7 +13,7 @@
 <table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:640px;background:#FFFFFF;border-radius:14px">
 <tr><td style="background:#121316;border-radius:14px 14px 0 0;padding:22px 28px">
   <img src="cid:logo" width="110" alt="Work Digital" style="display:block;width:110px;height:auto;border:0">
-  <div style="margin-top:16px;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#04CD8F">Diagnóstico pronto para a sua revisão</div>
+  <div style="margin-top:16px;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#04CD8F">Novo diagnóstico para você revisar</div>
   <div style="margin-top:6px;font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:bold;line-height:1.25;color:#FFFFFF">{{ empresa }}</div>
   <div style="margin-top:4px;font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#C1BECB"><a href="{{ url }}" style="color:#C1BECB">{{ url }}</a></div>
 </td></tr>
@@ -51,19 +51,22 @@
     {% for p in principais %}<li style="margin:0 0 6px"><b>{{ p.titulo }}.</b> {{ p.o_que_vimos }}</li>{% endfor %}
   </ul>
   {% endif %}
-  <p style="margin:12px 0 0;font-size:13px;color:#77768A">Esses itens são dados coletados do site e entram nas notas. Não precisam de revisão, a não ser que algo pareça errado.</p>
+  <p style="margin:12px 0 0;font-size:13px;color:#77768A">Essa parte foi medida pela ferramenta e já está pronta. Você não precisa revisar.</p>
 </td></tr>
 
 {{ titulo_secao("O que você precisa analisar", "#C00252") }}
 <tr><td>
-  <p style="margin:0 0 12px">A ferramenta já escreveu tudo como rascunho. Leia, ajuste se precisar e aprove. A prévia da versão completa, como o cliente vai receber, está em anexo (<b>relatorio-revisado-previa.pdf</b>).</p>
+  <p style="margin:0 0 12px">A ferramenta já escreveu uma sugestão para cada ponto. Leia e veja se concorda. Para corrigir algo ou aprovar, clique em <b>Revisar e aprovar</b>. O relatório completo, do jeito que o cliente vai receber, está em anexo (<b>previa-relatorio-completo.pdf</b>).</p>
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px">
+    <tr><td style="background:#6025E1;border-radius:8px"><a href="{{ link_revisar }}" style="display:inline-block;padding:12px 20px;font-size:14px;font-weight:bold;color:#FFFFFF;text-decoration:none">Revisar e aprovar</a></td></tr>
+  </table>
 
   {% for av in avaliacoes %}
   <div style="border-left:3px solid {{ cor_sit.get(av.situacao, '#6025E1') }};padding:2px 0 2px 14px;margin:0 0 16px">
     <b>{{ av.titulo }}</b> <span style="font-size:12px;color:{{ cor_sit.get(av.situacao, '#6025E1') }};font-weight:bold;text-transform:uppercase">sugestão: {{ rot_sit.get(av.situacao, av.situacao) }}</span><br>
     {{ av.o_que_vimos }}{% if av.o_que_significa %} {{ av.o_que_significa }}{% endif %}
     {% if av.o_que_fazer %}<br><i>O que fazer:</i> {{ av.o_que_fazer }}{% endif %}
-    {% if av.sinais %}<br><span style="font-size:12px;color:#8A889A">Base: {{ av.sinais }}</span>{% endif %}
+    {% if av.sinais %}<br><span style="font-size:12px;color:#8A889A">O que a ferramenta encontrou no site: {{ av.sinais }}</span>{% endif %}
   </div>
   {% endfor %}
 
@@ -80,36 +83,35 @@
   </div>
 
   {% if conferir %}
-  <p style="margin:4px 0 6px"><b>Também vale conferir no site</b> (a ferramenta não conseguiu confirmar sozinha):</p>
+  <p style="margin:4px 0 6px"><b>Dê uma olhada no site</b> (a ferramenta não conseguiu confirmar estes pontos sozinha; eles aparecem no relatório como "não foi possível confirmar"):</p>
   <ul style="margin:0 0 6px;padding-left:20px">
     {% for c in conferir %}<li style="margin:0 0 6px"><b>{{ c.titulo }}.</b> {{ c.o_que_vimos }}{% if c.nota_interna %} <span style="font-size:12px;color:#8A889A">({{ c.nota_interna }})</span>{% endif %}</li>{% endfor %}
   </ul>
   {% endif %}
 </td></tr>
 
-{{ titulo_secao("Como aprovar e enviar", "#6025E1") }}
+{{ titulo_secao("Como revisar e aprovar", "#6025E1") }}
 <tr><td>
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 12px">
-    <tr><td style="background:#6025E1;border-radius:8px"><a href="{{ link_editar }}" style="display:inline-block;padding:12px 20px;font-size:14px;font-weight:bold;color:#FFFFFF;text-decoration:none">Abrir a revisão no GitHub</a></td></tr>
+    <tr><td style="background:#6025E1;border-radius:8px"><a href="{{ link_revisar }}" style="display:inline-block;padding:14px 24px;font-size:15px;font-weight:bold;color:#FFFFFF;text-decoration:none">Revisar e aprovar</a></td></tr>
   </table>
-  <ol style="margin:0;padding-left:20px">
-    <li style="margin:0 0 6px">Se quiser mudar algum texto, edite no arquivo que abrir (ele traz os mesmos textos acima).</li>
-    <li style="margin:0 0 6px">Troque <code>"aprovar_rascunhos": false</code> para <code>true</code>.</li>
-    <li style="margin:0 0 6px">Para enviar ao cliente na mesma hora, troque também <code>"enviar_ao_lead": false</code> para <code>true</code>.</li>
-    <li style="margin:0 0 6px">Clique em <b>Commit changes</b>. Em uns 2 minutos a versão revisada é gerada{% if contato.email %} e, se você marcou o envio, vai para {{ contato.email }}{% endif %}. Você recebe uma cópia.</li>
-  </ol>
+  <p style="margin:0 0 8px">O botão abre uma página com estes mesmos pontos, cada um num campo de texto. Corrija o que quiser e escolha:</p>
+  <ul style="margin:0;padding-left:20px">
+    <li style="margin:0 0 6px"><b>Aprovar:</b> a versão final chega no seu e-mail para você conferir antes de enviar.</li>
+    <li style="margin:0 0 6px"><b>Aprovar e enviar ao cliente:</b> a versão final vai direto{% if contato.email %} para {{ contato.email }}{% endif %}, e você recebe uma cópia.</li>
+  </ul>
 </td></tr>
 
 {% if abordagens %}
 {{ titulo_secao("Para a conversa com o cliente", "#04A776") }}
 <tr><td>
   <ul style="margin:0;padding-left:20px">
-    {% for ab in abordagens %}<li style="margin:0 0 8px"><b>{{ ab.titulo }}.</b> {{ ab.texto }} <span style="font-size:12px;color:#8A889A">Base: {{ ab.base }}</span></li>{% endfor %}
+    {% for ab in abordagens %}<li style="margin:0 0 8px"><b>{{ ab.titulo }}.</b> {{ ab.texto }} <span style="font-size:12px;color:#8A889A">(por quê: {{ ab.base }})</span></li>{% endfor %}
   </ul>
 </td></tr>
 {% endif %}
 
-<tr><td style="padding-top:24px;font-size:12px;color:#8A889A">Em anexo: versão automática (relatorio.pdf), prévia da versão completa (relatorio-revisado-previa.pdf) e notas internas. Pasta completa: <a href="{{ link_pasta }}" style="color:#6025E1">{{ pasta }}</a></td></tr>
+<tr><td style="padding-top:24px;font-size:12px;color:#8A889A">Em anexo: o resultado técnico que o cliente recebeu (relatorio.pdf) e a prévia do relatório completo (previa-relatorio-completo.pdf). O link de revisão é só seu: não encaminhe este e-mail.</td></tr>
 </table>
 </td></tr>
 </table>

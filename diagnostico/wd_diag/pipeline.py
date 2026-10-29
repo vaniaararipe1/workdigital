@@ -240,6 +240,7 @@ def executar_diagnostico(url: str, empresa: str, config: Config | None = None, p
 ARQ_AUTOMATICO = "relatorio"
 ARQ_REVISADO = "relatorio-revisado"
 ARQ_REVISAO = "revisao.json"
+ARQ_PREVIA = "previa-relatorio-completo"
 
 
 def gerar_arquivos(resultado: dict, pasta: Path, config: Config, gerar_pdf: bool = True) -> None:
@@ -283,7 +284,7 @@ def gerar_previa(pasta: Path, config: Config | None = None, gerar_pdf: bool = Tr
     r = carregar_resultado(pasta)
     ctx = ctx_relatorio.montar(r, "revisada", rev, prazo_dias=config.prazo_revisao_dias)
     ctx["previa"] = True
-    destino = pasta / f"{ARQ_REVISADO}-previa.html"
+    destino = pasta / f"{ARQ_PREVIA}.html"
     destino.write_text(renderizar_html(ctx), encoding="utf-8")
     if gerar_pdf:
         html_para_pdf(destino, destino.with_suffix(".pdf"), config.chromium_path)

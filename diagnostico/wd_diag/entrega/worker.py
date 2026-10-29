@@ -14,11 +14,12 @@ import argparse
 import json
 import os
 import re
+import secrets
 import sys
 import traceback
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 
 from ..config import Config
 from ..pipeline import executar_diagnostico, gerar_previa, gerar_revisada, nome_pasta
@@ -31,8 +32,8 @@ from . import email as mail
 from .email import e
 
 ORIGENS_COM_LIMITE = ("popup", "landing", "site")
-REPO = os.environ.get("GITHUB_REPOSITORY", "")
 BRANCH_DADOS = os.environ.get("BRANCH_DADOS", "relatorios")
+SITE = os.environ.get("SITE_DIAGNOSTICO", "https://diagnostico.workdigital.art.br").rstrip("/")
 
 
 def _salvar_json(caminho: Path, dados: dict) -> None:
@@ -51,11 +52,17 @@ def _host(url: str) -> str:
     return (urlsplit(url).hostname or "").removeprefix("www.")
 
 
-def _link_github(caminho: str, editar: bool = False) -> str:
-    if not REPO:
-        return caminho
-    modo = "edit" if editar else "blob"
-    return f"https://github.com/{REPO}/{modo}/{BRANCH_DADOS}/{caminho}"
+def garantir_chave(arq_revisao: Path) -> str:
+    """Chave aleatória da página de revisão (só a Vania recebe o link). Fica no revisao.json do repositório privado."""
+    rev = json.loads(arq_revisao.read_text(encoding="utf-8"))
+    if not re.fullmatch(r"[0-9a-f]{32}", str(rev.get("chave_revisao", ""))):
+        rev["chave_revisao"] = secrets.token_hex(16)
+        _salvar_json(arq_revisao, rev)
+    return rev["chave_revisao"]
+
+
+def link_revisar(pasta: Path, chave: str) -> str:
+    return f"{SITE}/revisar?p={quote(pasta.name)}&k={quote(chave)}"
 
 
 NOMES_NOTA = {"performance": "Velocidade", "ux": "Experiência e conversão", "seo": "SEO e visibilidade"}
@@ -136,8 +143,8 @@ def email_vania(r: dict, rev: dict, lead: dict, enviado: bool, rel: str) -> str:
         origem=ROTULO_ORIGEM.get(lead.get("origem", ""), lead.get("origem", "")), enviado=enviado,
         notas=notas, principais=top3(achados), avaliacoes=avaliacoes,
         nota_pessoal=(aprovado.get("nota_pessoal") or {}).get("texto", ""), plano=plano, plano_total=len(itens),
-        conferir=conferir, abordagens=abordagens(r), link_editar=_link_github(rel + "/revisao.json", editar=True),
-        link_pasta=_link_github(rel), pasta=rel)
+        conferir=conferir, abordagens=abordagens(r),
+        link_revisar=link_revisar(Path(rel), rev.get("chave_revisao", "")))
 
 
 def verificar_limites(dados: Path, url: str, origem: str, limite_diario: int, dias_repeticao: int = 7) -> str | None:
@@ -204,6 +211,7 @@ def cmd_automatico(a) -> int:
     notas = {k: v.nota for k, v in r["notas"].items()}
     rel = pasta.relative_to(dados).as_posix()
 
+    garantir_chave(pasta / "revisao.json")
     try:
         previa = gerar_previa(pasta, config)
     except Exception:  # noqa: BLE001  a prévia ajuda, mas não pode impedir a entrega
@@ -222,11 +230,16 @@ def cmd_automatico(a) -> int:
     rev = json.loads((pasta / "revisao.json").read_text(encoding="utf-8"))
     mail.enviar(mail.email_aviso(), f"[Diagnóstico] {empresa} ({_host(url)}): pronto para a sua revisão",
                 email_vania(r, rev, lead, enviado, rel),
-                [pasta / "relatorio.pdf"] + ([previa] if previa else []) + [pasta / "notas-internas.html"])
+                [pasta / "relatorio.pdf"] + ([previa] if previa else []))
 
     status(dados, a.id, estado="pronto", notas=notas, enviado_por_email=enviado)
     print(f"ok: {rel}")
     return 0
+
+
+def tentou_aprovar(rev: dict) -> bool:
+    blocos = [rev.get("nota_pessoal") or {}, rev.get("plano") or {}, *(rev.get("avaliacoes") or [])]
+    return rev.get("aprovar_rascunhos") is True or any(b.get("status") == "revisado" for b in blocos)
 
 
 def cmd_revisao(a) -> int:
@@ -241,34 +254,38 @@ def cmd_revisao(a) -> int:
         envio_arq = pasta / "envio.json"
         envio = json.loads(envio_arq.read_text(encoding="utf-8")) if envio_arq.exists() else {}
         empresa = lead.get("empresa") or rev.get("empresa", pasta.name)
+        revisar = link_revisar(pasta, rev.get("chave_revisao", ""))
+        botao = f'<a href="{e(revisar)}" style="color:#6025E1;font-weight:bold">Abrir a página de revisão</a>'
         try:
             gerar_revisada(pasta, config)
         except RevisaoIncompleta as erro:
+            if not tentou_aprovar(rev):
+                continue  # ainda é só o rascunho da ferramenta: nada a avisar
             itens = "".join(f"<li>{e(p)}</li>" for p in erro.pendencias)
-            mail.enviar(mail.email_aviso(), f"[Diagnóstico] revisão de {empresa}: ainda falta", mail.corpo(
-                "A versão revisada ainda não foi gerada. Falta:", f"<ul>{itens}</ul>",
-                f'<a href="{_link_github(pasta.relative_to(dados).as_posix() + "/revisao.json", editar=True)}">Abrir o revisao.json</a>'))
+            mail.enviar(mail.email_aviso(), f"[Diagnóstico] {empresa}: falta um detalhe na revisão", mail.corpo(
+                "A versão final ainda não foi gerada porque faltou preencher:", f"<ul>{itens}</ul>", botao))
             continue
         pdf = pasta / "relatorio-revisado.pdf"
         if rev.get("enviar_ao_lead") is True and not envio.get("revisada_enviada_em"):
             if rev.get("demonstracao"):
                 mail.enviar(mail.email_aviso(), f"[Diagnóstico] {empresa}: NÃO enviado", mail.corpo(
-                    "O revisao.json está marcado como demonstração. Nada foi enviado ao lead."))
+                    "Este diagnóstico está marcado como demonstração. Nada foi enviado ao cliente."))
             elif not lead.get("email"):
-                mail.enviar(mail.email_aviso(), f"[Diagnóstico] {empresa}: sem e-mail do lead", mail.corpo(
-                    "A versão revisada está pronta (em anexo), mas não há e-mail do lead. Envie você mesma."), [pdf])
+                mail.enviar(mail.email_aviso(), f"[Diagnóstico] {empresa}: relatório final pronto", mail.corpo(
+                    "O relatório final está pronto (em anexo). Como este diagnóstico não tem e-mail do cliente, "
+                    "é você quem envia."), [pdf])
             else:
                 mail.enviar(lead["email"], f"Sua avaliação completa: site {_host(rev.get('url', ''))}",
                             email_lead_revisado(empresa, rev.get("url", ""), lead.get("nome", "")), [pdf], para_lead=True)
                 envio["revisada_enviada_em"] = datetime.now().isoformat(timespec="seconds")
                 _salvar_json(envio_arq, envio)
-                mail.enviar(mail.email_aviso(), f"[Diagnóstico] {empresa}: versão revisada enviada ao lead",
-                            mail.corpo(f"Enviada para {e(lead['email'])}."), [pdf])
+                mail.enviar(mail.email_aviso(), f"[Diagnóstico] {empresa}: relatório final enviado ao cliente",
+                            mail.corpo(f"O relatório final foi enviado para {e(lead['email'])}. A cópia está em anexo."), [pdf])
         else:
-            mail.enviar(mail.email_aviso(), f"[Diagnóstico] {empresa}: versão revisada pronta para conferir", mail.corpo(
-                "A versão revisada foi gerada (em anexo).",
-                ("Ela já foi enviada ao lead antes." if envio.get("revisada_enviada_em") else
-                 "Para enviá-la ao lead, troque <code>enviar_ao_lead</code> para <code>true</code> no revisao.json e salve.")), [pdf])
+            mail.enviar(mail.email_aviso(), f"[Diagnóstico] {empresa}: relatório final pronto para conferir", mail.corpo(
+                "O relatório final está em anexo, do jeito que o cliente vai receber.",
+                ("Ele já foi enviado ao cliente antes." if envio.get("revisada_enviada_em") else
+                 f"Se estiver tudo certo, abra a página de revisão e clique em <b>Aprovar e enviar ao cliente</b>. {botao}")), [pdf])
     return 0
 
 
