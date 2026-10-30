@@ -7,7 +7,7 @@
 /* Layout: prancheta cinza; seletor de páginas; cada página do site dentro de um "frame" de navegador.
    Arquitetura multipágina inspirada no Centro Histórico da Embraer. Somente modo claro. */
 :root {
-  --paper: #eef0f3;
+  --paper: #ffffff;
   --frame: #ffffff;
   --ink: #23262b;
   --muted: #6b727c;
@@ -27,9 +27,7 @@
 [hidden] { display: none !important; }
 body {
   background: var(--paper); color: var(--ink); font-family: var(--f-ui); font-size: 15px; line-height: 1.5;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 28px 64px;
+  margin: 0; padding-block: 0;
 }
 h1, h2, h3, h4 { text-wrap: balance; margin: 0; line-height: 1.2; }
 p { margin: 0; }
@@ -37,7 +35,7 @@ a { color: inherit; }
 :focus-visible { outline: 2px solid var(--note); outline-offset: 2px; }
 
 /* ---------- documento ---------- */
-.doc { max-width: 1240px; margin: 0 auto; display: grid; gap: 22px; }
+.doc { display: block; }
 .doc-head { display: grid; gap: 10px; }
 .eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .doc-head h1 { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -.02em; }
@@ -76,7 +74,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 /* ---------- frame ---------- */
 .stage { display: flex; justify-content: center; }
-.frame { container-type: inline-size; width: 100%; max-width: 1240px; background: var(--frame); border: 2px solid var(--ink); border-radius: 14px; overflow: hidden; transition: max-width .35s ease; }
+.frame { container-type: inline-size; width: 100%; background: var(--frame); overflow-x: clip; }
 .stage[data-view="mobile"] .frame { max-width: 390px; border-radius: 28px; }
 .chrome { display: flex; gap: 6px; align-items: center; padding: 10px 14px; border-bottom: 1.5px solid var(--line); background: var(--fill); font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
 .chrome i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--line); flex: none; }
@@ -244,77 +242,34 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 }
 @media (max-width: 760px) { .overview { grid-template-columns: minmax(0, 1fr); } }
 @media (prefers-reduced-motion: reduce) { .frame { transition: none; } }
+/* gutter lateral com safe-area em todas as faixas */
+.util, .mainnav, .mega, .subnav, .sec, .alt, .quote, .foot, .mnav {
+  padding-left: max(28px, env(safe-area-inset-left, 0px)) !important;
+  padding-right: max(28px, env(safe-area-inset-right, 0px)) !important;
+}
+.hero-in { margin-left: max(28px, env(safe-area-inset-left, 0px)); }
+.site-top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: var(--frame); }
+body::before { background: var(--frame); }
+.burger { cursor: pointer; padding: 0; }
+.mnav { display: none; border-bottom: 1.5px solid var(--line); background: var(--frame); padding-block: 8px 16px; }
+.mnav a { display: block; padding: 11px 0; border-bottom: 1px solid var(--fill-2); font-weight: 600; text-decoration: none; }
+.mnav a.pri-link { border: 0; margin-top: 10px; display: inline-flex; padding: 10px 18px; }
+@container (max-width: 640px) {
+  .util, .mainnav, .mega, .subnav, .sec, .alt, .quote, .foot, .mnav {
+    padding-left: max(16px, env(safe-area-inset-left, 0px)) !important;
+    padding-right: max(16px, env(safe-area-inset-right, 0px)) !important;
+  }
+  .hero-in { margin-left: max(16px, env(safe-area-inset-left, 0px)); }
+  .mnav.open { display: block; }
+}
 </style>
 
 <div class="doc">
-  <header class="doc-head">
-    <span class="eyebrow">Wireframe · baixa fidelidade · site multipágina</span>
-    <h1>Balões de Santos-Dumont</h1>
-    <p>Nova arquitetura do site do Projeto Balões de Santos-Dumont, seguindo o modelo do Centro Histórico da Embraer: várias páginas em vez de uma rolagem única, hero de imagem em largura total, seções que alternam texto e carrossel, uma página por aeronave e rodapé em colunas. Os textos são os do site atual.</p>
-    <div class="toolbar">
-      <div class="seg" role="group" aria-label="Largura">
-        <button type="button" id="v-desk" aria-pressed="true">Desktop</button>
-        <button type="button" id="v-mob" aria-pressed="false">Mobile</button>
-      </div>
-      <div class="seg" role="group" aria-label="Anotações">
-        <button type="button" id="n-on" aria-pressed="true">Com anotações</button>
-        <button type="button" id="n-off" aria-pressed="false">Sem anotações</button>
-      </div>
-    </div>
-    <div class="legend">
-      <span><i class="lg-img"></i>Imagem</span>
-      <span><i class="lg-vid"></i>Vídeo do YouTube</span>
-      <span><i class="lg-note"></i>Anotação de estrutura</span>
-      <span><i class="lg-warn"></i>Ponto de atenção no conteúdo</span>
-    </div>
-  </header>
-
-  <div class="overview">
-    <section class="panel">
-      <h2>Mapa do site</h2>
-      <ul class="tree">
-        <li><a href="#inicio"><code>/</code>Início</a> <span class="ref">≈ Centro Histórico</span>
-          <ul>
-            <li><a href="#santos-dumont"><code>/santos-dumont</code>Santos-Dumont</a> <span class="ref">≈ História da Embraer</span></li>
-            <li><a href="#projeto"><code>/o-projeto</code>O Projeto: 25 anos</a> <span class="ref">≈ História da Indústria</span></li>
-            <li><a href="#aeronaves"><code>/aeronaves</code>Aeronaves Históricas</a> <span class="ref">≈ Aeronaves Históricas</span>
-              <ul><li><a href="#aeronave"><code>/aeronaves/dirigivel-n6</code>Página de cada aeronave (×28)</a></li></ul>
-            </li>
-            <li><a href="#exposicoes"><code>/exposicoes</code>Exposições</a> <span class="ref">≈ Exposições</span></li>
-            <li><a href="#no-ar"><code>/no-ar</code>No Ar: Apoie o Projeto</a> <span class="ref">campanha Lei Rouanet</span></li>
-            <li><a href="#contato"><code>/contato</code>Contato</a> <span class="ref">≈ Contato</span></li>
-          </ul>
-        </li>
-      </ul>
-    </section>
-    <section class="panel">
-      <h2>Pontos de atenção no conteúdo atual</h2>
-      <ul class="issues">
-        <li><strong>Datas vencidas:</strong> a exposição no CMRR foi até 04/09/2026 e o convite era para 01/09/2026. Na nova estrutura, as duas entram na página Exposições como realizadas.</li>
-        <li><strong>25 ou 26 anos?</strong> O texto de abertura fala em 26; o resto do site, em 25.</li>
-        <li><strong>Erros de digitação:</strong> Dirigível nº4 "(2000)" deveria ser 1900; nº7 "1.257 m²" deveria ser m³.</li>
-        <li><strong>"125 anos" do primeiro voo</strong> valia em 2023. Em 2026 são 128.</li>
-        <li><strong>Relógio Santos</strong> sai do menu e vira uma seção da página Santos-Dumont, em "Invenções".</li>
-      </ul>
-    </section>
-  </div>
-
-  <nav class="pages" aria-label="Páginas do wireframe">
-    <a href="#inicio"><b>01</b>Início</a>
-    <a href="#santos-dumont"><b>02</b>Santos-Dumont</a>
-    <a href="#projeto"><b>03</b>O Projeto</a>
-    <a href="#aeronaves"><b>04</b>Aeronaves</a>
-    <a href="#aeronave"><b>04.1</b>Aeronave (modelo)</a>
-    <a href="#exposicoes"><b>05</b>Exposições</a>
-    <a href="#no-ar"><b>06</b>No Ar · Apoie</a>
-    <a href="#contato"><b>07</b>Contato</a>
-  </nav>
-
   <div class="stage" id="stage" data-view="desktop">
     <div class="frame">
-      <div class="chrome"><i></i><i></i><i></i><span id="url">baloesdesantosdumont.com.br/</span></div>
 
       <!-- CABEÇALHO GLOBAL -->
+      <div class="site-top">
       <div class="util">
         <span>Sobre o projeto</span><span>Imprensa</span><span>Instagram</span><span>YouTube</span>
         <span class="lang"><b>Pt</b> / En</span><span class="search" aria-hidden="true"></span>
@@ -329,7 +284,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <a href="#contato" data-p="contato">Contato</a>
         </nav>
         <a class="btn pri sm-btn" href="#no-ar">Apoie o Projeto</a>
-        <span class="burger" aria-hidden="true"></span>
+        <button type="button" class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false"></button>
       </div>
       <div class="mega" id="mega" hidden>
         <div><h4>Balões</h4><ul><li>Balão Brasil (1898)</li><li>Balão Amérique (1898)</li><li>Balão Le Fatum (1901)</li></ul></div>
@@ -337,15 +292,16 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         <div><h4>Aviões</h4><ul><li>14-Bis (1906)</li><li>Avião nº15 a nº17</li><li>Hidroplano nº18</li></ul></div>
         <div><h4>Demoiselle</h4><ul><li>Demoiselle nº19 a nº22</li><li><b>Ver todas as aeronaves →</b></li></ul></div>
       </div>
+      <nav class="mnav" id="mnav" aria-label="Menu mobile">
+        <a href="#santos-dumont">Santos-Dumont</a><a href="#projeto">O Projeto</a><a href="#aeronaves">Aeronaves Históricas</a><a href="#exposicoes">Exposições</a><a href="#contato">Contato</a>
+        <a class="btn pri pri-link" href="#no-ar">Apoie o Projeto</a>
+      </nav>
+      </div>
 
       <!-- ===================== 01 INÍCIO ===================== -->
       <main data-page="inicio">
         <div class="hero"><span class="hero-tag">Foto em largura total: balão em voo</span>
           <div class="hero-in"><span class="crumb">Início</span><h1>Projeto Balões de Santos-Dumont</h1><p class="sm">25 anos preservando a memória e as invenções do Pai da Aviação</p></div>
-        </div>
-        <div class="notes">
-          <p class="note"><b>1</b>Mesmo padrão da Embraer: hero de foto, H1 e um parágrafo de introdução. Sem textos longos na capa.</p>
-          <p class="note warn"><b>!</b>Padronizar "25 anos" (hoje o texto diz 26).</p>
         </div>
         <section class="sec">
           <p class="intro">O Projeto Balões de Santos-Dumont preserva há 25 anos a memória e as invenções de Alberto Santos-Dumont, com réplicas históricas, exposições, atividades educativas e apresentações culturais.</p>
@@ -431,10 +387,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <h2>Vídeos</h2>
           <div class="cols c2"><div class="vid"><span>Biografia resumida</span></div><div class="vid"><span>Há 125 anos: o primeiro voo</span></div></div>
         </section>
-        <div class="notes">
-          <p class="note"><b>2</b>"Primeiro Voo" e "Relógio" deixam de ser itens do menu e viram seções desta página.</p>
-          <p class="note warn"><b>!</b>"Há 125 anos" é o título do vídeo. No texto do site, usar "Marco de 1898".</p>
-        </div>
         <div class="quote"><p>"Suas invenções colocam o Brasil no centro da história da aviação mundial!"</p></div>
       </main>
 
@@ -474,7 +426,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
             <div class="box"><h4>Patrimônio Cultural</h4><p class="sm">Educando novas gerações sobre a importância de Santos-Dumont para a aviação mundial.</p><div class="lines"><i></i><i></i><i></i></div></div>
           </div>
         </section>
-        <div class="notes"><p class="note"><b>3</b>Bloco "Quem faz" é novo: hoje o idealizador só aparece nos vídeos e no contato.</p></div>
       </main>
 
       <!-- ===================== 04 AERONAVES ===================== -->
@@ -487,10 +438,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <p class="intro">Entre 1898 e 1909, Santos-Dumont criou 28 balões, dirigíveis e aviões. Cada um tem sua própria página, com ficha técnica, história e imagens.</p>
         </section>
         <section class="sec tint" id="craft-groups"></section>
-        <div class="notes">
-          <p class="note"><b>4</b>Como na Embraer: página "Sobre" com a lista, e uma página para cada aeronave. No menu, um submenu abre agrupado por tipo.</p>
-          <p class="note warn"><b>!</b>Corrigir nº4 "(2000)" → 1900 e nº7 "m²" → m³.</p>
-        </div>
       </main>
 
       <!-- ===================== 04.1 AERONAVE (modelo) ===================== -->
@@ -524,7 +471,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
             <div class="craft"><div class="ph"><span>Foto</span></div><b>Demoiselle nº20</b><em>1908</em></div>
           </div>
         </section>
-        <div class="notes"><p class="note"><b>5</b>Modelo único usado nas 28 páginas: hero, ficha técnica + história, galeria, anterior/próxima e relacionadas.</p></div>
       </main>
 
       <!-- ===================== 05 EXPOSIÇÕES ===================== -->
@@ -568,10 +514,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
             <a class="navcard" href="#contato"><div class="ph"><span>Grupo em visita</span></div><h3>Visitas guiadas</h3><p>Leve a exposição para sua escola ou empresa</p></a>
           </div>
         </section>
-        <div class="notes">
-          <p class="note"><b>6</b>Cópia direta do padrão Embraer: título + ano, texto curto, "Saiba mais" e carrossel com contador "1 / N", em ordem da mais recente para a mais antiga.</p>
-          <p class="note"><b>7</b>Quando houver nova exposição, ela entra no topo com o selo "Em cartaz".</p>
-        </div>
         <div class="quote"><p>"Mantendo vivo o saber de Alberto Santos-Dumont através da arte dos balões."</p><span>Carlos Magno de Lima e Silva</span></div>
       </main>
 
@@ -599,7 +541,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <h2>Vídeos do projeto</h2>
           <div class="cols c2"><div class="vid"><span>Projeto Balões de Santos-Dumont</span></div><div class="vid"><span>Projeto No Ar</span></div></div>
         </section>
-        <div class="notes"><p class="note"><b>8</b>Página de conversão. O botão "Apoie o Projeto" fica fixo no menu de todas as páginas.</p></div>
       </main>
 
       <!-- ===================== 07 CONTATO ===================== -->
@@ -627,7 +568,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
             </div>
           </div>
         </section>
-        <div class="notes"><p class="note"><b>9</b>Formulário com assunto, para separar visitas, patrocínio e imprensa.</p></div>
       </main>
 
       <!-- RODAPÉ GLOBAL -->
@@ -661,28 +601,23 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   }).join("");
 
   var urls = { "inicio": "/", "santos-dumont": "/santos-dumont", "projeto": "/o-projeto", "aeronaves": "/aeronaves", "aeronave": "/aeronaves/dirigivel-n6", "exposicoes": "/exposicoes", "no-ar": "/no-ar", "contato": "/contato" };
+  var urls = ["inicio", "santos-dumont", "projeto", "aeronaves", "aeronave", "exposicoes", "no-ar", "contato"];
   var mains = document.querySelectorAll("main[data-page]");
-  var tabs = document.querySelectorAll(".pages a");
   var menu = document.querySelectorAll(".menu a");
+  var burger = document.getElementById("burger"), mnav = document.getElementById("mnav");
   function show() {
     var id = location.hash.slice(1);
-    if (!urls[id]) id = "inicio";
+    if (urls.indexOf(id) < 0) id = "inicio";
     mains.forEach(function (m) { m.hidden = m.dataset.page !== id; });
-    tabs.forEach(function (t) { if (t.getAttribute("href") === "#" + id) t.setAttribute("aria-current", "page"); else t.removeAttribute("aria-current"); });
     menu.forEach(function (a) { a.classList.toggle("on", a.dataset.p === id || (id === "aeronave" && a.dataset.p === "aeronaves")); });
     document.getElementById("mega").hidden = id !== "aeronaves";
-    document.getElementById("url").textContent = "baloesdesantosdumont.com.br" + urls[id];
+    mnav.classList.remove("open"); burger.setAttribute("aria-expanded", "false");
   }
-  window.addEventListener("hashchange", function () { show(); document.querySelector(".stage").scrollIntoView({ block: "start" }); });
+  burger.onclick = function () {
+    var open = mnav.classList.toggle("open");
+    burger.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+  window.addEventListener("hashchange", function () { show(); window.scrollTo(0, 0); });
   show();
-
-  var stage = document.getElementById("stage");
-  function pick(on, off, fn) { on.setAttribute("aria-pressed", "true"); off.setAttribute("aria-pressed", "false"); fn(); }
-  var vd = document.getElementById("v-desk"), vm = document.getElementById("v-mob");
-  var no = document.getElementById("n-on"), nf = document.getElementById("n-off");
-  vd.onclick = function () { pick(vd, vm, function () { stage.dataset.view = "desktop"; }); };
-  vm.onclick = function () { pick(vm, vd, function () { stage.dataset.view = "mobile"; }); };
-  no.onclick = function () { pick(no, nf, function () { stage.classList.remove("hide-notes"); }); };
-  nf.onclick = function () { pick(nf, no, function () { stage.classList.add("hide-notes"); }); };
 })();
 </script>
