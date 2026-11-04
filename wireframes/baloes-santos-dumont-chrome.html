@@ -87,8 +87,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 /* cabeçalho do site: barra utilitária + navegação principal (padrão Embraer) */
 .util { display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: center; justify-content: flex-end; padding: 7px 28px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--fill-2); }
-.util .lang { font-family: var(--f-mono); }
-.util .lang b { color: var(--ink); }
 .util .search { width: 15px; height: 15px; border: 1.5px solid var(--muted); border-radius: 50%; position: relative; }
 .util .search::after { content: ""; position: absolute; width: 6px; height: 1.5px; background: var(--muted); right: -5px; bottom: -2px; transform: rotate(45deg); }
 .mainnav { display: flex; align-items: center; gap: 22px; padding: 14px 28px; border-bottom: 1.5px solid var(--line); }
@@ -277,7 +275,7 @@ body::before { background: var(--frame); }
       <div class="site-top">
       <div class="util">
         <span>Sobre o projeto</span><span>Imprensa</span><span>Instagram</span><span>YouTube</span>
-        <span class="lang"><b>Pt</b> / En</span><span class="search" aria-hidden="true"></span>
+        <span class="search" aria-hidden="true"></span>
       </div>
       <div class="mainnav">
         <a class="logo" href="#inicio"><i></i><strong>Balões de Santos-Dumont<small>Projeto · 25 anos</small></strong></a>
