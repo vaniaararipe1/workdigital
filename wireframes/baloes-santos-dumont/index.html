@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Balões de Santos-Dumont · Wireframe multipágina</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: prancheta cinza; seletor de páginas; cada página do site dentro de um "frame" de navegador.
+   Arquitetura multipágina inspirada no Centro Histórico da Embraer. Somente modo claro. */
+:root {
+  --paper: #ffffff;
+  --frame: #ffffff;
+  --ink: #23262b;
+  --muted: #6b727c;
+  --line: #a3aab4;
+  --fill: #e4e7eb;
+  --fill-2: #d3d8de;
+  --note: #2f5bd3;
+  --note-bg: #e5ebfb;
+  --warn: #b4540a;
+  --warn-bg: #fbeee2;
+  --f-ui: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-hand: "Caveat", "Comic Sans MS", cursive;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--paper); color: var(--ink); font-family: var(--f-ui); font-size: 15px; line-height: 1.5;
+  margin: 0; padding-block: 0;
+}
+h1, h2, h3, h4 { text-wrap: balance; margin: 0; line-height: 1.2; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--note); outline-offset: 2px; }
+
+/* ---------- documento ---------- */
+.doc { display: block; }
+.doc-head { display: grid; gap: 10px; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.doc-head h1 { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -.02em; }
+.doc-head p { max-width: 70ch; color: var(--muted); }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.seg { display: inline-flex; border: 1.5px solid var(--ink); border-radius: 999px; overflow: hidden; }
+.seg button { font: 600 13px var(--f-ui); background: transparent; color: var(--ink); border: 0; padding: 7px 14px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--frame); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { display: inline-block; width: 22px; height: 14px; border: 1.5px solid var(--line); }
+.legend .lg-img { background: linear-gradient(to top right, transparent calc(50% - 1px), var(--line) 50%, transparent calc(50% + 1px)), var(--fill); }
+.legend .lg-vid { background: var(--fill-2); border-radius: 3px; }
+.legend .lg-note { border-color: var(--note); background: var(--note-bg); border-radius: 3px; }
+.legend .lg-warn { border-color: var(--warn); background: var(--warn-bg); border-radius: 3px; }
+
+.overview { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 18px; }
+.panel { background: var(--frame); border: 1.5px solid var(--line); border-radius: 10px; padding: 18px 20px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.panel h2 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.tree { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; font-size: 14px; }
+.tree ul { list-style: none; margin: 2px 0 4px; padding-left: 20px; border-left: 1.5px dashed var(--line); display: grid; gap: 2px; }
+.tree a { text-decoration: none; display: inline-flex; gap: 10px; padding: 2px 0; }
+.tree a:hover { color: var(--note); }
+.tree code { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); }
+.tree .ref { font-size: 12.5px; color: var(--note); font-family: var(--f-hand); font-size: 17px; }
+.issues { margin: 0; padding-left: 18px; display: grid; gap: 7px; font-size: 14px; }
+.issues li::marker { color: var(--warn); }
+.issues strong { color: var(--warn); font-weight: 700; }
+
+.pages { display: flex; flex-wrap: wrap; gap: 6px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); padding-block: 8px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.pages a { font: 600 13px var(--f-ui); text-decoration: none; border: 1.5px solid var(--line); border-radius: 999px; padding: 6px 13px; background: var(--frame); }
+.pages a[aria-current="page"] { background: var(--ink); color: var(--frame); border-color: var(--ink); }
+.pages b { font-family: var(--f-mono); font-size: 11px; color: var(--muted); margin-right: 6px; }
+.pages a[aria-current="page"] b { color: var(--fill-2); }
+
+/* ---------- frame ---------- */
+.stage { display: flex; justify-content: center; }
+.frame { container-type: inline-size; width: 100%; background: var(--frame); overflow-x: clip; }
+.stage[data-view="mobile"] .frame { max-width: 390px; border-radius: 28px; }
+.chrome { display: flex; gap: 6px; align-items: center; padding: 10px 14px; border-bottom: 1.5px solid var(--line); background: var(--fill); font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.chrome i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--line); flex: none; }
+.chrome span { margin-left: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+/* cabeçalho do site: barra utilitária + navegação principal (padrão Embraer) */
+.util { display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: center; justify-content: flex-end; padding: 7px 28px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--fill-2); }
+.util .search { width: 15px; height: 15px; border: 1.5px solid var(--muted); border-radius: 50%; position: relative; }
+.util .search::after { content: ""; position: absolute; width: 6px; height: 1.5px; background: var(--muted); right: -5px; bottom: -2px; transform: rotate(45deg); }
+.mainnav { display: flex; align-items: center; gap: 22px; padding: 14px 28px; border-bottom: 1.5px solid var(--line); }
+.logo { display: flex; align-items: center; gap: 10px; flex: none; text-decoration: none; }
+.logo i { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--line); background: linear-gradient(to top right, transparent calc(50% - 1px), var(--line) 50%, transparent calc(50% + 1px)), var(--fill); }
+.logo strong { font-size: 14.5px; line-height: 1.15; }
+.logo small { display: block; font-weight: 400; font-size: 11.5px; color: var(--muted); }
+.menu { display: flex; flex-wrap: wrap; gap: 4px 20px; font-size: 13.5px; font-weight: 600; flex: 1; justify-content: flex-end; }
+.menu a { text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
+.menu a.on { border-bottom-color: var(--ink); }
+.menu .dd::after { content: " ▾"; font-size: 10px; color: var(--muted); }
+.mainnav .btn { flex: none; }
+.burger { display: none; margin-left: auto; width: 40px; height: 36px; border: 1.5px solid var(--ink); border-radius: 6px; background: repeating-linear-gradient(to bottom, transparent 0 9px, var(--ink) 9px 11px) center / 18px 22px no-repeat; flex: none; }
+.mega { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; padding: 18px 28px 22px; border-bottom: 1.5px solid var(--line); background: var(--fill); font-size: 13px; }
+.mega h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 6px; }
+.mega ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; }
+.subnav { display: flex; flex-wrap: wrap; gap: 4px 18px; padding: 10px 28px; border-bottom: 1.5px solid var(--line); background: var(--fill); font-size: 13px; }
+.subnav a { text-decoration: none; }
+.subnav a.on { font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+
+/* hero em largura total com H1 sobreposto */
+.hero { position: relative; aspect-ratio: 16 / 6; max-width: 100%; border-bottom: 1.5px solid var(--line); background:
+  linear-gradient(to top right, transparent calc(50% - .75px), var(--line) 50%, transparent calc(50% + .75px)),
+  linear-gradient(to bottom right, transparent calc(50% - .75px), var(--line) 50%, transparent calc(50% + .75px)), var(--fill);
+  display: flex; align-items: flex-end; }
+.hero-in { position: relative; background: var(--frame); margin: 0 28px 28px; padding: 14px 20px; border: 2px solid var(--ink); display: grid; gap: 4px; max-width: 70%; }
+.hero-in h1 { font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
+.hero-tag { position: absolute; top: 14px; right: 16px; background: var(--frame); font-size: 12px; color: var(--muted); padding: 2px 8px; border-radius: 3px; }
+.crumb { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); }
+
+/* blocos genéricos */
+.sec { padding: 40px 28px; display: grid; gap: 22px; border-bottom: 1.5px dashed var(--line); }
+.sec.tint { background: color-mix(in srgb, var(--fill) 45%, var(--frame)); }
+.sec h2 { font-size: 28px; font-weight: 800; letter-spacing: -.015em; }
+.sec h3 { font-size: 21px; font-weight: 700; }
+.sec h4 { font-size: 15px; font-weight: 700; }
+.intro { font-size: 17px; max-width: 66ch; }
+.lead { font-size: 16px; max-width: 62ch; }
+.sm { font-size: 13.5px; color: var(--muted); }
+.year { font-family: var(--f-mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.cols { display: grid; gap: 20px; }
+.c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.c4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.stack { display: grid; gap: 12px; align-content: start; min-width: 0; }
+
+/* linha alternada: texto + carrossel (padrão das Exposições Embraer) */
+.alt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 32px; align-items: center; padding: 34px 28px; border-bottom: 1.5px dashed var(--line); }
+.alt:nth-of-type(even) > .stack:first-child { order: 2; }
+.alt .stack { gap: 10px; }
+
+.ph { position: relative; border: 1.5px solid var(--line); background:
+  linear-gradient(to top right, transparent calc(50% - .75px), var(--line) 50%, transparent calc(50% + .75px)),
+  linear-gradient(to bottom right, transparent calc(50% - .75px), var(--line) 50%, transparent calc(50% + .75px)), var(--fill);
+  aspect-ratio: 4 / 3; max-width: 100%; display: grid; place-items: center; }
+.ph span, .vid span { position: relative; background: var(--frame); padding: 2px 8px; font-size: 12px; color: var(--muted); border-radius: 3px; text-align: center; max-width: 90%; }
+.ph.wide { aspect-ratio: 16 / 9; }
+.ph.sq { aspect-ratio: 1; }
+.carousel { position: relative; display: grid; gap: 8px; min-width: 0; }
+.carousel .ph { aspect-ratio: 16 / 10; }
+.car-ctrl { display: flex; align-items: center; gap: 10px; font-family: var(--f-mono); font-size: 12.5px; color: var(--muted); }
+.car-ctrl i { width: 30px; height: 30px; border: 1.5px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-style: normal; color: var(--ink); font-family: var(--f-ui); }
+.car-ctrl .dots { display: flex; gap: 5px; margin-left: auto; }
+.car-ctrl .dots u { width: 7px; height: 7px; border-radius: 50%; background: var(--fill-2); }
+.car-ctrl .dots u:first-child { background: var(--ink); }
+.vid { position: relative; aspect-ratio: 16 / 9; max-width: 100%; background: var(--fill-2); border: 1.5px solid var(--line); border-radius: 6px; display: grid; place-items: center; }
+.vid::before { content: ""; width: 54px; height: 54px; border-radius: 50%; border: 2px solid var(--ink); }
+.vid::after { content: ""; position: absolute; top: calc(50% - 10px); left: calc(50% - 5px); border-left: 16px solid var(--ink); border-top: 10px solid transparent; border-bottom: 10px solid transparent; }
+.vid span { position: absolute; bottom: 10px; }
+
+.lines { display: grid; gap: 7px; }
+.lines i { display: block; height: 9px; border-radius: 3px; background: var(--fill-2); }
+.lines i:last-child { width: 62%; }
+.btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; border: 1.5px solid var(--ink); border-radius: 6px; padding: 9px 16px; font-weight: 700; font-size: 14px; background: transparent; color: var(--ink); text-decoration: none; width: fit-content; }
+.btn.pri { background: var(--ink); color: var(--frame); }
+.btn.sm-btn { padding: 5px 12px; font-size: 13px; }
+.more { font-weight: 700; font-size: 14px; text-decoration: underline; text-underline-offset: 4px; width: fit-content; }
+.more::after { content: " →"; }
+.box { border: 1.5px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0; background: var(--frame); }
+.box.strong { border: 2px solid var(--ink); }
+.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 14px; font-size: 14px; margin: 0; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; font-weight: 500; }
+.chip { display: inline-block; font-family: var(--f-mono); font-size: 11.5px; border: 1.5px solid var(--ink); border-radius: 999px; padding: 2px 10px; width: fit-content; }
+
+/* cards de navegação com imagem (Tour Virtual / Visitas Guiadas) */
+.navcard { display: grid; gap: 10px; text-decoration: none; min-width: 0; }
+.navcard .ph { aspect-ratio: 16 / 9; }
+.navcard h3 { font-size: 18px; }
+.navcard p { font-size: 13.5px; color: var(--muted); }
+
+.timeline { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); border-top: 2px solid var(--ink); }
+.timeline div { padding: 12px 10px 0 0; position: relative; font-size: 13.5px; min-width: 0; }
+.timeline div::before { content: ""; position: absolute; top: -7px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--frame); border: 2px solid var(--ink); }
+.timeline b { display: block; font-family: var(--f-mono); font-size: 14px; font-variant-numeric: tabular-nums; }
+
+.craft-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; }
+.craft { display: grid; gap: 5px; align-content: start; font-size: 13px; text-decoration: none; }
+.craft b { font-size: 14px; }
+.craft em { font-style: normal; font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.cat-title { display: flex; align-items: baseline; gap: 10px; border-bottom: 1.5px solid var(--ink); padding-bottom: 6px; }
+.cat-title span { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+
+.pager { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.pix { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; border: 1.5px dashed var(--ink); border-radius: 8px; padding: 12px 14px; font-family: var(--f-mono); font-size: 13.5px; }
+.pix b { overflow-wrap: anywhere; }
+.quote { display: grid; gap: 10px; padding: 44px 28px; text-align: center; justify-items: center; background: var(--fill); border-bottom: 1.5px dashed var(--line); }
+.quote p { font-size: 22px; font-weight: 500; font-style: italic; max-width: 40ch; text-wrap: balance; }
+.quote span { font-size: 13px; color: var(--muted); }
+.form { display: grid; gap: 12px; }
+.field { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+.field i { display: block; height: 40px; border: 1.5px solid var(--line); border-radius: 6px; }
+.field i.area { height: 110px; }
+
+/* rodapé em colunas (padrão Embraer) */
+.foot { background: var(--ink); color: var(--frame); padding: 34px 28px 22px; display: grid; gap: 24px; }
+.foot-cols { display: grid; grid-template-columns: 1.2fr repeat(4, minmax(0, 1fr)); gap: 22px; font-size: 13px; }
+.foot h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; opacity: .7; margin-bottom: 8px; }
+.foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.foot .flogo { width: 52px; height: 52px; border-radius: 50%; border: 1.5px solid var(--fill-2); opacity: .8; }
+.foot-legal { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; border-top: 1px solid color-mix(in srgb, var(--frame) 25%, transparent); padding-top: 14px; font-size: 12px; opacity: .8; }
+
+/* anotações */
+.note { font-family: var(--f-hand); font-size: 20px; line-height: 1.15; color: var(--note); background: var(--note-bg); border: 1.5px solid var(--note); border-radius: 8px; padding: 8px 12px 9px; max-width: 46ch; display: flex; gap: 10px; align-items: flex-start; }
+.note b { font-family: var(--f-mono); font-size: 12px; font-weight: 600; background: var(--note); color: var(--frame); border-radius: 999px; min-width: 22px; height: 22px; display: grid; place-items: center; flex: none; margin-top: 2px; }
+.note.warn { color: var(--warn); background: var(--warn-bg); border-color: var(--warn); }
+.note.warn b { background: var(--warn); }
+.notes { display: flex; flex-wrap: wrap; gap: 10px; padding: 16px 28px; background: color-mix(in srgb, var(--note-bg) 40%, var(--frame)); border-bottom: 1.5px dashed var(--line); }
+.hide-notes .notes { display: none; }
+
+/* ---------- mobile (pelo tamanho do frame) ---------- */
+@container (max-width: 640px) {
+  .util { display: none; }
+  .mainnav { padding: 12px 16px; gap: 10px; }
+  .menu, .mainnav .btn, .mega, .subnav { display: none; }
+  .burger { display: block; }
+  .hero { aspect-ratio: 4 / 5; }
+  .hero-in { margin: 0 16px 16px; max-width: none; }
+  .hero-in h1 { font-size: 26px; }
+  .sec, .alt { padding: 30px 16px; }
+  .sec h2 { font-size: 23px; }
+  .alt, .c2, .c3 { grid-template-columns: minmax(0, 1fr); }
+  .alt:nth-of-type(even) > .stack:first-child { order: 0; }
+  .c4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .timeline { grid-auto-flow: row; border-top: 0; border-left: 2px solid var(--ink); }
+  .timeline div { padding: 0 0 14px 16px; }
+  .timeline div::before { top: 3px; left: -7px; }
+  .craft-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .quote { padding: 32px 16px; }
+  .quote p { font-size: 19px; }
+  .notes { padding: 14px 16px; }
+  .note { font-size: 18px; }
+  .foot { padding: 28px 16px 18px; }
+  .foot-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) { .overview { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .frame { transition: none; } }
+/* gutter lateral com safe-area em todas as faixas */
+.util, .mainnav, .mega, .subnav, .sec, .alt, .quote, .foot, .mnav {
+  padding-left: max(28px, env(safe-area-inset-left, 0px)) !important;
+  padding-right: max(28px, env(safe-area-inset-right, 0px)) !important;
+}
+.hero-in { margin-left: max(28px, env(safe-area-inset-left, 0px)); }
+.site-top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: var(--frame); }
+body::before { background: var(--frame); }
+.burger { cursor: pointer; padding: 0; }
+.mnav { display: none; border-bottom: 1.5px solid var(--line); background: var(--frame); padding-block: 8px 16px; }
+.mnav a { display: block; padding: 11px 0; border-bottom: 1px solid var(--fill-2); font-weight: 600; text-decoration: none; }
+.mnav a.pri-link { border: 0; margin-top: 10px; display: inline-flex; padding: 10px 18px; }
+@container (max-width: 640px) {
+  .util, .mainnav, .mega, .subnav, .sec, .alt, .quote, .foot, .mnav {
+    padding-left: max(16px, env(safe-area-inset-left, 0px)) !important;
+    padding-right: max(16px, env(safe-area-inset-right, 0px)) !important;
+  }
+  .hero-in { margin-left: max(16px, env(safe-area-inset-left, 0px)); }
+  .mnav.open { display: block; }
+}
+</style>
+
+<div class="doc">
+  <div class="stage" id="stage" data-view="desktop">
+    <div class="frame">
+
+      <!-- CABEÇALHO GLOBAL -->
+      <div class="site-top">
+      <div class="util">
+        <span>Sobre o projeto</span><span>Imprensa</span><span>Instagram</span><span>YouTube</span>
+        <span class="search" aria-hidden="true"></span>
+      </div>
+      <div class="mainnav">
+        <a class="logo" href="#inicio"><i></i><strong>Balões de Santos-Dumont<small>Projeto · 25 anos</small></strong></a>
+        <nav class="menu" aria-label="Menu principal (wireframe)">
+          <a href="#santos-dumont" data-p="santos-dumont">Santos-Dumont</a>
+          <a href="#projeto" data-p="projeto">O Projeto</a>
+          <a href="#aeronaves" data-p="aeronaves" class="dd">Aeronaves Históricas</a>
+          <a href="#exposicoes" data-p="exposicoes">Exposições</a>
+          <a href="#contato" data-p="contato">Contato</a>
+        </nav>
+        <a class="btn pri sm-btn" href="#no-ar">Apoie o Projeto</a>
+        <button type="button" class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false"></button>
+      </div>
+      <div class="mega" id="mega" hidden>
+        <div><h4>Balões</h4><ul><li>Balão Brasil (1898)</li><li>Balão Amérique (1898)</li><li>Balão Le Fatum (1901)</li></ul></div>
+        <div><h4>Dirigíveis</h4><ul><li>Dirigível nº1 ao nº10</li><li>Dirigível nº13</li><li>Dirigível nº14</li></ul></div>
+        <div><h4>Aviões</h4><ul><li>14-Bis (1906)</li><li>Avião nº15 a nº17</li><li>Hidroplano nº18</li></ul></div>
+        <div><h4>Demoiselle</h4><ul><li>Demoiselle nº19 a nº22</li><li><b>Ver todas as aeronaves →</b></li></ul></div>
+      </div>
+      <nav class="mnav" id="mnav" aria-label="Menu mobile">
+        <a href="#santos-dumont">Santos-Dumont</a><a href="#projeto">O Projeto</a><a href="#aeronaves">Aeronaves Históricas</a><a href="#exposicoes">Exposições</a><a href="#contato">Contato</a>
+        <a class="btn pri pri-link" href="#no-ar">Apoie o Projeto</a>
+      </nav>
+      </div>
+
+      <!-- ===================== 01 INÍCIO ===================== -->
+      <main data-page="inicio">
+        <div class="hero"><span class="hero-tag">Foto em largura total: balão em voo</span>
+          <div class="hero-in"><span class="crumb">Início</span><h1>Projeto Balões de Santos-Dumont</h1><p class="sm">25 anos preservando a memória e as invenções do Pai da Aviação</p></div>
+        </div>
+        <section class="sec">
+          <p class="intro">O Projeto Balões de Santos-Dumont preserva há 25 anos a memória e as invenções de Alberto Santos-Dumont, com réplicas históricas, exposições, atividades educativas e apresentações culturais.</p>
+        </section>
+        <section class="sec tint">
+          <h2>Explore</h2>
+          <div class="cols c3">
+            <a class="navcard" href="#santos-dumont"><div class="ph"><span>Retrato de Santos-Dumont</span></div><h3>Santos-Dumont</h3><p>Vida, conquistas, cronologia e o relógio de pulso</p></a>
+            <a class="navcard" href="#aeronaves"><div class="ph"><span>Dirigível nº6 e a Torre Eiffel</span></div><h3>Aeronaves Históricas</h3><p>As 28 criações, do Balão Brasil ao Demoiselle</p></a>
+            <a class="navcard" href="#exposicoes"><div class="ph"><span>Foto de exposição</span></div><h3>Exposições</h3><p>CMRR, Assembleia Legislativa, Cidade Administrativa</p></a>
+          </div>
+        </section>
+        <section class="alt">
+          <div class="stack">
+            <span class="chip">PRONAC 260295 · Lei Rouanet</span>
+            <h3>No Ar: A Obra-Prima de Santos-Dumont</h3>
+            <p class="lead">Campanha para reconstruir em escala real as aeronaves e balões de Santos-Dumont, com captação aprovada pelo Ministério da Cultura.</p>
+            <div class="btns"><a class="btn pri" href="#no-ar">Apoie o Projeto</a><a class="btn" href="#no-ar">Conheça o projeto</a></div>
+          </div>
+          <div class="ph wide"><span>Arte "NO AR"</span></div>
+        </section>
+        <section class="alt">
+          <div class="stack">
+            <span class="year">Destaque · YouTube</span>
+            <h3>Os Balões de Santos-Dumont: 25 anos de história</h3>
+            <p class="lead">Entrevista com Carlos Magno de Lima e Silva na UPTV Minas sobre invenção, patrimônio e a trajetória do projeto.</p>
+            <a class="more" href="#exposicoes">Ver todos os vídeos</a>
+          </div>
+          <div class="vid"><span>UPTV Minas</span></div>
+        </section>
+        <section class="sec tint">
+          <div class="cols c2">
+            <a class="navcard" href="#aeronave"><div class="ph"><span>Réplica do Demoiselle XIX</span></div><h3>Réplica interativa: Demoiselle XIX</h3><p>Uma réplica que o público pode tocar e explorar</p></a>
+            <a class="navcard" href="#contato"><div class="ph"><span>Visita guiada</span></div><h3>Agende uma visita</h3><p>Escolas, grupos e empresas</p></a>
+          </div>
+        </section>
+        <div class="quote"><p>"Com você, esse saber ganha asas!"</p><span>Balões de Santos-Dumont</span></div>
+      </main>
+
+      <!-- ===================== 02 SANTOS-DUMONT ===================== -->
+      <main data-page="santos-dumont" hidden>
+        <div class="hero"><span class="hero-tag">Foto histórica de Santos-Dumont</span>
+          <div class="hero-in"><span class="crumb">Início / Santos-Dumont</span><h1>Alberto Santos-Dumont</h1><p class="sm">O pioneiro da aviação mundial</p></div>
+        </div>
+        <section class="sec">
+          <p class="intro">Nascido em 20 de julho de 1873, em Palmira (hoje Santos Dumont), Minas Gerais, mudou-se para Paris aos 18 anos e se tornou pioneiro da aviação. Disponibilizou de graça os planos do Demoiselle, por considerar a aviação um bem da humanidade.</p>
+        </section>
+        <section class="sec tint">
+          <h2>Principais conquistas</h2>
+          <div class="cols c4">
+            <div class="box"><span class="year">1901</span><h4>Prêmio Deutsch</h4><p class="sm">Dirigível nº6 contorna a Torre Eiffel em menos de 30 minutos</p></div>
+            <div class="box"><span class="year">1906</span><h4>14-Bis</h4><p class="sm">Primeiro voo público homologado oficialmente</p></div>
+            <div class="box"><span class="year">1907–1909</span><h4>Demoiselle</h4><p class="sm">Primeiro avião de produção em série do mundo</p></div>
+            <div class="box"><span class="year">1904</span><h4>Relógio de pulso</h4><p class="sm">Primeiro relógio de pulso masculino da história</p></div>
+          </div>
+        </section>
+        <section class="sec">
+          <h2>Cronologia</h2>
+          <div class="timeline">
+            <div><b>1873</b>Nascimento em Palmira, MG</div><div><b>1891</b>Mudança para Paris</div><div><b>1898</b>Primeiro voo de balão</div>
+            <div><b>1901</b>Prêmio Deutsch</div><div><b>1906</b>Voo do 14-Bis</div><div><b>1932</b>Falecimento</div>
+          </div>
+        </section>
+        <section class="alt">
+          <div class="stack">
+            <span class="year">4 de julho de 1898</span>
+            <h3>O primeiro voo: Balão Brasil</h3>
+            <p class="lead">O primeiro voo com o Balão Brasil marcou o início da jornada de Santos-Dumont na conquista dos céus.</p>
+            <dl class="kv"><dt>Volume</dt><dd>113 m³</dd><dt>Diâmetro</dt><dd>6 metros</dd><dt>Peso</dt><dd>35,5 kg</dd><dt>Material</dt><dd>Seda japonesa</dd></dl>
+          </div>
+          <div class="carousel"><div class="ph"><span>Balão Brasil</span></div><div class="car-ctrl"><i>‹</i><i>›</i><span>1 / 3</span><span class="dots"><u></u><u></u><u></u></span></div></div>
+        </section>
+        <section class="alt">
+          <div class="stack">
+            <span class="year">Invenções · 1904</span>
+            <h3>O Relógio Santos-Dumont</h3>
+            <p class="lead">Para ver as horas sem tirar as mãos dos controles, Santos-Dumont pediu ao amigo Louis Cartier um relógio de pulso. Nasceu o Santos de Cartier, produzido até hoje.</p>
+            <a class="more" href="#santos-dumont">Saiba mais</a>
+          </div>
+          <div class="carousel"><div class="ph"><span>Santos-Dumont com o relógio · Modelo 1904</span></div><div class="car-ctrl"><i>‹</i><i>›</i><span>1 / 2</span><span class="dots"><u></u><u></u></span></div></div>
+        </section>
+        <section class="sec tint">
+          <h2>Vídeos</h2>
+          <div class="cols c2"><div class="vid"><span>Biografia resumida</span></div><div class="vid"><span>Há 125 anos: o primeiro voo</span></div></div>
+        </section>
+        <div class="quote"><p>"Suas invenções colocam o Brasil no centro da história da aviação mundial!"</p></div>
+      </main>
+
+      <!-- ===================== 03 O PROJETO ===================== -->
+      <main data-page="projeto" hidden>
+        <div class="hero"><span class="hero-tag">Equipe com réplica de balão</span>
+          <div class="hero-in"><span class="crumb">Início / O Projeto</span><h1>25 anos de história e parcerias</h1></div>
+        </div>
+        <section class="sec">
+          <p class="intro">Nossa missão é preservar a cultura e a memória nacional mostrando a obra de Santos-Dumont e seus passos decisivos para a conquista do voo, por meio de réplicas históricas, atividades educativas e apresentações culturais.</p>
+        </section>
+        <section class="sec tint">
+          <h2>Linha do tempo</h2>
+          <div class="timeline">
+            <div><b>1998</b>Centenário do Balão Brasil. Primeira réplica</div>
+            <div><b>2000</b>Nasce o espetáculo "O Sonho de Santos-Dumont"</div>
+            <div><b>2006</b>Aprovado pela Comissão dos 100 Anos do 14-Bis</div>
+            <div><b>2023</b>Réplica interativa do Demoiselle XIX</div>
+            <div><b>2025</b>Exposição de 25 anos na ALMG</div>
+            <div><b>2026</b>Campanha No Ar (PRONAC 260295)</div>
+          </div>
+        </section>
+        <section class="alt">
+          <div class="stack"><span class="year">15 de outubro de 2023</span><h3>Réplica interativa: Demoiselle XIX</h3>
+            <p class="lead">Construção artesanal de Carlos Magno de Lima e Silva, com apoio técnico da Oficina do Ferreiro Sr. Ademir Pão (Diamantina/MG). O público pode tocar e explorar.</p></div>
+          <div class="carousel"><div class="ph"><span>Processo artesanal</span></div><div class="car-ctrl"><i>‹</i><i>›</i><span>1 / 6</span><span class="dots"><u></u><u></u><u></u><u></u><u></u><u></u></span></div></div>
+        </section>
+        <section class="alt">
+          <div class="stack"><span class="year">Parceria estratégica</span><h3>Instituto e Encontro Cultural de Milho Verde</h3>
+            <p class="lead">Parceria para a expansão nacional do projeto e o desenvolvimento do "Passos de Santos-Dumont".</p></div>
+          <div class="ph wide"><span>Milho Verde</span></div>
+        </section>
+        <section class="sec">
+          <h2>Quem faz</h2>
+          <div class="cols c2">
+            <div class="box"><div class="ph wide"><span>Foto de Carlos Magno</span></div><h4>Carlos Magno de Lima e Silva</h4><p class="sm">Idealizador e construtor das réplicas</p></div>
+            <div class="box"><h4>Patrimônio Cultural</h4><p class="sm">Educando novas gerações sobre a importância de Santos-Dumont para a aviação mundial.</p><div class="lines"><i></i><i></i><i></i></div></div>
+          </div>
+        </section>
+      </main>
+
+      <!-- ===================== 04 AERONAVES ===================== -->
+      <main data-page="aeronaves" hidden>
+        <nav class="subnav" aria-label="Submenu Aeronaves (wireframe)"><a class="on" href="#aeronaves">Sobre</a><a href="#aeronaves">Balões</a><a href="#aeronaves">Dirigíveis</a><a href="#aeronaves">Aviões</a><a href="#aeronaves">Demoiselle</a></nav>
+        <div class="hero"><span class="hero-tag">Montagem com várias aeronaves</span>
+          <div class="hero-in"><span class="crumb">Início / Aeronaves Históricas</span><h1>Aeronaves Históricas</h1></div>
+        </div>
+        <section class="sec">
+          <p class="intro">Entre 1898 e 1909, Santos-Dumont criou 28 balões, dirigíveis e aviões. Cada um tem sua própria página, com ficha técnica, história e imagens.</p>
+        </section>
+        <section class="sec tint" id="craft-groups"></section>
+      </main>
+
+      <!-- ===================== 04.1 AERONAVE (modelo) ===================== -->
+      <main data-page="aeronave" hidden>
+        <nav class="subnav" aria-label="Submenu Aeronaves (wireframe)"><a href="#aeronaves">Sobre</a><a href="#aeronaves">Balões</a><a class="on" href="#aeronaves">Dirigíveis</a><a href="#aeronaves">Aviões</a><a href="#aeronaves">Demoiselle</a></nav>
+        <div class="hero"><span class="hero-tag">Dirigível nº6 contornando a Torre Eiffel</span>
+          <div class="hero-in"><span class="crumb">Início / Aeronaves Históricas / Dirigíveis</span><h1>Dirigível nº6</h1><p class="sm">1901 · vencedor do Prêmio Deutsch</p></div>
+        </div>
+        <section class="alt">
+          <div class="stack">
+            <h3>Ficha técnica</h3>
+            <dl class="kv"><dt>Ano</dt><dd>1901</dd><dt>Tipo</dt><dd>Dirigível</dd><dt>Volume</dt><dd>622 m³</dd><dt>Motor</dt><dd>Buchet 20 HP</dd><dt>Marco</dt><dd>Contornou a Torre Eiffel em 30 min</dd></dl>
+          </div>
+          <div class="stack">
+            <h3>História</h3>
+            <p class="lead">Construído para disputar o Prêmio Deutsch, o nº6 saiu de Saint-Cloud, contornou a Torre Eiffel e voltou em menos de 30 minutos.</p>
+            <div class="lines"><i></i><i></i><i></i></div>
+          </div>
+        </section>
+        <section class="sec tint">
+          <h2>Galeria</h2>
+          <div class="carousel"><div class="ph wide"><span>Imagem histórica / réplica</span></div><div class="car-ctrl"><i>‹</i><i>›</i><span>1 / 5</span><span class="dots"><u></u><u></u><u></u><u></u><u></u></span></div></div>
+        </section>
+        <section class="sec">
+          <div class="pager"><a class="btn" href="#aeronave">← Dirigível nº5 (1901)</a><a class="btn" href="#aeronave">Balão Le Fatum (1901) →</a></div>
+          <h3>Outras aeronaves</h3>
+          <div class="cols c4">
+            <div class="craft"><div class="ph"><span>Foto</span></div><b>Dirigível nº5</b><em>1901</em></div>
+            <div class="craft"><div class="ph"><span>Foto</span></div><b>Dirigível nº7</b><em>1901</em></div>
+            <div class="craft"><div class="ph"><span>Foto</span></div><b>14-Bis</b><em>1906</em></div>
+            <div class="craft"><div class="ph"><span>Foto</span></div><b>Demoiselle nº20</b><em>1908</em></div>
+          </div>
+        </section>
+      </main>
+
+      <!-- ===================== 05 EXPOSIÇÕES ===================== -->
+      <main data-page="exposicoes" hidden>
+        <div class="hero"><span class="hero-tag">Foto de exposição com réplicas</span>
+          <div class="hero-in"><span class="crumb">Início / Exposições</span><h1>Exposições</h1></div>
+        </div>
+        <section class="sec">
+          <p class="intro">Ao longo de 25 anos, o projeto levou réplicas, oficinas e mostras de cinema sobre Santos-Dumont a espaços culturais e públicos de Minas Gerais. Conheça as exposições realizadas.</p>
+        </section>
+        <section class="alt">
+          <div class="stack"><span class="year">2026 · CMRR, Belo Horizonte</span><h3>Conexões Aeroespaciais: Reciclando Ideias</h3>
+            <p class="lead">Arte, ciência, invenção e sustentabilidade, com o desenvolvimento do 147-bis. Ateliê aberto, mediação cultural, mostra de cinema e atividades para crianças. Prorrogada até 04/09/2026.</p>
+            <a class="more" href="#exposicoes">Saiba mais</a></div>
+          <div class="carousel"><div class="ph"><span>Galeria da exposição</span></div><div class="car-ctrl"><i>‹</i><i>›</i><span>1 / 8</span><span class="dots"><u></u><u></u><u></u><u></u></span></div></div>
+        </section>
+        <section class="alt">
+          <div class="stack"><span class="year">01/09/2026 · CMRR</span><h3>Encontro para Empresários</h3>
+            <p class="lead">Dia de imersão e networking, com palestras às 11h e 18h, e apresentação do projeto No Ar e das possibilidades de apoio com benefício fiscal.</p></div>
+          <div class="ph wide"><span>Arte do convite</span></div>
+        </section>
+        <section class="alt">
+          <div class="stack"><span class="year">Outubro de 2025 · Assembleia Legislativa de MG</span><h3>25 Anos do Projeto</h3>
+            <p class="lead">Exposição comemorativa com réplicas históricas, demonstração da construção artesanal dos balões, interação com o Demoiselle XIX e palestras sobre a aviação brasileira.</p>
+            <a class="more" href="#exposicoes">Saiba mais</a></div>
+          <div class="carousel"><div class="ph"><span>Fotos ALMG</span></div><div class="car-ctrl"><i>‹</i><i>›</i><span>1 / 10</span><span class="dots"><u></u><u></u><u></u><u></u></span></div></div>
+        </section>
+        <section class="alt">
+          <div class="stack"><span class="year">Cidade Administrativa de MG</span><h3>Exposição 25 Anos de Sucesso</h3>
+            <p class="lead">Mostra do projeto na Cidade Administrativa, com réplicas e o 14-Bis.</p></div>
+          <div class="vid"><span>Evento Santos-Dumont · YouTube</span></div>
+        </section>
+        <section class="alt">
+          <div class="stack"><span class="year">Centro de Eventos Santos-Dumont</span><h3>Exposição Projeto Balões de Santos-Dumont</h3>
+            <p class="lead">Venha prestigiar!</p></div>
+          <div class="ph wide"><span>Cartaz</span></div>
+        </section>
+        <section class="sec tint">
+          <div class="cols c2">
+            <a class="navcard" href="#exposicoes"><div class="ph"><span>Grade de vídeos</span></div><h3>Vídeos das exposições</h3><p>Todos os vídeos do canal em um só lugar</p></a>
+            <a class="navcard" href="#contato"><div class="ph"><span>Grupo em visita</span></div><h3>Visitas guiadas</h3><p>Leve a exposição para sua escola ou empresa</p></a>
+          </div>
+        </section>
+        <div class="quote"><p>"Mantendo vivo o saber de Alberto Santos-Dumont através da arte dos balões."</p><span>Carlos Magno de Lima e Silva</span></div>
+      </main>
+
+      <!-- ===================== 06 NO AR ===================== -->
+      <main data-page="no-ar" hidden>
+        <div class="hero"><span class="hero-tag">Arte da campanha No Ar</span>
+          <div class="hero-in"><span class="crumb">Início / No Ar</span><h1>No Ar: A Obra-Prima de Santos-Dumont</h1><p class="sm">PRONAC 260295 · Lei Rouanet · Ministério da Cultura</p></div>
+        </div>
+        <section class="sec">
+          <p class="intro">Iniciativa cultural para reconstruir, em escala real, as aeronaves, balões e inventos de Santos-Dumont, numa grande exposição imersiva com conteúdo educativo e audiovisual.</p>
+        </section>
+        <section class="sec tint">
+          <h2>Como apoiar</h2>
+          <div class="cols c3">
+            <div class="box strong"><h4>Empresas</h4><p class="sm">Patrocínio pela Lei Rouanet com benefício fiscal.</p><a class="btn pri sm-btn" href="#contato">Falar com o projeto</a></div>
+            <div class="box"><h4>Pessoa física</h4><p class="sm">Doação incentivada pelo Imposto de Renda.</p><a class="btn sm-btn" href="#contato">Como funciona</a></div>
+            <div class="box"><h4>Doação via PIX</h4><div class="pix"><b>baloesdesantosdumont@gmail.com</b><span class="btn sm-btn pri">Copiar PIX</span></div></div>
+          </div>
+        </section>
+        <section class="alt">
+          <div class="stack"><h3>Por que este projeto</h3><p class="lead">Ampliar o reconhecimento internacional da obra de Santos-Dumont e mostrar ao público a dimensão real das invenções que transformaram a aviação.</p><div class="lines"><i></i><i></i></div></div>
+          <div class="ph wide"><span>Réplica em escala real (simulação)</span></div>
+        </section>
+        <section class="sec">
+          <h2>Vídeos do projeto</h2>
+          <div class="cols c2"><div class="vid"><span>Projeto Balões de Santos-Dumont</span></div><div class="vid"><span>Projeto No Ar</span></div></div>
+        </section>
+      </main>
+
+      <!-- ===================== 07 CONTATO ===================== -->
+      <main data-page="contato" hidden>
+        <div class="hero"><span class="hero-tag">Foto de balão</span>
+          <div class="hero-in"><span class="crumb">Início / Contato</span><h1>Contato</h1></div>
+        </div>
+        <section class="sec">
+          <div class="cols c2">
+            <div class="stack">
+              <p class="lead">Saiba mais sobre o projeto, agende visitas ou contribua com a preservação da memória de Santos-Dumont.</p>
+              <dl class="kv">
+                <dt>E-mail</dt><dd>baloesdesantosdumont@gmail.com</dd>
+                <dt>YouTube</dt><dd>@carlosmagnodelimaesilva138</dd>
+                <dt>Instagram</dt><dd>@projetobaloesdesantosdumont</dd>
+                <dt>Idealizador</dt><dd>@carlosmagnodelimaesilva</dd>
+              </dl>
+            </div>
+            <div class="box form">
+              <div class="field">Nome<i></i></div>
+              <div class="field">E-mail<i></i></div>
+              <div class="field">Assunto (visita, patrocínio, imprensa)<i></i></div>
+              <div class="field">Mensagem<i class="area"></i></div>
+              <span class="btn pri">Enviar mensagem</span>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- RODAPÉ GLOBAL -->
+      <footer class="foot">
+        <div class="foot-cols">
+          <div class="stack"><span class="flogo"></span><span>Balões de Santos-Dumont</span></div>
+          <div><h4>O Projeto</h4><ul><li>Missão</li><li>25 anos</li><li>Quem faz</li></ul></div>
+          <div><h4>Santos-Dumont</h4><ul><li>Biografia</li><li>Aeronaves Históricas</li><li>Relógio Santos</li></ul></div>
+          <div><h4>Exposições</h4><ul><li>Realizadas</li><li>Vídeos</li><li>Visitas guiadas</li></ul></div>
+          <div><h4>Apoie</h4><ul><li>No Ar · Lei Rouanet</li><li>Doação via PIX</li><li>Contato</li></ul></div>
+        </div>
+        <div class="foot-legal"><span>Instagram · YouTube</span><span>© 2026 Projeto Balões de Santos-Dumont · PRONAC 260295</span></div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var craft = [
+    ["Balões", [["Balão Brasil (Brésil)", "1898", "Seda japonesa, 113 m³"], ["Balão Amérique", "1898", "500 m³, 10 m de diâmetro"], ["Balão Le Fatum", "1901", "Equilíbrio aerostático"]]],
+    ["Dirigíveis", [["Dirigível nº1", "1898", "180 m³, motor 3,5 HP"], ["Dirigível nº2", "1899", "200 m³, melhor controle"], ["Dirigível nº3", "1899", "500 m³, passeios em Paris"], ["Dirigível nº4", "1900", "420 m³, motor 7 HP"], ["Dirigível nº5", "1901", "550 m³, Prêmio Deutsch"], ["Dirigível nº6", "1901", "622 m³, vencedor do Deutsch"], ["Dirigível nº7", "1901", "1.257 m³, longas distâncias"], ["Dirigível nº8", "1902", "Compacto e ágil"], ["Dirigível nº9", "1903", "\"La Baladeuse\""], ["Dirigível nº10", "1903", "\"Ônibus Aéreo\""], ["Dirigível nº13", "1905", "220 m³, experimental"], ["Dirigível nº14", "1906", "\"Mãe\" do 14-Bis"]]],
+    ["Aviões", [["Aeronave 11", "1905", "Protótipo de avião"], ["Aeronave 12", "1905", "Helicóptero experimental"], ["Balão 14 e 14-bis", "1906", "Acoplado ao dirigível 14"], ["Voo do 14-Bis", "1906", "60 m, Prêmio Archdeacon"], ["Teste Avião 14bis", "1907", "Motor Levavasseur 24 CV"], ["Avião nº15", "1907", "Biplano, motor 50 hp"], ["Aeronave nº16", "1907", "Dirigível híbrido"], ["Nº17 \"La Sauterelle\"", "1907", "Motor 100 cv"], ["Hidroplano nº18", "1907", "Voo sobre a água"]]],
+    ["Demoiselle", [["Demoiselle nº19", "1907", "Primeiro ultraleve"], ["Demoiselle nº20", "1908", "Ultraleve prático"], ["Demoiselle nº21", "1909", "Melhorias técnicas"], ["Demoiselle nº22", "1909", "Última aeronave"]]]
+  ];
+  document.getElementById("craft-groups").innerHTML = craft.map(function (g) {
+    return '<div class="stack"><div class="cat-title"><h3>' + g[0] + '</h3><span>' + g[1].length + ' aeronaves</span></div><div class="craft-grid">' +
+      g[1].map(function (c) {
+        return '<a class="craft" href="#aeronave"><div class="ph"><span>Foto</span></div><b>' + c[0] + '</b><em>' + c[1] + '</em><span class="sm">' + c[2] + '</span></a>';
+      }).join("") + '</div></div>';
+  }).join("");
+
+  var urls = { "inicio": "/", "santos-dumont": "/santos-dumont", "projeto": "/o-projeto", "aeronaves": "/aeronaves", "aeronave": "/aeronaves/dirigivel-n6", "exposicoes": "/exposicoes", "no-ar": "/no-ar", "contato": "/contato" };
+  var urls = ["inicio", "santos-dumont", "projeto", "aeronaves", "aeronave", "exposicoes", "no-ar", "contato"];
+  var mains = document.querySelectorAll("main[data-page]");
+  var menu = document.querySelectorAll(".menu a");
+  var burger = document.getElementById("burger"), mnav = document.getElementById("mnav");
+  function show() {
+    var id = location.hash.slice(1);
+    if (urls.indexOf(id) < 0) id = "inicio";
+    mains.forEach(function (m) { m.hidden = m.dataset.page !== id; });
+    menu.forEach(function (a) { a.classList.toggle("on", a.dataset.p === id || (id === "aeronave" && a.dataset.p === "aeronaves")); });
+    document.getElementById("mega").hidden = id !== "aeronaves";
+    mnav.classList.remove("open"); burger.setAttribute("aria-expanded", "false");
+  }
+  burger.onclick = function () {
+    var open = mnav.classList.toggle("open");
+    burger.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+  window.addEventListener("hashchange", function () { show(); window.scrollTo(0, 0); });
+  show();
+})();
+</script>
+
+</html>
