@@ -837,7 +837,22 @@ function pickPhoto(gallery){
       : 'A análise por foto não está disponível aqui (' + PH_WHY + '). Abra o app pelo link no Chrome, com sua conta do Claude conectada, e permita que o app use o Claude quando for perguntado.';
     return openSheet('Foto indisponível', `<div class="card"><p style="margin:0">${esc(msg)}</p></div><button class="btn ghost block" id="phMan">Adicionar manualmente</button>`, b=>{ b.querySelector('#phMan').onclick=()=>foodSheet(photoMeal||defaultMeal()); });
   }
-  const i = gallery ? $('#galIn') : $('#camIn'); i.value=''; i.click();
+  const i = gallery ? $('#galIn') : $('#camIn'); i.value='';
+  let opened = false; const on = ()=>{ opened = true; };
+  window.addEventListener('blur', on, {once:true}); document.addEventListener('visibilitychange', on, {once:true});
+  i.addEventListener('change', on, {once:true});
+  i.click();
+  setTimeout(()=>{
+    window.removeEventListener('blur', on); document.removeEventListener('visibilitychange', on);
+    if (opened || document.hidden) return;
+    const LINK = 'https://claude.ai/artifact/TDqxuKgLkY5JXmhrZMjmjd';
+    openSheet('A câmera não abriu', `<div class="card"><p style="margin:0 0 8px">O app do Claude não deixa esta página abrir a câmera. No navegador Chrome funciona:</p><ol style="margin:0;padding-left:20px;line-height:1.6"><li>Copie o link abaixo.</li><li>Abra o <b>Chrome</b>, cole o link e entre com sua conta do Claude.</li><li>No menu ⋮ do Chrome, toque em <b>Adicionar à tela inicial</b>.</li></ol></div><input class="in-t" id="lnk" readonly value="${LINK}" style="font-size:14px"><button class="btn block" id="cp" style="margin-top:8px">Copiar link</button><p class="note">Os registros feitos aqui não passam sozinhos para o Chrome: antes, use “Copiar backup” no Perfil e depois “Importar backup” lá.</p><button class="btn ghost block" id="phMan">Adicionar manualmente</button>`, b=>{
+      const inp = b.querySelector('#lnk');
+      b.querySelector('#cp').onclick = ()=>{ const sel=()=>{ inp.focus(); inp.select(); toast('Selecione e copie o link'); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(LINK).then(()=>toast('Link copiado'), sel); else sel(); };
+      b.querySelector('#phMan').onclick = ()=>foodSheet(photoMeal||defaultMeal());
+    });
+  }, 1500);
 }
 // Reduz a foto antes de enviar (fotos de celular costumam ter vários MB)
 async function shrink(file){
