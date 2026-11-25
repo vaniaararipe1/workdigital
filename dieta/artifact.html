@@ -163,7 +163,7 @@ label.f span{display:block;font-size:13px;color:var(--muted);margin-bottom:4px;f
   <!-- HOJE -->
   <section class="view" id="v-hoje">
     <div class="goal" id="goal" aria-live="polite"></div>
-    <button class="photo-cta photo-only" data-open="photo" hidden><span id="ctaIcon"></span><span><b>Fotografar refeição</b><small>Tire uma foto do prato e as calorias são calculadas</small></span></button>
+    <button class="photo-cta" data-open="photo"><span id="ctaIcon"></span><span><b>Fotografar refeição</b><small>Tire uma foto do prato e as calorias são calculadas</small></span></button>
     <div class="card">
       <div class="hero">
         <div class="ring" id="ring"></div>
@@ -279,7 +279,7 @@ label.f span{display:block;font-size:13px;color:var(--muted);margin-bottom:4px;f
   <div class="bd" id="shBody"></div>
 </div>
 <div class="toast" id="toast"></div>
-<input type="file" id="camIn" accept="image/*" capture="environment" hidden>
+<input type="file" id="camIn" accept="image/*" hidden>
 <input type="file" id="galIn" accept="image/*" hidden>
 
 <script>
@@ -809,28 +809,47 @@ document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeSheet(); });
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && tab==='hoje') render(); });
 
 /* ---------- Foto → calorias (Claude analisa a imagem) ---------- */
-let SAMPLE = null, photoMeal = null;
+let SAMPLE = null, photoMeal = null, PH_STATE = 'carregando', PH_WHY = '';
 const CAM_SVG = '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
 (async()=>{
   try{
     const s = window.claude && window.claude.use ? await window.claude.use('sample') : null;
-    if (!s) return;
+    if (!s){ PH_STATE='off'; PH_WHY='sem acesso ao Claude nesta tela'; return; }
     const lim = await s.limits().catch(()=>null);
-    if (!lim || !lim.images) return;
-    SAMPLE = s;
+    if (!lim || !lim.images){ PH_STATE='off'; PH_WHY='envio de imagens indisponível nesta tela'; return; }
+    SAMPLE = s; PH_STATE='on';
     const fab = document.querySelector('nav.tabs .fab');
     fab.dataset.open = 'photo'; fab.setAttribute('aria-label','Fotografar refeição');
     fab.querySelector('span').innerHTML = CAM_SVG;
     document.querySelectorAll('.photo-only').forEach(e=>e.hidden=false);
-  }catch(e){}
+  }catch(e){ PH_STATE='off'; PH_WHY='erro ao iniciar'; }
 })();
-function disablePhoto(){
-  SAMPLE = null;
+function disablePhoto(why){
+  SAMPLE = null; PH_STATE='off'; PH_WHY = why || PH_WHY;
   const fab = document.querySelector('nav.tabs .fab');
   fab.dataset.open = 'food'; fab.setAttribute('aria-label','Adicionar alimento'); fab.querySelector('span').textContent = '+';
   document.querySelectorAll('.photo-only').forEach(e=>e.hidden=true);
 }
-function pickPhoto(gallery){ const i = gallery ? $('#galIn') : $('#camIn'); i.value=''; i.click(); }
+function pickPhoto(gallery){
+  if (!SAMPLE){
+    const msg = PH_STATE==='carregando'
+      ? 'A análise por foto ainda está carregando. Espere alguns segundos e toque de novo.'
+      : 'A análise por foto não está disponível aqui (' + PH_WHY + '). Abra o app pelo link no Chrome, com sua conta do Claude conectada, e permita que o app use o Claude quando for perguntado.';
+    return openSheet('Foto indisponível', `<div class="card"><p style="margin:0">${esc(msg)}</p></div><button class="btn ghost block" id="phMan">Adicionar manualmente</button>`, b=>{ b.querySelector('#phMan').onclick=()=>foodSheet(photoMeal||defaultMeal()); });
+  }
+  const i = gallery ? $('#galIn') : $('#camIn'); i.value=''; i.click();
+}
+// Reduz a foto antes de enviar (fotos de celular costumam ter vários MB)
+async function shrink(file){
+  try{
+    const bmp = await createImageBitmap(file);
+    const max = 1600, sc = Math.min(1, max/Math.max(bmp.width, bmp.height));
+    const cv = document.createElement('canvas'); cv.width = Math.round(bmp.width*sc); cv.height = Math.round(bmp.height*sc);
+    cv.getContext('2d').drawImage(bmp, 0, 0, cv.width, cv.height); bmp.close && bmp.close();
+    const out = await new Promise(r=>cv.toBlob(r, 'image/jpeg', 0.85));
+    return out || file;
+  }catch(e){ return file; }
+}
 $('#camIn').onchange = $('#galIn').onchange = e=>{ const f=e.target.files[0]; if(f) photoSheet(f, photoMeal || defaultMeal()); photoMeal=null; };
 
 const REF = FOODS.map(f=>`${f[0]}: ${f[1]} kcal, P ${f[2]}, C ${f[3]}, G ${f[4]}`).join('\n');
@@ -926,7 +945,8 @@ function photoSheet(file, meal){
       body.innerHTML = `<div class="analyzing"><div class="spin"></div><div><b>Analisando a foto…</b><div class="muted" style="font-size:13px">Identificando alimentos e porções. Leva alguns segundos.</div></div></div><button class="btn ghost block" id="phStop">Cancelar</button>`;
       body.querySelector('#phStop').onclick = ()=>my.abort();
       try{
-        const opts = {images:file, signal:my.signal}; if (useCache===false) opts.cache = false;
+        const img = await shrink(file); if (my.signal.aborted) throw {code:'cancelled'};
+        const opts = {images:img, signal:my.signal}; if (useCache===false) opts.cache = false;
         const r = await SAMPLE.json(photoPrompt(), opts);
         if (my !== ctl) return;
         info = {prato:String(r && r.prato || ''), confianca:String(r && r.confianca || ''), obs:String(r && r.obs || '')};
@@ -939,8 +959,8 @@ function photoSheet(file, meal){
         if (my !== ctl) return;
         const code = e && e.code;
         if (code==='cancelled'){ closeSheet(); return; }
-        if (PH_OFF.includes(code)){ disablePhoto(); return fail('A análise por foto não foi liberada para este app. Use “Adicionar manualmente” ou libere o acesso ao Claude nas permissões da página.'); }
-        fail(PH_ERR[code] || 'Não consegui analisar a foto agora. Tente de novo.');
+        if (PH_OFF.includes(code)){ disablePhoto(code); return fail('A análise por foto não foi liberada para este app (código: ' + code + '). Use “Adicionar manualmente” ou libere o acesso ao Claude nas permissões da página.'); }
+        fail((PH_ERR[code] || 'Não consegui analisar a foto agora. Tente de novo.') + (code ? ' (código: ' + code + ')' : ''));
       }
     }
     analyze();
