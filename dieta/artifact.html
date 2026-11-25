@@ -39,6 +39,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .card h2{font-size:15px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:center}
 .card h2 small{font-weight:500;color:var(--muted);font-size:13px}
 .muted{color:var(--muted)}
+.goal{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;background:var(--card);border-radius:var(--r);padding:14px 16px;margin:8px 0 12px;box-shadow:var(--shadow);border:2px solid var(--brand)}
+.goal small{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--brand)}
+.goal .gv{font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
+.goal .gv span{font-size:17px;font-weight:600;color:var(--muted);letter-spacing:0}
+.goal .gs{text-align:right;font-size:13px;color:var(--muted)}
+.goal .gs b{display:block;font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums}
+.goal.over{border-color:var(--over)} .goal.over .gs b{color:var(--over)}
 .hero{display:flex;align-items:center;gap:16px}
 .ring{position:relative;width:148px;height:148px;flex:none}
 .ring svg{transform:rotate(-90deg)}
@@ -155,6 +162,7 @@ label.f span{display:block;font-size:13px;color:var(--muted);margin-bottom:4px;f
 <main class="wrap">
   <!-- HOJE -->
   <section class="view" id="v-hoje">
+    <div class="goal" id="goal" aria-live="polite"></div>
     <button class="photo-cta photo-only" data-open="photo" hidden><span id="ctaIcon"></span><span><b>Fotografar refeição</b><small>Tire uma foto do prato e as calorias são calculadas</small></span></button>
     <div class="card">
       <div class="hero">
@@ -477,6 +485,8 @@ function renderHoje(){
   $('#ring').innerHTML = ringSVG(budget? t.kcal/budget : 0, over) +
     `<div class="center"><div class="big" style="color:${over?'var(--over)':'inherit'}">${fmt(Math.abs(rest))}</div><div class="lbl">${over?'kcal acima':'kcal restantes'}</div></div>`;
   $('#sMeta').textContent = fmt(budget);
+  $('#goal').className = 'goal' + (over ? ' over' : '');
+  $('#goal').innerHTML = `<div><small>Meta ${cur===TODAY()?'de hoje':'do dia'}</small><div class="gv">${fmt(budget)} <span>kcal</span></div></div><div class="gs">${over?'passou':'ainda pode comer'}<b>${fmt(Math.abs(rest))} kcal</b></div>`;
   $('#sCons').textContent = fmt(t.kcal);
   $('#sEx').textContent = t.ex ? '−'+fmt(t.ex) : '0';
   const def = P.tdee + t.ex - t.kcal;
